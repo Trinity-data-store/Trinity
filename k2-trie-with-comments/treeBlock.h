@@ -63,7 +63,7 @@ struct treeBlock
     
     treeNode skipChildrenSubtree(treeNode &, uint8_t, uint16_t &, uint16_t, uint16_t &);
     
-    treeNode child(treeBlock *&, treeNode &, uint8_t, uint16_t &, uint16_t, uint16_t &);
+
     
     void grow(uint16_t extraNodes);
     
