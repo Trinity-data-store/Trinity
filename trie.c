@@ -1,5 +1,81 @@
 #include "trie.h"
 
+int8_t childT[nBranches * nBranches][nBranches];
+int8_t childSkipT[nBranches * nBranches][nBranches];
+uint8_t nChildrenT[nBranches * nBranches];
+
+void createNChildrenT()
+{
+    for (int row = 0; row < nBranches * nBranches; row++){
+        int tmp = row;
+        int count = 0;
+        while (tmp != 0)
+        {
+            int last_digit = tmp & 0x1;
+            if (last_digit == 1){
+                count ++;
+            }
+            tmp = tmp >> 1;
+        }
+        nChildrenT[row] = count;
+        printf("%d ", count);        
+    }
+
+}
+void createChildSkipT()
+{
+    for (int row = 0; row < nBranches * nBranches; row++)
+    {
+        int tmp = row;
+        int count = 1;
+        while (tmp != 0)
+        {
+            int last_digit = tmp & 0x1;
+            childT[row][nBranches - count] = last_digit;
+            count++;
+            tmp = tmp >> 1;
+        }
+        int cur_sum = 0;
+        for (int col = 0; col < nBranches; col++)
+        {
+            if (childT[row][col] == 1)
+            {
+                childT[row][col] = cur_sum;
+                cur_sum++;
+            }
+            else
+                childT[row][col] = cur_sum;
+        }
+    }
+}
+void createChildT()
+{
+    for (int row = 0; row < nBranches * nBranches; row++)
+    {
+        int tmp = row;
+        int count = 1;
+
+        while (tmp != 0)
+        {
+            int last_digit = tmp & 0x1;
+            childT[row][nBranches - count] = last_digit;
+            count++;
+            tmp = tmp >> 1;
+        }
+        int cur_sum = 0;
+        for (int col = 0; col < nBranches; col++)
+        {
+            if (childT[row][col] == 1)
+            {
+                cur_sum++;
+                childT[row][col] = cur_sum;
+            }
+            else
+                childT[row][col] = -1;
+        }
+    }
+}
+
 // Create a new treeBlock
 treeBlock *createNewTreeBlock()
 {
@@ -115,6 +191,10 @@ int main()
     const int stringLength = 23;
     uint8_t str[stringLength];
     int maxDepth = 22;
+
+    createChildT();
+    createChildSkipT();
+    createNChildrenT();
 
     for (int i = 0; i < nStrings; i++)
     {
