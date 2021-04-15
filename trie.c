@@ -18,10 +18,9 @@ void createNChildrenT()
             tmp = tmp >> 1;
         }
         nChildrenT[row] = count;
-        printf("%d ", count);        
     }
-
 }
+
 void createChildSkipT()
 {
     for (int row = 0; row < nBranches * nBranches; row++)
