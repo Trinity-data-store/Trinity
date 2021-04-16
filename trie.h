@@ -24,7 +24,7 @@ struct trieNode
     trieNode *children[nBranches];
 };
 
-typedef std::pair<uint16_t, uint8_t> treeNode;
+typedef pair<uint16_t, uint8_t> treeNode;
 const treeNode NULL_NODE = treeNode((NODE_TYPE)-1, 0);
 
 struct treeBlock

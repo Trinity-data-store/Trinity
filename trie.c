@@ -6,15 +6,15 @@ uint8_t nChildrenT[nBranches * nBranches];
 
 void createNChildrenT()
 {
-    for (int row = 0; row < nBranches * nBranches; row++){
+    for (int row = 0; row < nBranches * nBranches; row++)
+    {
         int tmp = row;
         int count = 0;
         while (tmp != 0)
         {
             int last_digit = tmp & 0x1;
-            if (last_digit == 1){
-                count ++;
-            }
+            if (last_digit == 1)
+                count++;
             tmp = tmp >> 1;
         }
         nChildrenT[row] = count;
@@ -47,6 +47,7 @@ void createChildSkipT()
         }
     }
 }
+
 void createChildT()
 {
     for (int row = 0; row < nBranches * nBranches; row++)
@@ -117,6 +118,7 @@ void treeBlock::insert(treeNode node, uint8_t str[], uint64_t length, uint16_t l
 
 treeNode treeBlock::child(treeBlock *&p, treeNode &node, uint8_t symbol, uint16_t &curLevel, uint16_t maxLevel, uint16_t &curFlag)
 {
+
     return NULL_NODE;
 }
 
@@ -137,8 +139,8 @@ void insertar(treeBlock *root, uint8_t *str, uint64_t length, uint16_t level, ui
 
         if (curNodeAux.first == (NODE_TYPE)-1)
             break;
-        else
-            curNode = curNodeAux;
+
+        curNode = curNodeAux;
 
         if (curBlock->nPtrs > 0 && absolutePosition(curNode) == curFlag)
         {
