@@ -1,14 +1,14 @@
 #include "trie.h"
 #include "bitmap.h"
 
-void printString(uint8_t *str, uint64_t length)
+uint8_t getNodeCod(bitmap::Bitmap *dfuds, NODE_TYPE node)
 {
-    printf("string: ");
-    for (int i = 0; i < length; i++)
-    {
-        printf("%d ", str[i]);
-    }
-    printf("\n");
+    return dfuds->GetValPos(node * nBranches, nBranches);
+}
+
+void setNodeCod(bitmap::Bitmap *dfuds, NODE_TYPE node, uint8_t nodeCod)
+{
+    dfuds->SetValPos(node * nBranches, nodeCod, nBranches);
 }
 
 treeBlock *treeBlock::getPointer(uint16_t curFlag)
@@ -21,19 +21,14 @@ uint16_t treeBlock::getFlag(uint16_t curFlag)
     return ((blockPtr *)ptr)[curFlag].flag;
 }
 
-uint8_t getNodeCod(bitmap::Bitmap *dfuds, NODE_TYPE node)
+void printString(uint8_t *str, uint64_t length)
 {
-    return dfuds->GetValPos(node * nBranches, nBranches);
-}
-
-void setNodeCod(bitmap::Bitmap *dfuds, NODE_TYPE node, uint8_t nodeCod)
-{
-    dfuds->SetValPos(node * nBranches, nodeCod, nBranches);
-}
-
-uint8_t symbol2NodeT(uint8_t symbol)
-{
-    return (uint8_t)1 << (nBranches - symbol - 1);
+    printf("string: ");
+    for (int i = 0; i < length; i++)
+    {
+        printf("%d ", str[i]);
+    }
+    printf("\n");
 }
 
 void printTable(int8_t T[nBranches * nBranches][nBranches])
@@ -51,10 +46,16 @@ void printTable(int8_t T[nBranches * nBranches][nBranches])
 void printDFUDS(bitmap::Bitmap *dfuds, uint16_t nNodes)
 {
     printf("dfuds: ");
-    for (int i = 0; i < nNodes; i++){
+    for (int i = 0; i < nNodes; i++)
+    {
         printf("%d, ", getNodeCod(dfuds, i));
     }
     printf("\n");
+}
+
+uint8_t symbol2NodeT(uint8_t symbol)
+{
+    return (uint8_t)1 << (nBranches - symbol - 1);
 }
 
 void createNChildrenT()
@@ -313,7 +314,7 @@ void insertar(treeBlock *root, uint8_t *str, uint64_t length, uint16_t level, ui
     NODE_TYPE curNode = 0;
     uint16_t curFlag = 0;
 
-    for (i = 0; i < length; ++i)
+    for (i = 0; i < length; i++)
     {
         curNodeAux = curBlock->child(curBlock, curNode, str[i], level, maxDepth, curFlag);
         if (curNodeAux == (NODE_TYPE)-1)
@@ -327,13 +328,13 @@ void insertar(treeBlock *root, uint8_t *str, uint64_t length, uint16_t level, ui
             curNode = (NODE_TYPE)-1;
         }
     }
+    if (length == i) return;
     curBlock->insert(curNode, &str[i], length - i, level, maxDepth, curFlag);
     printDFUDS(&curBlock->dfuds, curBlock->nNodes);
 }
 
 void insertTrie(trieNode *tNode, uint8_t *str, uint64_t length, uint16_t maxDepth)
 {
-    printString(str, length);
 
     uint64_t i = 0;
     while (tNode->children[str[i]])
@@ -353,8 +354,8 @@ void insertTrie(trieNode *tNode, uint8_t *str, uint64_t length, uint16_t maxDept
     else
         tBlock = (treeBlock *)tNode->block;
 
+    printString(str, length);
     printString(&str[i], length - i);
-
     insertar(tBlock, &str[i], length - i, i, maxDepth);
 }
 
@@ -363,7 +364,7 @@ int main()
     treeBlock B;
     trieNode *tNode = createNewTrieNode();
     int nStrings = 5;
-    const int stringLength = 12;
+    const int stringLength = 6;
     uint8_t str[stringLength];
     int maxDepth = 22;
 

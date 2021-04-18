@@ -7,6 +7,7 @@
         "xstring": "c",
         "sstream": "c",
         "xlocmon": "c",
-        "ratio": "c"
+        "ratio": "c",
+        "generatetables.h": "c"
     }
 }
