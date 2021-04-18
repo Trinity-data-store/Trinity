@@ -20,7 +20,7 @@ uint8_t nChildrenT[nBranches * nBranches];
 int8_t insertT[nBranches * nBranches][nBranches];
 
 #define NODE_TYPE uint16_t
-#define L1 8
+#define L1 5
 
 struct trieNode
 {
