@@ -1,0 +1,12 @@
+{
+    "files.associations": {
+        "memory": "c",
+        "type_traits": "cpp",
+        "bitmap.h": "c",
+        "xlocale": "c",
+        "xstring": "c",
+        "sstream": "c",
+        "xlocmon": "c",
+        "ratio": "c"
+    }
+}

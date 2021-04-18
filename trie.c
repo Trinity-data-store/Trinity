@@ -1,8 +1,5 @@
 #include "trie.h"
-
-int8_t childT[nBranches * nBranches][nBranches];
-int8_t childSkipT[nBranches * nBranches][nBranches];
-uint8_t nChildrenT[nBranches * nBranches];
+#include "bitmap.h"
 
 void createNChildrenT()
 {
@@ -76,11 +73,29 @@ void createChildT()
     }
 }
 
-// Create a new treeBlock
+void createInsertT()
+{
+    for (int row = 0; row < nBranches * nBranches; row++)
+    {
+        for (int col = 0; col < nBranches; col++)
+        {
+            int col_digit = row >> (nBranches - col - 1) & 1;
+
+            if (col_digit == 1)
+                insertT[row][col] = row;
+            else
+                insertT[row][col] = row + (1 << (nBranches - col - 1));
+
+            printf("%d ", insertT[row][col]);
+        }
+        printf("\n");
+    }
+}
+
 treeBlock *createNewTreeBlock()
 {
     treeBlock *tBlock = (treeBlock *)malloc(sizeof(treeBlock));
-    tBlock->dfuds = (uint16_t *)calloc(2, sizeof(uint16_t));
+    bitmap::Bitmap dfuds(2 * sizeof(uint16_t));
     tBlock->rootDepth = L1;
     tBlock->nNodes = 1;
     tBlock->ptr = NULL;
@@ -89,7 +104,6 @@ treeBlock *createNewTreeBlock()
     return tBlock;
 }
 
-// Create a new trieNode and set its children to NULL
 trieNode *createNewTrieNode()
 {
     trieNode *tNode = (trieNode *)malloc(sizeof(trieNode));
@@ -100,76 +114,199 @@ trieNode *createNewTrieNode()
     return tNode;
 }
 
-// Return the pointer to a child block given the curFlag
 treeBlock *treeBlock::getPointer(uint16_t curFlag)
 {
     return ((blockPtr *)ptr)[curFlag].P;
 }
 
-// Return the position of the node in dfuds sequence
-uint16_t absolutePosition(treeNode &node)
+uint16_t treeBlock::getFlag(uint16_t curFlag)
 {
-    return nBranches * node.first + node.second;
+    return ((blockPtr *)ptr)[curFlag].flag;
 }
 
-void treeBlock::insert(treeNode node, uint8_t str[], uint64_t length, uint16_t level, uint64_t maxDepth, uint16_t curFlag)
+uint8_t getNodeCod(bitmap::Bitmap dfuds, NODE_TYPE node)
 {
+    return dfuds.GetValPos(node * nBranches, nBranches);
 }
 
-treeNode treeBlock::child(treeBlock *&p, treeNode &node, uint8_t symbol, uint16_t &curLevel, uint16_t maxLevel, uint16_t &curFlag)
+void setNodeCod(bitmap::Bitmap dfuds, NODE_TYPE node, uint8_t nodeCod)
 {
-
-    return NULL_NODE;
+    dfuds.SetValPos(node * nBranches, nodeCod, nBranches);
 }
 
-// Insert the remainder of the string into the treeBlock
-// str: remaining of the string, length: str's length
-// Level: levels traversed in the trie (length of string alraedy processed)
+uint8_t symbol2NodeT(uint8_t symbol)
+{
+    return (uint8_t)1 << (nBranches - symbol - 1);
+}
+
+void treeBlock::insert(NODE_TYPE node, uint8_t str[], uint64_t length, uint16_t level, uint64_t maxDepth, uint16_t curFlag)
+{
+    if (length == 1)
+    {
+        uint8_t nodeCod = getNodeCod(dfuds, node);
+        setNodeCod(dfuds, node, nodeCod);
+        return;
+    }
+    else if (nNodes + length - 1 <= maxNodes)
+    {
+
+        node = skipChildrenSubtree(node, str[0], level, maxDepth, curFlag);
+        length--;
+
+        NODE_TYPE destNode = nNodes + length - 1;
+        NODE_TYPE origNode = nNodes - 1;
+
+        while (origNode >= node)
+        {
+            uint8_t origNodeCod = getNodeCod(dfuds, origNode);
+            setNodeCod(dfuds, destNode, origNodeCod);
+            destNode--;
+            origNode--;
+        }
+
+        uint8_t nodeCod = getNodeCod(dfuds, node);
+        setNodeCod(dfuds, node, insertT[nodeCod][str[0]]);
+        origNode++;
+
+        for (uint16_t i = 1; i <= length; i++)
+        {
+            setNodeCod(dfuds, origNode, symbol2NodeT(str[i]));
+            nNodes++;
+            origNode++;
+        }
+
+        if (ptr)
+            for (uint16_t i = curFlag; i < nPtrs; ++i)
+                ((blockPtr *)ptr)[i].flag += length;
+    }
+}
+
+NODE_TYPE treeBlock::skipChildrenSubtree(NODE_TYPE &node, uint8_t symbol, uint16_t &curLevel, uint16_t maxLevel, uint16_t &curFlag)
+{
+    if (curLevel == maxLevel)
+        return node;
+    int16_t sTop = -1;
+
+    uint8_t cNodeCod = getNodeCod(dfuds, node);
+
+    uint8_t skipChild = (uint8_t)childSkipT[cNodeCod][symbol];
+
+    uint8_t nChildren = nChildrenT[cNodeCod];
+
+    uint8_t diff = nChildren - skipChild;
+
+    int8_t stack[100];
+    stack[++sTop] = nChildren;
+
+    NODE_TYPE currNode = node + 1;
+
+    if (ptr != NULL && curFlag < nPtrs && currNode > getFlag(curFlag))
+        ++curFlag;
+
+    uint16_t nextFlag;
+
+    if (nPtrs == 0 || curFlag >= nPtrs)
+        nextFlag = -1;
+    else
+        nextFlag = getFlag(curFlag);
+
+    ++curLevel;
+    while (currNode < nNodes && sTop >= 0 && diff < stack[0])
+    {
+        if (currNode == nextFlag)
+        {
+            ++curFlag;
+            if (nPtrs == 0 || curFlag >= nPtrs)
+                nextFlag = -1;
+            else
+                nextFlag = getFlag(curFlag);
+            --stack[sTop];
+        }
+        else if (curLevel < maxLevel)
+        {
+            stack[++sTop] = nChildrenT[currNode];
+            ++curLevel;
+        }
+        else
+            --stack[sTop];
+
+        ++currNode;
+        while (sTop >= 0 && stack[sTop] == 0)
+        {
+            --sTop;
+            --curLevel;
+            if (sTop >= 0)
+                --stack[sTop];
+        }
+    }
+    return currNode;
+}
+
+NODE_TYPE treeBlock::child(treeBlock *&p, NODE_TYPE &node, uint8_t symbol, uint16_t &curLevel, uint16_t maxLevel, uint16_t &curFlag)
+{
+    uint8_t cNodeCod = getNodeCod(dfuds, node);
+
+    uint8_t soughtChild = (uint8_t)childT[cNodeCod][symbol];
+
+    if (soughtChild == (uint8_t)-1)
+        return NULL_NODE;
+
+    if (curLevel == maxLevel && soughtChild != (uint8_t)-1)
+        return node;
+
+    NODE_TYPE currNode;
+
+    if (ptr != NULL && curFlag < nPtrs && node == getFlag(curFlag))
+    {
+        p = getPointer(curFlag);
+        curFlag = 0;
+        NODE_TYPE auxNode = 0;
+        currNode = p->skipChildrenSubtree(auxNode, symbol, curLevel, maxLevel, curFlag);
+    }
+    else
+        currNode = skipChildrenSubtree(node, symbol, curLevel, maxLevel, curFlag);
+
+    return currNode;
+}
+
 void insertar(treeBlock *root, uint8_t *str, uint64_t length, uint16_t level, uint16_t maxDepth)
 {
     treeBlock *curBlock = root;
     uint64_t i;
 
-    treeNode curNode(0, 0), curNodeAux;
+    NODE_TYPE curNodeAux = 0;
+    NODE_TYPE curNode = 0;
     uint16_t curFlag = 0;
 
     for (i = 0; i < length; ++i)
     {
         curNodeAux = curBlock->child(curBlock, curNode, str[i], level, maxDepth, curFlag);
 
-        if (curNodeAux.first == (NODE_TYPE)-1)
+        if (curNodeAux == (NODE_TYPE)-1)
             break;
 
         curNode = curNodeAux;
 
-        if (curBlock->nPtrs > 0 && absolutePosition(curNode) == curFlag)
+        if (curBlock->nPtrs > 0 && curNode == curFlag)
         {
             curBlock = curBlock->getPointer(curFlag);
-            curNode.first = 0;
-            curNode.second = 0;
+            curNode = (NODE_TYPE)-1;
         }
     }
-
     curBlock->insert(curNode, &str[i], length - i, level, maxDepth, curFlag);
 }
 
-// Insert a string into the trie
-// length is the string length
-// maxDepth is the max depth of the trie
 void insertTrie(trieNode *tNode, uint8_t *str, uint64_t length, uint16_t maxDepth)
 {
     uint64_t i = 0;
-
     while (tNode->children[str[i]])
         tNode = tNode->children[str[i++]];
-
     while (i < L1)
     {
         tNode->children[str[i]] = createNewTrieNode();
         tNode = tNode->children[str[i]];
         i++;
     }
-
     treeBlock *tBlock = NULL;
     if (tNode->block == NULL)
     {
@@ -178,14 +315,12 @@ void insertTrie(trieNode *tNode, uint8_t *str, uint64_t length, uint16_t maxDept
     }
     else
         tBlock = (treeBlock *)tNode->block;
-
     insertar(tBlock, &str[i], length - i, i, maxDepth);
 }
 
 int main()
 {
     treeBlock B;
-
     trieNode *tNode = createNewTrieNode();
 
     int nStrings = 5;
@@ -196,11 +331,11 @@ int main()
     createChildT();
     createChildSkipT();
     createNChildrenT();
+    createInsertT();
 
     for (int i = 0; i < nStrings; i++)
     {
         scanf("%s\n", str);
-
         for (int j = 0; j < stringLength; j++)
         {
             str[j] = str[j] % nBranches;
