@@ -11,14 +11,19 @@ void setNodeCod(bitmap::Bitmap *dfuds, NODE_TYPE node, uint8_t nodeCod)
     dfuds->SetValPos(node * nBranches, nodeCod, nBranches);
 }
 
-treeBlock *treeBlock::getPointer(uint16_t curFlag)
+treeBlock *treeBlock::getPointer(uint16_t curFrontier)
 {
-    return ((blockPtr *)ptr)[curFlag].P;
+    return ((frontierPtr *)ptr)[curFrontier].pointer;
 }
 
-uint16_t treeBlock::getFlag(uint16_t curFlag)
+uint16_t treeBlock::getPreOrder(uint16_t curFrontier)
 {
-    return ((blockPtr *)ptr)[curFlag].flag;
+    return ((frontierPtr *)ptr)[curFrontier].preOrder;
+}
+
+void treeBlock::setPreOrder(uint16_t curFrontier, uint16_t preOrder)
+{
+    ((frontierPtr *)ptr)[curFrontier].preOrder = preOrder;
 }
 
 void printString(uint8_t *str, uint64_t length)
@@ -173,7 +178,7 @@ trieNode *createNewTrieNode()
     return tNode;
 }
 
-void treeBlock::insert(NODE_TYPE node, uint8_t str[], uint64_t length, uint16_t level, uint64_t maxDepth, uint16_t curFlag)
+void treeBlock::insert(NODE_TYPE node, uint8_t str[], uint64_t length, uint16_t level, uint64_t maxDepth, uint16_t curFrontier)
 {
     NODE_TYPE nodeOriginal = node;
     if (length == 1)
@@ -184,7 +189,7 @@ void treeBlock::insert(NODE_TYPE node, uint8_t str[], uint64_t length, uint16_t 
     }
     else if (nNodes + length - 1 <= maxNodes)
     {
-        node = skipChildrenSubtree(node, str[0], level, maxDepth, curFlag);
+        node = skipChildrenSubtree(node, str[0], level, maxDepth, curFrontier);
 
         length--;
 
@@ -212,12 +217,12 @@ void treeBlock::insert(NODE_TYPE node, uint8_t str[], uint64_t length, uint16_t 
         }
 
         if (ptr)
-            for (uint16_t i = curFlag; i < nPtrs; ++i)
-                ((blockPtr *)ptr)[i].flag += length;
+            for (uint16_t i = curFrontier; i < nPtrs; ++i)
+                setPreOrder(i, getPreOrder(i) + length);
     }
 }
 
-NODE_TYPE treeBlock::skipChildrenSubtree(NODE_TYPE &node, uint8_t symbol, uint16_t &curLevel, uint16_t maxLevel, uint16_t &curFlag)
+NODE_TYPE treeBlock::skipChildrenSubtree(NODE_TYPE &node, uint8_t symbol, uint16_t &curLevel, uint16_t maxLevel, uint16_t &curFrontier)
 {
     if (curLevel == maxLevel)
         return node;
@@ -234,39 +239,39 @@ NODE_TYPE treeBlock::skipChildrenSubtree(NODE_TYPE &node, uint8_t symbol, uint16
     int8_t stack[100];
     stack[++sTop] = nChildren;
 
-    NODE_TYPE currNode = node + 1;
+    NODE_TYPE curNode = node + 1;
 
-    if (ptr != NULL && curFlag < nPtrs && currNode > getFlag(curFlag))
-        ++curFlag;
+    if (ptr != NULL && curFrontier < nPtrs && curNode > getPreOrder(curFrontier))
+        ++curFrontier;
 
-    uint16_t nextFlag;
+    uint16_t nextFrontierPreOrder;
 
-    if (nPtrs == 0 || curFlag >= nPtrs)
-        nextFlag = -1;
+    if (nPtrs == 0 || curFrontier >= nPtrs)
+        nextFrontierPreOrder = -1;
     else
-        nextFlag = getFlag(curFlag);
+        nextFrontierPreOrder = getPreOrder(curFrontier);
 
     ++curLevel;
-    while (currNode < nNodes && sTop >= 0 && diff < stack[0])
+    while (curNode < nNodes && sTop >= 0 && diff < stack[0])
     {
-        if (currNode == nextFlag)
+        if (curNode == nextFrontierPreOrder)
         {
-            ++curFlag;
-            if (nPtrs == 0 || curFlag >= nPtrs)
-                nextFlag = -1;
+            ++curFrontier;
+            if (nPtrs == 0 || curFrontier >= nPtrs)
+                nextFrontierPreOrder = -1;
             else
-                nextFlag = getFlag(curFlag);
+                nextFrontierPreOrder = getPreOrder(curFrontier);
             --stack[sTop];
         }
         else if (curLevel < maxLevel)
         {
-            stack[++sTop] = nChildrenT[currNode];
+            stack[++sTop] = nChildrenT[curNode];
             ++curLevel;
         }
         else
             --stack[sTop];
 
-        ++currNode;
+        ++curNode;
         while (sTop >= 0 && stack[sTop] == 0)
         {
             --sTop;
@@ -275,10 +280,10 @@ NODE_TYPE treeBlock::skipChildrenSubtree(NODE_TYPE &node, uint8_t symbol, uint16
                 --stack[sTop];
         }
     }
-    return currNode;
+    return curNode;
 }
 
-NODE_TYPE treeBlock::child(treeBlock *&p, NODE_TYPE &node, uint8_t symbol, uint16_t &curLevel, uint16_t maxLevel, uint16_t &curFlag)
+NODE_TYPE treeBlock::child(treeBlock *&p, NODE_TYPE &node, uint8_t symbol, uint16_t &curLevel, uint16_t maxLevel, uint16_t &curFrontier)
 {
     uint8_t cNodeCod = getNodeCod(&dfuds, node);
 
@@ -289,19 +294,19 @@ NODE_TYPE treeBlock::child(treeBlock *&p, NODE_TYPE &node, uint8_t symbol, uint1
     if (curLevel == maxLevel && soughtChild != (uint8_t)-1)
         return node;
 
-    NODE_TYPE currNode;
+    NODE_TYPE curNode;
 
-    if (ptr != NULL && curFlag < nPtrs && node == getFlag(curFlag))
+    if (ptr != NULL && curFrontier < nPtrs && node == getPreOrder(curFrontier))
     {
-        p = getPointer(curFlag);
-        curFlag = 0;
+        p = getPointer(curFrontier);
+        curFrontier = 0;
         NODE_TYPE auxNode = 0;
-        currNode = p->skipChildrenSubtree(auxNode, symbol, curLevel, maxLevel, curFlag);
+        curNode = p->skipChildrenSubtree(auxNode, symbol, curLevel, maxLevel, curFrontier);
     }
     else
-        currNode = skipChildrenSubtree(node, symbol, curLevel, maxLevel, curFlag);
+        curNode = skipChildrenSubtree(node, symbol, curLevel, maxLevel, curFrontier);
 
-    return currNode;
+    return curNode;
 }
 
 void insertar(treeBlock *root, uint8_t *str, uint64_t length, uint16_t level, uint16_t maxDepth)
@@ -312,24 +317,25 @@ void insertar(treeBlock *root, uint8_t *str, uint64_t length, uint16_t level, ui
 
     NODE_TYPE curNodeAux = 0;
     NODE_TYPE curNode = 0;
-    uint16_t curFlag = 0;
+    uint16_t curFrontier = 0;
 
     for (i = 0; i < length; i++)
     {
-        curNodeAux = curBlock->child(curBlock, curNode, str[i], level, maxDepth, curFlag);
+        curNodeAux = curBlock->child(curBlock, curNode, str[i], level, maxDepth, curFrontier);
         if (curNodeAux == (NODE_TYPE)-1)
             break;
 
         curNode = curNodeAux;
 
-        if (curBlock->nPtrs > 0 && curNode == curFlag)
+        if (curBlock->nPtrs > 0 && curNode == curFrontier)
         {
-            curBlock = curBlock->getPointer(curFlag);
+            curBlock = curBlock->getPointer(curFrontier);
             curNode = (NODE_TYPE)-1;
         }
     }
-    if (length == i) return;
-    curBlock->insert(curNode, &str[i], length - i, level, maxDepth, curFlag);
+    if (length == i)
+        return;
+    curBlock->insert(curNode, &str[i], length - i, level, maxDepth, curFrontier);
     printDFUDS(&curBlock->dfuds, curBlock->nNodes);
 }
 

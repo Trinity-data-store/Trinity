@@ -43,13 +43,14 @@ struct treeBlock
     NODE_TYPE child(treeBlock *&, NODE_TYPE &, uint8_t, uint16_t &, uint16_t, uint16_t &);
     NODE_TYPE skipChildrenSubtree(NODE_TYPE &, uint8_t, uint16_t &, uint16_t, uint16_t &);
     struct treeBlock *getPointer(uint16_t);
-    uint16_t getFlag(uint16_t);
+    uint16_t getPreOrder(uint16_t);
+    void setPreOrder(uint16_t, uint16_t);
 };
 
 typedef struct
 {
-    uint16_t flag;
-    treeBlock *P;
-} blockPtr;
+    uint16_t preOrder;
+    treeBlock *pointer;
+} frontierPtr;
 
 #endif
