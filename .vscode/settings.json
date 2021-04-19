@@ -8,6 +8,14 @@
         "sstream": "c",
         "xlocmon": "c",
         "ratio": "c",
-        "generatetables.h": "c"
+        "generatetables.h": "c",
+        "deque": "c",
+        "hash_map": "c",
+        "list": "c",
+        "map": "c",
+        "vector": "c",
+        "xhash": "c",
+        "xtree": "c",
+        "trie.h": "c"
     }
 }
