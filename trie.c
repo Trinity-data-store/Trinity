@@ -611,9 +611,6 @@ int main()
 {
     treeBlock B;
     trieNode *tNode = createNewTrieNode();
-    int nStrings = 5;
-    const int stringLength = 6;
-    uint8_t str[stringLength];
     int maxDepth = 22;
 
     createChildT();
@@ -621,13 +618,29 @@ int main()
     createNChildrenT();
     createInsertT();
 
-    for (int i = 0; i < nStrings; i++)
+    char *line = NULL;
+    size_t len = 0;
+    ssize_t read;
+    FILE *fp = fopen("input.txt", "r");
+    if (fp == NULL)
+        exit(EXIT_FAILURE);
+
+    while ((read = getline(&line, &len, fp)) != -1)
     {
-        scanf("%s", str);
-        for (int j = 0; j < stringLength; j++)
+        char *pos;
+        int extra_char = 1;
+        if ((pos = strchr(line, '\n')) != NULL)
+            *pos = '\0';
+        else
+            extra_char = 0;
+        int strLen = (int)strlen(line) - extra_char;
+        printf("Retrieved line of length %d, string: %s\n", strLen, line);
+
+        uint8_t str[strLen];
+        for (int j = 0; j < strLen; j++)
         {
-            str[j] = ((int)str[j]) % nBranches;
+            str[j] = ((int)line[j]) % nBranches;
         }
-        insertTrie(tNode, str, stringLength, maxDepth);
+        insertTrie(tNode, str, strLen, maxDepth);
     }
 }

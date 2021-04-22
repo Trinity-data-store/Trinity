@@ -9,6 +9,7 @@
 #include <stdint.h>
 #include <time.h>
 #include "bitmap.h"
+#include <sys/stat.h>
 
 using namespace std;
 

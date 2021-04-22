@@ -16,6 +16,8 @@
         "vector": "c",
         "xhash": "c",
         "xtree": "c",
-        "trie.h": "c"
+        "trie.h": "c",
+        "stat.h": "c",
+        "istream": "c"
     }
 }
