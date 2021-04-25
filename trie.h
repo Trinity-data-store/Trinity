@@ -51,7 +51,7 @@ subtreeInfo subtrees[4096];
 uint16_t depthVector[4096];
 
 #define NODE_TYPE uint16_t
-#define L1 2
+#define L1 0
 
 struct trieNode
 {

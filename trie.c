@@ -283,7 +283,6 @@ void treeBlock::insert(NODE_TYPE node, uint8_t str[], uint64_t length, uint16_t 
     if (frontiers != NULL && curFrontier < nFrontiers && node == getPreOrder(curFrontier))
     {
         uint8_t nodeCod = getNodeCod(&dfuds, node);
-
         setNodeCod(&dfuds, node, insertT[nodeCod][str[0]]);
         getPointer(curFrontier)->insert(0, str, length, level, maxDepth, 0);
 
@@ -292,7 +291,7 @@ void treeBlock::insert(NODE_TYPE node, uint8_t str[], uint64_t length, uint16_t 
     else if (length == 1)
     {
         uint8_t nodeCod = getNodeCod(&dfuds, node);
-        setNodeCod(&dfuds, node, nodeCod);
+        setNodeCod(&dfuds, node, insertT[nodeCod][str[0]]);
         return;
     }
     else if (nNodes + length - 1 <= maxNodes)
@@ -496,6 +495,7 @@ NODE_TYPE treeBlock::skipChildrenSubtree(NODE_TYPE &node, uint8_t symbol, uint16
     ++curLevel;
     while (curNode < nNodes && sTop >= 0 && diff < stack[0])
     {
+        // printf("inSkipChildren - curNode: %d, stack[0]: %d, stack_top: %d, curLevel: %d\n", curNode, stack[0], stack[sTop], curLevel);
         if (curNode == nextFrontierPreOrder)
         {
             ++curFrontier;
@@ -505,9 +505,11 @@ NODE_TYPE treeBlock::skipChildrenSubtree(NODE_TYPE &node, uint8_t symbol, uint16
                 nextFrontierPreOrder = getPreOrder(curFrontier);
             --stack[sTop];
         }
-        else if (curLevel < maxLevel)
+        // We don't count the leaf level
+        else if (curLevel + 1 < maxLevel)
         {
-            stack[++sTop] = nChildrenT[curNode];
+            cNodeCod = getNodeCod(&dfuds, curNode);
+            stack[++sTop] = nChildrenT[cNodeCod];
             ++curLevel;
         }
         else
@@ -522,17 +524,19 @@ NODE_TYPE treeBlock::skipChildrenSubtree(NODE_TYPE &node, uint8_t symbol, uint16
                 --stack[sTop];
         }
     }
+    // printf("skipChildren: curNode[%d], node[%d], symbol: [%d]\n", curNode, node, symbol);
     return curNode;
 }
 
 NODE_TYPE treeBlock::child(treeBlock *&p, NODE_TYPE &node, uint8_t symbol, uint16_t &curLevel, uint16_t maxLevel, uint16_t &curFrontier)
 {
+    // printf("child: node: [%d], symbol: [%d]\n", node, symbol);
     uint8_t cNodeCod = getNodeCod(&dfuds, node);
-
     uint8_t soughtChild = (uint8_t)childT[cNodeCod][symbol];
     if (soughtChild == (uint8_t)-1)
+    {
         return NULL_NODE;
-
+    }
     if (curLevel == maxLevel && soughtChild != (uint8_t)-1)
         return node;
 
@@ -554,7 +558,6 @@ NODE_TYPE treeBlock::child(treeBlock *&p, NODE_TYPE &node, uint8_t symbol, uint1
 void insertar(treeBlock *root, uint8_t *str, uint64_t length, uint16_t level, uint16_t maxDepth)
 {
     treeBlock *curBlock = root;
-    printDFUDS(&curBlock->dfuds, curBlock->nNodes);
     uint64_t i;
 
     NODE_TYPE curNodeAux = 0;
@@ -577,6 +580,7 @@ void insertar(treeBlock *root, uint8_t *str, uint64_t length, uint16_t level, ui
     }
     if (length == i)
         return;
+    // printString(str + i, length - i);
     curBlock->insert(curNode, &str[i], length - i, level, maxDepth, curFrontier);
     printDFUDS(&curBlock->dfuds, curBlock->nNodes);
 }
@@ -602,8 +606,6 @@ void insertTrie(trieNode *tNode, uint8_t *str, uint64_t length, uint16_t maxDept
     else
         tBlock = (treeBlock *)tNode->block;
 
-    printString(str, length);
-    printString(&str[i], length - i);
     insertar(tBlock, &str[i], length - i, i, maxDepth);
 }
 
@@ -611,7 +613,7 @@ int main()
 {
     treeBlock B;
     trieNode *tNode = createNewTrieNode();
-    int maxDepth = 22;
+    int maxDepth = 0;
 
     createChildT();
     createChildSkipT();
@@ -636,11 +638,15 @@ int main()
         int strLen = (int)strlen(line) - extra_char;
         printf("Retrieved line of length %d, string: %s\n", strLen, line);
 
+        if (strLen > maxDepth){
+            maxDepth = strLen;
+        }
         uint8_t str[strLen];
         for (int j = 0; j < strLen; j++)
         {
             str[j] = ((int)line[j]) % nBranches;
         }
         insertTrie(tNode, str, strLen, maxDepth);
+        printf("\n");
     }
 }
