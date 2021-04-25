@@ -155,6 +155,17 @@ class Bitmap {
   }
 
   // Bit operations
+
+  void Realloc(size_type num_bits){
+    data_type old_data = GetValPos(0, size_);
+    size_type old_size = size_;
+    data_ = new data_type[BITS2BLOCKS(num_bits)]();
+    SetValPos(0, 0, num_bits);
+    SetValPos(0, old_data, old_size);
+
+    size_ = num_bits;
+  }
+
   void Clear() {
     memset((void *) data_, 0, BITS2BLOCKS(size_) * sizeof(uint64_t));
   }

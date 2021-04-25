@@ -14,21 +14,21 @@
 using namespace std;
 
 const int dimensions = 3;
-const int nBranches = (int)pow(2, dimensions);
-const int nNodeConf = (int)pow(2, nBranches);
-int8_t childT[nNodeConf][nBranches];
-int8_t childSkipT[nNodeConf][nBranches];
-uint8_t nChildrenT[nNodeConf];
-int8_t insertT[nNodeConf][nBranches];
+const uint64_t nBranches = (int)pow(2, dimensions);
+const uint64_t nNodeConf = (int)pow(2, nBranches);
+uint64_t childT[nNodeConf][nBranches];
+uint64_t childSkipT[nNodeConf][nBranches];
+uint64_t nChildrenT[nNodeConf];
+uint64_t insertT[nNodeConf][nBranches];
 
 int8_t stack[100];
 
 struct nodeInfo
 {
-    uint16_t preorder;
-    uint16_t nChildren;
+    uint64_t preorder;
+    uint64_t nChildren;
     nodeInfo(){};
-    nodeInfo(uint16_t _preorder, uint16_t _nChildren)
+    nodeInfo(uint64_t _preorder, uint64_t _nChildren)
     {
         preorder = _preorder;
         nChildren = _nChildren;
@@ -37,10 +37,10 @@ struct nodeInfo
 
 struct subtreeInfo
 {
-    uint16_t preorder;
-    uint16_t subtreeSize;
+    uint64_t preorder;
+    uint64_t subtreeSize;
     subtreeInfo(){};
-    subtreeInfo(uint16_t _preorder, uint16_t _subtreeSize)
+    subtreeInfo(uint64_t _preorder, uint64_t _subtreeSize)
     {
         preorder = _preorder;
         subtreeSize = _subtreeSize;
@@ -49,9 +49,9 @@ struct subtreeInfo
 
 nodeInfo stackSS[4096];
 subtreeInfo subtrees[4096];
-uint16_t depthVector[4096];
+uint64_t depthVector[4096];
 
-#define NODE_TYPE uint16_t
+#define NODE_TYPE uint64_t
 #define L1 0
 
 struct trieNode
@@ -64,29 +64,29 @@ NODE_TYPE NULL_NODE = -1;
 
 struct treeBlock
 {
-    uint8_t rootDepth;
-    uint16_t nNodes;
-    uint16_t maxNodes;
+    uint16_t rootDepth;
+    uint64_t nNodes;
+    uint64_t maxNodes;
     bitmap::Bitmap dfuds;
     void *frontiers;
-    uint16_t nFrontiers;
+    uint64_t nFrontiers;
 
-    void insert(NODE_TYPE, uint8_t[], uint64_t, uint16_t, uint64_t, uint16_t);
-    NODE_TYPE child(treeBlock *&, NODE_TYPE &, uint8_t, uint16_t &, uint16_t, uint16_t &);
-    NODE_TYPE skipChildrenSubtree(NODE_TYPE &, uint8_t, uint16_t &, uint16_t, uint16_t &);
-    struct treeBlock *getPointer(uint16_t);
-    uint16_t getPreOrder(uint16_t);
-    void setPreOrder(uint16_t, uint16_t);
-    void setPointer(uint16_t, treeBlock *);
-    void grow(uint16_t);
-    void shrink(uint16_t);
-    NODE_TYPE selectSubtree(uint16_t, uint16_t &, uint16_t &);
+    void insert(NODE_TYPE, uint64_t[], uint64_t, uint64_t, uint64_t, uint64_t);
+    NODE_TYPE child(treeBlock *&, NODE_TYPE &, uint64_t, uint64_t &, uint64_t, uint64_t &);
+    NODE_TYPE skipChildrenSubtree(NODE_TYPE &, uint64_t, uint64_t &, uint64_t, uint64_t &);
+    struct treeBlock *getPointer(uint64_t);
+    uint64_t getPreOrder(uint64_t);
+    void setPreOrder(uint64_t, uint64_t);
+    void setPointer(uint64_t, treeBlock *);
+    void grow(uint64_t);
+    void shrink(uint64_t);
+    NODE_TYPE selectSubtree(uint64_t, uint64_t &, uint64_t &);
 };
 
 typedef struct
 {
-    uint16_t preOrder;
+    uint64_t preOrder;
     treeBlock *pointer;
-} frontierPtr;
+} frontierNode;
 
 #endif

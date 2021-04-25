@@ -19,6 +19,14 @@
         "trie.h": "c",
         "stat.h": "c",
         "istream": "c",
-        "unordered_map": "c"
+        "unordered_map": "c",
+        "stdlib.h": "c",
+        "algorithm": "c",
+        "chrono": "c",
+        "limits": "c",
+        "utility": "c",
+        "stdint.h": "c",
+        "math.h": "c",
+        "time.h": "c"
     }
 }
