@@ -49,9 +49,9 @@ void printString(uint8_t *str, uint64_t length)
     printf("\n");
 }
 
-void printTable(int8_t T[nBranches * nBranches][nBranches])
+void printTable(int8_t T[nNodeConf][nBranches])
 {
-    for (int row = 0; row < nBranches * nBranches; row++)
+    for (int row = 0; row < nNodeConf; row++)
     {
         for (int col = 0; col < nBranches; col++)
         {
@@ -78,7 +78,7 @@ uint8_t symbol2NodeT(uint8_t symbol)
 
 void createNChildrenT()
 {
-    for (int row = 0; row < nBranches * nBranches; row++)
+    for (int row = 0; row < nNodeConf; row++)
     {
         int tmp = row;
         int count = 0;
@@ -95,7 +95,7 @@ void createNChildrenT()
 
 void createChildSkipT()
 {
-    for (int row = 0; row < nBranches * nBranches; row++)
+    for (int row = 0; row < nNodeConf; row++)
     {
         int tmp = row;
         int count = 1;
@@ -122,7 +122,7 @@ void createChildSkipT()
 
 void createChildT()
 {
-    for (int row = 0; row < nBranches * nBranches; row++)
+    for (int row = 0; row < nNodeConf; row++)
     {
         int tmp = row;
         int count = 1;
@@ -152,7 +152,7 @@ void createChildT()
 
 void createInsertT()
 {
-    for (int row = 0; row < nBranches * nBranches; row++)
+    for (int row = 0; row < nNodeConf; row++)
     {
         for (int col = 0; col < nBranches; col++)
         {
@@ -166,7 +166,7 @@ void createInsertT()
     }
 }
 
-treeBlock *createNewTreeBlock(uint8_t rootDepth = L1, uint16_t nNodes = 1, uint16_t maxNodes = nBranches * nBranches)
+treeBlock *createNewTreeBlock(uint8_t rootDepth = L1, uint16_t nNodes = 1, uint16_t maxNodes = nNodeConf)
 {
     treeBlock *tBlock = (treeBlock *)malloc(sizeof(treeBlock));
     bitmap::Bitmap dfuds(2 * sizeof(uint16_t));
@@ -495,7 +495,7 @@ NODE_TYPE treeBlock::skipChildrenSubtree(NODE_TYPE &node, uint8_t symbol, uint16
     ++curLevel;
     while (curNode < nNodes && sTop >= 0 && diff < stack[0])
     {
-        // printf("inSkipChildren - curNode: %d, stack[0]: %d, stack_top: %d, curLevel: %d\n", curNode, stack[0], stack[sTop], curLevel);
+        // printf("inSkipChildren - curNode: %d, stack_top: %d, curLevel: %d\n", curNode, stack[sTop], curLevel);
         if (curNode == nextFrontierPreOrder)
         {
             ++curFrontier;
@@ -552,6 +552,7 @@ NODE_TYPE treeBlock::child(treeBlock *&p, NODE_TYPE &node, uint8_t symbol, uint1
     else
         curNode = skipChildrenSubtree(node, symbol, curLevel, maxLevel, curFrontier);
 
+    // printf("child: node: [%d], symbol: [%d], curNode: [%d]\n", node, symbol, curNode);
     return curNode;
 }
 
@@ -580,7 +581,8 @@ void insertar(treeBlock *root, uint8_t *str, uint64_t length, uint16_t level, ui
     }
     if (length == i)
         return;
-    // printString(str + i, length - i);
+
+    printString(str + i, length - i);
     curBlock->insert(curNode, &str[i], length - i, level, maxDepth, curFrontier);
     printDFUDS(&curBlock->dfuds, curBlock->nNodes);
 }
@@ -623,7 +625,8 @@ int main()
     char *line = NULL;
     size_t len = 0;
     ssize_t read;
-    FILE *fp = fopen("input.txt", "r");
+    // FILE *fp = fopen("paper_2d_test.txt", "r");
+    FILE *fp = fopen("3d_test.txt", "r");
     if (fp == NULL)
         exit(EXIT_FAILURE);
 
@@ -647,6 +650,8 @@ int main()
             str[j] = ((int)line[j]) % nBranches;
         }
         insertTrie(tNode, str, strLen, maxDepth);
-        printf("\n");
+        // printf("\n");
     }
+    // treeBlock *tBlock = (treeBlock *)tNode->block;
+    // printDFUDS(&tBlock->dfuds, tBlock->nNodes);
 }

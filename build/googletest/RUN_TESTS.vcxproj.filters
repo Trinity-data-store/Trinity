@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="16.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="E:\Work\Spring 2021\Research Anurag\md-trie\build\CMakeFiles\dbff4d086d5f5532110d1354561d01d4\RUN_TESTS_force.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{FF6881DD-FF4E-372F-8963-FBC1482DBFB4}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

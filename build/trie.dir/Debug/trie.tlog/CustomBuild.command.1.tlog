@@ -1,0 +1,10 @@
+^E:\WORK\SPRING 2021\RESEARCH ANURAG\MD-TRIE\CMAKELISTS.TXT
+setlocal
+"C:\Program Files (x86)\Microsoft Visual Studio\2019\BuildTools\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" "-SE:/Work/Spring 2021/Research Anurag/md-trie" "-BE:/Work/Spring 2021/Research Anurag/md-trie/build" --check-stamp-file "E:/Work/Spring 2021/Research Anurag/md-trie/build/CMakeFiles/generate.stamp"
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd

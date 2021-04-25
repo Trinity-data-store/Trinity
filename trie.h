@@ -13,12 +13,13 @@
 
 using namespace std;
 
-const int dimensions = 2;
+const int dimensions = 3;
 const int nBranches = (int)pow(2, dimensions);
-int8_t childT[nBranches * nBranches][nBranches];
-int8_t childSkipT[nBranches * nBranches][nBranches];
-uint8_t nChildrenT[nBranches * nBranches];
-int8_t insertT[nBranches * nBranches][nBranches];
+const int nNodeConf = (int)pow(2, nBranches);
+int8_t childT[nNodeConf][nBranches];
+int8_t childSkipT[nNodeConf][nBranches];
+uint8_t nChildrenT[nNodeConf];
+int8_t insertT[nNodeConf][nBranches];
 
 int8_t stack[100];
 

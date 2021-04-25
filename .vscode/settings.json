@@ -18,6 +18,7 @@
         "xtree": "c",
         "trie.h": "c",
         "stat.h": "c",
-        "istream": "c"
+        "istream": "c",
+        "unordered_map": "c"
     }
 }
