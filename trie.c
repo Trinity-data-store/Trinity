@@ -3,13 +3,13 @@
 
 void treeBlock::grow(uint64_t extraNodes)
 {
-    dfuds.Realloc((maxNodes + extraNodes) * sizeof(uint64_t));
+    dfuds.Realloc((maxNodes + extraNodes) * sizeof(uint64_t) * 8);
     maxNodes = maxNodes + extraNodes;
 }
 
 void treeBlock::shrink(uint64_t deletedNodes)
 {
-    dfuds.Realloc((maxNodes - deletedNodes) * sizeof(uint64_t));
+    dfuds.Realloc((maxNodes - deletedNodes) * sizeof(uint64_t) * 8);
     maxNodes = maxNodes - deletedNodes;    
 }
 
@@ -173,8 +173,8 @@ void createInsertT()
 treeBlock *createNewTreeBlock(uint64_t rootDepth = L1, uint64_t nNodes = 1, uint64_t maxNodes = nBranches * nBranches)
 {
     treeBlock *tBlock = (treeBlock *)malloc(sizeof(treeBlock));
-    bitmap::Bitmap dfuds(maxNodes * sizeof(uint64_t));
-    dfuds.SetValPos(0, 0, maxNodes * sizeof(uint64_t));
+    bitmap::Bitmap dfuds(maxNodes * sizeof(uint64_t) * 8);
+    dfuds.SetValPos(0, 0, maxNodes * sizeof(uint64_t) * 8);
     tBlock->dfuds = dfuds;
     tBlock->rootDepth = rootDepth;
     tBlock->nNodes = nNodes;
@@ -636,7 +636,7 @@ int main()
     size_t len = 0;
     ssize_t read;
 
-    FILE *fp = fopen("4d_large_data.txt", "r");
+    FILE *fp = fopen("3d_test.txt", "r");
 
     if (fp == NULL)
         exit(EXIT_FAILURE);

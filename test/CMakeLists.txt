@@ -7,13 +7,14 @@ set(Sources
 )
 
 add_executable(${This} ${Sources})
-target_link_li  braries(
-    ${This} PUBLIC
-    gtest_main
+target_link_libraries(${This} 
+    PUBLIC 
+    gtest_main 
     trie
 )
 
-add_test(
-    NAME ${This}
-    COMMAND ${This}
+add_test(NAME 
+    ${This} 
+    COMMAND 
+    ${This}
 )

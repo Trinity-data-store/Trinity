@@ -27,6 +27,14 @@
         "utility": "c",
         "stdint.h": "c",
         "math.h": "c",
-        "time.h": "c"
+        "time.h": "c",
+        "array": "c",
+        "forward_list": "c",
+        "hash_set": "c",
+        "initializer_list": "c",
+        "queue": "c",
+        "set": "c",
+        "unordered_set": "c",
+        "xmemory": "c"
     }
 }
