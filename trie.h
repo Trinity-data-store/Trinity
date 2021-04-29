@@ -13,7 +13,7 @@
 
 using namespace std;
 
-const int dimensions = 3;
+const int dimensions = 4;
 const uint64_t nBranches = (int)pow(2, dimensions);
 const uint64_t nNodeConf = (int)pow(2, nBranches);
 uint64_t childT[nNodeConf][nBranches];
@@ -67,7 +67,7 @@ struct treeBlock
     uint16_t rootDepth;
     uint64_t nNodes;
     uint64_t maxNodes;
-    bitmap::Bitmap dfuds;
+    bitmap::Bitmap *dfuds;
     void *frontiers;
     uint64_t nFrontiers;
 

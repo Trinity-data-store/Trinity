@@ -7,6 +7,7 @@
 #include <cstdlib>
 #include <cstring>
 #include <iostream>
+#include <malloc.h>
 
 namespace bitmap {
 
@@ -133,14 +134,30 @@ class Bitmap {
     size_ = 0;
   }
 
+  // Bitmap(const Bitmap &other){
+  //   data_ = other.data_;
+  //   size_ = other.size_;
+  // }
+
+  // Bitmap& operator=(const Bitmap &other)
+  // {
+  //   data_ = other.data_;
+  //   size_ = other.size_;
+  //   return *this;
+  // }
+
   Bitmap(size_type num_bits) {
-    // data_ = new data_type[BITS2BLOCKS(num_bits)]();
     data_ = (data_type *)calloc(BITS2BLOCKS(num_bits), sizeof(data_type));
+    // if (data_ == nullptr){
+    //   printf("none\n");
+    // }
+    // else {
+    //   printf("allocated, %zu\n", malloc_usable_size(data_));
+    // }
     size_ = num_bits;
   }
 
   void Realloc(size_type num_bits){
-
     data_ = (data_type *)realloc(data_, BITS2BLOCKS(num_bits) * sizeof(data_type));
     size_ = num_bits;
   }
@@ -184,6 +201,8 @@ class Bitmap {
     pos_type s_off = pos % 64;
     pos_type s_idx = pos / 64;
 
+    // printf("Set: %zu, %lu, %u, %zu, %zu\n", pos, val, bits, size_, malloc_usable_size(data_));
+
     if (s_off + bits <= 64) {
       // Can be accommodated in 1 bitmap block
       data_[s_idx] = (data_[s_idx]
@@ -202,6 +221,8 @@ class Bitmap {
     pos_type s_off = pos % 64;
     pos_type s_idx = pos / 64;
 
+    // printf("Get: %zu, %u, %zu, %zu\n", pos, bits, size_, malloc_usable_size(data_));
+    
     if (s_off + bits <= 64) {
       // Can be read from a single block
       return (data_[s_idx] >> s_off) & low_bits_set[bits];

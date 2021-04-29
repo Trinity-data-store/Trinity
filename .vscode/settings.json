@@ -35,6 +35,7 @@
         "queue": "c",
         "set": "c",
         "unordered_set": "c",
-        "xmemory": "c"
+        "xmemory": "c",
+        "string": "c"
     }
 }
