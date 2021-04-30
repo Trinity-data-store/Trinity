@@ -1,14 +1,58 @@
-Determining if the include file pthread.h exists failed with the following output:
-Change Dir: E:/Work/Spring 2021/Research Anurag/md-trie/build/CMakeFiles/CMakeTmp
+Performing C SOURCE FILE Test CMAKE_HAVE_LIBC_PTHREAD failed with the following output:
+Change Dir: /mnt/e/Work/Spring 2021/Research Anurag/md-trie/build/CMakeFiles/CMakeTmp
 
-Run Build Command(s):C:/Program Files (x86)/Microsoft Visual Studio/2019/BuildTools/MSBuild/Current/Bin/MSBuild.exe cmTC_7f2d3.vcxproj /p:Configuration=Debug /p:Platform=x64 /p:VisualStudioVersion=16.0 /v:m && Microsoft (R) Build Engine version 16.7.0+b89cb5fde for .NET Framework
-Copyright (C) Microsoft Corporation. All rights reserved.
-
-  Microsoft (R) C/C++ Optimizing Compiler Version 19.27.29112 for x64
-  CheckIncludeFile.c
-  Copyright (C) Microsoft Corporation.  All rights reserved.
-  cl /c /Zi /W3 /WX- /diagnostics:column /Od /Ob0 /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\"Debug\"" /D _MBCS /Gm- /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"cmTC_7f2d3.dir\Debug\\" /Fd"cmTC_7f2d3.dir\Debug\vc142.pdb" /Gd /TC /errorReport:queue "E:\Work\Spring 2021\Research Anurag\md-trie\build\CMakeFiles\CMakeTmp\CheckIncludeFile.c"
-E:\Work\Spring 2021\Research Anurag\md-trie\build\CMakeFiles\CMakeTmp\CheckIncludeFile.c(1,10): fatal error C1083: Cannot open include file: 'pthread.h': No such file or directory [E:\Work\Spring 2021\Research Anurag\md-trie\build\CMakeFiles\CMakeTmp\cmTC_7f2d3.vcxproj]
+Run Build Command(s):/usr/bin/make cmTC_ce1cb/fast && /usr/bin/make -f CMakeFiles/cmTC_ce1cb.dir/build.make CMakeFiles/cmTC_ce1cb.dir/build
+make[1]: Entering directory '/mnt/e/Work/Spring 2021/Research Anurag/md-trie/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_ce1cb.dir/src.c.o
+/usr/bin/cc   -DCMAKE_HAVE_LIBC_PTHREAD   -o CMakeFiles/cmTC_ce1cb.dir/src.c.o   -c "/mnt/e/Work/Spring 2021/Research Anurag/md-trie/build/CMakeFiles/CMakeTmp/src.c"
+Linking C executable cmTC_ce1cb
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_ce1cb.dir/link.txt --verbose=1
+/usr/bin/cc  -DCMAKE_HAVE_LIBC_PTHREAD    -rdynamic CMakeFiles/cmTC_ce1cb.dir/src.c.o  -o cmTC_ce1cb 
+/usr/bin/ld: CMakeFiles/cmTC_ce1cb.dir/src.c.o: in function `main':
+src.c:(.text+0x46): undefined reference to `pthread_create'
+/usr/bin/ld: src.c:(.text+0x52): undefined reference to `pthread_detach'
+/usr/bin/ld: src.c:(.text+0x63): undefined reference to `pthread_join'
+collect2: error: ld returned 1 exit status
+make[1]: *** [CMakeFiles/cmTC_ce1cb.dir/build.make:87: cmTC_ce1cb] Error 1
+make[1]: Leaving directory '/mnt/e/Work/Spring 2021/Research Anurag/md-trie/build/CMakeFiles/CMakeTmp'
+make: *** [Makefile:121: cmTC_ce1cb/fast] Error 2
+
+
+Source file was:
+#include <pthread.h>
+
+void* test_func(void* data)
+{
+  return data;
+}
+
+int main(void)
+{
+  pthread_t thread;
+  pthread_create(&thread, NULL, test_func, NULL);
+  pthread_detach(thread);
+  pthread_join(thread, NULL);
+  pthread_atfork(NULL, NULL, NULL);
+  pthread_exit(NULL);
+
+  return 0;
+}
+
+Determining if the function pthread_create exists in the pthreads failed with the following output:
+Change Dir: /mnt/e/Work/Spring 2021/Research Anurag/md-trie/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/make cmTC_9d2f2/fast && /usr/bin/make -f CMakeFiles/cmTC_9d2f2.dir/build.make CMakeFiles/cmTC_9d2f2.dir/build
+make[1]: Entering directory '/mnt/e/Work/Spring 2021/Research Anurag/md-trie/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_9d2f2.dir/CheckFunctionExists.c.o
+/usr/bin/cc   -DCHECK_FUNCTION_EXISTS=pthread_create   -o CMakeFiles/cmTC_9d2f2.dir/CheckFunctionExists.c.o   -c /usr/share/cmake-3.16/Modules/CheckFunctionExists.c
+Linking C executable cmTC_9d2f2
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_9d2f2.dir/link.txt --verbose=1
+/usr/bin/cc  -DCHECK_FUNCTION_EXISTS=pthread_create    -rdynamic CMakeFiles/cmTC_9d2f2.dir/CheckFunctionExists.c.o  -o cmTC_9d2f2  -lpthreads 
+/usr/bin/ld: cannot find -lpthreads
+collect2: error: ld returned 1 exit status
+make[1]: *** [CMakeFiles/cmTC_9d2f2.dir/build.make:87: cmTC_9d2f2] Error 1
+make[1]: Leaving directory '/mnt/e/Work/Spring 2021/Research Anurag/md-trie/build/CMakeFiles/CMakeTmp'
+make: *** [Makefile:121: cmTC_9d2f2/fast] Error 2
 
 
 
