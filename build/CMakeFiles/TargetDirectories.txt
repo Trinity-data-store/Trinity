@@ -5,7 +5,7 @@
 /mnt/e/Work/Spring 2021/Research Anurag/md-trie/build/CMakeFiles/rebuild_cache.dir
 /mnt/e/Work/Spring 2021/Research Anurag/md-trie/build/CMakeFiles/edit_cache.dir
 /mnt/e/Work/Spring 2021/Research Anurag/md-trie/build/CMakeFiles/test.dir
-/mnt/e/Work/Spring 2021/Research Anurag/md-trie/build/CMakeFiles/hello_test.dir
+/mnt/e/Work/Spring 2021/Research Anurag/md-trie/build/CMakeFiles/trie_test.dir
 /mnt/e/Work/Spring 2021/Research Anurag/md-trie/build/_deps/googletest-build/CMakeFiles/install/strip.dir
 /mnt/e/Work/Spring 2021/Research Anurag/md-trie/build/_deps/googletest-build/CMakeFiles/install/local.dir
 /mnt/e/Work/Spring 2021/Research Anurag/md-trie/build/_deps/googletest-build/CMakeFiles/install.dir

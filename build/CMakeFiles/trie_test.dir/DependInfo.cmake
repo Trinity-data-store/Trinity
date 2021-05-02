@@ -4,7 +4,8 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
-  "/mnt/e/Work/Spring 2021/Research Anurag/md-trie/hello_test.cc" "/mnt/e/Work/Spring 2021/Research Anurag/md-trie/build/CMakeFiles/hello_test.dir/hello_test.cc.o"
+  "/mnt/e/Work/Spring 2021/Research Anurag/md-trie/test/sample_test.cc" "/mnt/e/Work/Spring 2021/Research Anurag/md-trie/build/CMakeFiles/trie_test.dir/test/sample_test.cc.o"
+  "/mnt/e/Work/Spring 2021/Research Anurag/md-trie/trie.cpp" "/mnt/e/Work/Spring 2021/Research Anurag/md-trie/build/CMakeFiles/trie_test.dir/trie.cpp.o"
   )
 set(CMAKE_CXX_COMPILER_ID "GNU")
 

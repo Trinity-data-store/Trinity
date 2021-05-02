@@ -12,16 +12,23 @@
 #include <sys/stat.h>
 
 using namespace std;
+#define dimensions 4
+#define nBranches 16
+#define nNodeConf 65536
 
-const int dimensions = 4;
-const uint64_t nBranches = (int)pow(2, dimensions);
-const uint64_t nNodeConf = (int)pow(2, nBranches);
+// extern uint64_t childT[nNodeConf][nBranches];
+// extern uint64_t childSkipT[nNodeConf][nBranches];
+// extern uint64_t nChildrenT[nNodeConf];
+// extern uint64_t insertT[nNodeConf][nBranches];
+// extern int8_t stack[100];
+
 uint64_t childT[nNodeConf][nBranches];
 uint64_t childSkipT[nNodeConf][nBranches];
 uint64_t nChildrenT[nNodeConf];
 uint64_t insertT[nNodeConf][nBranches];
-
 int8_t stack[100];
+
+void createChildT();
 
 struct nodeInfo
 {
@@ -60,7 +67,7 @@ struct trieNode
     trieNode *children[nBranches];
 };
 
-NODE_TYPE NULL_NODE = -1;
+extern NODE_TYPE NULL_NODE;
 
 struct treeBlock
 {
@@ -88,5 +95,7 @@ typedef struct
     uint64_t preOrder;
     treeBlock *pointer;
 } frontierNode;
+
+
 
 #endif

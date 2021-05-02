@@ -6,8 +6,52 @@
 
 #IncludeRegexTransform: 
 
-/mnt/e/Work/Spring 2021/Research Anurag/md-trie/hello_test.cc
+/mnt/e/Work/Spring 2021/Research Anurag/md-trie/bitmap.h
+cstdint
+-
+cassert
+-
+cstddef
+-
+cstdlib
+-
+cstring
+-
+iostream
+-
+malloc.h
+-
+
+/mnt/e/Work/Spring 2021/Research Anurag/md-trie/test/sample_test.cc
 gtest/gtest.h
+-
+../trie.h
+/mnt/e/Work/Spring 2021/Research Anurag/md-trie/trie.h
+
+/mnt/e/Work/Spring 2021/Research Anurag/md-trie/trie.cpp
+trie.h
+/mnt/e/Work/Spring 2021/Research Anurag/md-trie/trie.h
+bitmap.h
+/mnt/e/Work/Spring 2021/Research Anurag/md-trie/bitmap.h
+
+/mnt/e/Work/Spring 2021/Research Anurag/md-trie/trie.h
+stdio.h
+-
+stdlib.h
+-
+string.h
+-
+math.h
+-
+utility
+-
+stdint.h
+-
+time.h
+-
+bitmap.h
+/mnt/e/Work/Spring 2021/Research Anurag/md-trie/bitmap.h
+sys/stat.h
 -
 
 _deps/googletest-src/googletest/include/gtest/gtest-death-test.h

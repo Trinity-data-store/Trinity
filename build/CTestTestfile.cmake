@@ -4,5 +4,5 @@
 # 
 # This file includes the relevant testing commands required for 
 # testing this directory and lists subdirectories to be tested as well.
-include("/mnt/e/Work/Spring 2021/Research Anurag/md-trie/build/hello_test[1]_include.cmake")
+include("/mnt/e/Work/Spring 2021/Research Anurag/md-trie/build/trie_test[1]_include.cmake")
 subdirs("_deps/googletest-build")

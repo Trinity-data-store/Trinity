@@ -1,5 +1,0 @@
-if(EXISTS "/mnt/e/Work/Spring 2021/Research Anurag/md-trie/build/hello_test[1]_tests.cmake")
-  include("/mnt/e/Work/Spring 2021/Research Anurag/md-trie/build/hello_test[1]_tests.cmake")
-else()
-  add_test(hello_test_NOT_BUILT hello_test_NOT_BUILT)
-endif()

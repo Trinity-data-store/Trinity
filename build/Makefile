@@ -168,17 +168,17 @@ depend:
 .PHONY : depend
 
 #=============================================================================
-# Target rules for targets named hello_test
+# Target rules for targets named trie_test
 
 # Build rule for target.
-hello_test: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 hello_test
-.PHONY : hello_test
+trie_test: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 trie_test
+.PHONY : trie_test
 
 # fast build rule for target.
-hello_test/fast:
-	$(MAKE) -f CMakeFiles/hello_test.dir/build.make CMakeFiles/hello_test.dir/build
-.PHONY : hello_test/fast
+trie_test/fast:
+	$(MAKE) -f CMakeFiles/trie_test.dir/build.make CMakeFiles/trie_test.dir/build
+.PHONY : trie_test/fast
 
 #=============================================================================
 # Target rules for targets named gmock_main
@@ -232,32 +232,59 @@ gtest/fast:
 	$(MAKE) -f _deps/googletest-build/googletest/CMakeFiles/gtest.dir/build.make _deps/googletest-build/googletest/CMakeFiles/gtest.dir/build
 .PHONY : gtest/fast
 
-hello_test.o: hello_test.cc.o
+test/sample_test.o: test/sample_test.cc.o
 
-.PHONY : hello_test.o
+.PHONY : test/sample_test.o
 
 # target to build an object file
-hello_test.cc.o:
-	$(MAKE) -f CMakeFiles/hello_test.dir/build.make CMakeFiles/hello_test.dir/hello_test.cc.o
-.PHONY : hello_test.cc.o
+test/sample_test.cc.o:
+	$(MAKE) -f CMakeFiles/trie_test.dir/build.make CMakeFiles/trie_test.dir/test/sample_test.cc.o
+.PHONY : test/sample_test.cc.o
 
-hello_test.i: hello_test.cc.i
+test/sample_test.i: test/sample_test.cc.i
 
-.PHONY : hello_test.i
+.PHONY : test/sample_test.i
 
 # target to preprocess a source file
-hello_test.cc.i:
-	$(MAKE) -f CMakeFiles/hello_test.dir/build.make CMakeFiles/hello_test.dir/hello_test.cc.i
-.PHONY : hello_test.cc.i
+test/sample_test.cc.i:
+	$(MAKE) -f CMakeFiles/trie_test.dir/build.make CMakeFiles/trie_test.dir/test/sample_test.cc.i
+.PHONY : test/sample_test.cc.i
 
-hello_test.s: hello_test.cc.s
+test/sample_test.s: test/sample_test.cc.s
 
-.PHONY : hello_test.s
+.PHONY : test/sample_test.s
 
 # target to generate assembly for a file
-hello_test.cc.s:
-	$(MAKE) -f CMakeFiles/hello_test.dir/build.make CMakeFiles/hello_test.dir/hello_test.cc.s
-.PHONY : hello_test.cc.s
+test/sample_test.cc.s:
+	$(MAKE) -f CMakeFiles/trie_test.dir/build.make CMakeFiles/trie_test.dir/test/sample_test.cc.s
+.PHONY : test/sample_test.cc.s
+
+trie.o: trie.cpp.o
+
+.PHONY : trie.o
+
+# target to build an object file
+trie.cpp.o:
+	$(MAKE) -f CMakeFiles/trie_test.dir/build.make CMakeFiles/trie_test.dir/trie.cpp.o
+.PHONY : trie.cpp.o
+
+trie.i: trie.cpp.i
+
+.PHONY : trie.i
+
+# target to preprocess a source file
+trie.cpp.i:
+	$(MAKE) -f CMakeFiles/trie_test.dir/build.make CMakeFiles/trie_test.dir/trie.cpp.i
+.PHONY : trie.cpp.i
+
+trie.s: trie.cpp.s
+
+.PHONY : trie.s
+
+# target to generate assembly for a file
+trie.cpp.s:
+	$(MAKE) -f CMakeFiles/trie_test.dir/build.make CMakeFiles/trie_test.dir/trie.cpp.s
+.PHONY : trie.cpp.s
 
 # Help Target
 help:
@@ -272,14 +299,17 @@ help:
 	@echo "... rebuild_cache"
 	@echo "... edit_cache"
 	@echo "... test"
-	@echo "... hello_test"
+	@echo "... trie_test"
 	@echo "... gmock_main"
 	@echo "... gmock"
 	@echo "... gtest_main"
 	@echo "... gtest"
-	@echo "... hello_test.o"
-	@echo "... hello_test.i"
-	@echo "... hello_test.s"
+	@echo "... test/sample_test.o"
+	@echo "... test/sample_test.i"
+	@echo "... test/sample_test.s"
+	@echo "... trie.o"
+	@echo "... trie.i"
+	@echo "... trie.s"
 .PHONY : help
 
 

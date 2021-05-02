@@ -1,6 +1,20 @@
 cmake_minimum_required(VERSION 3.14)
 project(my_project)
 
+include(CheckCXXCompilerFlag)
+CHECK_CXX_COMPILER_FLAG("-std=c++11" COMPILER_SUPPORTS_CXX11)
+
+if(COMPILER_SUPPORTS_CXX11)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+else()
+    CHECK_CXX_COMPILER_FLAG("-std=c++0x" COMPILER_SUPPORTS_CXX0X)
+    if(COMPILER_SUPPORTS_CXX0X)
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")
+    else()
+        message(STATUS "The compiler ${CMAKE_CXX_COMPILER} has no C++11 support. Please use a different C++ compiler.")
+    endif()
+endif()
+
 # GoogleTest requires at least C++11
 set(CMAKE_CXX_STANDARD 11)
 
@@ -14,15 +28,19 @@ set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
 
 enable_testing()
+find_package(Threads REQUIRED)
+
+# Should I include the trie.cpp file here?
+file(GLOB_RECURSE test_sources test/*.cc trie.cpp)
 
 add_executable(
-  hello_test
-  hello_test.cc
+  trie_test
+  ${test_sources}
 )
 target_link_libraries(
-  hello_test
+  trie_test
   gtest_main
 )
 
 include(GoogleTest)
-gtest_discover_tests(hello_test)
+gtest_discover_tests(trie_test)

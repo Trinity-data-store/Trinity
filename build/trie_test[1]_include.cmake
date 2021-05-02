@@ -1,0 +1,5 @@
+if(EXISTS "/mnt/e/Work/Spring 2021/Research Anurag/md-trie/build/trie_test[1]_tests.cmake")
+  include("/mnt/e/Work/Spring 2021/Research Anurag/md-trie/build/trie_test[1]_tests.cmake")
+else()
+  add_test(trie_test_NOT_BUILT trie_test_NOT_BUILT)
+endif()
