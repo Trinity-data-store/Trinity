@@ -6,6 +6,6 @@ Catch2 Tutorial: https://github.com/catchorg/Catch2/blob/devel/docs/tutorial.md#
 
 ### Run the test
 ```
-g++ -g -c trie.cpp
-g++ -o test test.cpp trie.o
+g++ test-main.cpp -c
+source test_trie.sh
 ```

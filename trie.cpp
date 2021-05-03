@@ -1,4 +1,4 @@
-#include "trie.h"
+#include "trie.hpp"
 
 uint64_t childT[nNodeConf][nBranches];
 uint64_t childSkipT[nNodeConf][nBranches];
@@ -8,6 +8,46 @@ int8_t stack[100];
 nodeInfo stackSS[4096];
 subtreeInfo subtrees[4096];
 uint64_t depthVector[4096];
+
+void createTables()
+{
+    createChildT();
+    createChildSkipT();
+    createNChildrenT();
+    createInsertT();
+}
+
+void printString(uint64_t *str, uint64_t length)
+{
+    printf("string: ");
+    for (int i = 0; i < length; i++)
+    {
+        printf("%ld ", str[i]);
+    }
+    printf("\n");
+}
+
+void printTable(uint64_t T[nNodeConf][nBranches])
+{
+    for (int row = 0; row < nNodeConf; row++)
+    {
+        for (int col = 0; col < nBranches; col++)
+        {
+            printf("%ld ", T[row][col]);
+        }
+        printf("\n");
+    }
+}
+
+void printDFUDS(bitmap::Bitmap *dfuds, uint64_t nNodes)
+{
+    printf("dfuds: ");
+    for (int i = 0; i < nNodes; i++)
+    {
+        printf("%ld, ", getNodeCod(dfuds, i));
+    }
+    printf("\n");
+}
 
 void treeBlock::grow(uint64_t extraNodes)
 {
