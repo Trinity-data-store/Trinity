@@ -17,13 +17,22 @@ using namespace std;
 #define nBranches 16
 #define nNodeConf 65536
 
-uint64_t childT[nNodeConf][nBranches];
-uint64_t childSkipT[nNodeConf][nBranches];
-uint64_t nChildrenT[nNodeConf];
-uint64_t insertT[nNodeConf][nBranches];
-int8_t stack[100];
+extern uint64_t childT[nNodeConf][nBranches];
+extern uint64_t childSkipT[nNodeConf][nBranches];
+extern uint64_t nChildrenT[nNodeConf];
+extern uint64_t insertT[nNodeConf][nBranches];
+extern int8_t stack[100];
 
+void printString(uint64_t *, uint64_t);
+void printTable(uint64_t T[nNodeConf][nBranches]);
+void printDFUDS(bitmap::Bitmap *, uint64_t);
+uint64_t symbol2NodeT(uint64_t);
+void createNChildrenT();
+void createChildSkipT();
 void createChildT();
+void createInsertT();
+
+
 
 struct nodeInfo
 {
@@ -49,20 +58,19 @@ struct subtreeInfo
     };
 };
 
-nodeInfo stackSS[4096];
-subtreeInfo subtrees[4096];
-uint64_t depthVector[4096];
+extern nodeInfo stackSS[4096];
+extern subtreeInfo subtrees[4096];
+extern uint64_t depthVector[4096];
 
 #define NODE_TYPE uint64_t
 #define L1 0
+#define NULL_NODE -1
 
 struct trieNode
 {
     void *block;
     trieNode *children[nBranches];
 };
-
-extern NODE_TYPE NULL_NODE;
 
 struct treeBlock
 {
@@ -91,6 +99,10 @@ typedef struct
     treeBlock *pointer;
 } frontierNode;
 
-
+treeBlock *createNewTreeBlock(uint64_t, uint64_t, uint64_t);
+trieNode *createNewTrieNode();
+void insertar(treeBlock *, uint64_t *, uint64_t, uint64_t, uint64_t);
+void insertTrie(trieNode *, uint64_t *, uint64_t, uint64_t);
+uint64_t getNodeCod(bitmap::Bitmap *, NODE_TYPE);
 
 #endif
