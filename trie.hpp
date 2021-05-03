@@ -33,8 +33,6 @@ void createChildSkipT();
 void createChildT();
 void createInsertT();
 
-
-
 struct nodeInfo
 {
     uint64_t preorder;
@@ -100,10 +98,16 @@ typedef struct
     treeBlock *pointer;
 } frontierNode;
 
-treeBlock *createNewTreeBlock(uint64_t, uint64_t, uint64_t);
+extern treeBlock *createNewTreeBlock(uint64_t rootDepth = L1, uint64_t nNodes = 1, uint64_t maxNodes = nBranches * nBranches);
 trieNode *createNewTrieNode();
 void insertar(treeBlock *, uint64_t *, uint64_t, uint64_t, uint64_t);
 void insertTrie(trieNode *, uint64_t *, uint64_t, uint64_t);
 uint64_t getNodeCod(bitmap::Bitmap *, NODE_TYPE);
+
+bool runTest();
+bool check(trieNode *, uint64_t [], int, int);
+treeBlock *walkTrie(trieNode *, uint64_t *, uint64_t &);
+uint64_t *proc_str(char *, int &, int &);
+bool walkTree(treeBlock *, uint64_t [], int, int, NODE_TYPE &, uint64_t &, uint64_t &, uint64_t &);
 
 #endif

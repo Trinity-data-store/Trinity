@@ -186,7 +186,7 @@ void createInsertT()
     }
 }
 
-treeBlock *createNewTreeBlock(uint64_t rootDepth = L1, uint64_t nNodes = 1, uint64_t maxNodes = nBranches * nBranches)
+treeBlock *createNewTreeBlock(uint64_t rootDepth, uint64_t nNodes, uint64_t maxNodes)
 {
     treeBlock *tBlock = (treeBlock *)malloc(sizeof(treeBlock));
     tBlock->dfuds = new bitmap::Bitmap(maxNodes * sizeof(uint64_t) * 8);
@@ -599,17 +599,25 @@ NODE_TYPE treeBlock::child(treeBlock *&p, NODE_TYPE &node, uint64_t symbol, uint
 void insertar(treeBlock *root, uint64_t *str, uint64_t length, uint64_t level, uint64_t maxDepth)
 {
     treeBlock *curBlock = root;
-    uint64_t i;
+    uint64_t i = 0;
 
-    NODE_TYPE curNodeAux = 0;
     NODE_TYPE curNode = 0;
     uint64_t curFrontier = 0;
+    walkTree(curBlock, str, length, maxDepth, curNode, i, level, curFrontier); 
+    curBlock->insert(curNode, &str[i], length - i, level, maxDepth, curFrontier);
+}
+
+
+bool walkTree(treeBlock *curBlock, uint64_t str[], int strlen, int maxDepth, NODE_TYPE &curNode, uint64_t &i, uint64_t &level, uint64_t &curFrontier){
+
+    NODE_TYPE curNodeAux = 0;
     
-    for (i = 0; i < length; i++)
+    while (i < strlen)
     {
         curNodeAux = curBlock->child(curBlock, curNode, str[i], level, maxDepth, curFrontier);
+
         if (curNodeAux == (NODE_TYPE)-1)
-            break;
+            return false;
 
         curNode = curNodeAux;
 
@@ -618,18 +626,13 @@ void insertar(treeBlock *root, uint64_t *str, uint64_t length, uint64_t level, u
             curBlock = curBlock->getPointer(curFrontier);
             curNode = (NODE_TYPE)0;
         }
+        i++;
     }
-    if (length == i)
-        return;
-
-    // printString(str + i, length - i);
-    curBlock->insert(curNode, &str[i], length - i, level, maxDepth, curFrontier);
-    // printDFUDS(curBlock->dfuds, curBlock->nNodes);
+    return true;        
 }
 
-void insertTrie(trieNode *tNode, uint64_t *str, uint64_t length, uint64_t maxDepth)
-{
-    uint64_t i = 0;
+treeBlock *walkTrie(trieNode *tNode, uint64_t *str, uint64_t &i){
+
     while (tNode->children[str[i]])
         tNode = tNode->children[str[i++]];
     while (i < L1)
@@ -646,7 +649,35 @@ void insertTrie(trieNode *tNode, uint64_t *str, uint64_t length, uint64_t maxDep
     }
     else
         tBlock = (treeBlock *)tNode->block;
+    return tBlock;    
+}
 
+void insertTrie(trieNode *tNode, uint64_t *str, uint64_t length, uint64_t maxDepth)
+{
+    uint64_t i = 0;
+    
+    treeBlock *tBlock = walkTrie(tNode, str, i);
+    
     insertar(tBlock, &str[i], length - i, i, maxDepth);
 }
 
+uint64_t *proc_str(char *line, int &strLen, int &maxDepth){
+    char *pos;
+    int extra_char = 1;
+    if ((pos = strchr(line, '\n')) != NULL)
+        *pos = '\0';
+    else
+        extra_char = 0;
+    strLen = (int)strlen(line) - extra_char;
+
+    if (strLen > maxDepth){
+        maxDepth = strLen;
+    }
+    uint64_t *str = (uint64_t *)malloc(sizeof(uint64_t) * strLen);
+    
+    for (int j = 0; j < strLen; j++)
+    {
+        str[j] = ((int)line[j]) % nBranches;
+    }
+    return str;
+}
