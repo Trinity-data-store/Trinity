@@ -1,22 +1,4 @@
 #include "trie.h"
-#include "bitmap.h"
-
-// const uint64_t nNodeConf = (int)pow(2, nBranches);
-// uint64_t childT[nNodeConf][nBranches];
-// uint64_t childSkipT[nNodeConf][nBranches];
-// uint64_t nChildrenT[nNodeConf];
-// uint64_t insertT[nNodeConf][nBranches];
-// nodeInfo stackSS[4096];
-// subtreeInfo subtrees[4096];
-// uint64_t depthVector[4096];
-// NODE_TYPE NULL_NODE = -1;
-// int8_t stack[100];
-
-// const uint64_t nNodeConf;
-// uint64_t childT[nNodeConf][nBranches];
-// uint64_t childSkipT[nNodeConf][nBranches];
-// uint64_t nChildrenT[nNodeConf];
-// uint64_t insertT[nNodeConf][nBranches];
 
 void treeBlock::grow(uint64_t extraNodes)
 {

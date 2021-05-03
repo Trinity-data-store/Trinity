@@ -1,6 +1,5 @@
 file(REMOVE_RECURSE
   "CMakeFiles/trie_test.dir/test/sample_test.cc.o"
-  "CMakeFiles/trie_test.dir/trie.cpp.o"
   "trie_test"
   "trie_test.pdb"
   "trie_test[1]_tests.cmake"

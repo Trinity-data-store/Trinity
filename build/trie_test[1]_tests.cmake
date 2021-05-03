@@ -1,5 +1,0 @@
-add_test( SampleTest.BasicAssertions [==[/mnt/e/Work/Spring 2021/Research Anurag/md-trie/build/trie_test]==] [==[--gtest_filter=SampleTest.BasicAssertions]==] --gtest_also_run_disabled_tests)
-set_tests_properties( SampleTest.BasicAssertions PROPERTIES WORKING_DIRECTORY [==[/mnt/e/Work/Spring 2021/Research Anurag/md-trie/build]==])
-add_test( SampleTest.ImportTrie [==[/mnt/e/Work/Spring 2021/Research Anurag/md-trie/build/trie_test]==] [==[--gtest_filter=SampleTest.ImportTrie]==] --gtest_also_run_disabled_tests)
-set_tests_properties( SampleTest.ImportTrie PROPERTIES WORKING_DIRECTORY [==[/mnt/e/Work/Spring 2021/Research Anurag/md-trie/build]==])
-set( trie_test_TESTS SampleTest.BasicAssertions SampleTest.ImportTrie)

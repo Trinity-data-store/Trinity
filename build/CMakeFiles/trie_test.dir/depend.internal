@@ -25,7 +25,3 @@ CMakeFiles/trie_test.dir/test/sample_test.cc.o
  _deps/googletest-src/googletest/include/gtest/internal/gtest-port.h
  _deps/googletest-src/googletest/include/gtest/internal/gtest-string.h
  _deps/googletest-src/googletest/include/gtest/internal/gtest-type-util.h
-CMakeFiles/trie_test.dir/trie.cpp.o
- /mnt/e/Work/Spring 2021/Research Anurag/md-trie/bitmap.h
- /mnt/e/Work/Spring 2021/Research Anurag/md-trie/trie.cpp
- /mnt/e/Work/Spring 2021/Research Anurag/md-trie/trie.h

@@ -1,4 +1,0 @@
-HelloTest.BasicAssertions 4 0.00546678
-SampleTest.BasicAssertions 2 0.0090549
-SampleTest.ImportTrie 2 0.00917235
----

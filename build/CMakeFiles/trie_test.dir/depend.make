@@ -25,7 +25,3 @@ CMakeFiles/trie_test.dir/test/sample_test.cc.o: _deps/googletest-src/googletest/
 CMakeFiles/trie_test.dir/test/sample_test.cc.o: _deps/googletest-src/googletest/include/gtest/internal/gtest-string.h
 CMakeFiles/trie_test.dir/test/sample_test.cc.o: _deps/googletest-src/googletest/include/gtest/internal/gtest-type-util.h
 
-CMakeFiles/trie_test.dir/trie.cpp.o: ../bitmap.h
-CMakeFiles/trie_test.dir/trie.cpp.o: ../trie.cpp
-CMakeFiles/trie_test.dir/trie.cpp.o: ../trie.h
-

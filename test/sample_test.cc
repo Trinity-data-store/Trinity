@@ -1,6 +1,5 @@
 #include <gtest/gtest.h>
 #include "../trie.h"
-// #include "../trie.cpp"
 
 // Demonstrate some basic assertions.
 TEST(SampleTest, BasicAssertions) {
@@ -13,7 +12,7 @@ TEST(SampleTest, BasicAssertions) {
 TEST(SampleTest, ImportTrie) {
 
   treeBlock B;
-  // depthVector[0] = 1;
+  depthVector[0] = 1;
   createChildT();
 
 }

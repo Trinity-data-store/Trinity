@@ -1,3 +1,4 @@
+#pragma once
 #ifndef TREEBLOCK
 #define TREEBLOCK
 
@@ -15,12 +16,6 @@ using namespace std;
 #define dimensions 4
 #define nBranches 16
 #define nNodeConf 65536
-
-// extern uint64_t childT[nNodeConf][nBranches];
-// extern uint64_t childSkipT[nNodeConf][nBranches];
-// extern uint64_t nChildrenT[nNodeConf];
-// extern uint64_t insertT[nNodeConf][nBranches];
-// extern int8_t stack[100];
 
 uint64_t childT[nNodeConf][nBranches];
 uint64_t childSkipT[nNodeConf][nBranches];
