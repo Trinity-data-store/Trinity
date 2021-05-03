@@ -259,6 +259,33 @@ test/sample_test.cc.s:
 	$(MAKE) -f CMakeFiles/trie_test.dir/build.make CMakeFiles/trie_test.dir/test/sample_test.cc.s
 .PHONY : test/sample_test.cc.s
 
+trie.o: trie.c.o
+
+.PHONY : trie.o
+
+# target to build an object file
+trie.c.o:
+	$(MAKE) -f CMakeFiles/trie_test.dir/build.make CMakeFiles/trie_test.dir/trie.c.o
+.PHONY : trie.c.o
+
+trie.i: trie.c.i
+
+.PHONY : trie.i
+
+# target to preprocess a source file
+trie.c.i:
+	$(MAKE) -f CMakeFiles/trie_test.dir/build.make CMakeFiles/trie_test.dir/trie.c.i
+.PHONY : trie.c.i
+
+trie.s: trie.c.s
+
+.PHONY : trie.s
+
+# target to generate assembly for a file
+trie.c.s:
+	$(MAKE) -f CMakeFiles/trie_test.dir/build.make CMakeFiles/trie_test.dir/trie.c.s
+.PHONY : trie.c.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -280,6 +307,9 @@ help:
 	@echo "... test/sample_test.o"
 	@echo "... test/sample_test.i"
 	@echo "... test/sample_test.s"
+	@echo "... trie.o"
+	@echo "... trie.i"
+	@echo "... trie.s"
 .PHONY : help
 
 

@@ -70,19 +70,34 @@ CMakeFiles/trie_test.dir/test/sample_test.cc.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/trie_test.dir/test/sample_test.cc.s"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S "/mnt/e/Work/Spring 2021/Research Anurag/md-trie/test/sample_test.cc" -o CMakeFiles/trie_test.dir/test/sample_test.cc.s
 
+CMakeFiles/trie_test.dir/trie.c.o: CMakeFiles/trie_test.dir/flags.make
+CMakeFiles/trie_test.dir/trie.c.o: ../trie.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir="/mnt/e/Work/Spring 2021/Research Anurag/md-trie/build/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_2) "Building C object CMakeFiles/trie_test.dir/trie.c.o"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/trie_test.dir/trie.c.o   -c "/mnt/e/Work/Spring 2021/Research Anurag/md-trie/trie.c"
+
+CMakeFiles/trie_test.dir/trie.c.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/trie_test.dir/trie.c.i"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E "/mnt/e/Work/Spring 2021/Research Anurag/md-trie/trie.c" > CMakeFiles/trie_test.dir/trie.c.i
+
+CMakeFiles/trie_test.dir/trie.c.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/trie_test.dir/trie.c.s"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S "/mnt/e/Work/Spring 2021/Research Anurag/md-trie/trie.c" -o CMakeFiles/trie_test.dir/trie.c.s
+
 # Object files for target trie_test
 trie_test_OBJECTS = \
-"CMakeFiles/trie_test.dir/test/sample_test.cc.o"
+"CMakeFiles/trie_test.dir/test/sample_test.cc.o" \
+"CMakeFiles/trie_test.dir/trie.c.o"
 
 # External object files for target trie_test
 trie_test_EXTERNAL_OBJECTS =
 
 trie_test: CMakeFiles/trie_test.dir/test/sample_test.cc.o
+trie_test: CMakeFiles/trie_test.dir/trie.c.o
 trie_test: CMakeFiles/trie_test.dir/build.make
 trie_test: lib/libgtest_main.a
 trie_test: lib/libgtest.a
 trie_test: CMakeFiles/trie_test.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir="/mnt/e/Work/Spring 2021/Research Anurag/md-trie/build/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_2) "Linking CXX executable trie_test"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir="/mnt/e/Work/Spring 2021/Research Anurag/md-trie/build/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_3) "Linking CXX executable trie_test"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/trie_test.dir/link.txt --verbose=$(VERBOSE)
 	/usr/bin/cmake -D TEST_TARGET=trie_test -D "TEST_EXECUTABLE=/mnt/e/Work/Spring 2021/Research Anurag/md-trie/build/trie_test" -D TEST_EXECUTOR= -D "TEST_WORKING_DIR=/mnt/e/Work/Spring 2021/Research Anurag/md-trie/build" -D TEST_EXTRA_ARGS= -D TEST_PROPERTIES= -D TEST_PREFIX= -D TEST_SUFFIX= -D NO_PRETTY_TYPES=FALSE -D NO_PRETTY_VALUES=FALSE -D TEST_LIST=trie_test_TESTS -D "CTEST_FILE=/mnt/e/Work/Spring 2021/Research Anurag/md-trie/build/trie_test[1]_tests.cmake" -D TEST_DISCOVERY_TIMEOUT=5 -P /usr/share/cmake-3.16/Modules/GoogleTestAddTests.cmake
 
