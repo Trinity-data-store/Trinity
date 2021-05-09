@@ -1,9 +1,9 @@
 #include "trie.hpp"
 
-uint64_t childT[nNodeConf][nBranches];
-uint64_t childSkipT[nNodeConf][nBranches];
-uint64_t nChildrenT[nNodeConf];
-uint64_t insertT[nNodeConf][nBranches];
+uint8_t childT[nNodeConf][nBranches];
+uint8_t childSkipT[nNodeConf][nBranches];
+uint8_t nChildrenT[nNodeConf];
+uint8_t insertT[nNodeConf][nBranches];
 int8_t stack[100];
 nodeInfo stackSS[4096];
 subtreeInfo subtrees[4096];
@@ -379,9 +379,7 @@ void treeBlock::insert(NODE_TYPE node, uint64_t str[], uint64_t length, uint64_t
             if (nFrontiers > 0)
             {
                 newPointerArray = (frontierNode *)malloc(sizeof(frontierNode) * (nFrontiers + 5));
-                // for (int i = 0; i < nFrontiers + 5; i++){
-                //     newPointerArray[i] = NULL;
-                // }
+
                 if (newPointerArray == nullptr){
                     printf("rip\n");
                 }

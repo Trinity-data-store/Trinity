@@ -13,14 +13,19 @@
 #include <sys/stat.h>
 
 using namespace std;
-#define dimensions 4
-#define nBranches 16
-#define nNodeConf 65536
 
-extern uint64_t childT[nNodeConf][nBranches];
-extern uint64_t childSkipT[nNodeConf][nBranches];
-extern uint64_t nChildrenT[nNodeConf];
-extern uint64_t insertT[nNodeConf][nBranches];
+#if !defined(MYLIB_CONSTANTS_H)
+#define MYLIB_CONSTANTS_H 1
+
+const uint64_t dimensions = 5;
+const uint64_t nBranches = pow(2, dimensions);
+const uint64_t nNodeConf = pow(2, nBranches);
+#endif
+
+extern uint8_t childT[nNodeConf][nBranches];
+extern uint8_t childSkipT[nNodeConf][nBranches];
+extern uint8_t nChildrenT[nNodeConf];
+extern uint8_t insertT[nNodeConf][nBranches];
 extern int8_t stack[100];
 
 void createTables();

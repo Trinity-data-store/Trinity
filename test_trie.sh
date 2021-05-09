@@ -1,3 +1,3 @@
-g++ trie.cpp -c
-g++ test-main.o trie.o tests.cpp -o tests
+g++ trie.cpp -c -mcmodel=medium
+g++ test-main.o trie.o tests.cpp -o tests -mcmodel=medium
 ./tests
