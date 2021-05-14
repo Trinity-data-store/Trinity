@@ -17,26 +17,19 @@ using namespace std;
 #if !defined(MYLIB_CONSTANTS_H)
 #define MYLIB_CONSTANTS_H 1
 
-const uint64_t dimensions = 5;
+const uint64_t dimensions = 6;
 const uint64_t nBranches = pow(2, dimensions);
-const uint64_t nNodeConf = pow(2, nBranches);
 #endif
 
-extern uint8_t childT[nNodeConf][nBranches];
-extern uint8_t childSkipT[nNodeConf][nBranches];
-extern uint8_t nChildrenT[nNodeConf];
-extern uint8_t insertT[nNodeConf][nBranches];
 extern int8_t stack[100];
 
-void createTables();
 void printString(uint64_t *, uint64_t);
-void printTable(uint64_t T[nNodeConf][nBranches]);
 void printDFUDS(bitmap::Bitmap *, uint64_t);
 uint64_t symbol2NodeT(uint64_t);
-void createNChildrenT();
-void createChildSkipT();
-void createChildT();
-void createInsertT();
+uint64_t getInsertT(int, int);
+uint8_t getChildT(int, int);
+uint8_t getChildSkipT(int, int);
+uint64_t getNChildrenT(int);
 
 struct nodeInfo
 {

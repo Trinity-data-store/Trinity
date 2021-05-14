@@ -126,7 +126,7 @@ class Bitmap {
   typedef size_t pos_type;
   typedef size_t size_type;
   typedef uint64_t data_type;
-  typedef uint8_t width_type;
+  typedef uint16_t width_type;
 
   // Constructors and Destructors
   Bitmap() {
@@ -154,11 +154,17 @@ class Bitmap {
     // else {
     //   printf("allocated, %zu\n", malloc_usable_size(data_));
     // }
+    if (malloc_usable_size(data_) == 0){
+        printf("faulty!\n");
+    }
     size_ = num_bits;
   }
 
   void Realloc(size_type num_bits){
     data_ = (data_type *)realloc(data_, BITS2BLOCKS(num_bits) * sizeof(data_type));
+    if (malloc_usable_size(data_) == 0){
+        printf("faulty!\n");
+    }
     size_ = num_bits;
   }
 
@@ -198,16 +204,19 @@ class Bitmap {
 
   // Integer operations
   void SetValPos(pos_type pos, data_type val, width_type bits) {
+
     pos_type s_off = pos % 64;
     pos_type s_idx = pos / 64;
 
-    // printf("Set: %zu, %lu, %u, %zu, %zu\n", pos, val, bits, size_, malloc_usable_size(data_));
+    size_t prev_size = malloc_usable_size(data_);
 
     if (s_off + bits <= 64) {
       // Can be accommodated in 1 bitmap block
+
       data_[s_idx] = (data_[s_idx]
           & (low_bits_set[s_off] | low_bits_unset[s_off + bits]))
           | val << s_off;
+      
     } else {
       // Must use 2 bitmap blocks
       data_[s_idx] = (data_[s_idx] & low_bits_set[s_off]) | val << s_off;
@@ -215,9 +224,16 @@ class Bitmap {
           (data_[s_idx + 1] & low_bits_unset[(s_off + bits) % 64])
               | (val >> (64 - s_off));
     }
+    if (malloc_usable_size(data_) == 0){
+        printf("after: faulty! prev_size: %ld, s_off: %ld, s_idx: %ld, bits: %d, val: %ld\n", prev_size, s_off, s_idx, bits, val);
+        exit(0);
+    }
   }
 
   data_type GetValPos(pos_type pos, width_type bits) const {
+    // if (malloc_usable_size(data_) == 0){
+    //     printf("faulty!\n");
+    // }
     pos_type s_off = pos % 64;
     pos_type s_idx = pos / 64;
 

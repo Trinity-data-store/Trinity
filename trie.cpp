@@ -1,21 +1,9 @@
 #include "trie.hpp"
 
-uint8_t childT[nNodeConf][nBranches];
-uint8_t childSkipT[nNodeConf][nBranches];
-uint8_t nChildrenT[nNodeConf];
-uint8_t insertT[nNodeConf][nBranches];
 int8_t stack[100];
 nodeInfo stackSS[4096];
 subtreeInfo subtrees[4096];
 uint64_t depthVector[4096];
-
-void createTables()
-{
-    createChildT();
-    createChildSkipT();
-    createNChildrenT();
-    createInsertT();
-}
 
 void printString(uint64_t *str, uint64_t length)
 {
@@ -25,18 +13,6 @@ void printString(uint64_t *str, uint64_t length)
         printf("%ld ", str[i]);
     }
     printf("\n");
-}
-
-void printTable(uint64_t T[nNodeConf][nBranches])
-{
-    for (int row = 0; row < nNodeConf; row++)
-    {
-        for (int col = 0; col < nBranches; col++)
-        {
-            printf("%ld ", T[row][col]);
-        }
-        printf("\n");
-    }
 }
 
 void printDFUDS(bitmap::Bitmap *dfuds, uint64_t nNodes)
@@ -52,6 +28,7 @@ void printDFUDS(bitmap::Bitmap *dfuds, uint64_t nNodes)
 void treeBlock::grow(uint64_t extraNodes)
 {
     dfuds->Realloc((maxNodes + extraNodes) * sizeof(uint64_t) * 8);
+
     maxNodes = maxNodes + extraNodes;
 }
 
@@ -68,6 +45,7 @@ uint64_t getNodeCod(bitmap::Bitmap *dfuds, NODE_TYPE node)
 
 void setNodeCod(bitmap::Bitmap *dfuds, NODE_TYPE node, uint64_t nodeCod)
 {
+    // printf("%ld\n", nodeCod);
     dfuds->SetValPos(node * nBranches, nodeCod, nBranches);
 }
 
@@ -96,94 +74,36 @@ uint64_t symbol2NodeT(uint64_t symbol)
     return (uint64_t)1 << (nBranches - symbol - 1);
 }
 
-void createNChildrenT()
-{
-    for (int row = 0; row < nNodeConf; row++)
-    {
-        int tmp = row;
-        int count = 0;
-        while (tmp != 0)
-        {
-            int last_digit = tmp & 0x1;
-            if (last_digit == 1)
-                count++;
-            tmp = tmp >> 1;
-        }
-        nChildrenT[row] = count;
-    }
+uint64_t getNChildrenT(uint64_t row){
+
+    return __builtin_popcount(row);   
 }
 
-void createChildSkipT()
+uint8_t getChildSkipT(uint64_t row, int col)
 {
-    for (int row = 0; row < nNodeConf; row++)
-    {
-        int tmp = row;
-        int count = 1;
-        while (tmp != 0)
-        {
-            int last_digit = tmp & 0x1;
-            childSkipT[row][nBranches - count] = last_digit;
-            count++;
-            tmp = tmp >> 1;
-        }
-        int cur_sum = 0;
-        for (int col = 0; col < nBranches; col++)
-        {
-            if (childSkipT[row][col] == 1)
-            {
-                childSkipT[row][col] = cur_sum;
-                cur_sum++;
-            }
-            else
-                childSkipT[row][col] = cur_sum;
-        }
-    }
+    return __builtin_popcount(row >> (nBranches - col));  
 }
 
-void createChildT()
+uint8_t getChildT(uint64_t row, int col)
 {
-    for (int row = 0; row < nNodeConf; row++)
-    {
-        int tmp = row;
-        int count = 1;
-
-        while (tmp != 0)
-        {
-            int last_digit = tmp & 0x1;
-            childT[row][nBranches - count] = last_digit;
-            count++;
-            tmp = tmp >> 1;
-        }
-        int cur_sum = 0;
-        for (int col = 0; col < nBranches; col++)
-        {
-            if (childT[row][col] == 1)
-            {
-                cur_sum++;
-                childT[row][col] = cur_sum;
-            }
-            else
-            {
-                childT[row][col] = -1;
-            }
-        }
+    if (((row >> (nBranches - col - 1)) & 1) == 0){
+        return -1;
     }
+    return __builtin_popcount(row >> (nBranches - col - 1));
 }
 
-void createInsertT()
+uint64_t getInsertT(uint64_t row, int col)
 {
-    for (int row = 0; row < nNodeConf; row++)
-    {
-        for (int col = 0; col < nBranches; col++)
-        {
-            int col_digit = row >> (nBranches - col - 1) & 1;
+    int col_digit = row >> (nBranches - col - 1) & 1;
 
-            if (col_digit == 1)
-                insertT[row][col] = row;
-            else
-                insertT[row][col] = row + (1 << (nBranches - col - 1));
-        }
+    if ((int) row + (1 << (nBranches - col - 1)) < 0){
+        printf("fucked up, row %ld, col: %d\n", row, col);
     }
+
+    if (col_digit == 1)
+        return row;
+    else
+        return row + (1 << (nBranches - col - 1));    
 }
 
 treeBlock *createNewTreeBlock(uint64_t rootDepth, uint64_t nNodes, uint64_t maxNodes)
@@ -222,7 +142,7 @@ NODE_TYPE treeBlock::selectSubtree(uint64_t maxDepth, uint64_t &subTreeSize, uin
     uint64_t cNodeCod = getNodeCod(dfuds, 0);
 
     stackSS[ssTop].preorder = 0;
-    stackSS[ssTop++].nChildren = nChildrenT[cNodeCod];
+    stackSS[ssTop++].nChildren = getNChildrenT(cNodeCod);
 
     node++;
 
@@ -251,7 +171,7 @@ NODE_TYPE treeBlock::selectSubtree(uint64_t maxDepth, uint64_t &subTreeSize, uin
         {
             stackSS[ssTop].preorder = i;
             cNodeCod = getNodeCod(dfuds, i);
-            stackSS[ssTop++].nChildren = nChildrenT[cNodeCod];
+            stackSS[ssTop++].nChildren = getNChildrenT(cNodeCod);
             depth++;
         }
         else
@@ -296,13 +216,21 @@ NODE_TYPE treeBlock::selectSubtree(uint64_t maxDepth, uint64_t &subTreeSize, uin
 
 void treeBlock::insert(NODE_TYPE node, uint64_t str[], uint64_t length, uint64_t level, uint64_t maxDepth, uint64_t curFrontier)
 {
+    if (length == 0){
+        return;
+    }
+    // if (str[0] == 64){
+        
+    //     printf("Wtf\n");
+    //     printString(str, length);
+    // }
     NODE_TYPE nodeOriginal = node;
     uint16_t maxBlockSize = 256;
 
     if (frontiers != NULL && curFrontier < nFrontiers && node == getPreOrder(curFrontier))
     {
-        uint8_t nodeCod = getNodeCod(dfuds, node);
-        setNodeCod(dfuds, node, insertT[nodeCod][str[0]]);
+        uint64_t nodeCod = getNodeCod(dfuds, node);
+        setNodeCod(dfuds, node, getInsertT(nodeCod,str[0]));
         getPointer(curFrontier)->insert(0, str, length, level, maxDepth, 0);
 
         return;
@@ -310,7 +238,7 @@ void treeBlock::insert(NODE_TYPE node, uint64_t str[], uint64_t length, uint64_t
     else if (length == 1)
     {
         uint64_t nodeCod = getNodeCod(dfuds, node);
-        setNodeCod(dfuds, node, insertT[nodeCod][str[0]]);
+        setNodeCod(dfuds, node, getInsertT(nodeCod,str[0]));
         return;
     }
     else if (nNodes + length - 1 <= maxNodes)
@@ -331,7 +259,7 @@ void treeBlock::insert(NODE_TYPE node, uint64_t str[], uint64_t length, uint64_t
 
         uint64_t nodeCod = getNodeCod(dfuds, nodeOriginal);
         
-        setNodeCod(dfuds, nodeOriginal, insertT[nodeCod][str[0]]);
+        setNodeCod(dfuds, nodeOriginal, getInsertT(nodeCod,str[0]));
         origNode++;
 
         for (uint64_t i = 1; i <= length; i++)
@@ -434,7 +362,7 @@ void treeBlock::insert(NODE_TYPE node, uint64_t str[], uint64_t length, uint64_t
                 if (frontiers == nullptr){
                     printf("rip\n");
                 }
-                for (uint16_t i = nFrontiers; i > frontierSelectedNode; --i)
+                for (uint64_t i = nFrontiers; i > frontierSelectedNode; --i)
                 {
                     setPointer(i, getPointer(i - 1));
                     setPreOrder(i, getPreOrder(i - 1) - subTreeSize + 1);
@@ -454,7 +382,7 @@ void treeBlock::insert(NODE_TYPE node, uint64_t str[], uint64_t length, uint64_t
                 setPreOrder(frontierSelectedNode, origSelectedNode);
                 setPointer(frontierSelectedNode, new_block);
 
-                for (uint16_t i = frontierSelectedNode + 1; frontier < nFrontiers; ++i, ++frontier)
+                for (uint64_t i = frontierSelectedNode + 1; frontier < nFrontiers; ++i, ++frontier)
                 {
                     setPointer(i, getPointer(frontier));
                     setPreOrder(i, getPreOrder(frontier) - subTreeSize + 1);
@@ -512,9 +440,9 @@ NODE_TYPE treeBlock::skipChildrenSubtree(NODE_TYPE &node, uint64_t symbol, uint6
 
     uint64_t cNodeCod = getNodeCod(dfuds, node);
 
-    uint64_t skipChild = (uint64_t)childSkipT[cNodeCod][symbol];
+    uint8_t skipChild = (uint8_t)getChildSkipT(cNodeCod, symbol);
 
-    uint64_t nChildren = nChildrenT[cNodeCod];
+    uint64_t nChildren = getNChildrenT(cNodeCod);
 
     uint64_t diff = nChildren - skipChild;
 
@@ -549,7 +477,7 @@ NODE_TYPE treeBlock::skipChildrenSubtree(NODE_TYPE &node, uint64_t symbol, uint6
         else if (curLevel + 1 < maxLevel)
         {
             cNodeCod = getNodeCod(dfuds, curNode);
-            stack[++sTop] = nChildrenT[cNodeCod];
+            stack[++sTop] = getNChildrenT(cNodeCod);
             ++curLevel;
         }
         else
@@ -571,8 +499,8 @@ NODE_TYPE treeBlock::child(treeBlock *&p, NODE_TYPE &node, uint64_t symbol, uint
 {
 
     uint64_t cNodeCod = getNodeCod(dfuds, node);
-    uint64_t soughtChild = (uint64_t)childT[cNodeCod][symbol];
-    if (soughtChild == (uint64_t)-1)
+    uint8_t soughtChild = (uint8_t)getChildT(cNodeCod,symbol);
+    if (soughtChild == (uint8_t)-1)
     {
         return NULL_NODE;
     }
@@ -676,6 +604,9 @@ uint64_t *proc_str(char *line, int &strLen, int &maxDepth){
     for (int j = 0; j < strLen; j++)
     {
         str[j] = ((int)line[j]) % nBranches;
+        if (str[j] == 64){
+            printf("wtffff\n");
+        }
     }
     return str;
 }

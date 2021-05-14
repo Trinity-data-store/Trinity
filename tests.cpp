@@ -7,7 +7,6 @@ bool testSameData()
     trieNode *tNode = createNewTrieNode();
     int maxDepth = 0;
 
-    createTables();
 
     char *line = NULL;
     size_t len = 0, read;
@@ -19,6 +18,8 @@ bool testSameData()
     {
         int strLen;
         uint64_t *str = proc_str(line, strLen, maxDepth);
+        // printString(str, strLen);
+        // printf("%d\n", strLen);
         insertTrie(tNode, str, strLen, maxDepth);
         free(str);
     }
@@ -42,7 +43,6 @@ bool testDiffData()
     treeBlock B;
     trieNode *tNode = createNewTrieNode();
     int maxDepth = 0;
-    createTables();
 
     char *line = NULL;
     size_t len = 0, read;
