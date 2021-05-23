@@ -15,15 +15,15 @@ void printString(uint64_t *str, uint64_t length)
     printf("\n");
 }
 
-void printDFUDS(bitmap::Bitmap *dfuds, uint64_t nNodes)
-{
-    printf("dfuds: ");
-    for (int i = 0; i < nNodes; i++)
-    {
-        printf("%ld, ", getNodeCod(dfuds, i));
-    }
-    printf("\n");
-}
+// void printDFUDS(bitmap::Bitmap *dfuds, uint64_t nNodes)
+// {
+//     printf("dfuds: ");
+//     for (int i = 0; i < nNodes; i++)
+//     {
+//         printf("%ld, ", getNodeCod(dfuds, i));
+//     }
+//     printf("\n");
+// }
 
 void treeBlock::grow(uint64_t extraNodes)
 {
@@ -38,16 +38,31 @@ void treeBlock::shrink(uint64_t deletedNodes)
     maxNodes = maxNodes - deletedNodes;    
 }
 
-uint64_t getNodeCod(bitmap::Bitmap *dfuds, NODE_TYPE node)
-{     
-    return dfuds->GetValPos(node * nBranches, nBranches);
+// uint64_t getNodeCod(bitmap::Bitmap *dfuds, NODE_TYPE node)
+// {     
+//     return dfuds->GetValPos(node * nBranches, nBranches);
+// }
+
+void copyNodeCod(bitmap::Bitmap *dfuds, NODE_TYPE from, NODE_TYPE to)
+{
+    int visited = 0;
+    while (visited < nBranches){
+        if (nBranches - visited > 64){
+            dfuds->SetValPos(to * nBranches + visited, dfuds->GetValPos(from * nBranches + visited, 64), 64);
+            visited += 64;
+        }
+        else {
+            int left = nBranches - visited;
+            dfuds->SetValPos(to * nBranches + visited, dfuds->GetValPos(from * nBranches + visited, left), left);
+            break;
+        }
+    }
 }
 
-void setNodeCod(bitmap::Bitmap *dfuds, NODE_TYPE node, uint64_t nodeCod)
-{
-    // printf("%ld\n", nodeCod);
-    dfuds->SetValPos(node * nBranches, nodeCod, nBranches);
-}
+// void setNodeCod(bitmap::Bitmap *dfuds, NODE_TYPE node, uint64_t nodeCod)
+// {
+//     dfuds->SetValPos(node * nBranches, nodeCod, nBranches);
+// }
 
 treeBlock *treeBlock::getPointer(uint64_t curFrontier)
 {
@@ -74,42 +89,70 @@ uint64_t symbol2NodeT(uint64_t symbol)
     return (uint64_t)1 << (nBranches - symbol - 1);
 }
 
-uint64_t getNChildrenT(uint64_t row){
+uint64_t dfuds_popcount(bitmap::Bitmap * dfuds, size_t pos, uint16_t width){
 
-    return __builtin_popcount(row);   
+    uint64_t total_children = 0;
+
+    while (width > 0){
+        if (width >= 64){
+            total_children += __builtin_popcount(dfuds->GetValPos(pos, 64));
+            pos += 64;
+            width -= 64;
+        }
+        else {
+            total_children += __builtin_popcount(dfuds->GetValPos(pos, width));
+            break;
+        }
+    }
+    return total_children; 
+}
+uint64_t getNChildrenT(bitmap::Bitmap *dfuds, NODE_TYPE node){
+
+    uint16_t width = nBranches;
+    size_t pos = node * nBranches;
+    return dfuds_popcount(dfuds, pos, width);
+
 }
 
-uint8_t getChildSkipT(uint64_t row, int col)
+uint8_t getChildSkipT(bitmap::Bitmap *dfuds, NODE_TYPE node, int col)
 {
-    return __builtin_popcount(row >> (nBranches - col));  
+    uint16_t width = col;
+    size_t pos = node * nBranches;
+
+    return dfuds_popcount(dfuds, pos, width);
 }
 
-uint8_t getChildT(uint64_t row, int col)
+uint8_t getChildT(bitmap::Bitmap *dfuds, NODE_TYPE node, int col)
 {
-    if (((row >> (nBranches - col - 1)) & 1) == 0){
+    uint16_t width = col + 1;
+    size_t pos = node * nBranches; 
+
+    if (((dfuds->GetValPos(pos + width - 1 , 1)) & 1) == 0){
         return -1;
     }
-    return __builtin_popcount(row >> (nBranches - col - 1));
+    return dfuds_popcount(dfuds, pos, width);
 }
 
-uint64_t getInsertT(uint64_t row, int col)
-{
-    int col_digit = row >> (nBranches - col - 1) & 1;
 
-    if ((int) row + (1 << (nBranches - col - 1)) < 0){
-        printf("fucked up, row %ld, col: %d\n", row, col);
-    }
+// void getInsertT(bitmap::Bitmap *dfuds, NODE_TYPE node, int col)
+// {
+//     dfuds->SetValPos(node * nBranches + col, 1, 1);
+//     // int col_digit = row >> (nBranches - col - 1) & 1;
 
-    if (col_digit == 1)
-        return row;
-    else
-        return row + (1 << (nBranches - col - 1));    
-}
+//     // if ((int) row + (1 << (nBranches - col - 1)) < 0){
+//     //     printf("fucked up, row %ld, col: %d\n", row, col);
+//     // }
+
+//     // if (col_digit == 1)
+//     //     return row;
+//     // else
+//     //     return row + (1 << (nBranches - col - 1));    
+// }
 
 treeBlock *createNewTreeBlock(uint64_t rootDepth, uint64_t nNodes, uint64_t maxNodes)
 {
     treeBlock *tBlock = (treeBlock *)malloc(sizeof(treeBlock));
-    tBlock->dfuds = new bitmap::Bitmap(maxNodes * sizeof(uint64_t) * 8);
+    tBlock->dfuds = new bitmap::Bitmap(maxNodes * maxNodes * sizeof(uint64_t) * 8);
     tBlock->rootDepth = rootDepth;
     tBlock->nNodes = nNodes;
     tBlock->frontiers = NULL;
@@ -139,10 +182,10 @@ NODE_TYPE treeBlock::selectSubtree(uint64_t maxDepth, uint64_t &subTreeSize, uin
     //  Corresponds to stackSS, subtrees, depthVector
     uint64_t ssTop = 0, subtreeTop = 0, depthTop = 0;
 
-    uint64_t cNodeCod = getNodeCod(dfuds, 0);
+    // uint64_t cNodeCod = getNodeCod(dfuds, 0);
 
     stackSS[ssTop].preorder = 0;
-    stackSS[ssTop++].nChildren = getNChildrenT(cNodeCod);
+    stackSS[ssTop++].nChildren = getNChildrenT(dfuds, 0);
 
     node++;
 
@@ -170,8 +213,8 @@ NODE_TYPE treeBlock::selectSubtree(uint64_t maxDepth, uint64_t &subTreeSize, uin
         else if (depth < maxDepth)
         {
             stackSS[ssTop].preorder = i;
-            cNodeCod = getNodeCod(dfuds, i);
-            stackSS[ssTop++].nChildren = getNChildrenT(cNodeCod);
+            // cNodeCod = getNodeCod(dfuds, i);
+            stackSS[ssTop++].nChildren = getNChildrenT(dfuds, i);
             depth++;
         }
         else
@@ -219,26 +262,24 @@ void treeBlock::insert(NODE_TYPE node, uint64_t str[], uint64_t length, uint64_t
     if (length == 0){
         return;
     }
-    // if (str[0] == 64){
-        
-    //     printf("Wtf\n");
-    //     printString(str, length);
-    // }
+
     NODE_TYPE nodeOriginal = node;
-    uint16_t maxBlockSize = 256;
+    uint64_t maxBlockSize = nBranches * nBranches;
 
     if (frontiers != NULL && curFrontier < nFrontiers && node == getPreOrder(curFrontier))
     {
-        uint64_t nodeCod = getNodeCod(dfuds, node);
-        setNodeCod(dfuds, node, getInsertT(nodeCod,str[0]));
+        // uint64_t nodeCod = getNodeCod(dfuds, node);
+        dfuds->SetSingleBit(node * nBranches + str[0]);
+        // setNodeCod(dfuds, node, getInsertT(nodeCod,str[0]));
         getPointer(curFrontier)->insert(0, str, length, level, maxDepth, 0);
 
         return;
     }
     else if (length == 1)
     {
-        uint64_t nodeCod = getNodeCod(dfuds, node);
-        setNodeCod(dfuds, node, getInsertT(nodeCod,str[0]));
+        // uint64_t nodeCod = getNodeCod(dfuds, node);
+        // setNodeCod(dfuds, node, getInsertT(nodeCod,str[0]));
+        dfuds->SetSingleBit(node * nBranches + str[0]);
         return;
     }
     else if (nNodes + length - 1 <= maxNodes)
@@ -251,20 +292,19 @@ void treeBlock::insert(NODE_TYPE node, uint64_t str[], uint64_t length, uint64_t
 
         while (origNode >= node)
         {
-            uint64_t origNodeCod = getNodeCod(dfuds, origNode);
-            setNodeCod(dfuds, destNode, origNodeCod);
+            copyNodeCod(dfuds, origNode, destNode);
+            // uint64_t origNodeCod = getNodeCod(dfuds, origNode);
+            // setNodeCod(dfuds, destNode, origNodeCod);
             destNode--;
             origNode--;
         }
-
-        uint64_t nodeCod = getNodeCod(dfuds, nodeOriginal);
-        
-        setNodeCod(dfuds, nodeOriginal, getInsertT(nodeCod,str[0]));
+        dfuds->SetSingleBit(node * nBranches + str[0]);
         origNode++;
 
         for (uint64_t i = 1; i <= length; i++)
         {
-            setNodeCod(dfuds, origNode, symbol2NodeT(str[i]));
+            dfuds->SetValPos(origNode * nBranches, 0, nBranches);
+            dfuds->SetSingleBit(origNode * nBranches + str[i]);
             nNodes++;
             origNode++;
         }
@@ -337,11 +377,12 @@ void treeBlock::insert(NODE_TYPE node, uint64_t str[], uint64_t length, uint64_t
                     newPointerIndex++;
                     copiedFrontier++;
                 }
-
-                setNodeCod(dfuds, destNode, getNodeCod(dfuds, selectedNode));
+                copyNodeCod(dfuds, selectedNode, destNode);
+                // setNodeCod(dfuds, destNode, getNodeCod(dfuds, selectedNode));
                 if (selectedNode != origSelectedNode)
                 {
-                    setNodeCod(dfuds, selectedNode, 0);
+                    dfuds->SetValPos(selectedNode * nBranches, 0, nBranches);
+                    // setNodeCod(dfuds, selectedNode, 0);
                 }
                 selectedNode += 1;
                 destNode += 1;
@@ -399,7 +440,8 @@ void treeBlock::insert(NODE_TYPE node, uint64_t str[], uint64_t length, uint64_t
 
             while (selectedNode < nNodes)
             {
-                setNodeCod(dfuds, origSelectedNode, getNodeCod(dfuds, selectedNode));
+                copyNodeCod(dfuds, selectedNode, origSelectedNode);
+                // setNodeCod(dfuds, origSelectedNode, getNodeCod(dfuds, selectedNode));
                 if (selectedNode == node)
                     insertionNode = origSelectedNode;
                 selectedNode++;
@@ -438,11 +480,11 @@ NODE_TYPE treeBlock::skipChildrenSubtree(NODE_TYPE &node, uint64_t symbol, uint6
         return node;
     uint64_t sTop = -1;
 
-    uint64_t cNodeCod = getNodeCod(dfuds, node);
+    // uint64_t cNodeCod = getNodeCod(dfuds, node);
 
-    uint8_t skipChild = (uint8_t)getChildSkipT(cNodeCod, symbol);
+    uint64_t skipChild = getChildSkipT(dfuds, node, symbol);
 
-    uint64_t nChildren = getNChildrenT(cNodeCod);
+    uint64_t nChildren = getNChildrenT(dfuds, node);
 
     uint64_t diff = nChildren - skipChild;
 
@@ -476,8 +518,8 @@ NODE_TYPE treeBlock::skipChildrenSubtree(NODE_TYPE &node, uint64_t symbol, uint6
         // We don't count the leaf level
         else if (curLevel + 1 < maxLevel)
         {
-            cNodeCod = getNodeCod(dfuds, curNode);
-            stack[++sTop] = getNChildrenT(cNodeCod);
+            // cNodeCod = getNodeCod(dfuds, curNode);
+            stack[++sTop] = getNChildrenT(dfuds, curNode);
             ++curLevel;
         }
         else
@@ -498,8 +540,8 @@ NODE_TYPE treeBlock::skipChildrenSubtree(NODE_TYPE &node, uint64_t symbol, uint6
 NODE_TYPE treeBlock::child(treeBlock *&p, NODE_TYPE &node, uint64_t symbol, uint64_t &curLevel, uint64_t maxLevel, uint64_t &curFrontier)
 {
 
-    uint64_t cNodeCod = getNodeCod(dfuds, node);
-    uint8_t soughtChild = (uint8_t)getChildT(cNodeCod,symbol);
+    // uint64_t cNodeCod = getNodeCod(dfuds, node);
+    uint8_t soughtChild = (uint8_t)getChildT(dfuds, node, symbol);
     if (soughtChild == (uint8_t)-1)
     {
         return NULL_NODE;

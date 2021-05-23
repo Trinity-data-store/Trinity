@@ -21,15 +21,22 @@ const uint64_t dimensions = 6;
 const uint64_t nBranches = pow(2, dimensions);
 #endif
 
+#define NODE_TYPE uint64_t
+#define L1 0
+#define NULL_NODE -1
+
 extern int8_t stack[100];
 
 void printString(uint64_t *, uint64_t);
-void printDFUDS(bitmap::Bitmap *, uint64_t);
+// void printDFUDS(bitmap::Bitmap *, uint64_t);
 uint64_t symbol2NodeT(uint64_t);
-uint64_t getInsertT(int, int);
-uint8_t getChildT(int, int);
-uint8_t getChildSkipT(int, int);
-uint64_t getNChildrenT(int);
+// uint64_t getInsertT(int, int)
+// void getInsertT(bitmap::Bitmap *, NODE_TYPE, int);
+uint8_t getChildT(bitmap::Bitmap *, NODE_TYPE, int);
+uint8_t getChildSkipT(bitmap::Bitmap *, NODE_TYPE, int);
+uint64_t getNChildrenT(bitmap::Bitmap *, NODE_TYPE);
+uint64_t dfuds_popcount(bitmap::Bitmap *, size_t, uint16_t);
+void copyNodeCod(bitmap::Bitmap *, NODE_TYPE, NODE_TYPE);
 
 struct nodeInfo
 {
@@ -59,9 +66,7 @@ extern nodeInfo stackSS[4096];
 extern subtreeInfo subtrees[4096];
 extern uint64_t depthVector[4096];
 
-#define NODE_TYPE uint64_t
-#define L1 0
-#define NULL_NODE -1
+
 
 struct trieNode
 {
@@ -96,11 +101,17 @@ typedef struct
     treeBlock *pointer;
 } frontierNode;
 
+typedef struct
+{
+    size_t pos;
+    uint16_t width;
+} nodeCod;
+
 extern treeBlock *createNewTreeBlock(uint64_t rootDepth = L1, uint64_t nNodes = 1, uint64_t maxNodes = nBranches * nBranches);
 trieNode *createNewTrieNode();
 void insertar(treeBlock *, uint64_t *, uint64_t, uint64_t, uint64_t);
 void insertTrie(trieNode *, uint64_t *, uint64_t, uint64_t);
-uint64_t getNodeCod(bitmap::Bitmap *, NODE_TYPE);
+// uint64_t getNodeCod(bitmap::Bitmap *, NODE_TYPE);
 
 bool runTest();
 bool check(trieNode *, uint64_t [], int, int);

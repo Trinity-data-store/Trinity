@@ -134,37 +134,13 @@ class Bitmap {
     size_ = 0;
   }
 
-  // Bitmap(const Bitmap &other){
-  //   data_ = other.data_;
-  //   size_ = other.size_;
-  // }
-
-  // Bitmap& operator=(const Bitmap &other)
-  // {
-  //   data_ = other.data_;
-  //   size_ = other.size_;
-  //   return *this;
-  // }
-
   Bitmap(size_type num_bits) {
     data_ = (data_type *)calloc(BITS2BLOCKS(num_bits), sizeof(data_type));
-    // if (data_ == nullptr){
-    //   printf("none\n");
-    // }
-    // else {
-    //   printf("allocated, %zu\n", malloc_usable_size(data_));
-    // }
-    if (malloc_usable_size(data_) == 0){
-        printf("faulty!\n");
-    }
     size_ = num_bits;
   }
 
   void Realloc(size_type num_bits){
     data_ = (data_type *)realloc(data_, BITS2BLOCKS(num_bits) * sizeof(data_type));
-    if (malloc_usable_size(data_) == 0){
-        printf("faulty!\n");
-    }
     size_ = num_bits;
   }
 
@@ -185,7 +161,6 @@ class Bitmap {
   }
 
   // Bit operations
-
   void Clear() {
     memset((void *) data_, 0, BITS2BLOCKS(size_) * sizeof(uint64_t));
   }
@@ -200,6 +175,26 @@ class Bitmap {
 
   bool GetBit(pos_type i) const {
     return GETBITVAL(data_, i);
+  }
+  
+  void CopyNode(pos_type from_pos, pos_type to_pos, width_type width){
+    for (int i = 0; i < width; i++){
+      if (GetSingleBit(from_pos + i) == 1){
+        SetSingleBit(to_pos + i);
+      }
+    }
+  }
+
+  int GetSingleBit(pos_type pos){
+    pos_type s_off = pos % 64;
+    pos_type s_idx = pos / 64;
+    return (data_[s_idx] >> (64 - s_off - 1)) & 1;
+  }
+
+  void SetSingleBit(pos_type pos){
+    pos_type s_off = pos % 64;
+    pos_type s_idx = pos / 64;
+    data_[s_idx] = data_[s_idx] | (1 << (64 - s_off - 1));    
   }
 
   // Integer operations
@@ -224,20 +219,13 @@ class Bitmap {
           (data_[s_idx + 1] & low_bits_unset[(s_off + bits) % 64])
               | (val >> (64 - s_off));
     }
-    if (malloc_usable_size(data_) == 0){
-        printf("after: faulty! prev_size: %ld, s_off: %ld, s_idx: %ld, bits: %d, val: %ld\n", prev_size, s_off, s_idx, bits, val);
-        exit(0);
-    }
   }
 
   data_type GetValPos(pos_type pos, width_type bits) const {
-    // if (malloc_usable_size(data_) == 0){
-    //     printf("faulty!\n");
-    // }
+    
     pos_type s_off = pos % 64;
     pos_type s_idx = pos / 64;
 
-    // printf("Get: %zu, %u, %zu, %zu\n", pos, bits, size_, malloc_usable_size(data_));
     
     if (s_off + bits <= 64) {
       // Can be read from a single block

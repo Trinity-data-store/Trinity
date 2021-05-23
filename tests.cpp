@@ -1,6 +1,6 @@
 #include "catch.hpp"
 #include "trie.hpp"
-
+ 
 bool testSameData()
 {
     treeBlock B;
@@ -18,8 +18,6 @@ bool testSameData()
     {
         int strLen;
         uint64_t *str = proc_str(line, strLen, maxDepth);
-        // printString(str, strLen);
-        // printf("%d\n", strLen);
         insertTrie(tNode, str, strLen, maxDepth);
         free(str);
     }
