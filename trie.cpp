@@ -1,19 +1,19 @@
 #include "trie.hpp"
 
-int8_t stack[100];
+int16_t stack[100];
 nodeInfo stackSS[4096];
 subtreeInfo subtrees[4096];
 uint64_t depthVector[4096];
 
-void printString(uint64_t *str, uint64_t length)
-{
-    printf("string: ");
-    for (int i = 0; i < length; i++)
-    {
-        printf("%ld ", str[i]);
-    }
-    printf("\n");
-}
+// void printString(uint64_t *str, uint64_t length)
+// {
+//     printf("string: ");
+//     for (int i = 0; i < length; i++)
+//     {
+//         printf("%ld ", str[i]);
+//     }
+//     printf("\n");
+// }
 
 // void printDFUDS(bitmap::Bitmap *dfuds, uint64_t nNodes)
 // {
@@ -25,18 +25,18 @@ void printString(uint64_t *str, uint64_t length)
 //     printf("\n");
 // }
 
-void treeBlock::grow(uint64_t extraNodes)
-{
-    dfuds->Realloc((maxNodes + extraNodes) * sizeof(uint64_t) * 8);
+// void treeBlock::grow(uint64_t extraNodes)
+// {
+//     dfuds->Realloc((maxNodes + extraNodes) * sizeof(uint64_t) * 8);
 
-    maxNodes = maxNodes + extraNodes;
-}
+//     maxNodes = maxNodes + extraNodes;
+// }
 
-void treeBlock::shrink(uint64_t deletedNodes)
-{
-    dfuds->Realloc((maxNodes - deletedNodes) * sizeof(uint64_t) * 8);
-    maxNodes = maxNodes - deletedNodes;    
-}
+// void treeBlock::shrink(uint64_t deletedNodes)
+// {
+//     dfuds->Realloc((maxNodes - deletedNodes) * sizeof(uint64_t) * 8);
+//     maxNodes = maxNodes - deletedNodes;    
+// }
 
 // uint64_t getNodeCod(bitmap::Bitmap *dfuds, NODE_TYPE node)
 // {     
@@ -114,7 +114,7 @@ uint64_t getNChildrenT(bitmap::Bitmap *dfuds, NODE_TYPE node){
 
 }
 
-uint8_t getChildSkipT(bitmap::Bitmap *dfuds, NODE_TYPE node, int col)
+uint16_t getChildSkipT(bitmap::Bitmap *dfuds, NODE_TYPE node, int col)
 {
     uint16_t width = col;
     size_t pos = node * nBranches;
@@ -122,7 +122,7 @@ uint8_t getChildSkipT(bitmap::Bitmap *dfuds, NODE_TYPE node, int col)
     return dfuds_popcount(dfuds, pos, width);
 }
 
-uint8_t getChildT(bitmap::Bitmap *dfuds, NODE_TYPE node, int col)
+uint16_t getChildT(bitmap::Bitmap *dfuds, NODE_TYPE node, int col)
 {
     uint16_t width = col + 1;
     size_t pos = node * nBranches; 
@@ -152,7 +152,7 @@ uint8_t getChildT(bitmap::Bitmap *dfuds, NODE_TYPE node, int col)
 treeBlock *createNewTreeBlock(uint64_t rootDepth, uint64_t nNodes, uint64_t maxNodes)
 {
     treeBlock *tBlock = (treeBlock *)malloc(sizeof(treeBlock));
-    tBlock->dfuds = new bitmap::Bitmap(maxNodes * maxNodes * sizeof(uint64_t) * 8);
+    tBlock->dfuds = new bitmap::Bitmap((maxNodes + 1) * nBranches);
     tBlock->rootDepth = rootDepth;
     tBlock->nNodes = nNodes;
     tBlock->frontiers = NULL;
@@ -264,7 +264,7 @@ void treeBlock::insert(NODE_TYPE node, uint64_t str[], uint64_t length, uint64_t
     }
 
     NODE_TYPE nodeOriginal = node;
-    uint64_t maxBlockSize = nBranches * nBranches;
+    // uint64_t maxBlockSize = nBranches * nBranches;
 
     if (frontiers != NULL && curFrontier < nFrontiers && node == getPreOrder(curFrontier))
     {
@@ -316,161 +316,161 @@ void treeBlock::insert(NODE_TYPE node, uint64_t str[], uint64_t length, uint64_t
     else
     {
         // Restrict maxNodes to maxBlockSize (256)
-        if (nNodes + length - 1 <= maxBlockSize)
+        // if (nNodes + length - 1 <= maxBlockSize)
+        // {
+        //     grow(length - 1);
+        //     insert(node, str, length, level, maxDepth, curFrontier);
+        // }
+        // else
+        // {
+        uint64_t subTreeSize, depthSelectedNode;
+        NODE_TYPE selectedNode = selectSubtree(maxDepth, subTreeSize, depthSelectedNode);
+        NODE_TYPE origSelectedNode = selectedNode;
+    
+        uint64_t frontier;
+        for (frontier = 0; frontier < nFrontiers; frontier++)
+            if (getPreOrder(frontier) > selectedNode)
+                break;
+
+        uint64_t frontierSelectedNode = frontier;
+        NODE_TYPE insertionNode = node;
+        NODE_TYPE destNode = 0;
+
+        uint64_t copiedNodes = 0;
+        bool insertionInNewBlock = false;
+        bool isInRoot = false;
+
+        uint64_t newPointerIndex = 0;
+        uint64_t copiedFrontier = 0;
+
+        frontierNode *newPointerArray = NULL;
+        if (nFrontiers > 0)
         {
-            grow(length - 1);
-            insert(node, str, length, level, maxDepth, curFrontier);
+            newPointerArray = (frontierNode *)malloc(sizeof(frontierNode) * (nFrontiers + 5));
+
+            // if (newPointerArray == nullptr){
+            //     printf("rip\n");
+            // }
+        }
+        
+        uint64_t curFrontierNewBlock = 0;
+        while (copiedNodes < subTreeSize)
+        {
+            if (selectedNode == node)
+            {
+                insertionInNewBlock = true;
+                if (destNode != 0)
+                    insertionNode = destNode;
+                else
+                {
+                    insertionNode = node;
+                    isInRoot = true;
+                }
+                curFrontierNewBlock = copiedFrontier;
+            }
+
+            if (newPointerArray != NULL && frontier < nFrontiers && selectedNode == getPreOrder(frontier))
+            {
+                newPointerArray[newPointerIndex].preOrder = destNode;
+                newPointerArray[newPointerIndex].pointer = getPointer(frontier);
+                frontier++;
+                newPointerIndex++;
+                copiedFrontier++;
+            }
+            copyNodeCod(dfuds, selectedNode, destNode);
+            // setNodeCod(dfuds, destNode, getNodeCod(dfuds, selectedNode));
+            if (selectedNode != origSelectedNode)
+            {
+                dfuds->SetValPos(selectedNode * nBranches, 0, nBranches);
+                // setNodeCod(dfuds, selectedNode, 0);
+            }
+            selectedNode += 1;
+            destNode += 1;
+            copiedNodes += 1;
+        }
+
+        bool insertionBeforeSelectedTree = true;
+        if (!insertionInNewBlock && frontier <= curFrontier)
+            insertionBeforeSelectedTree = false;
+
+        treeBlock *new_block = createNewTreeBlock(rootDepth, subTreeSize);
+
+        if (newPointerIndex == 0)
+        {
+            if (newPointerArray != NULL)
+                free(newPointerArray);
+            frontiers = realloc(frontiers, sizeof(frontierNode) * (nFrontiers + 1));
+            // if (frontiers == nullptr){
+            //     printf("rip\n");
+            // }
+            for (uint64_t i = nFrontiers; i > frontierSelectedNode; --i)
+            {
+                setPointer(i, getPointer(i - 1));
+                setPreOrder(i, getPreOrder(i - 1) - subTreeSize + 1);
+            }
+            setPreOrder(frontierSelectedNode, origSelectedNode);
+            setPointer(frontierSelectedNode, new_block);
+            nFrontiers ++;
         }
         else
         {
-            uint64_t subTreeSize, depthSelectedNode;
-            NODE_TYPE selectedNode = selectSubtree(maxDepth, subTreeSize, depthSelectedNode);
-            NODE_TYPE origSelectedNode = selectedNode;
-        
-            uint64_t frontier;
-            for (frontier = 0; frontier < nFrontiers; frontier++)
-                if (getPreOrder(frontier) > selectedNode)
-                    break;
+            newPointerArray = (frontierNode *)realloc(newPointerArray, sizeof(frontierNode) * (newPointerIndex));
+            // if (newPointerArray == nullptr){
+            //     printf("rip\n");
+            // }
+            new_block->frontiers = newPointerArray;
+            new_block->nFrontiers = newPointerIndex;
+            setPreOrder(frontierSelectedNode, origSelectedNode);
+            setPointer(frontierSelectedNode, new_block);
 
-            uint64_t frontierSelectedNode = frontier;
-            NODE_TYPE insertionNode = node;
-            NODE_TYPE destNode = 0;
-
-            uint64_t copiedNodes = 0;
-            bool insertionInNewBlock = false;
-            bool isInRoot = false;
-
-            uint64_t newPointerIndex = 0;
-            uint64_t copiedFrontier = 0;
-
-            frontierNode *newPointerArray = NULL;
-            if (nFrontiers > 0)
+            for (uint64_t i = frontierSelectedNode + 1; frontier < nFrontiers; ++i, ++frontier)
             {
-                newPointerArray = (frontierNode *)malloc(sizeof(frontierNode) * (nFrontiers + 5));
-
-                if (newPointerArray == nullptr){
-                    printf("rip\n");
-                }
+                setPointer(i, getPointer(frontier));
+                setPreOrder(i, getPreOrder(frontier) - subTreeSize + 1);
             }
-            
-            uint64_t curFrontierNewBlock = 0;
-            while (copiedNodes < subTreeSize)
-            {
-                if (selectedNode == node)
-                {
-                    insertionInNewBlock = true;
-                    if (destNode != 0)
-                        insertionNode = destNode;
-                    else
-                    {
-                        insertionNode = node;
-                        isInRoot = true;
-                    }
-                    curFrontierNewBlock = copiedFrontier;
-                }
+            nFrontiers = nFrontiers - copiedFrontier + 1;
+            frontiers = realloc(frontiers, sizeof(frontierNode) * (nFrontiers));
+            // if (frontiers == nullptr){
+            //     printf("rip\n");
+            // }
+        }
 
-                if (newPointerArray != NULL && frontier < nFrontiers && selectedNode == getPreOrder(frontier))
-                {
-                    newPointerArray[newPointerIndex].preOrder = destNode;
-                    newPointerArray[newPointerIndex].pointer = getPointer(frontier);
-                    frontier++;
-                    newPointerIndex++;
-                    copiedFrontier++;
-                }
-                copyNodeCod(dfuds, selectedNode, destNode);
-                // setNodeCod(dfuds, destNode, getNodeCod(dfuds, selectedNode));
-                if (selectedNode != origSelectedNode)
-                {
-                    dfuds->SetValPos(selectedNode * nBranches, 0, nBranches);
-                    // setNodeCod(dfuds, selectedNode, 0);
-                }
-                selectedNode += 1;
-                destNode += 1;
-                copiedNodes += 1;
-            }
+        frontier = frontierSelectedNode + 1;
+        origSelectedNode++;
 
-            bool insertionBeforeSelectedTree = true;
-            if (!insertionInNewBlock && frontier <= curFrontier)
-                insertionBeforeSelectedTree = false;
-
-            treeBlock *new_block = createNewTreeBlock(rootDepth, subTreeSize);
-
-            if (newPointerIndex == 0)
-            {
-                if (newPointerArray != NULL)
-                    free(newPointerArray);
-                frontiers = realloc(frontiers, sizeof(frontierNode) * (nFrontiers + 1));
-                if (frontiers == nullptr){
-                    printf("rip\n");
-                }
-                for (uint64_t i = nFrontiers; i > frontierSelectedNode; --i)
-                {
-                    setPointer(i, getPointer(i - 1));
-                    setPreOrder(i, getPreOrder(i - 1) - subTreeSize + 1);
-                }
-                setPreOrder(frontierSelectedNode, origSelectedNode);
-                setPointer(frontierSelectedNode, new_block);
-                nFrontiers ++;
-            }
-            else
-            {
-                newPointerArray = (frontierNode *)realloc(newPointerArray, sizeof(frontierNode) * (newPointerIndex));
-                if (newPointerArray == nullptr){
-                    printf("rip\n");
-                }
-                new_block->frontiers = newPointerArray;
-                new_block->nFrontiers = newPointerIndex;
-                setPreOrder(frontierSelectedNode, origSelectedNode);
-                setPointer(frontierSelectedNode, new_block);
-
-                for (uint64_t i = frontierSelectedNode + 1; frontier < nFrontiers; ++i, ++frontier)
-                {
-                    setPointer(i, getPointer(frontier));
-                    setPreOrder(i, getPreOrder(frontier) - subTreeSize + 1);
-                }
-                nFrontiers = nFrontiers - copiedFrontier + 1;
-                frontiers = realloc(frontiers, sizeof(frontierNode) * (nFrontiers));
-                if (frontiers == nullptr){
-                    printf("rip\n");
-                }
-            }
-
-            frontier = frontierSelectedNode + 1;
+        while (selectedNode < nNodes)
+        {
+            copyNodeCod(dfuds, selectedNode, origSelectedNode);
+            // setNodeCod(dfuds, origSelectedNode, getNodeCod(dfuds, selectedNode));
+            if (selectedNode == node)
+                insertionNode = origSelectedNode;
+            selectedNode++;
             origSelectedNode++;
+        }
+        // if (subTreeSize > length)
+        //     shrink(subTreeSize - 1 - length + 1);
+        // else
+        //     shrink(subTreeSize - 1);
 
-            while (selectedNode < nNodes)
-            {
-                copyNodeCod(dfuds, selectedNode, origSelectedNode);
-                // setNodeCod(dfuds, origSelectedNode, getNodeCod(dfuds, selectedNode));
-                if (selectedNode == node)
-                    insertionNode = origSelectedNode;
-                selectedNode++;
-                origSelectedNode++;
-            }
-            if (subTreeSize > length)
-                shrink(subTreeSize - 1 - length + 1);
-            else
-                shrink(subTreeSize - 1);
+        nNodes -= (subTreeSize - 1);
 
-            nNodes -= (subTreeSize - 1);
+        if (!insertionBeforeSelectedTree)
+            curFrontier -= copiedFrontier;
 
-            if (!insertionBeforeSelectedTree)
-                curFrontier -= copiedFrontier;
-
-            if (insertionInNewBlock)
-            {
-                if (isInRoot){
-                    insert(insertionNode, str, length, level, maxDepth, curFrontier);
-                }
-                else {
-                    new_block->insert(insertionNode, str, length, level, maxDepth, curFrontierNewBlock);
-                }
-            }
-            else
-            {
+        if (insertionInNewBlock)
+        {
+            if (isInRoot){
                 insert(insertionNode, str, length, level, maxDepth, curFrontier);
             }
+            else {
+                new_block->insert(insertionNode, str, length, level, maxDepth, curFrontierNewBlock);
+            }
         }
+        else
+        {
+            insert(insertionNode, str, length, level, maxDepth, curFrontier);
+        }
+        // }
     }
 }
 
@@ -541,8 +541,8 @@ NODE_TYPE treeBlock::child(treeBlock *&p, NODE_TYPE &node, uint64_t symbol, uint
 {
 
     // uint64_t cNodeCod = getNodeCod(dfuds, node);
-    uint8_t soughtChild = (uint8_t)getChildT(dfuds, node, symbol);
-    if (soughtChild == (uint8_t)-1)
+    uint16_t soughtChild = getChildT(dfuds, node, symbol);
+    if (soughtChild == (uint16_t)-1)
     {
         return NULL_NODE;
     }
