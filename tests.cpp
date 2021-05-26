@@ -73,6 +73,45 @@ bool testDiffData()
     return true;    
 }
 
+void pointToMorton(uint64_t *point, uint64_t *morton){
+    for (int i = 0; i < dimensions; i ++){
+
+    }
+}
+
+bool testRandomData()
+{
+    treeBlock B;
+    trieNode *tNode = createNewTrieNode();
+    // 0 - 1023
+    uint64_t maxDepth = 10;
+    // uint64_t *current_points = (uint64_t *) malloc(dimensions * sizeof(uint64_t));
+
+    uint64_t *str = (uint64_t *) malloc(maxDepth * sizeof(uint64_t));
+    int itr = 0;
+    while (itr < 50000){
+        itr += 1;
+        for (int i = 0; i < maxDepth; i++){
+            // current_points[i] = rand() % 1024;
+            str[i] = rand() % nBranches;
+            printf("%ld, ", str[i]);
+        }
+        if (str[0] == 1 && str[1] == 3 && str[2] == 29 && str[3] == 31){
+            raise(SIGINT);
+        }
+        insertTrie(tNode, str, maxDepth, maxDepth);
+
+        if (!check(tNode, str, maxDepth, maxDepth)){
+            raise(SIGINT);
+            check(tNode, str, maxDepth, maxDepth);
+            return false;
+        }
+        
+        printf("passed! \n");
+    }
+    return true;
+}
+
 bool check(trieNode *tNode, uint64_t str[], int strlen, int maxDepth){
 
     uint64_t i = 0;
@@ -84,6 +123,10 @@ bool check(trieNode *tNode, uint64_t str[], int strlen, int maxDepth){
 }
 
 TEST_CASE( "Check Insertion Correctness", "[trie]" ) {
-    REQUIRE(testSameData());
-    REQUIRE_FALSE(testDiffData());
+    // REQUIRE(testSameData());
+    // REQUIRE_FALSE(testDiffData());
+    // for (int i = 1; i <= 10; i ++){
+    REQUIRE(testRandomData());
+    // }
+    
 }

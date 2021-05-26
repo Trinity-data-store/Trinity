@@ -177,24 +177,41 @@ class Bitmap {
     return GETBITVAL(data_, i);
   }
   
-  void CopyNode(pos_type from_pos, pos_type to_pos, width_type width){
-    for (int i = 0; i < width; i++){
-      if (GetSingleBit(from_pos + i) == 1){
-        SetSingleBit(to_pos + i);
-      }
+  void ClearWidth(pos_type i, width_type bits){
+    for (int j = i; j <= i + bits; j ++){
+      UnsetBit(j);
     }
   }
+  // void CopyNode(pos_type from_pos, pos_type to_pos, width_type width){
+  //   for (int i = 0; i < width; i++){
+  //     if (GetSingleBit(from_pos + i) == 1){
+  //       SetSingleBit(to_pos + i);
+  //     }
+  //   }
+  // }
 
-  int GetSingleBit(pos_type pos){
-    pos_type s_off = pos % 64;
-    pos_type s_idx = pos / 64;
-    return (data_[s_idx] >> (64 - s_off - 1)) & 1;
-  }
+  uint64_t popcount(size_t pos, uint16_t width){
 
-  void SetSingleBit(pos_type pos){
-    pos_type s_off = pos % 64;
-    pos_type s_idx = pos / 64;
-    data_[s_idx] = data_[s_idx] | (1 << (64 - s_off - 1));    
+    uint64_t total = 0;
+    
+    while (width > 0){
+        if (GetBit(pos)){
+          total += 1;
+        }
+        width -= 1;
+        pos += 1;
+
+        // if (width >= 64){
+        //     total_children += __builtin_popcount(GetValPos(pos, 64));
+        //     pos += 64;
+        //     width -= 64;
+        // }
+        // else {
+        //     total_children += __builtin_popcount(GetValPos(pos, width));
+        //     break;
+        // }
+    }
+    return total; 
   }
 
   // Integer operations

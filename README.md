@@ -3,7 +3,8 @@ Project Slides (Ziming): https://docs.google.com/presentation/d/1rN2j5ozQGbtemTO
 bitmap.h adapted from ds-lib: https://github.com/anuragkh/ds-lib  
 CMake Tutorial: https://google.github.io/googletest/quickstart-cmake.html#next-steps  
 Catch2 Tutorial: https://github.com/catchorg/Catch2/blob/devel/docs/tutorial.md#top  
-Old trie files with comment: https://github.com/MaoZiming/md-trie/tree/cdc8c989e50ebedc0269df94438c3f14c03f7115/k2-trie-with-comments
+Old trie files with comment: https://github.com/MaoZiming/md-trie/tree/cdc8c989e50ebedc0269df94438c3f14c03f7115/k2-trie-with-comments  
+Old kd trie implementation Github: https://github.com/darroyue/k2-dyn-tries
 
 ### Run the test
 ```

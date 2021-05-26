@@ -9,6 +9,7 @@
 #include <utility>
 #include <stdint.h>
 #include <time.h>
+#include <signal.h>
 #include "bitmap.h"
 #include <sys/stat.h>
 
@@ -17,26 +18,28 @@ using namespace std;
 #if !defined(MYLIB_CONSTANTS_H)
 #define MYLIB_CONSTANTS_H 1
 
-const uint64_t dimensions = 12;
+const uint64_t dimensions = 5;
 const uint64_t nBranches = pow(2, dimensions);
 #endif
 
 #define NODE_TYPE uint64_t
-#define L1 0
+#define TRIE_DEPTH 1
+#define MAX_TREE_NODES 256
 #define NULL_NODE -1
+
 
 extern int16_t stack[100];
 
 // void printString(uint64_t *, uint64_t);
 // void printDFUDS(bitmap::Bitmap *, uint64_t);
-uint64_t symbol2NodeT(uint64_t);
+// uint64_t symbol2NodeT(uint64_t);
 // uint64_t getInsertT(int, int)
 // void getInsertT(bitmap::Bitmap *, NODE_TYPE, int);
-uint16_t getChildT(bitmap::Bitmap *, NODE_TYPE, int);
+// uint16_t getChildT(bitmap::Bitmap *, NODE_TYPE, int);
 uint16_t getChildSkipT(bitmap::Bitmap *, NODE_TYPE, int);
 uint64_t getNChildrenT(bitmap::Bitmap *, NODE_TYPE);
-uint64_t dfuds_popcount(bitmap::Bitmap *, size_t, uint16_t);
-void copyNodeCod(bitmap::Bitmap *, NODE_TYPE, NODE_TYPE);
+// uint64_t dfuds_popcount(bitmap::Bitmap *, size_t, uint16_t);
+void copyNodeCod(bitmap::Bitmap *, bitmap::Bitmap *, NODE_TYPE, NODE_TYPE);
 
 struct nodeInfo
 {
@@ -107,7 +110,7 @@ typedef struct
     uint16_t width;
 } nodeCod;
 
-extern treeBlock *createNewTreeBlock(uint64_t rootDepth = L1, uint64_t nNodes = 1, uint64_t maxNodes = 1024);
+extern treeBlock *createNewTreeBlock(uint64_t rootDepth = TRIE_DEPTH, uint64_t nNodes = 1, uint64_t maxNodes = MAX_TREE_NODES);
 trieNode *createNewTrieNode();
 void insertar(treeBlock *, uint64_t *, uint64_t, uint64_t, uint64_t);
 void insertTrie(trieNode *, uint64_t *, uint64_t, uint64_t);
