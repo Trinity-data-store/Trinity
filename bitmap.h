@@ -151,7 +151,6 @@ class Bitmap {
     }
   }
 
-  // Getters
   data_type* GetData() {
     return data_;
   }
@@ -160,7 +159,6 @@ class Bitmap {
     return size_;
   }
 
-  // Bit operations
   void Clear() {
     memset((void *) data_, 0, BITS2BLOCKS(size_) * sizeof(uint64_t));
   }
@@ -177,44 +175,23 @@ class Bitmap {
     return GETBITVAL(data_, i);
   }
   
-  void ClearWidth(pos_type i, width_type bits){
-    for (int j = i; j <= i + bits; j ++){
+  void ClearWidth(pos_type pos, width_type width){
+    for (int j = pos; j < pos + width; j ++){
       UnsetBit(j);
     }
   }
-  // void CopyNode(pos_type from_pos, pos_type to_pos, width_type width){
-  //   for (int i = 0; i < width; i++){
-  //     if (GetSingleBit(from_pos + i) == 1){
-  //       SetSingleBit(to_pos + i);
-  //     }
-  //   }
-  // }
 
   uint64_t popcount(size_t pos, uint16_t width){
 
     uint64_t total = 0;
-    
-    while (width > 0){
-        if (GetBit(pos)){
-          total += 1;
-        }
-        width -= 1;
-        pos += 1;
-
-        // if (width >= 64){
-        //     total_children += __builtin_popcount(GetValPos(pos, 64));
-        //     pos += 64;
-        //     width -= 64;
-        // }
-        // else {
-        //     total_children += __builtin_popcount(GetValPos(pos, width));
-        //     break;
-        // }
-    }
+    for (int j = pos; j < pos + width; j ++){
+      if (GetBit(j)){
+        total += 1;
+      }
+    }    
     return total; 
   }
 
-  // Integer operations
   void SetValPos(pos_type pos, data_type val, width_type bits) {
 
     pos_type s_off = pos % 64;
@@ -224,7 +201,6 @@ class Bitmap {
 
     if (s_off + bits <= 64) {
       // Can be accommodated in 1 bitmap block
-
       data_[s_idx] = (data_[s_idx]
           & (low_bits_set[s_off] | low_bits_unset[s_off + bits]))
           | val << s_off;
@@ -243,7 +219,6 @@ class Bitmap {
     pos_type s_off = pos % 64;
     pos_type s_idx = pos / 64;
 
-    
     if (s_off + bits <= 64) {
       // Can be read from a single block
       return (data_[s_idx] >> s_off) & low_bits_set[bits];
@@ -254,7 +229,6 @@ class Bitmap {
     }
   }
 
-  // Serialization/De-serialization
   virtual size_type Serialize(std::ostream& out) {
     size_t out_size = 0;
 

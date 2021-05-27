@@ -18,27 +18,20 @@ using namespace std;
 #if !defined(MYLIB_CONSTANTS_H)
 #define MYLIB_CONSTANTS_H 1
 
-const uint64_t dimensions = 5;
+const uint64_t dimensions = 10;
 const uint64_t nBranches = pow(2, dimensions);
 #endif
 
 #define NODE_TYPE uint64_t
-#define TRIE_DEPTH 1
+#define TRIE_DEPTH 2
 #define MAX_TREE_NODES 256
 #define NULL_NODE -1
 
 
 extern int16_t stack[100];
 
-// void printString(uint64_t *, uint64_t);
-// void printDFUDS(bitmap::Bitmap *, uint64_t);
-// uint64_t symbol2NodeT(uint64_t);
-// uint64_t getInsertT(int, int)
-// void getInsertT(bitmap::Bitmap *, NODE_TYPE, int);
-// uint16_t getChildT(bitmap::Bitmap *, NODE_TYPE, int);
 uint16_t getChildSkipT(bitmap::Bitmap *, NODE_TYPE, int);
 uint64_t getNChildrenT(bitmap::Bitmap *, NODE_TYPE);
-// uint64_t dfuds_popcount(bitmap::Bitmap *, size_t, uint16_t);
 void copyNodeCod(bitmap::Bitmap *, bitmap::Bitmap *, NODE_TYPE, NODE_TYPE);
 
 struct nodeInfo
@@ -65,11 +58,9 @@ struct subtreeInfo
     };
 };
 
-extern nodeInfo stackSS[4096];
-extern subtreeInfo subtrees[4096];
-extern uint64_t depthVector[4096];
-
-
+// extern nodeInfo stackSS[4096];
+// extern subtreeInfo subtrees[4096];
+// extern uint64_t depthVector[4096];
 
 struct trieNode
 {
@@ -93,8 +84,6 @@ struct treeBlock
     uint64_t getPreOrder(uint64_t);
     void setPreOrder(uint64_t, uint64_t);
     void setPointer(uint64_t, treeBlock *);
-    // void grow(uint64_t);
-    // void shrink(uint64_t);
     NODE_TYPE selectSubtree(uint64_t, uint64_t &, uint64_t &);
 };
 
@@ -114,7 +103,6 @@ extern treeBlock *createNewTreeBlock(uint64_t rootDepth = TRIE_DEPTH, uint64_t n
 trieNode *createNewTrieNode();
 void insertar(treeBlock *, uint64_t *, uint64_t, uint64_t, uint64_t);
 void insertTrie(trieNode *, uint64_t *, uint64_t, uint64_t);
-// uint64_t getNodeCod(bitmap::Bitmap *, NODE_TYPE);
 
 bool runTest();
 bool check(trieNode *, uint64_t [], int, int);
