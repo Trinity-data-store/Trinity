@@ -1,111 +1,108 @@
 #include "catch.hpp"
 #include "trie.hpp"
- 
-bool testSameData()
+#include "tqdm.h"
+
+bool testRandomData(int nPoints)
 {
     treeBlock B;
     trieNode *tNode = createNewTrieNode();
-    int maxDepth = 0;
-    char *line = NULL;
-    size_t len = 0, read;
-    FILE *fp = fopen("test_txt/4d_large_data.txt", "r");
-    if (fp == NULL)
-        exit(EXIT_FAILURE);
 
-    while ((read = getline(&line, &len, fp)) != -1)
-    {
-        int strLen;
-        uint64_t *str = proc_str(line, strLen, maxDepth);
-        insertTrie(tNode, str, strLen, maxDepth);
-        free(str);
-    }
-    line = NULL;
-    len = 0;
-    while ((read = getline(&line, &len, fp)) != -1)
-    {
-        int strLen;
-        uint64_t *str = proc_str(line, strLen, maxDepth);
-        if (!check(tNode, str, strLen, maxDepth)){
-            free(str);
-            return false;
-        }
-        free(str);
-    }
-    return true;    
-}
-
-bool testDiffData()
-{
-    treeBlock B;
-    trieNode *tNode = createNewTrieNode();
-    int maxDepth = 0;
-
-    char *line = NULL;
-    size_t len = 0, read;
-    FILE *fp = fopen("test_txt/paper_2d_test.txt", "r");
-    if (fp == NULL)
-        exit(EXIT_FAILURE);
-
-    while ((read = getline(&line, &len, fp)) != -1)
-    {
-        int strLen;
-        uint64_t *str = proc_str(line, strLen, maxDepth);
-        insertTrie(tNode, str, strLen, maxDepth);
-        free(str);
-    }
-    fclose(fp);
-
-    line = NULL;
-    len = 0;
-    fp = fopen("test_txt/3d_test.txt", "r");
-    while ((read = getline(&line, &len, fp)) != -1)
-    {
-        int strLen;
-        uint64_t *str = proc_str(line, strLen, maxDepth);
-        if (!check(tNode, str, strLen, maxDepth)){
-            free(str);
-            return false;
-        }
-        free(str);
-    }
-    return true;    
-}
-
-bool testRandomData()
-{
-    treeBlock B;
-    trieNode *tNode = createNewTrieNode();
-    // 0 - 1023
-    uint64_t maxDepth = 10;
-    uint64_t *str = (uint64_t *) malloc(maxDepth * sizeof(uint64_t));
     int itr = 0;
-    while (itr < 50000){
-        itr += 1;
-        for (int i = 0; i < maxDepth; i++){
-            str[i] = rand() % nBranches;
+    leafConfig *leafPoint = (leafConfig *)malloc(sizeof(leafConfig));
+
+    tqdm bar;
+    for (int itr = 1; itr <= nPoints; itr ++){
+
+        bar.progress(itr, nPoints);
+
+        for (int i = 0; i < dimensions; i++){
+            leafPoint->coordinates[i] = rand() % nBranches;
         }
-        insertTrie(tNode, str, maxDepth, maxDepth);
-        if (!check(tNode, str, maxDepth, maxDepth)){
+        insertTrie(tNode, leafPoint, MAX_DEPTH);
+        if (!check(tNode, leafPoint, MAX_DEPTH)){
             raise(SIGINT);
-            check(tNode, str, maxDepth, maxDepth);
             return false;
         }
     }
     return true;
 }
 
-bool check(trieNode *tNode, uint64_t str[], int strlen, int maxDepth){
+bool testContiguousData(int nPoints)
+{
+    treeBlock B;
+    trieNode *tNode = createNewTrieNode();
 
-    uint64_t i = 0;
-    treeBlock *tBlock = walkTrie(tNode, str, i);
-    uint64_t level = i;
-    NODE_TYPE curNode = 0;
-    uint64_t curFrontier = 0;
-    return walkTree(tBlock, str, strlen, maxDepth, curNode, i, level, curFrontier);        
+    int itr = 0;
+    leafConfig *leafPoint = (leafConfig *)malloc(sizeof(leafConfig));
+
+    tqdm bar;
+    for (int itr = 1; itr <= nPoints; itr ++){
+
+        bar.progress(itr, nPoints);
+        
+        SYMBOL_TYPE first_half_value = rand() % nBranches;
+        for (int i = 0; i < dimensions / 2; i++){
+            leafPoint->coordinates[i] = first_half_value;
+        }
+        SYMBOL_TYPE second_half_value = rand() % nBranches;
+        for (int i = dimensions / 2; i < dimensions; i++){
+            leafPoint->coordinates[i] = second_half_value;
+        }
+        insertTrie(tNode, leafPoint, MAX_DEPTH);
+        if (!check(tNode, leafPoint, MAX_DEPTH)){
+            raise(SIGINT);
+            return false;
+        }
+    }
+    return true;
 }
 
-TEST_CASE( "Check Insertion Correctness", "[trie]" ) {
+bool testNonexistentData(int nPoints)
+{
+    treeBlock B;
+    trieNode *tNode = createNewTrieNode();
 
-    REQUIRE(testRandomData());
+    int itr = 0;
+    leafConfig *leafPoint = (leafConfig *)malloc(sizeof(leafConfig));
 
+    tqdm bar;
+    for (int itr = 1; itr <= nPoints; itr ++){
+
+        bar.progress(itr, nPoints);
+
+        for (int i = 0; i < dimensions; i++){
+            leafPoint->coordinates[i] = rand() % (nBranches / 2);
+        }
+        insertTrie(tNode, leafPoint, MAX_DEPTH);
+    }
+    for (int itr = 1; itr <= nPoints; itr ++){
+
+        bar.progress(itr, nPoints);
+        for (int i = 0; i < dimensions; i++){
+            leafPoint->coordinates[i] = rand() % (nBranches / 2) + nBranches / 2;
+        }
+        if (check(tNode, leafPoint, MAX_DEPTH)){
+            return false;
+        }
+    }
+    return true;
 }
+
+TEST_CASE( "Check Random Data Insertion", "[trie]" ) {
+    printf("Checking random points: \n");
+    REQUIRE(testRandomData(50000));
+    printf("done!\n");
+}
+
+TEST_CASE( "Check Nonexistent Data", "[trie]" ) {
+    printf("Checking nonexistent points: \n");
+    REQUIRE(testNonexistentData(10000));
+    printf("done!\n");
+}
+
+TEST_CASE( "Check Contiguous Data", "[trie]" ) {
+    printf("Checking contiguous points: \n");
+    REQUIRE(testContiguousData(10000));
+    printf("done!\n");
+}
+

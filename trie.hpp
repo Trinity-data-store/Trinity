@@ -15,31 +15,39 @@
 
 using namespace std;
 
-#if !defined(MYLIB_CONSTANTS_H)
-#define MYLIB_CONSTANTS_H 1
+// Maximum number of bits for node configuration
+#define NODE_TYPE uint64_t
+// Maximum number of nodes/preorder numbers
+#define PREORDER_TYPE uint64_t
+#define LEVEL_TYPE uint16_t
+#define SYMBOL_TYPE uint64_t
+#define DIMENSION_TYPE uint8_t
 
-const uint64_t dimensions = 10;
-const uint64_t nBranches = pow(2, dimensions);
+const DIMENSION_TYPE dimensions = 12;
+const SYMBOL_TYPE nBranches = pow(2, dimensions);
 #endif
 
-#define NODE_TYPE uint64_t
-#define TRIE_DEPTH 2
+// Depth of the trie (leaves are pointers to treeBlocks)
+#define TRIE_DEPTH 3
+// Maximum number of nodes in a treeblock
 #define MAX_TREE_NODES 256
 #define NULL_NODE -1
+// MAX_DPETH specifies the range of each dimension (0 to 2^MAX_DEPTH -1)
+#define MAX_DEPTH 10
 
+// Struct for each point that we want to insert
+typedef struct
+{
+    uint16_t coordinates[dimensions];
+} leafConfig;
 
-extern int16_t stack[100];
-
-uint16_t getChildSkipT(bitmap::Bitmap *, NODE_TYPE, int);
-uint64_t getNChildrenT(bitmap::Bitmap *, NODE_TYPE);
-void copyNodeCod(bitmap::Bitmap *, bitmap::Bitmap *, NODE_TYPE, NODE_TYPE);
-
+// nodeInfo and subtree info are used to obtain subtree size when splitting the treeBlock
 struct nodeInfo
 {
-    uint64_t preorder;
-    uint64_t nChildren;
+    PREORDER_TYPE preorder;
+    PREORDER_TYPE nChildren;
     nodeInfo(){};
-    nodeInfo(uint64_t _preorder, uint64_t _nChildren)
+    nodeInfo(PREORDER_TYPE _preorder, PREORDER_TYPE _nChildren)
     {
         preorder = _preorder;
         nChildren = _nChildren;
@@ -48,19 +56,15 @@ struct nodeInfo
 
 struct subtreeInfo
 {
-    uint64_t preorder;
-    uint64_t subtreeSize;
+    PREORDER_TYPE preorder;
+    PREORDER_TYPE subtreeSize;
     subtreeInfo(){};
-    subtreeInfo(uint64_t _preorder, uint64_t _subtreeSize)
+    subtreeInfo(PREORDER_TYPE _preorder, PREORDER_TYPE _subtreeSize)
     {
         preorder = _preorder;
         subtreeSize = _subtreeSize;
     };
 };
-
-// extern nodeInfo stackSS[4096];
-// extern subtreeInfo subtrees[4096];
-// extern uint64_t depthVector[4096];
 
 struct trieNode
 {
@@ -70,44 +74,37 @@ struct trieNode
 
 struct treeBlock
 {
-    uint16_t rootDepth;
-    uint64_t nNodes;
-    uint64_t maxNodes;
+    LEVEL_TYPE rootDepth;
+    PREORDER_TYPE nNodes;
+    PREORDER_TYPE maxNodes;
     bitmap::Bitmap *dfuds;
     void *frontiers;
-    uint64_t nFrontiers;
+    PREORDER_TYPE nFrontiers;
 
-    void insert(NODE_TYPE, uint64_t[], uint64_t, uint64_t, uint64_t, uint64_t);
-    NODE_TYPE child(treeBlock *&, NODE_TYPE &, uint64_t, uint64_t &, uint64_t, uint64_t &);
-    NODE_TYPE skipChildrenSubtree(NODE_TYPE &, uint64_t, uint64_t &, uint64_t, uint64_t &);
-    struct treeBlock *getPointer(uint64_t);
-    uint64_t getPreOrder(uint64_t);
-    void setPreOrder(uint64_t, uint64_t);
-    void setPointer(uint64_t, treeBlock *);
-    NODE_TYPE selectSubtree(uint64_t, uint64_t &, uint64_t &);
+    void insert(NODE_TYPE, leafConfig *, LEVEL_TYPE, LEVEL_TYPE, PREORDER_TYPE);
+    NODE_TYPE child(treeBlock *&, NODE_TYPE &, SYMBOL_TYPE, LEVEL_TYPE &, PREORDER_TYPE &);
+    NODE_TYPE skipChildrenSubtree(NODE_TYPE &, SYMBOL_TYPE, LEVEL_TYPE, PREORDER_TYPE &);
+    struct treeBlock *getPointer(PREORDER_TYPE);
+    PREORDER_TYPE getPreOrder(PREORDER_TYPE);
+    void setPreOrder(PREORDER_TYPE, PREORDER_TYPE);
+    void setPointer(PREORDER_TYPE, treeBlock *);
+    NODE_TYPE selectSubtree(PREORDER_TYPE &, PREORDER_TYPE &);
 };
 
 typedef struct
 {
-    uint64_t preOrder;
+    PREORDER_TYPE preOrder;
     treeBlock *pointer;
 } frontierNode;
 
-typedef struct
-{
-    size_t pos;
-    uint16_t width;
-} nodeCod;
-
-extern treeBlock *createNewTreeBlock(uint64_t rootDepth = TRIE_DEPTH, uint64_t nNodes = 1, uint64_t maxNodes = MAX_TREE_NODES);
+bool check(trieNode *, leafConfig *, LEVEL_TYPE);
+PREORDER_TYPE getChildSkipT(bitmap::Bitmap *, NODE_TYPE, SYMBOL_TYPE);
+PREORDER_TYPE getNChildrenT(bitmap::Bitmap *, NODE_TYPE);
+void copyNodeCod(bitmap::Bitmap *, bitmap::Bitmap *, NODE_TYPE, NODE_TYPE);
+treeBlock *createNewTreeBlock(LEVEL_TYPE, PREORDER_TYPE, PREORDER_TYPE);
 trieNode *createNewTrieNode();
-void insertar(treeBlock *, uint64_t *, uint64_t, uint64_t, uint64_t);
-void insertTrie(trieNode *, uint64_t *, uint64_t, uint64_t);
-
-bool runTest();
-bool check(trieNode *, uint64_t [], int, int);
-treeBlock *walkTrie(trieNode *, uint64_t *, uint64_t &);
-uint64_t *proc_str(char *, int &, int &);
-bool walkTree(treeBlock *, uint64_t [], int, int, NODE_TYPE &, uint64_t &, uint64_t &, uint64_t &);
-
-#endif
+void insertar(treeBlock *, leafConfig *, LEVEL_TYPE, LEVEL_TYPE);
+void insertTrie(trieNode *, leafConfig *, LEVEL_TYPE);
+treeBlock *walkTrie(trieNode *, leafConfig *, LEVEL_TYPE &);
+bool walkTree(treeBlock *, leafConfig *, LEVEL_TYPE, LEVEL_TYPE);
+SYMBOL_TYPE leafToSymbol(leafConfig *, LEVEL_TYPE);
