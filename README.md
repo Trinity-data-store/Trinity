@@ -6,8 +6,18 @@ Catch2 Tutorial: https://github.com/catchorg/Catch2/blob/devel/docs/tutorial.md#
 Old trie files with comment: https://github.com/MaoZiming/md-trie/tree/cdc8c989e50ebedc0269df94438c3f14c03f7115/k2-trie-with-comments  
 Old kd trie implementation Github: https://github.com/darroyue/k2-dyn-tries  
 tqdm progress bar: https://github.com/aminnj/cpptqdm
-### Run the test
+
+### Building
+
+```bash
+mkdir build
+cd build
+cmake ..
+make
 ```
-g++ test-main.cpp -c
-source test_trie.sh
+
+### Running tests
+
+```bash
+make test
 ```
