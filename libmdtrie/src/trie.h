@@ -15,15 +15,21 @@
 
 using namespace std;
 
+// Naming styles:
+// class: md_tire
+// function: walk_trie
+// local variable names: n_branches
+// class variable: n_branches_
+
 // Maximum number of bits for node configuration
-typedef uint64_t node_type; 
+typedef uint64_t node_type;
 // Maximum number of nodes/preorder numbers
 typedef uint64_t preorder_type;
 typedef uint16_t level_type;
 typedef uint64_t symbol_type;
 typedef uint8_t dimension_type;
 
-// Depth of the trie (leaves are pointers to treeBlocks)
+// Depth of the trie (leaves are pointers to treeblocks)
 const level_type trie_depth = 3;
 // Maximum number of nodes in a treeblock
 const preorder_type max_tree_nodes = 256;
@@ -34,108 +40,114 @@ const level_type max_depth = 10;
 #endif
 
 // Struct for each point that we want to insert
-class leafConfig
+class leaf_config
 {
 public:
     uint16_t *coordinates = NULL;
-    leafConfig(dimension_type d) {
-        coordinates = (uint16_t *)calloc(d, sizeof(uint16_t));
+    leaf_config(dimension_type _dimensions)
+    {
+        coordinates = (uint16_t *)calloc(_dimensions, sizeof(uint16_t));
     }
 };
 
-// nodeInfo and subtree info are used to obtain subtree size when splitting the treeBlock
-class nodeInfo
+// node_info and subtree info are used to obtain subtree size when splitting the treeblock
+class node_info
 {
 public:
-    preorder_type preorder = 0;
-    preorder_type nChildren = 0;
-    nodeInfo(){};
-    nodeInfo(preorder_type _preorder, preorder_type _nChildren)
+    preorder_type preorder_ = 0;
+    preorder_type n_children_ = 0;
+    node_info(){};
+    node_info(preorder_type _preorder, preorder_type _n_children)
     {
-        preorder = _preorder;
-        nChildren = _nChildren;
+        preorder_ = _preorder;
+        n_children_ = _n_children;
     };
 };
 
-class subtreeInfo
+class subtree_info
 {
 public:
-    preorder_type preorder = 0;
-    preorder_type subtreeSize = 0;
-    subtreeInfo(){};
-    subtreeInfo(preorder_type _preorder, preorder_type _subtreeSize)
+    preorder_type preorder_ = 0;
+    preorder_type subtree_size_ = 0;
+    subtree_info(){};
+    subtree_info(preorder_type _preorder, preorder_type _subtree_size)
     {
-        preorder = _preorder;
-        subtreeSize = _subtreeSize;
+        preorder_ = _preorder;
+        subtree_size_ = _subtree_size;
     };
 };
 
-class trieNode
+class trie_node
 {
 public:
-    trieNode **children = NULL;
-    trieNode(symbol_type nBranches) {
-        children = (trieNode **)malloc(nBranches * sizeof(trieNode *));
+    trie_node **children_ = NULL;
+    trie_node(symbol_type _n_branches)
+    {
+        children_ = (trie_node **)malloc(_n_branches * sizeof(trie_node *));
     }
     void *block;
 };
 
-class treeBlock
+class treeblock
 {
 public:
-    int dimensions;
-    symbol_type nBranches;    
-    treeBlock(int d) {
-        dimensions = d;
-        nBranches = pow(2, d);
-    }    
+    int dimensions_;
+    symbol_type n_branches_;
 
-    level_type rootDepth;
-    preorder_type nNodes;
-    preorder_type maxNodes;
-    bitmap::Bitmap *dfuds;
-    void *frontiers;
-    preorder_type nFrontiers;
+    level_type root_depth_;
+    preorder_type n_nodes_;
+    preorder_type max_nodes_;
+    bitmap::Bitmap *dfuds_;
+    void *frontiers_;
+    preorder_type n_frontiers_;
 
-    void insert(node_type, leafConfig *, level_type, level_type, preorder_type);
-    node_type child(treeBlock *&, node_type &, symbol_type, level_type &, preorder_type &);
-    node_type skipChildrenSubtree(node_type &, symbol_type, level_type, preorder_type &);
-    struct treeBlock *getPointer(preorder_type);
-    preorder_type getPreOrder(preorder_type);
-    void setPreOrder(preorder_type, preorder_type);
-    void setPointer(preorder_type, treeBlock *);
-    node_type selectSubtree(preorder_type &, preorder_type &);
+    treeblock(int _dimensions)
+    {
+        dimensions_ = _dimensions;
+        n_branches_ = pow(2, _dimensions);
+    }
+
+    void insert(node_type, leaf_config *, level_type, level_type, preorder_type);
+    node_type child(treeblock *&, node_type &, symbol_type, level_type &, preorder_type &);
+    node_type skip_children_subtree(node_type &, symbol_type, level_type, preorder_type &);
+    struct treeblock *get_pointer(preorder_type);
+    preorder_type get_preorder(preorder_type);
+    void set_preorder(preorder_type, preorder_type);
+    void set_pointer(preorder_type, treeblock *);
+    node_type select_subtree(preorder_type &, preorder_type &);
 };
 
-class frontierNode
+class frontier_node
 {
 public:
-    preorder_type preOrder;
-    treeBlock *pointer;
+    preorder_type preorder_;
+    treeblock *pointer_;
 };
 
-class mdTrie
+
+class md_trie
 {
 public:
-    int dimensions;
-    symbol_type nBranches;
-    trieNode *root = NULL;
-    mdTrie(int d) {
-        dimensions = d;
-        nBranches = pow(2, d);
-    }    
-    bool check(leafConfig *, level_type);
-    void insertar(treeBlock *, leafConfig *, level_type, level_type);
-    void insertTrie(leafConfig *, level_type);
-    treeBlock *walkTrie(trieNode *, leafConfig *, level_type &);
-    bool walkTree(treeBlock *, leafConfig *, level_type, level_type);
-    trieNode *createNewTrieNode();
+    int dimensions_;
+    symbol_type n_branches_;
+    trie_node *root_ = NULL;
+    md_trie(int _dimensions)
+    {
+        dimensions_ = _dimensions;
+        n_branches_ = pow(2, _dimensions);
+    }
+    bool check(leaf_config *, level_type);
+    void insert_remaining(treeblock *, leaf_config *, level_type, level_type);
+    void insert_trie(leaf_config *, level_type);
+    treeblock *walk_trie(trie_node *, leaf_config *, level_type &);
+    bool walk_treeblock(treeblock *, leaf_config *, level_type, level_type);
+    trie_node *create_new_trie_node();
 };
 
 // Todo: better arrangement of these functions
-// See how createNewTrieNode is in a different place than createNewTreeBlock
-treeBlock *createNewTreeBlock(level_type, preorder_type, preorder_type, int);
-symbol_type leafToSymbol(leafConfig *, level_type, int);
-preorder_type getChildSkipT(bitmap::Bitmap *, node_type, symbol_type, symbol_type);
-preorder_type getNChildrenT(bitmap::Bitmap *, node_type, symbol_type);
-void copyNodeCod(bitmap::Bitmap *, bitmap::Bitmap *, node_type, node_type, symbol_type);
+// See how create_new_trie_node is in a different place than create_new_treeblock
+treeblock *create_new_treeblock(level_type, preorder_type, preorder_type, int);
+symbol_type leaf_to_symbol(leaf_config *, level_type, int);
+preorder_type get_child_skip(bitmap::Bitmap *, node_type, symbol_type, symbol_type);
+preorder_type get_n_children(bitmap::Bitmap *, node_type, symbol_type);
+void copy_node_cod(bitmap::Bitmap *, bitmap::Bitmap *, node_type, node_type, symbol_type);

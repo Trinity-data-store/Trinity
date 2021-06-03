@@ -1,74 +1,74 @@
 #include "catch.hpp"
 #include "trie.h"
 
-bool testRandomData(int nPoints, int dimensions)
+bool test_random_data(int n_points, int dimensions)
 {
-    symbol_type nBranches = pow(2, dimensions);
-    mdTrie *mdtrie = new mdTrie(dimensions);
+    symbol_type n_branches = pow(2, dimensions);
+    md_trie *mdtrie = new md_trie(dimensions);
 
     int itr = 0;
-    leafConfig *leafPoint = new leafConfig(dimensions);
+    leaf_config *leaf_point = new leaf_config(dimensions);
 
-    for (int itr = 1; itr <= nPoints; itr ++){
+    for (int itr = 1; itr <= n_points; itr ++){
 
         for (int i = 0; i < dimensions; i++){
-            leafPoint->coordinates[i] = rand() % nBranches;
+            leaf_point->coordinates[i] = rand() % n_branches;
         }
-        mdtrie->insertTrie(leafPoint, max_depth);
-        if (!mdtrie->check(leafPoint, max_depth)){
+        mdtrie->insert_trie(leaf_point, max_depth);
+        if (!mdtrie->check(leaf_point, max_depth)){
             return false;
         }
     }
     return true;
 }
 
-bool testContiguousData(int nPoints, int dimensions)
+bool test_contiguous_data(int n_points, int dimensions)
 {
-    symbol_type nBranches = pow(2, dimensions);
-    mdTrie *mdtrie = new mdTrie(dimensions);
+    symbol_type n_branches = pow(2, dimensions);
+    md_trie *mdtrie = new md_trie(dimensions);
 
     int itr = 0;
-    leafConfig *leafPoint = new leafConfig(dimensions);
+    leaf_config *leaf_point = new leaf_config(dimensions);
 
-    for (int itr = 1; itr <= nPoints; itr ++){
+    for (int itr = 1; itr <= n_points; itr ++){
         
-        symbol_type first_half_value = rand() % nBranches;
+        symbol_type first_half_value = rand() % n_branches;
         for (int i = 0; i < dimensions / 2; i++){
-            leafPoint->coordinates[i] = first_half_value;
+            leaf_point->coordinates[i] = first_half_value;
         }
-        symbol_type second_half_value = rand() % nBranches;
+        symbol_type second_half_value = rand() % n_branches;
         for (int i = dimensions / 2; i < dimensions; i++){
-            leafPoint->coordinates[i] = second_half_value;
+            leaf_point->coordinates[i] = second_half_value;
         }
-        mdtrie->insertTrie(leafPoint, max_depth);
-        if (!mdtrie->check(leafPoint, max_depth)){
+        mdtrie->insert_trie(leaf_point, max_depth);
+        if (!mdtrie->check(leaf_point, max_depth)){
             return false;
         }
     }
     return true;
 }
 
-bool testNonexistentData(int nPoints, int dimensions)
+bool test_nonexistent_data(int n_points, int dimensions)
 {
-    symbol_type nBranches = pow(2, dimensions);
-    mdTrie *mdtrie = new mdTrie(dimensions);
+    symbol_type n_branches = pow(2, dimensions);
+    md_trie *mdtrie = new md_trie(dimensions);
 
     int itr = 0;
-    leafConfig *leafPoint = new leafConfig(dimensions);
+    leaf_config *leaf_point = new leaf_config(dimensions);
 
-    for (int itr = 1; itr <= nPoints; itr ++){
+    for (int itr = 1; itr <= n_points; itr ++){
 
         for (int i = 0; i < dimensions; i++){
-            leafPoint->coordinates[i] = rand() % (nBranches / 2);
+            leaf_point->coordinates[i] = rand() % (n_branches / 2);
         }
-        mdtrie->insertTrie(leafPoint, max_depth);
+        mdtrie->insert_trie(leaf_point, max_depth);
     }
-    for (int itr = 1; itr <= nPoints; itr ++){
+    for (int itr = 1; itr <= n_points; itr ++){
 
         for (int i = 0; i < dimensions; i++){
-            leafPoint->coordinates[i] = rand() % (nBranches / 2) + nBranches / 2;
+            leaf_point->coordinates[i] = rand() % (n_branches / 2) + n_branches / 2;
         }
-        if (mdtrie->check(leafPoint, max_depth)){
+        if (mdtrie->check(leaf_point, max_depth)){
             return false;
         }
     }
@@ -76,14 +76,14 @@ bool testNonexistentData(int nPoints, int dimensions)
 }
 
 TEST_CASE( "Check Random Data Insertion", "[trie]" ) {
-    REQUIRE(testRandomData(50000, 10));
+    REQUIRE(test_random_data(50000, 10));
 }
 
 TEST_CASE( "Check Nonexistent Data", "[trie]" ) {
-    REQUIRE(testNonexistentData(10000, 10));
+    REQUIRE(test_nonexistent_data(10000, 10));
 }
 
 TEST_CASE( "Check Contiguous Data", "[trie]" ) {
-    REQUIRE(testContiguousData(10000, 10));
+    REQUIRE(test_contiguous_data(10000, 10));
 }
 
