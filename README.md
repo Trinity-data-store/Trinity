@@ -21,3 +21,9 @@ make
 ```bash
 make test
 ```
+
+### Running benchmark
+
+```bash
+./build/libmdtrie/mdtrie_bench
+```

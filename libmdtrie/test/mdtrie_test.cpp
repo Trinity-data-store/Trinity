@@ -6,7 +6,6 @@ bool test_random_data(int n_points, int dimensions)
     symbol_type n_branches = pow(2, dimensions);
     md_trie *mdtrie = new md_trie(dimensions);
 
-    int itr = 0;
     leaf_config *leaf_point = new leaf_config(dimensions);
 
     for (int itr = 1; itr <= n_points; itr ++){
