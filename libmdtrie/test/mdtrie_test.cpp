@@ -76,7 +76,7 @@ bool testNonexistentData(int nPoints, int dimensions)
 }
 
 TEST_CASE( "Check Random Data Insertion", "[trie]" ) {
-    REQUIRE(testRandomData(10000, 10));
+    REQUIRE(testRandomData(50000, 10));
 }
 
 TEST_CASE( "Check Nonexistent Data", "[trie]" ) {
