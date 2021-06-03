@@ -1,5 +1,5 @@
 #include "catch.hpp"
-#include "trie.hpp"
+#include "trie.h"
 #include "tqdm.h"
 
 bool testRandomData(int nPoints)
@@ -8,7 +8,7 @@ bool testRandomData(int nPoints)
     trieNode *tNode = createNewTrieNode();
 
     int itr = 0;
-    leafConfig *leafPoint = (leafConfig *)malloc(sizeof(leafConfig));
+    leafConfig *leafPoint = new leafConfig(dimensions);
 
     tqdm bar;
     for (int itr = 1; itr <= nPoints; itr ++){
@@ -18,8 +18,8 @@ bool testRandomData(int nPoints)
         for (int i = 0; i < dimensions; i++){
             leafPoint->coordinates[i] = rand() % nBranches;
         }
-        insertTrie(tNode, leafPoint, MAX_DEPTH);
-        if (!check(tNode, leafPoint, MAX_DEPTH)){
+        insertTrie(tNode, leafPoint, max_depth);
+        if (!check(tNode, leafPoint, max_depth)){
             raise(SIGINT);
             return false;
         }
@@ -33,23 +33,23 @@ bool testContiguousData(int nPoints)
     trieNode *tNode = createNewTrieNode();
 
     int itr = 0;
-    leafConfig *leafPoint = (leafConfig *)malloc(sizeof(leafConfig));
+    leafConfig *leafPoint = new leafConfig(dimensions);
 
     tqdm bar;
     for (int itr = 1; itr <= nPoints; itr ++){
 
         bar.progress(itr, nPoints);
         
-        SYMBOL_TYPE first_half_value = rand() % nBranches;
+        symbol_type first_half_value = rand() % nBranches;
         for (int i = 0; i < dimensions / 2; i++){
             leafPoint->coordinates[i] = first_half_value;
         }
-        SYMBOL_TYPE second_half_value = rand() % nBranches;
+        symbol_type second_half_value = rand() % nBranches;
         for (int i = dimensions / 2; i < dimensions; i++){
             leafPoint->coordinates[i] = second_half_value;
         }
-        insertTrie(tNode, leafPoint, MAX_DEPTH);
-        if (!check(tNode, leafPoint, MAX_DEPTH)){
+        insertTrie(tNode, leafPoint, max_depth);
+        if (!check(tNode, leafPoint, max_depth)){
             raise(SIGINT);
             return false;
         }
@@ -63,7 +63,7 @@ bool testNonexistentData(int nPoints)
     trieNode *tNode = createNewTrieNode();
 
     int itr = 0;
-    leafConfig *leafPoint = (leafConfig *)malloc(sizeof(leafConfig));
+    leafConfig *leafPoint = new leafConfig(dimensions);
 
     tqdm bar;
     for (int itr = 1; itr <= nPoints; itr ++){
@@ -73,7 +73,7 @@ bool testNonexistentData(int nPoints)
         for (int i = 0; i < dimensions; i++){
             leafPoint->coordinates[i] = rand() % (nBranches / 2);
         }
-        insertTrie(tNode, leafPoint, MAX_DEPTH);
+        insertTrie(tNode, leafPoint, max_depth);
     }
     for (int itr = 1; itr <= nPoints; itr ++){
 
@@ -81,7 +81,7 @@ bool testNonexistentData(int nPoints)
         for (int i = 0; i < dimensions; i++){
             leafPoint->coordinates[i] = rand() % (nBranches / 2) + nBranches / 2;
         }
-        if (check(tNode, leafPoint, MAX_DEPTH)){
+        if (check(tNode, leafPoint, max_depth)){
             return false;
         }
     }
@@ -90,7 +90,7 @@ bool testNonexistentData(int nPoints)
 
 TEST_CASE( "Check Random Data Insertion", "[trie]" ) {
     printf("Checking random points: \n");
-    REQUIRE(testRandomData(50000));
+    REQUIRE(testRandomData(10000));
     printf("done!\n");
 }
 
