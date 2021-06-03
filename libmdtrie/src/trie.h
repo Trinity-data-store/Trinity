@@ -23,8 +23,6 @@ typedef uint16_t level_type;
 typedef uint64_t symbol_type;
 typedef uint8_t dimension_type;
 
-const dimension_type dimensions = 12;
-const symbol_type nBranches = pow(2, dimensions);
 // Depth of the trie (leaves are pointers to treeBlocks)
 const level_type trie_depth = 3;
 // Maximum number of nodes in a treeblock
@@ -32,6 +30,7 @@ const preorder_type max_tree_nodes = 256;
 const preorder_type null_node = -1;
 // MAX_DPETH specifies the range of each dimension (0 to 2^MAX_DEPTH -1)
 const level_type max_depth = 10;
+
 #endif
 
 // Struct for each point that we want to insert
@@ -75,8 +74,8 @@ class trieNode
 {
 public:
     trieNode **children = NULL;
-    trieNode(symbol_type b) {
-        children = (trieNode **)malloc(b * sizeof(trieNode *));
+    trieNode(symbol_type nBranches) {
+        children = (trieNode **)malloc(nBranches * sizeof(trieNode *));
     }
     void *block;
 };
@@ -84,6 +83,13 @@ public:
 class treeBlock
 {
 public:
+    int dimensions;
+    symbol_type nBranches;    
+    treeBlock(int d) {
+        dimensions = d;
+        nBranches = pow(2, d);
+    }    
+
     level_type rootDepth;
     preorder_type nNodes;
     preorder_type maxNodes;
@@ -108,15 +114,28 @@ public:
     treeBlock *pointer;
 };
 
+class mdTrie
+{
+public:
+    int dimensions;
+    symbol_type nBranches;
+    trieNode *root = NULL;
+    mdTrie(int d) {
+        dimensions = d;
+        nBranches = pow(2, d);
+    }    
+    bool check(leafConfig *, level_type);
+    void insertar(treeBlock *, leafConfig *, level_type, level_type);
+    void insertTrie(leafConfig *, level_type);
+    treeBlock *walkTrie(trieNode *, leafConfig *, level_type &);
+    bool walkTree(treeBlock *, leafConfig *, level_type, level_type);
+    trieNode *createNewTrieNode();
+};
 
-bool check(trieNode *, leafConfig *, level_type);
-preorder_type getChildSkipT(bitmap::Bitmap *, node_type, symbol_type);
-preorder_type getNChildrenT(bitmap::Bitmap *, node_type);
-void copyNodeCod(bitmap::Bitmap *, bitmap::Bitmap *, node_type, node_type);
-treeBlock *createNewTreeBlock(level_type, preorder_type, preorder_type);
-trieNode *createNewTrieNode();
-void insertar(treeBlock *, leafConfig *, level_type, level_type);
-void insertTrie(trieNode *, leafConfig *, level_type);
-treeBlock *walkTrie(trieNode *, leafConfig *, level_type &);
-bool walkTree(treeBlock *, leafConfig *, level_type, level_type);
-symbol_type leafToSymbol(leafConfig *, level_type);
+// Todo: better arrangement of these functions
+// See how createNewTrieNode is in a different place than createNewTreeBlock
+treeBlock *createNewTreeBlock(level_type, preorder_type, preorder_type, int);
+symbol_type leafToSymbol(leafConfig *, level_type, int);
+preorder_type getChildSkipT(bitmap::Bitmap *, node_type, symbol_type, symbol_type);
+preorder_type getNChildrenT(bitmap::Bitmap *, node_type, symbol_type);
+void copyNodeCod(bitmap::Bitmap *, bitmap::Bitmap *, node_type, node_type, symbol_type);

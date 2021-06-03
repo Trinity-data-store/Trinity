@@ -1,6 +1,6 @@
 #include "trie.h"
 
-void copyNodeCod(bitmap::Bitmap *from_dfuds, bitmap::Bitmap *to_dfuds, node_type from, node_type to)
+void copyNodeCod(bitmap::Bitmap *from_dfuds, bitmap::Bitmap *to_dfuds, node_type from, node_type to, symbol_type nBranches)
 {
     symbol_type visited = 0;
     while (visited < nBranches){
@@ -9,7 +9,7 @@ void copyNodeCod(bitmap::Bitmap *from_dfuds, bitmap::Bitmap *to_dfuds, node_type
             visited += 64;
         }
         else {
-            int left = nBranches - visited;
+            symbol_type left = nBranches - visited;
             to_dfuds->SetValPos(to * nBranches + visited, from_dfuds->GetValPos(from * nBranches + visited, left), left);
             break;
         }
@@ -36,19 +36,21 @@ void treeBlock::setPointer(preorder_type curFrontier, treeBlock *pointer)
     ((frontierNode *)frontiers)[curFrontier].pointer = pointer;
 }
 
-preorder_type getNChildrenT(bitmap::Bitmap *dfuds, node_type node){
+preorder_type getNChildrenT(bitmap::Bitmap *dfuds, node_type node, symbol_type nBranches){
 
     return dfuds->popcount(node * nBranches, nBranches);
 }
 
-preorder_type getChildSkipT(bitmap::Bitmap *dfuds, node_type node, symbol_type col)
+preorder_type getChildSkipT(bitmap::Bitmap *dfuds, node_type node, symbol_type col, symbol_type nBranches)
 {
     return dfuds->popcount(node * nBranches, col);
 }
 
-treeBlock *createNewTreeBlock(level_type rootDepth, preorder_type nNodes, preorder_type maxNodes)
+treeBlock *createNewTreeBlock(level_type rootDepth, preorder_type nNodes, preorder_type maxNodes, int dimensions)
 {
-    treeBlock *tBlock = (treeBlock *)malloc(sizeof(treeBlock));
+    symbol_type nBranches = pow(2, dimensions);
+    treeBlock *tBlock = new treeBlock(dimensions);
+
     tBlock->dfuds = new bitmap::Bitmap((maxNodes + 1) * nBranches);
     tBlock->rootDepth = rootDepth;
     tBlock->nNodes = nNodes;
@@ -58,7 +60,7 @@ treeBlock *createNewTreeBlock(level_type rootDepth, preorder_type nNodes, preord
     return tBlock;
 }
 
-trieNode *createNewTrieNode()
+trieNode *mdTrie::createNewTrieNode()
 {
     trieNode *tNode = new trieNode(nBranches);
     for (symbol_type i = 0; i < nBranches; i++)
@@ -86,7 +88,7 @@ node_type treeBlock::selectSubtree(preorder_type &subTreeSize, preorder_type &de
     preorder_type curFrontier = 0;
 
     stackSS[ssTop].preorder = 0;
-    stackSS[ssTop++].nChildren = getNChildrenT(dfuds, 0);
+    stackSS[ssTop++].nChildren = getNChildrenT(dfuds, 0, nBranches);
     node++;
     depth = rootDepth + 1;
     preorder_type nextFrontierPreOrder;
@@ -112,7 +114,7 @@ node_type treeBlock::selectSubtree(preorder_type &subTreeSize, preorder_type &de
         else if (depth < max_depth - 1)
         {
             stackSS[ssTop].preorder = i;
-            stackSS[ssTop++].nChildren = getNChildrenT(dfuds, i);
+            stackSS[ssTop++].nChildren = getNChildrenT(dfuds, i, nBranches);
             depth++;
         }
         //  Reached the maxDepth level
@@ -133,7 +135,7 @@ node_type treeBlock::selectSubtree(preorder_type &subTreeSize, preorder_type &de
     }
      // Now I have to go through the subtrees vector to choose the proper subtree
     preorder_type nodemin, min, posmin;
-    int diff;
+    preorder_type diff;
 
     nodemin = subtrees[0].preorder,
     min = nNodes - 2 * subtrees[0].subtreeSize;
@@ -141,10 +143,13 @@ node_type treeBlock::selectSubtree(preorder_type &subTreeSize, preorder_type &de
 
     for (preorder_type i = 1; i < subtreeTop; ++i)
     {
-        diff = nNodes - 2 * subtrees[i].subtreeSize;
-        if (diff < 0)
-            diff = -diff;
-        if (diff < (int) min)
+        if (nNodes > 2 * subtrees[i].subtreeSize){
+            diff = nNodes - 2 * subtrees[i].subtreeSize;
+        }
+        else {
+            diff = 2 * subtrees[i].subtreeSize - nNodes;
+        }
+        if (diff < min)
         {
             min = diff;
             nodemin = subtrees[i].preorder;
@@ -167,7 +172,7 @@ void treeBlock::insert(node_type node, leafConfig *leafPoint, level_type level, 
     //  node is a frontier node
     if (frontiers != NULL && curFrontier < nFrontiers && node == getPreOrder(curFrontier))
     {
-        dfuds->SetBit(node * nBranches + leafToSymbol(leafPoint, level));
+        dfuds->SetBit(node * nBranches + leafToSymbol(leafPoint, level, dimensions));
         getPointer(curFrontier)->insert(0, leafPoint, level, length, 0);
 
         return;
@@ -176,14 +181,14 @@ void treeBlock::insert(node_type node, leafConfig *leafPoint, level_type level, 
     //  Insert that character into the correct position
     else if (length == 1)
     {
-        dfuds->SetBit(node * nBranches + leafToSymbol(leafPoint, level));
+        dfuds->SetBit(node * nBranches + leafToSymbol(leafPoint, level, dimensions));
         return;
     }
     // there is room in current block for new nodes
     else if (nNodes + (length - level) - 1 <= maxNodes)
     {
         // skipChildrenSubtree returns the position under node where the new str[0] will be inserted
-        node = skipChildrenSubtree(node, leafToSymbol(leafPoint, level), level, curFrontier);
+        node = skipChildrenSubtree(node, leafToSymbol(leafPoint, level, dimensions), level, curFrontier);
         
         node_type destNode = nNodes + (length - level) - 2;
         node_type origNode = nNodes - 1;
@@ -192,19 +197,19 @@ void treeBlock::insert(node_type node, leafConfig *leafPoint, level_type level, 
         //  By shifting nodes to the right of str[i] by len(str) spots
         while (origNode >= node)
         {
-            copyNodeCod(dfuds, dfuds, origNode, destNode);
+            copyNodeCod(dfuds, dfuds, origNode, destNode, nBranches);
             destNode--;
             origNode--;
         }
         
-        dfuds->SetBit(nodeOriginal * nBranches + leafToSymbol(leafPoint, level));
+        dfuds->SetBit(nodeOriginal * nBranches + leafToSymbol(leafPoint, level, dimensions));
         level++;
         origNode++;
         //  Insert all remaining characters (Remember length -- above)
         for (level_type i = level; i < length; i++)
         {
             dfuds->ClearWidth(origNode * nBranches, nBranches);
-            dfuds->SetBit(origNode * nBranches + leafToSymbol(leafPoint, i));
+            dfuds->SetBit(origNode * nBranches + leafToSymbol(leafPoint, i, dimensions));
             nNodes++;
             origNode++;
         }
@@ -270,7 +275,7 @@ void treeBlock::insert(node_type node, leafConfig *leafPoint, level_type level, 
                 newPointerIndex++;
                 copiedFrontier++;
             }
-            copyNodeCod(dfuds, new_dfuds, selectedNode, destNode);
+            copyNodeCod(dfuds, new_dfuds, selectedNode, destNode, nBranches);
 
             selectedNode += 1;
             destNode += 1;
@@ -281,7 +286,7 @@ void treeBlock::insert(node_type node, leafConfig *leafPoint, level_type level, 
         if (!insertionInNewBlock && frontier <= curFrontier)
             insertionBeforeSelectedTree = false;
 
-        treeBlock *new_block = createNewTreeBlock(depthSelectedNode, subTreeSize, max_tree_nodes);
+        treeBlock *new_block = createNewTreeBlock(depthSelectedNode, subTreeSize, max_tree_nodes, dimensions);
         // Memory leak
         new_block->dfuds = new_dfuds;
 
@@ -323,7 +328,6 @@ void treeBlock::insert(node_type node, leafConfig *leafPoint, level_type level, 
             frontiers = realloc(frontiers, sizeof(frontierNode) * (nFrontiers));
 
         }
-
         // Now, delete the subtree copied to the new block
         frontier = frontierSelectedNode + 1;
         origSelectedNode++;
@@ -333,7 +337,7 @@ void treeBlock::insert(node_type node, leafConfig *leafPoint, level_type level, 
             // selectedNode is the immediate node after the copied block
             // origSelectedNode is the original node where we want to turn into a frontier node
             // node is the node where we want to insert the symbol str[0]
-            copyNodeCod(dfuds, dfuds, selectedNode, origSelectedNode);
+            copyNodeCod(dfuds, dfuds, selectedNode, origSelectedNode, nBranches);
             if (selectedNode == node)
                 insertionNode = origSelectedNode;
             selectedNode++;
@@ -369,8 +373,8 @@ node_type treeBlock::skipChildrenSubtree(node_type &node, symbol_type symbol, le
     if (curLevel == max_depth)
         return node;
     int sTop = -1;
-    preorder_type skipChild = getChildSkipT(dfuds, node, symbol);
-    preorder_type nChildren = getNChildrenT(dfuds, node);
+    preorder_type skipChild = getChildSkipT(dfuds, node, symbol, nBranches);
+    preorder_type nChildren = getNChildrenT(dfuds, node, nBranches);
     preorder_type diff = nChildren - skipChild;
     preorder_type stack[100];
     stack[++sTop] = nChildren;
@@ -401,7 +405,7 @@ node_type treeBlock::skipChildrenSubtree(node_type &node, symbol_type symbol, le
         // It is "-1" because curLevel is 0th indexed.
         else if (curLevel < max_depth - 1)
         {
-            stack[++sTop] = getNChildrenT(dfuds, curNode);
+            stack[++sTop] = getNChildrenT(dfuds, curNode, nBranches);
             ++curLevel;
         }
         else
@@ -447,7 +451,7 @@ node_type treeBlock::child(treeBlock *&p, node_type &node, symbol_type symbol, l
 
 // Traverse the current TreeBlock, going into frontier nodes as needed
 // Until it cannot traverse further and calls insertion
-void insertar(treeBlock *root, leafConfig *leafPoint, level_type length, level_type level)
+void mdTrie::insertar(treeBlock *root, leafConfig *leafPoint, level_type length, level_type level)
 {
     treeBlock *curBlock = root;
     node_type curNode = 0;
@@ -456,7 +460,7 @@ void insertar(treeBlock *root, leafConfig *leafPoint, level_type length, level_t
     node_type curNodeAux = 0;
     while (level < length)
     {
-        curNodeAux = curBlock->child(curBlock, curNode, leafToSymbol(leafPoint, level), level, curFrontier);
+        curNodeAux = curBlock->child(curBlock, curNode, leafToSymbol(leafPoint, level, dimensions), level, curFrontier);
         if (curNodeAux == (node_type)-1)
             break;
         curNode = curNodeAux;
@@ -473,14 +477,14 @@ void insertar(treeBlock *root, leafConfig *leafPoint, level_type length, level_t
 
 // This function is used for testing.
 // It differs from above as it only returns True or False.
-bool walkTree(treeBlock *curBlock, leafConfig *leafPoint, level_type length, level_type level){
+bool mdTrie::walkTree(treeBlock *curBlock, leafConfig *leafPoint, level_type length, level_type level){
 
     preorder_type curFrontier = 0;
     node_type curNode = 0;
     node_type curNodeAux = 0;
     while (level < length)
     {
-        curNodeAux = curBlock->child(curBlock, curNode, leafToSymbol(leafPoint, level), level, curFrontier);
+        curNodeAux = curBlock->child(curBlock, curNode, leafToSymbol(leafPoint, level, dimensions), level, curFrontier);
         if (curNodeAux == (node_type)-1)
             return false;
         curNode = curNodeAux;
@@ -498,20 +502,20 @@ bool walkTree(treeBlock *curBlock, leafConfig *leafPoint, level_type length, lev
 
 // This function goes down the trie
 // Return the treeBlock at the leaf of the trie
-treeBlock *walkTrie(trieNode *tNode, leafConfig *leafPoint, level_type &level){
+treeBlock *mdTrie::walkTrie(trieNode *tNode, leafConfig *leafPoint, level_type &level){
     
-    while (tNode->children[leafToSymbol(leafPoint, level)])
-        tNode = tNode->children[leafToSymbol(leafPoint, level++)];
+    while (tNode->children[leafToSymbol(leafPoint, level, dimensions)])
+        tNode = tNode->children[leafToSymbol(leafPoint, level++, dimensions)];
     while (level < trie_depth)
     {
-        tNode->children[leafToSymbol(leafPoint, level)] = createNewTrieNode();
-        tNode = tNode->children[leafToSymbol(leafPoint, level)];
+        tNode->children[leafToSymbol(leafPoint, level, dimensions)] = createNewTrieNode();
+        tNode = tNode->children[leafToSymbol(leafPoint, level, dimensions)];
         level++;
     }
     treeBlock *tBlock = NULL;
     if (tNode->block == NULL)
     {
-        tBlock = createNewTreeBlock(trie_depth, 1, max_tree_nodes);
+        tBlock = createNewTreeBlock(trie_depth, 1, max_tree_nodes, dimensions);
         tNode->block = tBlock;
     }
     else
@@ -521,15 +525,20 @@ treeBlock *walkTrie(trieNode *tNode, leafConfig *leafPoint, level_type &level){
 
 // This function inserts a string into a trieNode.
 // The first part it traverses is the trie, followed by traversing the treeblock
-void insertTrie(trieNode *tNode, leafConfig *leafPoint, level_type length)
+void mdTrie::insertTrie(leafConfig *leafPoint, level_type length)
 {
+    if (root == NULL)
+    {
+        root = createNewTrieNode();
+    }
     level_type level = 0;
+    trieNode *tNode = root;
     treeBlock *tBlock = walkTrie(tNode, leafPoint, level);
     insertar(tBlock, leafPoint, length, level);
 }
 
 // Given the leafPoint and the level we are at, return the Morton code corresponding to that level
-symbol_type leafToSymbol(leafConfig *leafPoint, level_type level){
+symbol_type leafToSymbol(leafConfig *leafPoint, level_type level, int dimensions){
     symbol_type result = 0;
     for (int j = 0; j < dimensions; j++){
         int coordinate = leafPoint->coordinates[j];
@@ -541,8 +550,13 @@ symbol_type leafToSymbol(leafConfig *leafPoint, level_type level){
 }
 
 // Used for Test script to check whether a leafPoint is present
-bool check(trieNode *tNode, leafConfig *leafPoint, level_type strlen){
+bool mdTrie::check(leafConfig *leafPoint, level_type strlen){
     level_type level = 0;
+    if (root == NULL)
+    {
+        root = createNewTrieNode();
+    }
+    trieNode *tNode = root;
     treeBlock *tBlock = walkTrie(tNode, leafPoint, level);
     return walkTree(tBlock, leafPoint, strlen, level);        
 }
