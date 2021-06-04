@@ -1,6 +1,8 @@
 #include "trie.h"
-
+#include <unistd.h>
 #include <sys/time.h>
+#include <limits.h>
+#include <tqdm.h>
 
 typedef unsigned long long int TimeStamp;
 static TimeStamp GetTimestamp() {
@@ -10,9 +12,9 @@ static TimeStamp GetTimestamp() {
   return now.tv_usec + (TimeStamp) now.tv_sec * 1000000;
 }
 
-bool test_random_data(int n_points, int dimensions)
+void test_random_data(int n_points, int dimensions, level_type max_depth = 10)
 {
-    symbol_type n_branches = pow(2, dimensions);
+    symbol_type range = pow(2, max_depth);
     md_trie *mdtrie = new md_trie(dimensions);
 
     leaf_config *leaf_point = new leaf_config(dimensions);
@@ -22,21 +24,143 @@ bool test_random_data(int n_points, int dimensions)
     for (int itr = 1; itr <= n_points; itr ++){
 
         for (int i = 0; i < dimensions; i++){
-            leaf_point->coordinates[i] = rand() % n_branches;
+            leaf_point->coordinates[i] = rand() % range;
         }
         mdtrie->insert_trie(leaf_point, max_depth);
         if (!mdtrie->check(leaf_point, max_depth)){
-            return false;
+            fprintf(stderr, "Error insertion!\n");
         }
     }
 
     t1 = GetTimestamp();
     fprintf(stderr, "Time to insert %d points with %d dimensions: %llu microseconds\n", n_points, dimensions, (t1 - t0));
     fprintf(stderr, "Average time to insert one point: %llu microseconds\n", (t1 - t0) / n_points);
-    return true;
+}
+
+void test_real_data(int dimensions, level_type max_depth){
+
+    md_trie *mdtrie = new md_trie(dimensions, max_depth);    
+    leaf_config *leaf_point = new leaf_config(dimensions);
+
+    char *line = NULL;
+    size_t len = 0;
+    ssize_t read;
+    FILE *fp = fopen("../libmdtrie/bench/data/sample.txt", "r");
+
+    // If the file cannot be open
+    if (fp == NULL)
+    {
+        fprintf(stderr, "file not found\n");
+        char cwd[PATH_MAX];
+        if (getcwd(cwd, sizeof(cwd)) != NULL) {
+            printf("Current working dir: %s\n", cwd);
+        } else {
+            perror("getcwd() error");
+        }
+        exit(EXIT_FAILURE);
+    }
+
+    TimeStamp t0, t1;
+    
+    int n_points = 0;
+    
+    // Get the number of lines in the text file
+    // int n_lines = 0;
+    // char c;
+    // for (c = getc(fp); c != EOF; c = getc(fp))
+    //     if (c == '\n') 
+    //         n_lines = n_lines + 1;
+    // rewind(fp);
+    int n_lines = 14583357;
+
+    t0 = GetTimestamp();
+    tqdm bar;
+    while ((read = getline(&line, &len, fp)) != -1)
+    {
+        bar.progress(n_points, n_lines);
+        // Get the first token
+        char *token = strtok(line, " ");
+        char *ptr;
+        // Skip the second and third token
+        for (int i = 0; i < 2; i ++){
+            token = strtok(NULL, " ");
+        }
+        for (int i = 0; i < dimensions; i++){
+            token = strtok(NULL, " ");
+            leaf_point->coordinates[i] = strtoul(token, &ptr, 10);;
+        }
+        mdtrie->insert_trie(leaf_point, max_depth);
+        n_points ++;
+    }
+    bar.finish();
+       
+    t1 = GetTimestamp();
+    fprintf(stderr, "Time to insert %d points with %d dimensions: %llu microseconds\n", n_points, dimensions, (t1 - t0));
+    fprintf(stderr, "Average time to insert one point: %llu microseconds\n", (t1 - t0) / n_points);
+
+    // Query n_lines random points
+    n_points = 0;
+    TimeStamp t2, t3;
+    t2 = GetTimestamp();
+    symbol_type range = pow(2, max_depth);
+    while (n_points < n_lines)
+    {
+        bar.progress(n_points, n_lines);
+        // Get the first token
+        for (int i = 0; i < dimensions; i++){
+            leaf_point->coordinates[i] = rand() % range;
+        }
+        mdtrie->check(leaf_point, max_depth);
+        n_points ++;
+    }
+    t3 = GetTimestamp();
+    bar.finish();
+    fprintf(stderr, "Time to query %d random points with %d dimensions: %llu microseconds\n", n_points, dimensions, (t3 - t2));
+    fprintf(stderr, "Average time to query one point: %llu microseconds\n", (t3 - t2) / n_points); 
+
+    // Time to query the inserted points
+    rewind(fp);
+    TimeStamp t4, t5;
+    n_points = 0;
+    t4 = GetTimestamp();
+    while ((read = getline(&line, &len, fp)) != -1)
+    {
+        bar.progress(n_points, n_lines);
+        // Get the first token
+        char *token = strtok(line, " ");
+        char *ptr;
+        // Skip the second and third token
+        for (int i = 0; i < 2; i ++){
+            token = strtok(NULL, " ");
+        }
+        for (int i = 0; i < dimensions; i++){
+            token = strtok(NULL, " ");
+            leaf_point->coordinates[i] = strtoul(token, &ptr, 10);;
+        }
+        if (!mdtrie->check(leaf_point, max_depth)){
+            fprintf(stderr, "error!\n");
+        }
+        n_points ++;
+    } 
+    t5 = GetTimestamp();
+    bar.finish();
+    fprintf(stderr, "Time to query %d inserted points with %d dimensions: %llu microseconds\n", n_points, dimensions, (t5 - t4));
+    fprintf(stderr, "Average time to query one point: %llu microseconds\n", (t5 - t4) / n_points);        
 }
 
 int main() {
-    test_random_data(10000, 10);
+
+    // test_random_data(10000, 10);
+
+    test_real_data(2, 32); 
+
+    test_real_data(3, 32);   
+
+    test_real_data(4, 32);
+    // 4 dimensions
+    // Time to insert 14583357 points with 4 dimensions: 1917747475 microseconds (32 minutes)
+    // Average time to insert one point: 131 microseconds 
+
+  
 }
 

@@ -2,6 +2,7 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src)
 
 add_library(mdtrie
         src/bitmap.h
+        src/tqdm.h
         src/trie.cpp
         src/trie.h)
 
