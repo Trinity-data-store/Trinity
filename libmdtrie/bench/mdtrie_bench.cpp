@@ -60,7 +60,7 @@ void test_real_data(int dimensions, level_type max_depth){
         exit(EXIT_FAILURE);
     }
 
-    TimeStamp t0, t1;
+    TimeStamp start, diff;
     
     int n_points = 0;
     
@@ -73,7 +73,6 @@ void test_real_data(int dimensions, level_type max_depth){
     // rewind(fp);
     int n_lines = 14583357;
 
-    t0 = GetTimestamp();
     tqdm bar;
     while ((read = getline(&line, &len, fp)) != -1)
     {
@@ -89,19 +88,19 @@ void test_real_data(int dimensions, level_type max_depth){
             token = strtok(NULL, " ");
             leaf_point->coordinates[i] = strtoul(token, &ptr, 10);;
         }
+        start = GetTimestamp();
         mdtrie->insert_trie(leaf_point, max_depth);
+        diff = GetTimestamp() - start;
         n_points ++;
     }
     bar.finish();
        
-    t1 = GetTimestamp();
-    fprintf(stderr, "Time to insert %d points with %d dimensions: %llu microseconds\n", n_points, dimensions, (t1 - t0));
-    fprintf(stderr, "Average time to insert one point: %llu microseconds\n", (t1 - t0) / n_points);
+    fprintf(stderr, "Time to insert %d points with %d dimensions: %llu microseconds\n", n_points, dimensions, diff);
+    fprintf(stderr, "Average time to insert one point: %llu microseconds\n", diff / n_points);
 
     // Query n_lines random points
     n_points = 0;
-    TimeStamp t2, t3;
-    t2 = GetTimestamp();
+    diff = 0;
     symbol_type range = pow(2, max_depth);
     while (n_points < n_lines)
     {
@@ -110,19 +109,20 @@ void test_real_data(int dimensions, level_type max_depth){
         for (int i = 0; i < dimensions; i++){
             leaf_point->coordinates[i] = rand() % range;
         }
+        start = GetTimestamp();
         mdtrie->check(leaf_point, max_depth);
+        diff += GetTimestamp() - start;
         n_points ++;
     }
-    t3 = GetTimestamp();
+
     bar.finish();
-    fprintf(stderr, "Time to query %d random points with %d dimensions: %llu microseconds\n", n_points, dimensions, (t3 - t2));
-    fprintf(stderr, "Average time to query one point: %llu microseconds\n", (t3 - t2) / n_points); 
+    fprintf(stderr, "Time to query %d random points with %d dimensions: %llu microseconds\n", n_points, dimensions, diff);
+    fprintf(stderr, "Average time to query one point: %llu microseconds\n", diff / n_points); 
 
     // Time to query the inserted points
     rewind(fp);
-    TimeStamp t4, t5;
     n_points = 0;
-    t4 = GetTimestamp();
+    diff = 0;
     while ((read = getline(&line, &len, fp)) != -1)
     {
         bar.progress(n_points, n_lines);
@@ -137,15 +137,16 @@ void test_real_data(int dimensions, level_type max_depth){
             token = strtok(NULL, " ");
             leaf_point->coordinates[i] = strtoul(token, &ptr, 10);;
         }
+        start = GetTimestamp();
         if (!mdtrie->check(leaf_point, max_depth)){
             fprintf(stderr, "error!\n");
         }
+        diff += GetTimestamp() - start;
         n_points ++;
     } 
-    t5 = GetTimestamp();
     bar.finish();
-    fprintf(stderr, "Time to query %d inserted points with %d dimensions: %llu microseconds\n", n_points, dimensions, (t5 - t4));
-    fprintf(stderr, "Average time to query one point: %llu microseconds\n", (t5 - t4) / n_points);        
+    fprintf(stderr, "Time to query %d inserted points with %d dimensions: %llu microseconds\n", n_points, dimensions, diff);
+    fprintf(stderr, "Average time to query one point: %llu microseconds\n", diff / n_points);        
 }
 
 int main() {

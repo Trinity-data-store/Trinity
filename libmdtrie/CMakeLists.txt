@@ -4,7 +4,8 @@ add_library(mdtrie
         src/bitmap.h
         src/tqdm.h
         src/trie.cpp
-        src/trie.h)
+        src/trie.h
+        src/treeBlock_orig.h)
 
 set_target_properties(mdtrie PROPERTIES LINKER_LANGUAGE CXX)
 
@@ -21,5 +22,11 @@ if (BUILD_TESTS)
 endif ()
 
 add_executable(mdtrie_bench
-        bench/mdtrie_bench.cpp)
+        bench/mdtrie_bench.cpp
+        )
+
+add_executable(orig_bench
+        bench/treeBlock_orig.cpp
+        )
+        
 target_link_libraries(mdtrie_bench mdtrie)
