@@ -45,7 +45,7 @@ void test_real_data(int dimensions, level_type max_depth){
     char *line = NULL;
     size_t len = 0;
     ssize_t read;
-    FILE *fp = fopen("../libmdtrie/bench/data/sample.txt", "r");
+    FILE *fp = fopen("../libmdtrie/bench/data/sample_shuf.txt", "r");
 
     // If the file cannot be open
     if (fp == NULL)
@@ -90,13 +90,12 @@ void test_real_data(int dimensions, level_type max_depth){
         }
         start = GetTimestamp();
         mdtrie->insert_trie(leaf_point, max_depth);
-        diff = GetTimestamp() - start;
+        diff += GetTimestamp() - start;
         n_points ++;
     }
     bar.finish();
-       
-    fprintf(stderr, "Time to insert %d points with %d dimensions: %llu microseconds\n", n_points, dimensions, diff);
-    fprintf(stderr, "Average time to insert one point: %llu microseconds\n", diff / n_points);
+    uint64_t msec = diff * 1000 / CLOCKS_PER_SEC;
+    fprintf(stderr, "Average time to insert one point: %f microseconds\n", (float)msec*1000 / n_points);
 
     // Query n_lines random points
     n_points = 0;
@@ -116,8 +115,8 @@ void test_real_data(int dimensions, level_type max_depth){
     }
 
     bar.finish();
-    fprintf(stderr, "Time to query %d random points with %d dimensions: %llu microseconds\n", n_points, dimensions, diff);
-    fprintf(stderr, "Average time to query one point: %llu microseconds\n", diff / n_points); 
+    msec = diff * 1000 / CLOCKS_PER_SEC;
+    fprintf(stderr, "Average time to query one point: %f microseconds\n", (float)msec*1000 / n_points); 
 
     // Time to query the inserted points
     rewind(fp);
@@ -145,23 +144,80 @@ void test_real_data(int dimensions, level_type max_depth){
         n_points ++;
     } 
     bar.finish();
-    fprintf(stderr, "Time to query %d inserted points with %d dimensions: %llu microseconds\n", n_points, dimensions, diff);
-    fprintf(stderr, "Average time to query one point: %llu microseconds\n", diff / n_points);        
+    msec = diff * 1000 / CLOCKS_PER_SEC;
+    fprintf(stderr, "Average time to query one point: %f microseconds\n", (float)msec*1000 / n_points);        
+}
+
+void test_insert_data(int dimensions, level_type max_depth){
+
+    md_trie *mdtrie = new md_trie(dimensions, max_depth);    
+    leaf_config *leaf_point = new leaf_config(dimensions);
+
+    char *line = NULL;
+    size_t len = 0;
+    ssize_t read;
+    FILE *fp = fopen("../libmdtrie/bench/data/sample_shuf.txt", "r");
+
+    // If the file cannot be open
+    if (fp == NULL)
+    {
+        fprintf(stderr, "file not found\n");
+        char cwd[PATH_MAX];
+        if (getcwd(cwd, sizeof(cwd)) != NULL) {
+            printf("Current working dir: %s\n", cwd);
+        } else {
+            perror("getcwd() error");
+        }
+        exit(EXIT_FAILURE);
+    }
+
+    TimeStamp start, diff;
+    
+    int n_points = 0;
+    
+    // Get the number of lines in the text file
+    // int n_lines = 0;
+    // char c;
+    // for (c = getc(fp); c != EOF; c = getc(fp))
+    //     if (c == '\n') 
+    //         n_lines = n_lines + 1;
+    // rewind(fp);
+    int n_lines = 14583357;
+
+    tqdm bar;
+    while ((read = getline(&line, &len, fp)) != -1)
+    {
+        bar.progress(n_points, n_lines);
+        // Get the first token
+        char *token = strtok(line, " ");
+        char *ptr;
+        // Skip the second and third token
+        for (int i = 0; i < 2; i ++){
+            token = strtok(NULL, " ");
+        }
+        for (int i = 0; i < dimensions; i++){
+            token = strtok(NULL, " ");
+            leaf_point->coordinates[i] = strtoul(token, &ptr, 10);;
+        }
+        start = GetTimestamp();
+        mdtrie->insert_trie(leaf_point, max_depth);
+        diff += GetTimestamp() - start;
+        n_points ++;
+    }
+    bar.finish();
+    uint64_t msec = diff * 1000 / CLOCKS_PER_SEC;
+    fprintf(stderr, "Average time to insert one point: %f microseconds\n", (float)msec*1000 / n_points);
 }
 
 int main() {
 
     // test_random_data(10000, 10);
 
-    test_real_data(2, 32); 
+    test_insert_data(2, 32); 
 
-    test_real_data(3, 32);   
+    // test_real_data(3, 32);   
 
-    test_real_data(4, 32);
-    // 4 dimensions
-    // Time to insert 14583357 points with 4 dimensions: 1917747475 microseconds (32 minutes)
-    // Average time to insert one point: 131 microseconds 
-
+    // test_real_data(4, 32);
   
 }
 

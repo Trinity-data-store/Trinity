@@ -36,6 +36,7 @@ javaclient/target
 javaclient/core/target
 javaclient/hadoop/target
 build
+libmdtrie/bench/data
 
 # Eclipse files
 .settings
@@ -80,3 +81,5 @@ test-driver
 /Debug/
 target
 .vscode/
+
+

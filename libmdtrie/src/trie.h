@@ -31,7 +31,7 @@ typedef uint8_t dimension_type;
 typedef uint64_t point_type;
 
 // Depth of the trie (leaves are pointers to treeblocks)
-const level_type trie_depth = 12;
+const level_type trie_depth = 8;
 // Maximum number of nodes in a treeblock
 const preorder_type max_tree_nodes = 1024;
 const preorder_type null_node = -1;

@@ -1,7 +1,7 @@
 #include "trie.h"
 
 void copy_node_cod(bitmap::Bitmap *from_dfuds, bitmap::Bitmap *to_dfuds, node_type from, node_type to, symbol_type n_branches)
-{
+{ 
     symbol_type visited = 0;
     while (visited < n_branches)
     {

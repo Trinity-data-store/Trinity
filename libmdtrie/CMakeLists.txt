@@ -28,5 +28,9 @@ add_executable(mdtrie_bench
 add_executable(orig_bench
         bench/treeBlock_orig.cpp
         )
-        
+
+add_executable(orig_bench_no_table
+        bench/treeBlock_no_table.cpp
+        )
+
 target_link_libraries(mdtrie_bench mdtrie)

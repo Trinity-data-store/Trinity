@@ -15,6 +15,23 @@ static TimeStamp GetTimestamp() {
   return now.tv_usec + (TimeStamp) now.tv_sec * 1000000;
 }
 
+int8_t childT_(uint8_t cNodeCod, uint8_t symbol){
+   if ((cNodeCod & symbol2NodeT[symbol]) == 0){
+      return -1;
+   }
+   return (int8_t)__builtin_popcount(cNodeCod >> (4 - symbol - 1));
+}
+uint8_t nChildrenT_(uint8_t cNodeCod){
+   return (uint8_t)__builtin_popcount(cNodeCod);
+}
+uint8_t childSkipT_(uint8_t cNodeCod, uint8_t symbol){
+   return (uint8_t)__builtin_popcount(cNodeCod >> (4 - symbol));
+}
+
+int8_t insertT_(uint8_t cNodeCod, uint8_t symbol){
+   return (int8_t) cNodeCod | symbol2NodeT[symbol];
+}
+
 uint16_t absolutePosition(treeNode &node)
  {
     return 4*node.first + node.second;
@@ -683,10 +700,10 @@ treeNode NULL_NODE = treeNode((NODE_TYPE)-1, 0);
 treeNode treeBlock::child(treeBlock *&p, treeNode & node, uint8_t symbol, uint16_t &curLevel, uint16_t maxLevel,
                           uint16_t &curFlag)
  {
-    
+     
     uint8_t cNodeCod = (dfuds[node.first]>>shiftT[node.second]) & 0x000f;
     
-    uint8_t soughtChild = (uint8_t) childT[cNodeCod][symbol];
+    uint8_t soughtChild = (uint8_t) childT_(cNodeCod,symbol);
     
     if (soughtChild == (uint8_t)-1) return NULL_NODE; //treeNode((NODE_TYPE)-1, 0); // No such child to go down
     
@@ -873,6 +890,14 @@ uint64_t sizeTrie(trieNode *t)
 
 int main() 
  {
+
+   //  for (uint8_t cod = 0; cod < 16; cod ++){
+   //     for (uint8_t symbol = 0; symbol < 4; symbol++){
+   //        printf("%d ", childT_(cod, symbol));
+   //     }
+   //     printf("\n");
+   //  }
+   //  exit(0);
     treeBlock B;
     treeNode node;
     // uint16_t curFlag = 0;
@@ -951,8 +976,6 @@ int main()
             token = strtok(NULL, " ");
             coordinates[i] = strtoul(token, &ptr, 10);;
         }
-        start = GetTimestamp();
-      //   Count in the time to change to Morton code
         for (int i = 0; i < str_len; i ++){
             uint64_t result = 0;
             for (int j = 0; j < 2; j++)
@@ -964,7 +987,7 @@ int main()
             }
             str[i] = result;
         }
-        
+        start = GetTimestamp();
         insertTrie(t, str, str_len, max_depth);
         diff += GetTimestamp() - start;
         n_points ++;

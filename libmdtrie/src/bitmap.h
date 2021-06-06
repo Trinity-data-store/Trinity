@@ -175,19 +175,75 @@ class Bitmap {
   }
   
   void ClearWidth(pos_type pos, width_type width){
-    for (pos_type j = pos; j < pos + width; j ++){
+    // for (pos_type j = pos; j < pos + width; j ++){
+    //   UnsetBit(j);
+    // }
+    // return;
+    if (width <= 64){
+      SetValPos(pos, 0, width);
+      return;      
+    }
+    // raise(SIGINT);
+
+    pos_type s_off = pos % 64;
+    pos_type s_idx = pos / 64;
+
+    for (pos_type j = pos; j < (s_idx + 1) * 64; j ++){
       UnsetBit(j);
     }
+
+    width -= 64 - s_off;
+    s_idx += 1;
+    while (width > 64){
+      data_[s_idx] = 0;
+      width -= 64;
+      s_idx += 1;
+    }
+
+    for (pos_type j = s_idx * 64; j < s_idx * 64 + width; j ++){
+      UnsetBit(j);
+    }    
   }
 
   uint64_t popcount(size_t pos, uint16_t width){
-    uint64_t total = 0;
-    for (pos_type j = pos; j < pos + width; j ++){
-      if (GetBit(j)){
-        total += 1;
-      }
-    }    
-    return total; 
+   
+    // pos_type s_idx = pos / 64;
+
+    if (width <= 64){
+      return __builtin_popcount(GetValPos(pos, width));      
+    }
+    // raise(SIGINT);
+    pos_type s_off = pos % 64;
+    uint64_t count = 0;
+    if (s_off > 0){
+      count += __builtin_popcount(GetValPos(pos, 64 - s_off));
+      width -= 64 - s_off;
+      pos += 64 - s_off;
+    }
+
+    while (width > 64){
+      count += __builtin_popcount(data_[pos / 64]);
+      pos += 64;
+      width -= 64;
+    }
+
+    return count + __builtin_popcount(GetValPos(pos, width));
+
+    // if (width <= 0){
+    //   return 0;
+    // }
+
+    // pos_type s_off = pos % 64;
+    // if (s_off > 0){
+    //   return __builtin_popcount(GetValPos(pos, 64 - s_off)) + popcount(pos - s_off + 64, width - 64 + s_off);
+    // }
+
+    // else if (width <= 64){
+    //   return __builtin_popcount(GetValPos(pos, width));
+    // }
+    // else {
+    //   return __builtin_popcount(data_[pos / 64]) + popcount(pos + 64, width - 64);
+    // } 
   }
 
   void SetValPos(pos_type pos, data_type val, width_type bits) {
