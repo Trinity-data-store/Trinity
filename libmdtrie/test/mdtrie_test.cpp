@@ -13,8 +13,11 @@ bool test_random_data(int n_points, int dimensions, level_type max_depth)
         for (int i = 0; i < dimensions; i++){
             leaf_point->coordinates[i] = rand() % range;
         }
+        
         mdtrie->insert_trie(leaf_point, max_depth);
         if (!mdtrie->check(leaf_point, max_depth)){
+            
+            mdtrie->check(leaf_point, max_depth);
             return false;
         }
     }
@@ -41,6 +44,8 @@ bool test_contiguous_data(int n_points, int dimensions, level_type max_depth)
         }
         mdtrie->insert_trie(leaf_point, max_depth);
         if (!mdtrie->check(leaf_point, max_depth)){
+            // raise(SIGINT);
+            // mdtrie->check(leaf_point, max_depth);
             return false;
         }
     }

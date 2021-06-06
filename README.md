@@ -24,6 +24,7 @@ make test
 
 ### Running benchmark
 
+Download the dataset and put it in libmdtrie/
 ```bash
 ./build/libmdtrie/mdtrie_bench
 ```
