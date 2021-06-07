@@ -172,4 +172,4 @@ treeblock *create_new_treeblock(level_type, preorder_type, preorder_type, int);
 symbol_type leaf_to_symbol(leaf_config *, level_type, int, level_type);
 preorder_type get_child_skip(bitmap::Bitmap *, node_type, symbol_type, symbol_type);
 preorder_type get_n_children(bitmap::Bitmap *, node_type, symbol_type);
-void copy_node_cod(bitmap::Bitmap *, bitmap::Bitmap *, node_type, node_type, symbol_type);
+void copy_node_cod(bitmap::Bitmap *, bitmap::Bitmap *, node_type, node_type, symbol_type, symbol_type);

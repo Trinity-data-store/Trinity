@@ -1,20 +1,20 @@
 #include "trie.h"
 uint64_t dfuds_size = 0;
 
-void copy_node_cod(bitmap::Bitmap *from_dfuds, bitmap::Bitmap *to_dfuds, node_type from, node_type to, symbol_type n_branches)
+void copy_node_cod(bitmap::Bitmap *from_dfuds, bitmap::Bitmap *to_dfuds, node_type from, node_type to, symbol_type n_branches, symbol_type width)
 { 
 
     symbol_type visited = 0;
-    while (visited < n_branches)
+    while (visited < width)
     {
-        if (n_branches - visited > 64)
+        if (width - visited > 64)
         {
             to_dfuds->SetValPos(to * n_branches + visited, from_dfuds->GetValPos(from * n_branches + visited, 64), 64);
             visited += 64;
         }
         else
         {
-            symbol_type left = n_branches - visited;
+            symbol_type left = width - visited;
             to_dfuds->SetValPos(to * n_branches + visited, from_dfuds->GetValPos(from * n_branches + visited, left), left);
             break;
         }
@@ -207,12 +207,17 @@ void treeblock::insert(node_type node, leaf_config *leaf_point, level_type level
         //  By shifting nodes to the right of str[i] by len(str) spots
 
         // dfuds_->BulkCopy(from_node * n_branches_, node * n_branches_, dest_node * n_branches_);
-        while (from_node >= node)
-        {
-            copy_node_cod(dfuds_, dfuds_, from_node, dest_node, n_branches_);
-            dest_node--;
-            from_node--;
+        if (from_node >= node){
+            dfuds_->BulkCopy_backward(from_node * n_branches_, dest_node * n_branches_, (from_node - node) * n_branches_);
+            dest_node -= from_node - (node - 1);
+            from_node = node - 1;
         }
+        // while (from_node >= node)
+        // {
+        //     copy_node_cod(dfuds_, dfuds_, from_node, dest_node, n_branches_);
+        //     dest_node--;
+        //     from_node--;
+        // }
 
         dfuds_->SetBit(original_node * n_branches_ + current_symbol);
         level++;
@@ -268,6 +273,11 @@ void treeblock::insert(node_type node, leaf_config *leaf_point, level_type level
         preorder_type current_frontier_new_block = 0;
 
         //  Copy all nodes of the subtree to the new block
+        // This optimization doesn't seem to work
+        // if (n_nodes_copied < subtree_size){
+        //     copy_node_cod(dfuds_, new_dfuds, selected_node, dest_node, n_branches_, subtree_size * n_branches_);
+        // }
+
         while (n_nodes_copied < subtree_size)
         {
             //  If we meet the current node (from which we want to do insertion)
@@ -293,7 +303,7 @@ void treeblock::insert(node_type node, leaf_config *leaf_point, level_type level
                 new_pointer_index++;
                 copied_frontier++;
             }
-            copy_node_cod(dfuds_, new_dfuds, selected_node, dest_node, n_branches_);
+            copy_node_cod(dfuds_, new_dfuds, selected_node, dest_node, n_branches_, n_branches_);
 
             selected_node += 1;
             dest_node += 1;
@@ -349,17 +359,28 @@ void treeblock::insert(node_type node, leaf_config *leaf_point, level_type level
         frontier = frontier_selected_node + 1;
         orig_selected_node++;
 
-        while (selected_node < n_nodes_)
-        {
-            // selected_node is the immediate node after the copied block
-            // orig_selected_node is the original node where we want to turn into a frontier node
-            // node is the node where we want to insert the symbol str[0]
-            copy_node_cod(dfuds_, dfuds_, selected_node, orig_selected_node, n_branches_);
-            if (selected_node == node)
-                insertion_node = orig_selected_node;
-            selected_node++;
-            orig_selected_node++;
+        // It seems that this optimization is not faster.
+        if (selected_node < n_nodes_){
+            if (selected_node <= node && node < n_nodes_){
+                insertion_node = node - selected_node + orig_selected_node;
+            }
+            dfuds_->BulkCopy_forward(selected_node * n_branches_, orig_selected_node * n_branches_, n_branches_ * (n_nodes_ - selected_node));
+
+            orig_selected_node += n_nodes_ - selected_node;
+            selected_node = n_nodes_;
         }
+        
+        // while (selected_node < n_nodes_)
+        // {
+        // //     // selected_node is the immediate node after the copied block
+        // //     // orig_selected_node is the original node where we want to turn into a frontier node
+        // //     // node is the node where we want to insert the symbol str[0]
+        // //     copy_node_cod(dfuds_, dfuds_, selected_node, orig_selected_node, n_branches_);
+        //     if (selected_node == node)
+        //         insertion_node = orig_selected_node;
+        //     selected_node++;
+        //     orig_selected_node++;
+        // }
 
         if (subtree_size > length)
         {         
@@ -577,12 +598,12 @@ symbol_type leaf_to_symbol(leaf_config *leaf_point, level_type level, int dimens
     symbol_type result = 0;
     for (int j = 0; j < dimensions; j++)
     {
-        int coordinate = leaf_point->coordinates[j];
+        // int coordinate = leaf_point->coordinates[j];
         // int bit = coordinate & 1;
         // leaf_point->coordinates[j] = coordinate >> 1;
         // int bit = coordinate & (1 << level);
-        int bit = (coordinate >> (max_depth - level - 1)) & 1;
-        result *= 2;
+        int bit = (leaf_point->coordinates[j] >> (max_depth - level - 1)) & 1;
+        result = result << 1;
         result += bit;
     }
     
