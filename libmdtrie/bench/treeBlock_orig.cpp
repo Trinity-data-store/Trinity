@@ -867,10 +867,6 @@ uint64_t sizeTrie(trieNode *t)
  }
 
 
-
-
-
-
 int main() 
  {
     treeBlock B;

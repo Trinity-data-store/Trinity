@@ -141,6 +141,7 @@ class Bitmap {
   uint64_t size(){
     return size_ / 8 + sizeof(size_type) + sizeof(pos_type) + sizeof(data_type) + sizeof(width_type);
   }
+
   void Realloc(size_type num_bits){
     
     data_ = (data_type *)realloc(data_, BITS2BLOCKS(num_bits) * sizeof(data_type));
@@ -190,10 +191,10 @@ class Bitmap {
 
     pos_type s_off = pos % 64;
     pos_type s_idx = pos / 64;
-
-    for (pos_type j = pos; j < (s_idx + 1) * 64; j ++){
-      UnsetBit(j);
-    }
+    SetValPos(pos, 0, 64 - s_off);
+    // for (pos_type j = pos; j < (s_idx + 1) * 64; j ++){
+    //   UnsetBit(j);
+    // }
 
     width -= 64 - s_off;
     s_idx += 1;
@@ -203,9 +204,10 @@ class Bitmap {
       s_idx += 1;
     }
 
-    for (pos_type j = s_idx * 64; j < s_idx * 64 + width; j ++){
-      UnsetBit(j);
-    }    
+    SetValPos(s_idx * 64, 0, width);
+    // for (pos_type j = s_idx * 64; j < s_idx * 64 + width; j ++){
+    //   UnsetBit(j);
+    // }    
   }
 
   uint64_t popcount(size_t pos, uint16_t width){
@@ -228,6 +230,15 @@ class Bitmap {
     return count + __builtin_popcountll(GetValPos(s_idx * 64, width));    
   }
 
+  // void BulkCopy(pos_type from_start, pos_type from_to, pos_type dest_start){
+  //   if (dest_start - from_to + 1 <= 64){
+  //     SetValPos(from_start, GetValPos(from_to, dest_start - from_to + 1), dest_start - from_to + 1);
+  //   }
+  //   else {
+  //     SetValPos(from_start, GetValPos(from_to, 64), 64);
+  //     BulkCopy(from_start + 64, from_to + 64, dest_start);
+  //   }
+  // }
   void SetValPos(pos_type pos, data_type val, width_type bits) {
 
     pos_type s_off = pos % 64;

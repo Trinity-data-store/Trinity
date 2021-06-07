@@ -3,6 +3,7 @@ uint64_t dfuds_size = 0;
 
 void copy_node_cod(bitmap::Bitmap *from_dfuds, bitmap::Bitmap *to_dfuds, node_type from, node_type to, symbol_type n_branches)
 { 
+
     symbol_type visited = 0;
     while (visited < n_branches)
     {
@@ -59,21 +60,21 @@ treeblock *create_new_treeblock(level_type root_depth, preorder_type n_nodes, pr
     current_treeblock->dfuds_ = new bitmap::Bitmap((tree_capacity + 1) * n_branches);
     current_treeblock->root_depth_ = root_depth;
     current_treeblock->n_nodes_ = n_nodes;
-    current_treeblock->frontiers_ = NULL;
-    current_treeblock->n_frontiers_ = 0;
+    // current_treeblock->frontiers_ = NULL;
+    // current_treeblock->n_frontiers_ = 0;
     current_treeblock->tree_capacity_ = tree_capacity;
     return current_treeblock;
 }
 
-trie_node *md_trie::create_new_trie_node()
-{
-    trie_node *current_trie_node = new trie_node(n_branches_);
-    for (symbol_type i = 0; i < n_branches_; i++)
-        current_trie_node->children_[i] = NULL;
+// trie_node *md_trie::create_new_trie_node()
+// {
+//     trie_node *current_trie_node = new trie_node(n_branches_);
+//     // for (symbol_type i = 0; i < n_branches_; i++)
+//     //     current_trie_node->children_[i] = NULL;
 
-    current_trie_node->block = NULL;
-    return current_trie_node;
-}
+//     // current_trie_node->block = NULL;
+//     return current_trie_node;
+// }
 
 // This function selectes the subTree starting from node 0
 // The selected subtree has the maximum subtree size
@@ -196,13 +197,16 @@ void treeblock::insert(node_type node, leaf_config *leaf_point, level_type level
     else if (n_nodes_ + (length - level) - 1 <= tree_capacity_)
     {
         // skip_children_subtree returns the position under node where the new str[0] will be inserted
-        node = skip_children_subtree(node, leaf_to_symbol(leaf_point, level, dimensions_, max_depth_), level, current_frontier);
+        symbol_type current_symbol = leaf_to_symbol(leaf_point, level, dimensions_, max_depth_);
+        node = skip_children_subtree(node, current_symbol, level, current_frontier);
 
         node_type dest_node = n_nodes_ + (length - level) - 2;
         node_type from_node = n_nodes_ - 1;
 
         //  In this while loop, we are making space for str
         //  By shifting nodes to the right of str[i] by len(str) spots
+
+        // dfuds_->BulkCopy(from_node * n_branches_, node * n_branches_, dest_node * n_branches_);
         while (from_node >= node)
         {
             copy_node_cod(dfuds_, dfuds_, from_node, dest_node, n_branches_);
@@ -210,7 +214,7 @@ void treeblock::insert(node_type node, leaf_config *leaf_point, level_type level
             from_node--;
         }
 
-        dfuds_->SetBit(original_node * n_branches_ + leaf_to_symbol(leaf_point, level, dimensions_, max_depth_));
+        dfuds_->SetBit(original_node * n_branches_ + current_symbol);
         level++;
         from_node++;
         //  Insert all remaining characters (Remember length -- above)
@@ -532,13 +536,14 @@ bool md_trie::walk_treeblock(treeblock *current_block, leaf_config *leaf_point, 
 // Return the treeblock at the leaf of the trie
 treeblock *md_trie::walk_trie(trie_node *current_trie_node, leaf_config *leaf_point, level_type &level)
 {
-
+    symbol_type current_symbol;
     while (current_trie_node->children_[leaf_to_symbol(leaf_point, level, dimensions_, max_depth_)])
         current_trie_node = current_trie_node->children_[leaf_to_symbol(leaf_point, level++, dimensions_, max_depth_)];
     while (level < trie_depth_)
     {
-        current_trie_node->children_[leaf_to_symbol(leaf_point, level, dimensions_, max_depth_)] = create_new_trie_node();
-        current_trie_node = current_trie_node->children_[leaf_to_symbol(leaf_point, level, dimensions_, max_depth_)];
+        current_symbol = leaf_to_symbol(leaf_point, level, dimensions_, max_depth_);
+        current_trie_node->children_[current_symbol] = new trie_node(n_branches_);
+        current_trie_node = current_trie_node->children_[current_symbol];
         level++;
     }
     treeblock *current_treeblock = NULL;
@@ -558,7 +563,7 @@ void md_trie::insert_trie(leaf_config *leaf_point, level_type length)
 {
     if (root_ == NULL)
     {
-        root_ = create_new_trie_node();
+        root_ = new trie_node(n_branches_);
     }
     level_type level = 0;
     trie_node *current_trie_node = root_;
@@ -573,10 +578,14 @@ symbol_type leaf_to_symbol(leaf_config *leaf_point, level_type level, int dimens
     for (int j = 0; j < dimensions; j++)
     {
         int coordinate = leaf_point->coordinates[j];
+        // int bit = coordinate & 1;
+        // leaf_point->coordinates[j] = coordinate >> 1;
+        // int bit = coordinate & (1 << level);
         int bit = (coordinate >> (max_depth - level - 1)) & 1;
         result *= 2;
         result += bit;
     }
+    
     return result;
 }
 
@@ -586,7 +595,7 @@ bool md_trie::check(leaf_config *leaf_point, level_type strlen)
     level_type level = 0;
     if (root_ == NULL)
     {
-        root_ = create_new_trie_node();
+        root_ = new trie_node(n_branches_);
     }
     trie_node *current_trie_node = root_;
     treeblock *current_treeblock = walk_trie(current_trie_node, leaf_point, level);
@@ -596,7 +605,7 @@ bool md_trie::check(leaf_config *leaf_point, level_type strlen)
 uint64_t treeblock::size()
  {
     // in bytes;
-// Can be hard coded:     
+// Can be hard coded as global variable:     
 // preorder_type max_tree_nodes_;
 // level_type max_depth_;
 // uint8_t dimensions_;

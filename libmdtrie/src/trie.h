@@ -66,7 +66,7 @@ public:
         n_children_ = _n_children;
     };
 };
-
+ 
 class subtree_info
 {
 public:
@@ -86,9 +86,10 @@ public:
     trie_node **children_ = NULL;
     trie_node(symbol_type _n_branches)
     {
-        children_ = (trie_node **)malloc(_n_branches * sizeof(trie_node *));
+        // Assume null to be 0;
+        children_ = (trie_node **)calloc(_n_branches, sizeof(trie_node *));
     }
-    void *block;
+    void *block = NULL;
     uint64_t size(symbol_type _n_branches);
 };
 
@@ -103,8 +104,8 @@ public:
     node_n_type tree_capacity_;
     level_type max_depth_;
     bitmap::Bitmap *dfuds_;
-    void *frontiers_;
-    node_n_type n_frontiers_;
+    void *frontiers_ = NULL;
+    node_n_type n_frontiers_ = 0;
     node_n_type max_tree_nodes_;
 
     node_n_type initial_tree_capacity_;

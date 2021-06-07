@@ -213,7 +213,7 @@ void test_insert_data(int dimensions, level_type max_depth, level_type trie_dept
 
 
 void test_mdtrie_size(int dimensions, level_type max_depth, level_type trie_depth, preorder_type max_tree_node){
-    dfuds_size = 0;
+    
     md_trie *mdtrie = new md_trie(dimensions, max_depth, trie_depth, max_tree_node);   
     leaf_config *leaf_point = new leaf_config(dimensions);
 

@@ -15,6 +15,9 @@ bool test_random_data(int n_points, int dimensions, level_type max_depth, level_
         }
         
         mdtrie->insert_trie(leaf_point, max_depth);
+        if (!mdtrie->check(leaf_point, max_depth)){
+            return false;
+        }
     }
     mdtrie->size();
     return true;

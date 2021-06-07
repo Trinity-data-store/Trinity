@@ -976,6 +976,7 @@ int main()
             token = strtok(NULL, " ");
             coordinates[i] = strtoul(token, &ptr, 10);;
         }
+        start = GetTimestamp();
         for (int i = 0; i < str_len; i ++){
             uint64_t result = 0;
             for (int j = 0; j < 2; j++)
@@ -987,7 +988,6 @@ int main()
             }
             str[i] = result;
         }
-        start = GetTimestamp();
         insertTrie(t, str, str_len, max_depth);
         diff += GetTimestamp() - start;
         n_points ++;
