@@ -1,4 +1,5 @@
 #include "trie.h"
+uint64_t dfuds_size = 0;
 
 void copy_node_cod(bitmap::Bitmap *from_dfuds, bitmap::Bitmap *to_dfuds, node_type from, node_type to, symbol_type n_branches)
 { 
@@ -50,17 +51,17 @@ preorder_type get_child_skip(bitmap::Bitmap *dfuds, node_type node, symbol_type 
     return dfuds->popcount(node * n_branches, col);
 }
 
-treeblock *create_new_treeblock(level_type root_depth, preorder_type n_nodes, preorder_type max_nodes, int dimensions, level_type max_depth)
+treeblock *create_new_treeblock(level_type root_depth, preorder_type n_nodes, preorder_type tree_capacity, int dimensions, level_type max_depth)
 {
     symbol_type n_branches = pow(2, dimensions);
     treeblock *current_treeblock = new treeblock(dimensions, max_depth);
 
-    current_treeblock->dfuds_ = new bitmap::Bitmap((max_nodes + 1) * n_branches);
+    current_treeblock->dfuds_ = new bitmap::Bitmap((tree_capacity + 1) * n_branches);
     current_treeblock->root_depth_ = root_depth;
     current_treeblock->n_nodes_ = n_nodes;
     current_treeblock->frontiers_ = NULL;
     current_treeblock->n_frontiers_ = 0;
-    current_treeblock->max_nodes_ = max_nodes;
+    current_treeblock->tree_capacity_ = tree_capacity;
     return current_treeblock;
 }
 
@@ -192,7 +193,7 @@ void treeblock::insert(node_type node, leaf_config *leaf_point, level_type level
         return;
     }
     // there is room in current block for new nodes
-    else if (n_nodes_ + (length - level) - 1 <= max_nodes_)
+    else if (n_nodes_ + (length - level) - 1 <= tree_capacity_)
     {
         // skip_children_subtree returns the position under node where the new str[0] will be inserted
         node = skip_children_subtree(node, leaf_to_symbol(leaf_point, level, dimensions_, max_depth_), level, current_frontier);
@@ -225,12 +226,18 @@ void treeblock::insert(node_type node, leaf_config *leaf_point, level_type level
             for (preorder_type j = current_frontier; j < n_frontiers_; ++j)
                 set_preorder(j, get_preorder(j) + length - level);
     }
+    else if (n_nodes_ + (length - level) - 1 <= max_tree_nodes_)
+    {
+        dfuds_->Realloc((n_nodes_ + (length - level)) * n_branches_);
+        tree_capacity_ = n_nodes_ + (length - level);
+        insert(node, leaf_point, level, length, current_frontier);
+    }
     else
     {
         preorder_type subtree_size, selected_node_depth;
         node_type selected_node = select_subtree(subtree_size, selected_node_depth);
         node_type orig_selected_node = selected_node;
-        bitmap::Bitmap *new_dfuds = new bitmap::Bitmap((max_nodes_ + 1) * n_branches_);
+        bitmap::Bitmap *new_dfuds = new bitmap::Bitmap((tree_capacity_ + 1) * n_branches_);
 
         preorder_type frontier;
         //  Find the first frontier node > selected_node
@@ -293,7 +300,7 @@ void treeblock::insert(node_type node, leaf_config *leaf_point, level_type level
         if (!insertion_in_new_block && frontier <= current_frontier)
             insertion_before_selected_tree = false;
 
-        treeblock *new_block = create_new_treeblock(selected_node_depth, subtree_size, max_tree_nodes, dimensions_, max_depth_);
+        treeblock *new_block = create_new_treeblock(selected_node_depth, subtree_size, subtree_size, dimensions_, max_depth_);
         // Memory leak
         new_block->dfuds_ = new_dfuds;
 
@@ -348,6 +355,18 @@ void treeblock::insert(node_type node, leaf_config *leaf_point, level_type level
                 insertion_node = orig_selected_node;
             selected_node++;
             orig_selected_node++;
+        }
+
+        if (subtree_size > length)
+        {         
+            dfuds_->Realloc((tree_capacity_ - (subtree_size-length)) * n_branches_);
+            tree_capacity_ -= subtree_size-length;
+        }
+        else
+        {           
+            dfuds_->Realloc((tree_capacity_ - (subtree_size-1)) * n_branches_);
+            tree_capacity_ -= subtree_size-1;
+            // shrink(subTreeSize-1);
         }
         n_nodes_ -= (subtree_size - 1);
 
@@ -516,7 +535,7 @@ treeblock *md_trie::walk_trie(trie_node *current_trie_node, leaf_config *leaf_po
 
     while (current_trie_node->children_[leaf_to_symbol(leaf_point, level, dimensions_, max_depth_)])
         current_trie_node = current_trie_node->children_[leaf_to_symbol(leaf_point, level++, dimensions_, max_depth_)];
-    while (level < trie_depth)
+    while (level < trie_depth_)
     {
         current_trie_node->children_[leaf_to_symbol(leaf_point, level, dimensions_, max_depth_)] = create_new_trie_node();
         current_trie_node = current_trie_node->children_[leaf_to_symbol(leaf_point, level, dimensions_, max_depth_)];
@@ -525,7 +544,7 @@ treeblock *md_trie::walk_trie(trie_node *current_trie_node, leaf_config *leaf_po
     treeblock *current_treeblock = NULL;
     if (current_trie_node->block == NULL)
     {
-        current_treeblock = create_new_treeblock(trie_depth, 1, max_tree_nodes, dimensions_, max_depth_);
+        current_treeblock = create_new_treeblock(trie_depth_, 1, initial_tree_capacity_, dimensions_, max_depth_);
         current_trie_node->block = current_treeblock;
     }
     else
@@ -572,4 +591,47 @@ bool md_trie::check(leaf_config *leaf_point, level_type strlen)
     trie_node *current_trie_node = root_;
     treeblock *current_treeblock = walk_trie(current_trie_node, leaf_point, level);
     return walk_treeblock(current_treeblock, leaf_point, strlen, level);
+}
+
+uint64_t treeblock::size()
+ {
+    // in bytes;
+// Can be hard coded:     
+// preorder_type max_tree_nodes_;
+// level_type max_depth_;
+// uint8_t dimensions_;
+// symbol_type n_branches_;
+
+// Previously:
+// uint64_t total_size = sizeof(uint8_t) + sizeof(symbol_type) + sizeof(level_type) * 2 + sizeof(preorder_type) * 5;
+    uint64_t total_size = sizeof(level_type) * 1 + sizeof(node_n_type) * 4;
+    total_size += dfuds_->size();
+    dfuds_size += dfuds_->size();
+
+        
+    for(uint16_t i = 0; i < n_frontiers_; i++)
+       total_size += ((frontier_node*)frontiers_)[i].pointer_->size();    
+    
+    return total_size;
+ }
+
+uint64_t trie_node::size(symbol_type n_branches){
+
+    uint64_t total_size = n_branches * sizeof(trie_node *);
+    if (!block){
+        for (symbol_type i = 0; i < n_branches; i++){
+            if (children_[i]){
+                total_size += children_[i]->size(n_branches);
+            }
+        }
+    }
+    else {
+        total_size += ((treeblock *)block)->size();
+    }
+    return total_size;
+}
+
+uint64_t md_trie::size(){
+    uint64_t total_size = sizeof(uint8_t) + sizeof(symbol_type) + sizeof(trie_node *) + sizeof(level_type) * 2 + sizeof(preorder_type) * 2;
+    return total_size + root_->size(n_branches_);
 }

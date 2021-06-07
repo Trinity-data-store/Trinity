@@ -138,8 +138,15 @@ class Bitmap {
     size_ = num_bits;
   }
 
+  uint64_t size(){
+    return size_ / 8 + sizeof(size_type) + sizeof(pos_type) + sizeof(data_type) + sizeof(width_type);
+  }
   void Realloc(size_type num_bits){
+    
     data_ = (data_type *)realloc(data_, BITS2BLOCKS(num_bits) * sizeof(data_type));
+    for (size_type i = BITS2BLOCKS(size_); i < BITS2BLOCKS(num_bits); i ++){
+      data_[i] = 0;
+    }
     size_ = num_bits;
   }
 
@@ -175,10 +182,7 @@ class Bitmap {
   }
   
   void ClearWidth(pos_type pos, width_type width){
-    // for (pos_type j = pos; j < pos + width; j ++){
-    //   UnsetBit(j);
-    // }
-    // return;
+
     if (width <= 64){
       SetValPos(pos, 0, width);
       return;      
@@ -203,98 +207,25 @@ class Bitmap {
       UnsetBit(j);
     }    
   }
-  // uint64_t p(size_t pos, uint16_t width){
-  //   uint64_t total = 0;
-  //   for (pos_type j = pos; j < pos + width; j ++){
-  //     if (GetBit(j)){
-  //       total += 1;
-  //     }
-  //   }    
-  //   return total;     
-  // }
 
   uint64_t popcount(size_t pos, uint16_t width){
-   
-    // uint64_t total = 0;
-    // for (pos_type j = pos; j < pos + width; j ++){
-    //   if (GetBit(j)){
-    //     total += 1;
-    //   }
-    // }    
-    // return total; 
 
-    // if (width <= 64){
-    //   // raise(SIGINT);
-    //   return p(pos, width);
-    //   // return __builtin_popcount(GetValPos(pos, width));      
-    // }
-    // else {
-    //   return p(pos, 64) + popcount(pos + 64, width - 64);
-    //   // return __builtin_popcount(GetValPos(pos, 64)) + popcount(pos + 64, width - 64);
-    // }
-
-    // ***********************
     if (width <= 64){
-      // SetValPos(pos, 0, width);
-      // uint64_t total = 0;
-      // for (pos_type j = pos; j < pos + width; j ++){
-      //   if (GetBit(j)){
-      //     total += 1;
-      //   }
-      // }    
-      // return total; 
-      // return p(pos, width);
       return __builtin_popcountll(GetValPos(pos, width));      
     }
 
-    uint64_t count = 0;
     pos_type s_off = pos % 64;
     pos_type s_idx = pos / 64;
-
-    count += __builtin_popcountll(GetValPos(pos, 64 - s_off));
-    // for (pos_type j = pos; j < (s_idx + 1) * 64; j ++){
-    //   if (GetBit(j)){
-    //     count += 1;
-    //   }
-    // }
-
+    uint64_t count = __builtin_popcountll(GetValPos(pos, 64 - s_off));
     width -= 64 - s_off;
     s_idx += 1;
+
     while (width > 64){
-      // count += p(s_idx * 64, 64);
       count += __builtin_popcountll(data_[s_idx]);
       width -= 64;
       s_idx += 1;
     }
-
-
-    // for (pos_type j = s_idx * 64; j < s_idx * 64 + width; j ++){
-    //   if (GetBit(j)){
-    //     count += 1;
-    //   }
-    // }
     return count + __builtin_popcountll(GetValPos(s_idx * 64, width));    
-
-    // ***********************
-    // if (width <= 64){
-    //   return __builtin_popcount(GetValPos(pos, width));      
-    // }
-
-    // pos_type s_off = pos % 64;
-    // uint64_t count = 0;
-    // if (s_off > 0){
-    //   count += __builtin_popcount(GetValPos(pos, 64 - s_off));
-    //   width -= 64 - s_off;
-    //   pos += 64 - s_off;
-    // }
-
-    // while (width > 64){
-    //   count += __builtin_popcount(data_[pos / 64]);
-    //   pos += 64;
-    //   width -= 64;
-    // }
-
-    // return count + __builtin_popcount(GetValPos(pos, width));
   }
 
   void SetValPos(pos_type pos, data_type val, width_type bits) {

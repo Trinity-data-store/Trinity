@@ -1004,9 +1004,9 @@ int main()
     
     printf("Insertion time: %f microseconds per insertion\n", (float)msec*1000 / nEdges);
 
-    // uint64_t treeSize = sizeTrie(t);//B.size();        
+    uint64_t treeSize = sizeTrie(t);//B.size();        
 
-    // printf("Total size: %lu bytes\n", treeSize);
+    printf("Total size: %lu bytes\n", treeSize);
     
     // printf("Bits per edge of the graph: %f\n", ((float)treeSize*8)/nEdges);
 
