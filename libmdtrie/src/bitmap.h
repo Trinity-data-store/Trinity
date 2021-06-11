@@ -138,8 +138,16 @@ class Bitmap {
     size_ = num_bits;
   }
 
+  uint64_t size(){
+    return size_ / 8 + sizeof(size_type) + sizeof(pos_type) + sizeof(data_type) + sizeof(width_type);
+  }
+
   void Realloc(size_type num_bits){
+    
     data_ = (data_type *)realloc(data_, BITS2BLOCKS(num_bits) * sizeof(data_type));
+    for (size_type i = BITS2BLOCKS(size_); i < BITS2BLOCKS(num_bits); i ++){
+      data_[i] = 0;
+    }
     size_ = num_bits;
   }
 
@@ -175,21 +183,80 @@ class Bitmap {
   }
   
   void ClearWidth(pos_type pos, width_type width){
-    for (pos_type j = pos; j < pos + width; j ++){
-      UnsetBit(j);
+
+    if (width <= 64){
+      SetValPos(pos, 0, width);
+      return;      
     }
+
+    pos_type s_off = pos % 64;
+    pos_type s_idx = pos / 64;
+    SetValPos(pos, 0, 64 - s_off);
+    // for (pos_type j = pos; j < (s_idx + 1) * 64; j ++){
+    //   UnsetBit(j);
+    // }
+
+    width -= 64 - s_off;
+    s_idx += 1;
+    while (width > 64){
+      data_[s_idx] = 0;
+      width -= 64;
+      s_idx += 1;
+    }
+
+    SetValPos(s_idx * 64, 0, width);
+    // for (pos_type j = s_idx * 64; j < s_idx * 64 + width; j ++){
+    //   UnsetBit(j);
+    // }    
   }
 
   uint64_t popcount(size_t pos, uint16_t width){
-    uint64_t total = 0;
-    for (pos_type j = pos; j < pos + width; j ++){
-      if (GetBit(j)){
-        total += 1;
-      }
-    }    
-    return total; 
+
+    if (width <= 64){
+      return __builtin_popcountll(GetValPos(pos, width));      
+    }
+
+    pos_type s_off = pos % 64;
+    pos_type s_idx = pos / 64;
+    uint64_t count = __builtin_popcountll(GetValPos(pos, 64 - s_off));
+    width -= 64 - s_off;
+    s_idx += 1;
+
+    while (width > 64){
+      count += __builtin_popcountll(data_[s_idx]);
+      width -= 64;
+      s_idx += 1;
+    }
+    return count + __builtin_popcountll(GetValPos(s_idx * 64, width));    
   }
 
+  void BulkCopy_backward(pos_type from, pos_type destination, width_type bits){
+    if (bits <= 64){
+      SetValPos(destination - bits, GetValPos(from - bits, bits), bits);
+    }
+    else {
+      SetValPos(destination - 64, GetValPos(from - 64, 64), 64);
+      BulkCopy_backward(from - 64, destination - 64, bits - 64);
+    }
+  }
+
+  void BulkCopy_forward(pos_type from, pos_type destination, width_type bits){
+    if (bits <= 64){
+      SetValPos(destination, GetValPos(from, bits), bits);
+    }
+    else {
+      SetValPos(destination, GetValPos(from, 64), 64);
+      BulkCopy_forward(from + 64, destination + 64, bits - 64);
+    }
+  }
+    // if (dest_start - from_to + 1 <= 64){
+    //   SetValPos(from_start, GetValPos(from_to, dest_start - from_to + 1), dest_start - from_to + 1);
+    // }
+    // else {
+    //   SetValPos(from_start, GetValPos(from_to, 64), 64);
+    //   BulkCopy(from_start + 64, from_to + 64, dest_start);
+    // }
+  
   void SetValPos(pos_type pos, data_type val, width_type bits) {
 
     pos_type s_off = pos % 64;
