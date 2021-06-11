@@ -139,7 +139,7 @@ class Bitmap {
   }
 
   uint64_t size(){
-    return size_ / 8 + sizeof(size_type) + sizeof(pos_type) + sizeof(data_type) + sizeof(width_type);
+    return size_ / 8 + sizeof(size_type);
   }
 
   void Realloc(size_type num_bits){
@@ -183,7 +183,12 @@ class Bitmap {
   }
   
   void ClearWidth(pos_type pos, width_type width){
+    
 
+    // for (pos_type j = pos; j < pos + width; j ++){
+    //   UnsetBit(j);
+    // }
+    // return;
     if (width <= 64){
       SetValPos(pos, 0, width);
       return;      
@@ -211,6 +216,14 @@ class Bitmap {
   }
 
   uint64_t popcount(size_t pos, uint16_t width){
+    
+    // uint64_t count = 0;
+    // for (pos_type j = pos; j < pos + width; j ++){
+    //   if (GetBit(j)){
+    //     count ++;
+    //   }
+    // }
+    // return count;
 
     if (width <= 64){
       return __builtin_popcountll(GetValPos(pos, width));      

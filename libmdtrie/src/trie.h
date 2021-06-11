@@ -39,7 +39,7 @@ extern uint64_t dfuds_size;
 const preorder_type null_node = -1;
 // MAX_DPETH specifies the range of each dimension (0 to 2^MAX_DEPTH -1)
 // const level_type max_depth = 10;
-
+#define MAX_UINT_16 65535
 #endif
 
 // Struct for each point that we want to insert
@@ -52,6 +52,19 @@ public:
         coordinates = (point_type *)calloc(_dimensions, sizeof(point_type));
     }
 };
+
+// class search_range
+// {
+// public:
+//     point_type *from = NULL;
+//     point_type *to = NULL;
+//     leaf_config(dimension_type _dimensions)
+//     {
+//         from = (point_type *)calloc(_dimensions, sizeof(point_type));
+//         to = (point_type *)calloc(_dimensions, sizeof(point_type));
+//     }
+// };
+
 
 // node_info and subtree info are used to obtain subtree size when splitting the treeblock
 class node_info
@@ -95,7 +108,7 @@ public:
 
 class treeblock
 {
-public:
+public: 
     uint8_t dimensions_;
     symbol_type n_branches_;
 
@@ -109,7 +122,7 @@ public:
     node_n_type max_tree_nodes_;
 
     node_n_type initial_tree_capacity_;
-    treeblock(uint8_t _dimensions, level_type _max_depth = 10, node_n_type _max_tree_nodes = 256, uint8_t initial_capacity_nodes = 1)
+    treeblock(uint8_t _dimensions, level_type _max_depth = 10, node_n_type _max_tree_nodes = 256, uint8_t initial_capacity_nodes = 8)
     {
         dimensions_ = _dimensions;
         n_branches_ = pow(2, _dimensions);
@@ -127,6 +140,9 @@ public:
     void set_pointer(preorder_type, treeblock *);
     node_type select_subtree(preorder_type &, preorder_type &);
     uint64_t size();
+
+    void range_search_treeblock(leaf_config *, leaf_config *, treeblock *, level_type, preorder_type, node_type);
+    void range_traverse_treeblock(leaf_config *, leaf_config *, int [], int, treeblock *, level_type, preorder_type, node_type);
 };
 
 class frontier_node
@@ -148,7 +164,7 @@ public:
     preorder_type max_tree_nodes_;
     node_n_type initial_tree_capacity_;
 
-    md_trie(uint8_t _dimensions, level_type _max_depth = 10, level_type _trie_depth = 3, preorder_type _max_tree_nodes = 256, uint8_t initial_capacity_nodes = 8)
+    md_trie(uint8_t _dimensions, level_type _max_depth = 10, level_type _trie_depth = 3, preorder_type _max_tree_nodes = 256, uint8_t initial_capacity_nodes = 2)
     {
         dimensions_ = _dimensions;
         n_branches_ = pow(2, _dimensions);
@@ -164,6 +180,8 @@ public:
     bool walk_treeblock(treeblock *, leaf_config *, level_type, level_type);
     trie_node *create_new_trie_node();
     uint64_t size();
+    void range_search_trie(leaf_config *, leaf_config *, trie_node *, level_type);
+    void range_traverse_trie(leaf_config *, leaf_config *, int [], int, trie_node *, level_type);
 };
 
 // Todo: better arrangement of these functions

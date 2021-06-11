@@ -1,4 +1,5 @@
 #include "trie.h"
+#include <limits.h>
 uint64_t dfuds_size = 0;
 
 void copy_node_cod(bitmap::Bitmap *from_dfuds, bitmap::Bitmap *to_dfuds, node_type from, node_type to, symbol_type n_branches, symbol_type width)
@@ -143,25 +144,43 @@ node_type treeblock::select_subtree(preorder_type &subtree_size, preorder_type &
     preorder_type min_node, min, min_index;
     preorder_type diff;
 
-    min_node = index_to_subtree[0].preorder_,
-    min = n_nodes_ - 2 * index_to_subtree[0].subtree_size_;
-    min_index = 0;
+    uint16_t leftmost = MAX_UINT_16;
 
-    for (preorder_type i = 1; i < subtree_stack_top; ++i)
-    {
-        if (n_nodes_ > 2 * index_to_subtree[i].subtree_size_)
-        {
-            diff = n_nodes_ - 2 * index_to_subtree[i].subtree_size_;
+    for (uint16_t i = 0; i < subtree_stack_top; ++i) {
+//       if (lowerB <= subtrees[i].subtreeSize && subtrees[i].subtreeSize <= upperB && subtrees[i].preorder < leftmost) {
+
+       if (((float)n_nodes_/4) <= index_to_subtree[i].subtree_size_ && index_to_subtree[i].subtree_size_ <= ((float)3*n_nodes_/4) && index_to_subtree[i].preorder_ < leftmost) {
+          leftmost = min_node = index_to_subtree[i].preorder_;
+          min_index = i;
+       }
+    }
+
+    if (leftmost == MAX_UINT_16) {
+        min_node = index_to_subtree[0].preorder_;
+        if (n_nodes_ > 2 * index_to_subtree[0].subtree_size_){
+            min = n_nodes_ - 2 * index_to_subtree[0].subtree_size_;
         }
-        else
-        {
-            diff = 2 * index_to_subtree[i].subtree_size_ - n_nodes_;
+        else {
+            min = 2 * index_to_subtree[0].subtree_size_ - n_nodes_;
         }
-        if (diff < min)
+        min_index = 0;
+
+        for (preorder_type i = 1; i < subtree_stack_top; ++i)
         {
-            min = diff;
-            min_node = index_to_subtree[i].preorder_;
-            min_index = i;
+            if (n_nodes_ > 2 * index_to_subtree[i].subtree_size_)
+            {
+                diff = n_nodes_ - 2 * index_to_subtree[i].subtree_size_;
+            }
+            else
+            {
+                diff = 2 * index_to_subtree[i].subtree_size_ - n_nodes_;
+            }
+            if (diff < min)
+            {
+                min = diff;
+                min_node = index_to_subtree[i].preorder_;
+                min_index = i;
+            }
         }
     }
     subtree_size = index_to_subtree[min_index].subtree_size_;
@@ -177,7 +196,10 @@ void treeblock::insert(node_type node, leaf_config *leaf_point, level_type level
         return;
     }
     node_type original_node = node;
-
+    uint64_t max_tree_nodes;
+    if (root_depth_ <=/*=*/ 16) max_tree_nodes = 64;
+    else if (root_depth_ <= 24) max_tree_nodes = 128;
+    else max_tree_nodes = max_tree_nodes_;
     //  node is a frontier node
     if (frontiers_ != NULL && current_frontier < n_frontiers_ && node == get_preorder(current_frontier))
     {
@@ -208,13 +230,13 @@ void treeblock::insert(node_type node, leaf_config *leaf_point, level_type level
 
         // dfuds_->BulkCopy(from_node * n_branches_, node * n_branches_, dest_node * n_branches_);
         if (from_node >= node){
-            dfuds_->BulkCopy_backward(from_node * n_branches_, dest_node * n_branches_, (from_node - node) * n_branches_);
+            dfuds_->BulkCopy_backward((from_node + 1) * n_branches_, (dest_node + 1) * n_branches_, (from_node - node + 1) * n_branches_);
             dest_node -= from_node - (node - 1);
             from_node = node - 1;
         }
         // while (from_node >= node)
         // {
-        //     copy_node_cod(dfuds_, dfuds_, from_node, dest_node, n_branches_);
+        //     copy_node_cod(dfuds_, dfuds_, from_node, dest_node, n_branches_, n_branches_);
         //     dest_node--;
         //     from_node--;
         // }
@@ -235,7 +257,7 @@ void treeblock::insert(node_type node, leaf_config *leaf_point, level_type level
             for (preorder_type j = current_frontier; j < n_frontiers_; ++j)
                 set_preorder(j, get_preorder(j) + length - level);
     }
-    else if (n_nodes_ + (length - level) - 1 <= max_tree_nodes_)
+    else if (n_nodes_ + (length - level) - 1 <= max_tree_nodes)
     {
         dfuds_->Realloc((n_nodes_ + (length - level)) * n_branches_);
         tree_capacity_ = n_nodes_ + (length - level);
@@ -375,7 +397,7 @@ void treeblock::insert(node_type node, leaf_config *leaf_point, level_type level
         // //     // selected_node is the immediate node after the copied block
         // //     // orig_selected_node is the original node where we want to turn into a frontier node
         // //     // node is the node where we want to insert the symbol str[0]
-        // //     copy_node_cod(dfuds_, dfuds_, selected_node, orig_selected_node, n_branches_);
+        //     copy_node_cod(dfuds_, dfuds_, selected_node, orig_selected_node, n_branches_, n_branches_);
         //     if (selected_node == node)
         //         insertion_node = orig_selected_node;
         //     selected_node++;
@@ -635,6 +657,7 @@ uint64_t treeblock::size()
 // Previously:
 // uint64_t total_size = sizeof(uint8_t) + sizeof(symbol_type) + sizeof(level_type) * 2 + sizeof(preorder_type) * 5;
     uint64_t total_size = sizeof(level_type) * 1 + sizeof(node_n_type) * 4;
+    total_size += n_frontiers_ * (sizeof(preorder_type) + sizeof(treeblock *)) + sizeof(frontier_node *);
     total_size += dfuds_->size();
     dfuds_size += dfuds_->size();
 
@@ -664,4 +687,223 @@ uint64_t trie_node::size(symbol_type n_branches){
 uint64_t md_trie::size(){
     uint64_t total_size = sizeof(uint8_t) + sizeof(symbol_type) + sizeof(trie_node *) + sizeof(level_type) * 2 + sizeof(preorder_type) * 2;
     return total_size + root_->size(n_branches_);
+}
+
+
+void treeblock::range_search_treeblock(leaf_config *start_range, leaf_config *end_range, treeblock *current_block, level_type level , preorder_type current_node = 0, node_type current_frontier = 0)
+{
+    if (level == max_depth_){
+        printf("Found: (");
+
+        for (uint8_t j = 0; j < dimensions_; j ++){
+            point_type start_coordinate = start_range->coordinates[j];
+            // point_type end_coordinate = end_range->coordinates[j];
+            printf("%ld", start_coordinate);
+            if (j != dimensions_ - 1){
+                printf(", ");
+            }
+        }
+        printf(")\n");
+        return;        
+    }
+    int *representation = (int *)malloc(sizeof(int) * dimensions_);
+    for (uint8_t j = 0; j < dimensions_; j ++){
+        point_type start_coordinate = start_range->coordinates[j];
+        point_type end_coordinate = end_range->coordinates[j];
+        int start_bit = (start_coordinate >> (max_depth_ - level - 1)) & 1;
+        int end_bit = (end_coordinate >> (max_depth_ - level - 1)) & 1;
+        if (start_bit == end_bit){
+            representation[j] = start_bit;
+        }
+        else {
+            // Both directions
+            representation[j] = 2;
+        }
+    }   
+    range_traverse_treeblock(start_range, end_range, representation, 0, current_block, level, current_node, current_frontier);
+}
+
+void treeblock::range_traverse_treeblock(leaf_config *start_range, leaf_config *end_range, int representation[], int index, treeblock *current_block, level_type level, preorder_type current_node = 0, node_type current_frontier = 0){
+    if (index == dimensions_){
+        for (uint8_t j = 0; j < dimensions_; j++){
+            point_type start_coordinate = start_range->coordinates[j];
+            point_type end_coordinate = end_range->coordinates[j];
+            int start_bit = (start_coordinate >> (max_depth_ - level - 1)) & 1;
+            int end_bit = (end_coordinate >> (max_depth_ - level - 1)) & 1;
+            if (representation[j] == 1){
+                if (start_bit == 0){
+                    start_coordinate = ((start_coordinate >> (max_depth_ - level - 1)) | 1) << (max_depth_ - level - 1);
+                }
+                if (end_bit == 0) {
+                    return;
+                }
+            }
+            else if (representation[j] == 0) {
+                if (start_bit == 1){
+                    return;
+                }
+                if (end_bit == 1)
+                {
+                    end_coordinate = ((end_coordinate >> (max_depth_ - level)) << (max_depth_ - level)) + ((1 << (max_depth_ - level - 1)) - 1);
+                }
+            }
+            start_range->coordinates[j] = start_coordinate;
+            end_range->coordinates[j] = end_coordinate;
+        }
+        symbol_type current_symbol = 0;
+        for (uint8_t j = 0; j < dimensions_; j++){
+            current_symbol = current_symbol << 1;
+            if (representation[j] == 1){
+                current_symbol += 1;
+            }
+        }
+        // printf("symbol: %ld, level: %ld\n", current_symbol, level);
+
+        node_type temp_node = current_block->child(current_block, current_node, current_symbol, level, current_frontier);
+
+        if (temp_node == (node_type)-1)
+            return;
+        current_node = temp_node;
+
+        if (current_block->n_frontiers_ > 0 && current_frontier < current_block->n_frontiers_ && current_node == current_block->get_preorder(current_frontier))
+        {
+            current_block = current_block->get_pointer(current_frontier);
+            current_node = (node_type)0;
+            current_frontier = 0;
+        }
+        range_search_treeblock(start_range, end_range, current_block, level + 1, current_node, current_frontier);
+        
+        return;
+    }
+    if (representation[index] == 2){
+        point_type *start_range_coordinates = (point_type *)calloc(dimensions_, sizeof(point_type));
+        point_type *end_range_coordinates = (point_type *)calloc(dimensions_, sizeof(point_type));
+        for (int j = 0; j < dimensions_; j ++){
+            start_range_coordinates[j] = start_range->coordinates[j];
+            end_range_coordinates[j] = end_range->coordinates[j];
+        }
+
+        representation[index] = 0;
+        range_traverse_treeblock(start_range, end_range, representation, index + 1, current_block, level, current_node, current_frontier);
+
+        for (int j = 0; j < dimensions_; j ++){
+            start_range->coordinates[j] = start_range_coordinates[j];
+            end_range->coordinates[j] = end_range_coordinates[j];
+        }
+        representation[index] = 1;
+
+        range_traverse_treeblock(start_range, end_range, representation, index + 1, current_block, level, current_node, current_frontier);
+
+        for (int j = 0; j < dimensions_; j ++){
+            start_range->coordinates[j] = start_range_coordinates[j];
+            end_range->coordinates[j] = end_range_coordinates[j];
+        }
+        representation[index] = 2;
+    }
+    else {
+        range_traverse_treeblock(start_range, end_range, representation, index + 1, current_block,level, current_node, current_frontier);
+    }
+
+}
+
+void md_trie::range_search_trie(leaf_config *start_range, leaf_config *end_range, trie_node *current_trie_node, level_type level)
+{
+    if (level == trie_depth_){
+        // for (uint8_t j = 0; j < dimensions_; j ++){
+        //     point_type start_coordinate = start_range->coordinates[j];
+        //     point_type end_coordinate = end_range->coordinates[j];
+        //     printf("start_range: %ld, end_range: %ld \n", start_coordinate, end_coordinate);
+        // }
+        // printf("\n");
+        treeblock *current_treeblock = (treeblock *)current_trie_node->block;
+        current_treeblock->range_search_treeblock(start_range, end_range, current_treeblock, level, 0, 0);
+        return;
+    }
+    int *representation = (int *)malloc(sizeof(int) * dimensions_);
+    for (uint8_t j = 0; j < dimensions_; j ++){
+        point_type start_coordinate = start_range->coordinates[j];
+        point_type end_coordinate = end_range->coordinates[j];
+        int start_bit = (start_coordinate >> (max_depth_ - level - 1)) & 1;
+        int end_bit = (end_coordinate >> (max_depth_ - level - 1)) & 1;
+        if (start_bit == end_bit){
+            representation[j] = start_bit;
+        }
+        else {
+            // Both directions
+            representation[j] = 2;
+        }
+    }
+    range_traverse_trie(start_range, end_range, representation, 0, current_trie_node, level);
+    return;
+}
+
+void md_trie::range_traverse_trie(leaf_config *start_range, leaf_config *end_range, int representation[], int index, trie_node *current_trie_node, level_type level){
+    if (index == dimensions_){
+        for (uint8_t j = 0; j < dimensions_; j++){
+            point_type start_coordinate = start_range->coordinates[j];
+            point_type end_coordinate = end_range->coordinates[j];
+            int start_bit = (start_coordinate >> (max_depth_ - level - 1)) & 1;
+            int end_bit = (end_coordinate >> (max_depth_ - level - 1)) & 1;
+            if (representation[j] == 1){
+                if (start_bit == 0){
+                    start_coordinate = ((start_coordinate >> (max_depth_ - level - 1)) | 1) << (max_depth_ - level - 1);
+                }
+                if (end_bit == 0) {
+                    return;
+                }
+            }
+            else if (representation[j] == 0) {
+                if (start_bit == 1){
+                    return;
+                }
+                if (end_bit == 1)
+                {
+                    end_coordinate = ((end_coordinate >> (max_depth_ - level)) << (max_depth_ - level)) + ((1 << (max_depth_ - level - 1)) - 1);
+                }
+            }
+            start_range->coordinates[j] = start_coordinate;
+            end_range->coordinates[j] = end_coordinate;
+        }
+        symbol_type current_symbol = 0;
+        for (uint8_t j = 0; j < dimensions_; j++){
+            current_symbol = current_symbol << 1;
+            if (representation[j] == 1){
+                current_symbol += 1;
+            }
+        }
+        if (current_trie_node->children_[current_symbol]){
+            // printf("symbol: %ld, level: %ld\n", current_symbol, level);
+            range_search_trie(start_range, end_range, current_trie_node->children_[current_symbol], level + 1);
+        }
+        return;
+    }
+    if (representation[index] == 2){
+        point_type *start_range_coordinates = (point_type *)calloc(dimensions_, sizeof(point_type));
+        point_type *end_range_coordinates = (point_type *)calloc(dimensions_, sizeof(point_type));
+        for (int j = 0; j < dimensions_; j ++){
+            start_range_coordinates[j] = start_range->coordinates[j];
+            end_range_coordinates[j] = end_range->coordinates[j];
+        }
+
+        representation[index] = 0;
+        range_traverse_trie(start_range, end_range, representation, index + 1, current_trie_node, level);
+
+        for (int j = 0; j < dimensions_; j ++){
+            start_range->coordinates[j] = start_range_coordinates[j];
+            end_range->coordinates[j] = end_range_coordinates[j];
+        }
+        representation[index] = 1;
+
+        range_traverse_trie(start_range, end_range, representation, index + 1, current_trie_node, level);
+
+        for (int j = 0; j < dimensions_; j ++){
+            start_range->coordinates[j] = start_range_coordinates[j];
+            end_range->coordinates[j] = end_range_coordinates[j];
+        }
+        representation[index] = 2;
+    }
+    else {
+        range_traverse_trie(start_range, end_range, representation, index + 1, current_trie_node,level);
+    }
+
 }
