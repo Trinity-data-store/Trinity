@@ -30,7 +30,7 @@ using namespace std;
 #define S1 64
 #define S2 128
 #define S3 1024
-#define L1 8
+#define L1 10
 #define L2 16
 
 
@@ -60,7 +60,7 @@ struct treeBlock
     
     uint16_t nPtrs;   // number of pointers to child blocks
  
- 
+  
     void insert(treeNode, uint8_t[], uint64_t, uint16_t, uint64_t, uint16_t);
     
     treeNode skipChildrenSubtree(treeNode &, uint8_t, uint16_t &, uint16_t, uint16_t &);

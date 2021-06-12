@@ -306,9 +306,13 @@ void treeBlock::insert(treeNode node, uint8_t str[], uint64_t length, uint16_t l
     {
         return;
     }
-    if (rootDepth </*=*/ L1) Nt = S1;
-    else if (rootDepth <= L2) Nt = S2;
-    else Nt = S3;
+   //  if (rootDepth </*=*/ L1) Nt = S1;
+   //  else if (rootDepth <= L2) Nt = S2;
+   //  else Nt = S3;
+
+    if (rootDepth <=/*=*/ 16) Nt = 64;
+    else if (rootDepth <= 24) Nt = 128;
+    else Nt = 1024;
     
     if (ptr!=NULL && curFlag < nPtrs && absolutePosition(node) == ((blockPtr *)ptr)[curFlag].flag) {
        // insertion must be carried out in the root of a child block
@@ -930,6 +934,7 @@ int main()
     tqdm bar;
     int n_points = 0;
     TimeStamp start, diff;
+    diff = 0;
     int max_depth = 32;
     int str_len = max_depth + 1;
     while ((read = getline(&line, &len, fp)) != -1)
@@ -948,7 +953,6 @@ int main()
             coordinates[i] = strtoul(token, &ptr, 10);;
         }
         start = GetTimestamp();
-      //   Count in the time to change to Morton code
         for (int i = 0; i < str_len; i ++){
             uint64_t result = 0;
             for (int j = 0; j < 2; j++)
@@ -1011,4 +1015,81 @@ int main()
     // printf("Numero de nodos internos en el arbol: %lu\n", totalNodes);
     
     // return 0;
+   
+
+    n_points = 0;
+    tqdm bar1;
+    int n_nonexistent = 0;
+    diff = 0;
+    uint64_t range = pow(2, max_depth);
+    while ((uint64_t)n_points <= nEdges)
+    {
+        bar1.progress(n_points, nEdges);
+
+        uint64_t coordinates[2];
+        for (int i = 0; i < 2; i++){
+            coordinates[i] = rand() % range;
+        }
+        start = GetTimestamp();
+        for (int i = 0; i < str_len; i ++){
+            uint64_t result = 0;
+            for (int j = 0; j < 2; j++)
+            {
+                int coordinate = coordinates[j];
+                int bit = (coordinate >> (max_depth - i - 1)) & 1;
+                result *= 2;
+                result += bit;
+            }
+            str[i] = result;
+        }
+        if (!isEdgeTrie(t, str, str_len, max_depth)){
+           diff += GetTimestamp() - start;
+           n_nonexistent ++;
+        }
+        n_points ++;
+    }
+    bar1.finish();
+    msec = diff * 1000 / CLOCKS_PER_SEC;
+    printf("Query time: %f microseconds per insertion\n", (float)msec*1000 / n_nonexistent);
+
+
+
+    n_points = 0;
+    tqdm bar2;
+    diff = 0;
+    rewind(fp);
+    while ((read = getline(&line, &len, fp)) != -1)
+    {
+        bar2.progress(n_points, nEdges);
+        // Get the first token
+        char *token = strtok(line, " ");
+        char *ptr;
+        // Skip the second and third token
+        for (int i = 0; i < 2; i ++){
+            token = strtok(NULL, " ");
+        }
+        uint64_t coordinates[2];
+        for (int i = 0; i < 2; i++){
+            token = strtok(NULL, " ");
+            coordinates[i] = strtoul(token, &ptr, 10);;
+        }
+        start = GetTimestamp();
+        for (int i = 0; i < str_len; i ++){
+            uint64_t result = 0;
+            for (int j = 0; j < 2; j++)
+            {
+                int coordinate = coordinates[j];
+                int bit = (coordinate >> (max_depth - i - 1)) & 1;
+                result *= 2;
+                result += bit;
+            }
+            str[i] = result;
+        }
+        isEdgeTrie(t, str, str_len, max_depth);
+        diff += GetTimestamp() - start;
+        n_points ++;
+    }
+    bar2.finish();  
+    msec = diff * 1000 / CLOCKS_PER_SEC;
+    printf("Query time: %f microseconds per insertion\n", (float)msec*1000 / nEdges);  
  }

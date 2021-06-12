@@ -13,7 +13,8 @@ if (BUILD_TESTS)
   include_directories(${CATCH_INCLUDE_DIR})
   add_executable(mdtrie_tests
           test/test_main.cpp
-          test/mdtrie_test.cpp)
+          test/mdtrie_test.cpp
+          test/range_search_test.cpp)
   target_link_libraries(mdtrie_tests mdtrie)
   
   add_dependencies(mdtrie_tests catch_ep)
