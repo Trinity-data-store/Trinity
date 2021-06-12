@@ -690,20 +690,28 @@ uint64_t md_trie::size(){
 }
 
 
-void treeblock::range_search_treeblock(leaf_config *start_range, leaf_config *end_range, treeblock *current_block, level_type level , preorder_type current_node = 0, node_type current_frontier = 0)
+void treeblock::range_search_treeblock(leaf_config *start_range, leaf_config *end_range, treeblock *current_block, level_type level , preorder_type current_node, node_type current_frontier, leaf_array *found_points)
 {
     if (level == max_depth_){
         printf("Found: (");
+
+        leaf_config *leaf = new leaf_config(dimensions_);
 
         for (uint8_t j = 0; j < dimensions_; j ++){
             point_type start_coordinate = start_range->coordinates[j];
             // point_type end_coordinate = end_range->coordinates[j];
             printf("%ld", start_coordinate);
+            leaf->coordinates[j] = start_coordinate;
             if (j != dimensions_ - 1){
                 printf(", ");
             }
         }
         printf(")\n");
+        
+        
+        found_points->points[found_points->n_points] = leaf;
+        found_points->n_points ++;
+        found_points->points = (leaf_config **)realloc(found_points->points, (found_points->n_points + 1) * sizeof(leaf_config *));
         return;        
     }
     int *representation = (int *)malloc(sizeof(int) * dimensions_);
@@ -720,10 +728,10 @@ void treeblock::range_search_treeblock(leaf_config *start_range, leaf_config *en
             representation[j] = 2;
         }
     }   
-    range_traverse_treeblock(start_range, end_range, representation, 0, current_block, level, current_node, current_frontier);
+    range_traverse_treeblock(start_range, end_range, representation, 0, current_block, level, current_node, current_frontier, found_points);
 }
 
-void treeblock::range_traverse_treeblock(leaf_config *start_range, leaf_config *end_range, int representation[], int index, treeblock *current_block, level_type level, preorder_type current_node = 0, node_type current_frontier = 0){
+void treeblock::range_traverse_treeblock(leaf_config *start_range, leaf_config *end_range, int representation[], int index, treeblock *current_block, level_type level, preorder_type current_node, node_type current_frontier, leaf_array *found_points){
     if (index == dimensions_){
         for (uint8_t j = 0; j < dimensions_; j++){
             point_type start_coordinate = start_range->coordinates[j];
@@ -771,7 +779,7 @@ void treeblock::range_traverse_treeblock(leaf_config *start_range, leaf_config *
             current_node = (node_type)0;
             current_frontier = 0;
         }
-        range_search_treeblock(start_range, end_range, current_block, level + 1, current_node, current_frontier);
+        range_search_treeblock(start_range, end_range, current_block, level + 1, current_node, current_frontier, found_points);
         
         return;
     }
@@ -784,7 +792,7 @@ void treeblock::range_traverse_treeblock(leaf_config *start_range, leaf_config *
         }
 
         representation[index] = 0;
-        range_traverse_treeblock(start_range, end_range, representation, index + 1, current_block, level, current_node, current_frontier);
+        range_traverse_treeblock(start_range, end_range, representation, index + 1, current_block, level, current_node, current_frontier, found_points);
 
         for (int j = 0; j < dimensions_; j ++){
             start_range->coordinates[j] = start_range_coordinates[j];
@@ -792,7 +800,7 @@ void treeblock::range_traverse_treeblock(leaf_config *start_range, leaf_config *
         }
         representation[index] = 1;
 
-        range_traverse_treeblock(start_range, end_range, representation, index + 1, current_block, level, current_node, current_frontier);
+        range_traverse_treeblock(start_range, end_range, representation, index + 1, current_block, level, current_node, current_frontier, found_points);
 
         for (int j = 0; j < dimensions_; j ++){
             start_range->coordinates[j] = start_range_coordinates[j];
@@ -801,12 +809,12 @@ void treeblock::range_traverse_treeblock(leaf_config *start_range, leaf_config *
         representation[index] = 2;
     }
     else {
-        range_traverse_treeblock(start_range, end_range, representation, index + 1, current_block,level, current_node, current_frontier);
+        range_traverse_treeblock(start_range, end_range, representation, index + 1, current_block,level, current_node, current_frontier, found_points);
     }
 
 }
 
-void md_trie::range_search_trie(leaf_config *start_range, leaf_config *end_range, trie_node *current_trie_node, level_type level)
+void md_trie::range_search_trie(leaf_config *start_range, leaf_config *end_range, trie_node *current_trie_node, level_type level, leaf_array *found_points)
 {
     if (level == trie_depth_){
         // for (uint8_t j = 0; j < dimensions_; j ++){
@@ -816,7 +824,7 @@ void md_trie::range_search_trie(leaf_config *start_range, leaf_config *end_range
         // }
         // printf("\n");
         treeblock *current_treeblock = (treeblock *)current_trie_node->block;
-        current_treeblock->range_search_treeblock(start_range, end_range, current_treeblock, level, 0, 0);
+        current_treeblock->range_search_treeblock(start_range, end_range, current_treeblock, level, 0, 0, found_points);
         return;
     }
     int *representation = (int *)malloc(sizeof(int) * dimensions_);
@@ -833,11 +841,11 @@ void md_trie::range_search_trie(leaf_config *start_range, leaf_config *end_range
             representation[j] = 2;
         }
     }
-    range_traverse_trie(start_range, end_range, representation, 0, current_trie_node, level);
+    range_traverse_trie(start_range, end_range, representation, 0, current_trie_node, level, found_points);
     return;
 }
 
-void md_trie::range_traverse_trie(leaf_config *start_range, leaf_config *end_range, int representation[], int index, trie_node *current_trie_node, level_type level){
+void md_trie::range_traverse_trie(leaf_config *start_range, leaf_config *end_range, int representation[], int index, trie_node *current_trie_node, level_type level, leaf_array *found_points){
     if (index == dimensions_){
         for (uint8_t j = 0; j < dimensions_; j++){
             point_type start_coordinate = start_range->coordinates[j];
@@ -872,8 +880,7 @@ void md_trie::range_traverse_trie(leaf_config *start_range, leaf_config *end_ran
             }
         }
         if (current_trie_node->children_[current_symbol]){
-            // printf("symbol: %ld, level: %ld\n", current_symbol, level);
-            range_search_trie(start_range, end_range, current_trie_node->children_[current_symbol], level + 1);
+            range_search_trie(start_range, end_range, current_trie_node->children_[current_symbol], level + 1, found_points);
         }
         return;
     }
@@ -886,7 +893,7 @@ void md_trie::range_traverse_trie(leaf_config *start_range, leaf_config *end_ran
         }
 
         representation[index] = 0;
-        range_traverse_trie(start_range, end_range, representation, index + 1, current_trie_node, level);
+        range_traverse_trie(start_range, end_range, representation, index + 1, current_trie_node, level, found_points);
 
         for (int j = 0; j < dimensions_; j ++){
             start_range->coordinates[j] = start_range_coordinates[j];
@@ -894,7 +901,7 @@ void md_trie::range_traverse_trie(leaf_config *start_range, leaf_config *end_ran
         }
         representation[index] = 1;
 
-        range_traverse_trie(start_range, end_range, representation, index + 1, current_trie_node, level);
+        range_traverse_trie(start_range, end_range, representation, index + 1, current_trie_node, level, found_points);
 
         for (int j = 0; j < dimensions_; j ++){
             start_range->coordinates[j] = start_range_coordinates[j];
@@ -903,7 +910,7 @@ void md_trie::range_traverse_trie(leaf_config *start_range, leaf_config *end_ran
         representation[index] = 2;
     }
     else {
-        range_traverse_trie(start_range, end_range, representation, index + 1, current_trie_node,level);
+        range_traverse_trie(start_range, end_range, representation, index + 1, current_trie_node,level, found_points);
     }
 
 }

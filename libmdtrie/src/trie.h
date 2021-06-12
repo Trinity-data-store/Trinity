@@ -53,6 +53,18 @@ public:
     }
 };
 
+class leaf_array
+{
+public:
+    int n_points = 0;
+    leaf_config **points;
+    leaf_array()
+    {
+        points = (leaf_config **)malloc(sizeof(leaf_config *));
+    }
+};
+
+
 // class search_range
 // {
 // public:
@@ -141,8 +153,8 @@ public:
     node_type select_subtree(preorder_type &, preorder_type &);
     uint64_t size();
 
-    void range_search_treeblock(leaf_config *, leaf_config *, treeblock *, level_type, preorder_type, node_type);
-    void range_traverse_treeblock(leaf_config *, leaf_config *, int [], int, treeblock *, level_type, preorder_type, node_type);
+    void range_search_treeblock(leaf_config *, leaf_config *, treeblock *, level_type, preorder_type, node_type, leaf_array *);
+    void range_traverse_treeblock(leaf_config *, leaf_config *, int [], int, treeblock *, level_type, preorder_type, node_type, leaf_array *);
 };
 
 class frontier_node
@@ -180,8 +192,8 @@ public:
     bool walk_treeblock(treeblock *, leaf_config *, level_type, level_type);
     trie_node *create_new_trie_node();
     uint64_t size();
-    void range_search_trie(leaf_config *, leaf_config *, trie_node *, level_type);
-    void range_traverse_trie(leaf_config *, leaf_config *, int [], int, trie_node *, level_type);
+    void range_search_trie(leaf_config *, leaf_config *, trie_node *, level_type, leaf_array *);
+    void range_traverse_trie(leaf_config *, leaf_config *, int [], int, trie_node *, level_type, leaf_array *);
 };
 
 // Todo: better arrangement of these functions
