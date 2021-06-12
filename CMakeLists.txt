@@ -20,6 +20,7 @@ set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_CXX_FLAGS_RELWITHDEBINFO} -fPIC -O0 
 set(CMAKE_BUILD_TYPE RelWithDebInfo)
 
 # CMake modules
+#include(OptimizeForArchitecture)
 include(BuildOptions)
 include(Dependencies)
 
