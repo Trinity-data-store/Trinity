@@ -15,11 +15,11 @@ bool test_random_data(int n_points, int dimensions, level_type max_depth, level_
         }
         
         mdtrie->insert_trie(leaf_point, max_depth);
-        if (!mdtrie->check(leaf_point, max_depth)){
-            return false;
-        }
+        // if (!mdtrie->check(leaf_point, max_depth)){
+        //     return false;
+        // }
     }
-    mdtrie->size();
+    // mdtrie->size();
     return true;
 }
 
@@ -82,18 +82,18 @@ TEST_CASE( "Check size", "[trie]" ) {
 }
 
 //  n_points, dimensions, max_depth, trie_depth, max_tree_node
-TEST_CASE( "Check Random Data Insertion", "[trie]" ) {
-    REQUIRE(test_random_data(50000, 10, 10, 3, 128));
-    REQUIRE(test_random_data(50000, 6, 13, 6, 256));
-    REQUIRE(test_random_data(100000, 5, 20, 10, 1024));
-    REQUIRE(test_random_data(100000, 8, 20, 10, 1024));
-}
+// TEST_CASE( "Check Random Data Insertion", "[trie]" ) {
+//     REQUIRE(test_random_data(50000, 10, 10, 3, 128));
+//     REQUIRE(test_random_data(50000, 6, 13, 6, 256));
+//     REQUIRE(test_random_data(100000, 5, 20, 10, 1024));
+//     REQUIRE(test_random_data(100000, 8, 20, 10, 1024));
+// }
 
-TEST_CASE( "Check Nonexistent Data", "[trie]" ) {
-    REQUIRE(test_nonexistent_data(10000, 10, 10, 3, 128));
-}
+// TEST_CASE( "Check Nonexistent Data", "[trie]" ) {
+//     REQUIRE(test_nonexistent_data(10000, 10, 10, 3, 128));
+// }
 
-TEST_CASE( "Check Contiguous Data", "[trie]" ) {
-    REQUIRE(test_contiguous_data(10000, 10, 10, 3, 128));
-}
+// TEST_CASE( "Check Contiguous Data", "[trie]" ) {
+//     REQUIRE(test_contiguous_data(10000, 10, 10, 3, 128));
+// }
 
