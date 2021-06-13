@@ -3,10 +3,10 @@
 
 bool test_range_search(int n_points, int dimensions, level_type max_depth, level_type trie_depth, preorder_type max_tree_nodes){
 
-    symbol_type range = pow(2, max_depth);
-    md_trie *mdtrie = new md_trie(dimensions, max_depth, trie_depth, max_tree_nodes);
+    auto range = (symbol_type)pow(2, max_depth);
+    auto *mdtrie = new md_trie(dimensions, max_depth, trie_depth, max_tree_nodes);
 
-    leaf_config *leaf_point = new leaf_config(dimensions);
+    auto *leaf_point = new leaf_config(dimensions);
 
     for (int itr = 1; itr <= n_points; itr ++){
 
@@ -15,10 +15,10 @@ bool test_range_search(int n_points, int dimensions, level_type max_depth, level
         }
         mdtrie->insert_trie(leaf_point, max_depth);
     }
-    leaf_config *start_range = new leaf_config(dimensions);
-    leaf_config *end_range = new leaf_config(dimensions);
+    auto *start_range = new leaf_config(dimensions);
+    auto *end_range = new leaf_config(dimensions);
 
-    leaf_array *found_points = new leaf_array();
+    auto *found_points = new leaf_array();
 
     for (int itr = 1; itr <= 50; itr++){
         for (int i = 0; i < dimensions; i++){
@@ -58,7 +58,7 @@ bool test_range_search(int n_points, int dimensions, level_type max_depth, level
                     if (present){
                         continue;
                     }
-                    leaf_config *leaf_check = new leaf_config(dimensions);
+                    auto *leaf_check = new leaf_config(dimensions);
                     leaf_check->coordinates[0] = i;
                     leaf_check->coordinates[1] = j;
                     leaf_check->coordinates[2] = k;

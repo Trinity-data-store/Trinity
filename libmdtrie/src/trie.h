@@ -46,8 +46,8 @@ const preorder_type null_node = -1;
 class leaf_config
 {
 public:
-    point_type *coordinates = NULL;
-    leaf_config(dimension_type _dimensions)
+    point_type *coordinates = nullptr;
+    explicit leaf_config(dimension_type _dimensions)
     {
         coordinates = (point_type *)calloc(_dimensions, sizeof(point_type));
     }
@@ -84,7 +84,7 @@ class node_info
 public:
     preorder_type preorder_ = 0;
     preorder_type n_children_ = 0;
-    node_info(){};
+    node_info()= default;
     node_info(preorder_type _preorder, preorder_type _n_children)
     {
         preorder_ = _preorder;
@@ -97,7 +97,7 @@ class subtree_info
 public:
     preorder_type preorder_ = 0;
     preorder_type subtree_size_ = 0;
-    subtree_info(){};
+    subtree_info()= default;
     subtree_info(preorder_type _preorder, preorder_type _subtree_size)
     {
         preorder_ = _preorder;
@@ -108,14 +108,14 @@ public:
 class trie_node
 {
 public:
-    trie_node **children_ = NULL;
-    trie_node(symbol_type _n_branches)
+    trie_node **children_ = nullptr;
+    explicit trie_node(symbol_type _n_branches)
     {
         // Assume null to be 0;
         children_ = (trie_node **)calloc(_n_branches, sizeof(trie_node *));
     }
-    void *block = NULL;
-    uint64_t size(symbol_type _n_branches);
+    void *block = nullptr;
+    uint64_t size(symbol_type _n_branches) const;
 };
 
 class treeblock
@@ -124,34 +124,34 @@ public:
     uint8_t dimensions_;
     symbol_type n_branches_;
 
-    level_type root_depth_;
-    node_n_type n_nodes_;
-    node_n_type tree_capacity_;
+    level_type root_depth_{};
+    node_n_type n_nodes_{};
+    node_n_type tree_capacity_{};
     level_type max_depth_;
-    bitmap::Bitmap *dfuds_;
-    void *frontiers_ = NULL;
+    bitmap::Bitmap *dfuds_{};
+    void *frontiers_ = nullptr;
     node_n_type n_frontiers_ = 0;
     node_n_type max_tree_nodes_;
 
     node_n_type initial_tree_capacity_;
-    treeblock(uint8_t _dimensions, level_type _max_depth = 10, node_n_type _max_tree_nodes = 256, uint8_t initial_capacity_nodes = 8)
+    explicit treeblock(uint8_t _dimensions, level_type _max_depth = 10, node_n_type _max_tree_nodes = 256, uint8_t initial_capacity_nodes = 8)
     {
         dimensions_ = _dimensions;
-        n_branches_ = pow(2, _dimensions);
+        n_branches_ = (symbol_type)pow(2, _dimensions);
         initial_tree_capacity_ = n_branches_ * initial_capacity_nodes;
         max_depth_ = _max_depth;
         max_tree_nodes_ = _max_tree_nodes;
     }
 
     void insert(node_type, leaf_config *, level_type, level_type, preorder_type);
-    node_type child(treeblock *&, node_type &, symbol_type, level_type &, preorder_type &);
-    node_type skip_children_subtree(node_type &, symbol_type, level_type, preorder_type &);
-    struct treeblock *get_pointer(preorder_type);
-    preorder_type get_preorder(preorder_type);
-    void set_preorder(preorder_type, preorder_type);
-    void set_pointer(preorder_type, treeblock *);
-    node_type select_subtree(preorder_type &, preorder_type &);
-    uint64_t size();
+    node_type child(treeblock *&, node_type &, symbol_type, level_type &, preorder_type &) const;
+    node_type skip_children_subtree(node_type &, symbol_type, level_type, preorder_type &) const;
+    treeblock *get_pointer(preorder_type) const;
+    preorder_type get_preorder(preorder_type) const;
+    void set_preorder(preorder_type, preorder_type) const;
+    void set_pointer(preorder_type, treeblock *) const;
+    node_type select_subtree(preorder_type &, preorder_type &) const;
+    uint64_t size() const;
 
     void range_search_treeblock(leaf_config *, leaf_config *, treeblock *, level_type, preorder_type, node_type, leaf_array *);
     void range_traverse_treeblock(leaf_config *, leaf_config *, int [], int, treeblock *, level_type, preorder_type, node_type, leaf_array *);
@@ -170,34 +170,34 @@ class md_trie
 public:
     uint8_t dimensions_;
     symbol_type n_branches_;
-    trie_node *root_ = NULL;
+    trie_node *root_ = nullptr;
     level_type max_depth_;
     level_type trie_depth_;
     preorder_type max_tree_nodes_;
     node_n_type initial_tree_capacity_;
 
-    md_trie(uint8_t _dimensions, level_type _max_depth = 10, level_type _trie_depth = 3, preorder_type _max_tree_nodes = 256, uint8_t initial_capacity_nodes = 2)
+    explicit md_trie(uint8_t _dimensions, level_type _max_depth = 10, level_type _trie_depth = 3, preorder_type _max_tree_nodes = 256, uint8_t initial_capacity_nodes = 2)
     {
         dimensions_ = _dimensions;
-        n_branches_ = pow(2, _dimensions);
+        n_branches_ = (symbol_type)pow(2, _dimensions);
         initial_tree_capacity_ = n_branches_ * initial_capacity_nodes;
         max_depth_ = _max_depth;
         trie_depth_ = _trie_depth;
         max_tree_nodes_ = _max_tree_nodes;
     }
     bool check(leaf_config *, level_type);
-    void insert_remaining(treeblock *, leaf_config *, level_type, level_type);
+    void insert_remaining(treeblock *, leaf_config *, level_type, level_type) const;
     void insert_trie(leaf_config *, level_type);
-    treeblock *walk_trie(trie_node *, leaf_config *, level_type &);
-    bool walk_treeblock(treeblock *, leaf_config *, level_type, level_type);
-    trie_node *create_new_trie_node();
-    uint64_t size();
+    treeblock *walk_trie(trie_node *, leaf_config *, level_type &) const;
+    bool walk_treeblock(treeblock *, leaf_config *, level_type, level_type) const;
+    uint64_t size() const;
     void range_search_trie(leaf_config *, leaf_config *, trie_node *, level_type, leaf_array *);
     void range_traverse_trie(leaf_config *, leaf_config *, int [], int, trie_node *, level_type, leaf_array *);
 };
 
 // Todo: better arrangement of these functions
 // See how create_new_trie_node is in a different place than create_new_treeblock
+
 treeblock *create_new_treeblock(level_type, preorder_type, preorder_type, int);
 symbol_type leaf_to_symbol(leaf_config *, level_type, int, level_type);
 preorder_type get_child_skip(bitmap::Bitmap *, node_type, symbol_type, symbol_type);
