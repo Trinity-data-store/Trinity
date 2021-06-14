@@ -19,6 +19,7 @@ using namespace std;
 typedef uint64_t node_type;
 // Maximum number of nodes/preorder numbers
 typedef uint64_t preorder_type;
+typedef uint64_t n_leaves_type;
 typedef uint16_t node_n_type;
 typedef uint64_t level_type;
 typedef uint64_t symbol_type;
@@ -41,10 +42,10 @@ public:
     }
 
     // Given the leaf_point and the level we are at, return the Morton code corresponding to that level
-    symbol_type leaf_to_symbol(level_type _level, int _dimensions, level_type _max_depth)
+    symbol_type leaf_to_symbol(level_type _level, dimension_type _dimensions, level_type _max_depth)
     {
         symbol_type result = 0;
-        for (int j = 0; j < _dimensions; j++)
+        for (dimension_type j = 0; j < _dimensions; j++)
         {
             bool bit = (coordinates[j] >> (_max_depth - _level - 1)) & 1;
             result = result << 1;
@@ -57,7 +58,7 @@ public:
 class leaf_array
 {
 public:
-    int n_points = 0;
+    n_leaves_type n_points = 0;
     leaf_config **points;
     leaf_array()
     {
@@ -157,7 +158,7 @@ public:
     uint64_t size() const;
 
     void range_search_treeblock(leaf_config *, leaf_config *, treeblock *, level_type, preorder_type, node_type, leaf_array *);
-    void range_traverse_treeblock(leaf_config *, leaf_config *, int [], int, treeblock *, level_type, preorder_type, node_type, leaf_array *);
+    void range_traverse_treeblock(leaf_config *, leaf_config *, uint8_t [], uint8_t, treeblock *, level_type, preorder_type, node_type, leaf_array *);
 
     preorder_type get_child_skip(node_type, symbol_type, symbol_type) const;
     preorder_type get_n_children(node_type, symbol_type) const;
@@ -203,7 +204,7 @@ public:
     bool walk_treeblock(treeblock *, leaf_config *, level_type, level_type) const;
     uint64_t size() const;
     void range_search_trie(leaf_config *, leaf_config *, trie_node *, level_type, leaf_array *);
-    void range_traverse_trie(leaf_config *, leaf_config *, int [], int, trie_node *, level_type, leaf_array *);
+    void range_traverse_trie(leaf_config *, leaf_config *, uint8_t [], uint8_t, trie_node *, level_type, leaf_array *);
 };
 
 

@@ -649,7 +649,7 @@ void treeblock::range_search_treeblock(leaf_config *start_range, leaf_config *en
         found_points->add_leaf(leaf);
         return;        
     }
-    int *representation = (int *)malloc(sizeof(int) * dimensions_);
+    uint8_t *representation = (uint8_t *)malloc(sizeof(uint8_t) * dimensions_);
     for (uint8_t j = 0; j < dimensions_; j ++){
         point_type start_coordinate = start_range->coordinates[j];
         point_type end_coordinate = end_range->coordinates[j];
@@ -665,7 +665,7 @@ void treeblock::range_search_treeblock(leaf_config *start_range, leaf_config *en
     range_traverse_treeblock(start_range, end_range, representation, 0, current_block, level, current_node, current_frontier, found_points);
 }
 
-void treeblock::range_traverse_treeblock(leaf_config *start_range, leaf_config *end_range, int representation[], int index, treeblock *current_block, level_type level, preorder_type current_node, node_type current_frontier, leaf_array *found_points)
+void treeblock::range_traverse_treeblock(leaf_config *start_range, leaf_config *end_range, uint8_t representation[], uint8_t index, treeblock *current_block, level_type level, preorder_type current_node, node_type current_frontier, leaf_array *found_points)
 {
     if (index == dimensions_){
         for (uint8_t j = 0; j < dimensions_; j++){
@@ -719,14 +719,14 @@ void treeblock::range_traverse_treeblock(leaf_config *start_range, leaf_config *
     if (representation[index] == 2){
         auto *start_range_coordinates = (point_type *)calloc(dimensions_, sizeof(point_type));
         auto *end_range_coordinates = (point_type *)calloc(dimensions_, sizeof(point_type));
-        for (int j = 0; j < dimensions_; j ++){
+        for (dimension_type j = 0; j < dimensions_; j ++){
             start_range_coordinates[j] = start_range->coordinates[j];
             end_range_coordinates[j] = end_range->coordinates[j];
         }
         representation[index] = 0;
         range_traverse_treeblock(start_range, end_range, representation, index + 1, current_block, level, current_node, current_frontier, found_points);
 
-        for (int j = 0; j < dimensions_; j ++){
+        for (dimension_type j = 0; j < dimensions_; j ++){
             start_range->coordinates[j] = start_range_coordinates[j];
             end_range->coordinates[j] = end_range_coordinates[j];
         }
@@ -734,7 +734,7 @@ void treeblock::range_traverse_treeblock(leaf_config *start_range, leaf_config *
 
         range_traverse_treeblock(start_range, end_range, representation, index + 1, current_block, level, current_node, current_frontier, found_points);
 
-        for (int j = 0; j < dimensions_; j ++){
+        for (dimension_type j = 0; j < dimensions_; j ++){
             start_range->coordinates[j] = start_range_coordinates[j];
             end_range->coordinates[j] = end_range_coordinates[j];
         }
@@ -752,7 +752,7 @@ void md_trie::range_search_trie(leaf_config *start_range, leaf_config *end_range
         current_treeblock->range_search_treeblock(start_range, end_range, current_treeblock, level, 0, 0, found_points);
         return;
     }
-    int *representation = (int *)malloc(sizeof(int) * dimensions_);
+    uint8_t *representation = (uint8_t *)malloc(sizeof(uint8_t) * dimensions_);
     for (uint8_t j = 0; j < dimensions_; j ++){
         point_type start_coordinate = start_range->coordinates[j];
         point_type end_coordinate = end_range->coordinates[j];
@@ -768,7 +768,7 @@ void md_trie::range_search_trie(leaf_config *start_range, leaf_config *end_range
     range_traverse_trie(start_range, end_range, representation, 0, current_trie_node, level, found_points);
 }
 
-void md_trie::range_traverse_trie(leaf_config *start_range, leaf_config *end_range, int representation[], int index, trie_node *current_trie_node, level_type level, leaf_array *found_points)
+void md_trie::range_traverse_trie(leaf_config *start_range, leaf_config *end_range, uint8_t representation[], uint8_t index, trie_node *current_trie_node, level_type level, leaf_array *found_points)
 {
     if (index == dimensions_){
         for (uint8_t j = 0; j < dimensions_; j++){
@@ -811,7 +811,7 @@ void md_trie::range_traverse_trie(leaf_config *start_range, leaf_config *end_ran
     if (representation[index] == 2){
         auto *start_range_coordinates = (point_type *)calloc(dimensions_, sizeof(point_type));
         auto *end_range_coordinates = (point_type *)calloc(dimensions_, sizeof(point_type));
-        for (int j = 0; j < dimensions_; j ++){
+        for (dimension_type j = 0; j < dimensions_; j ++){
             start_range_coordinates[j] = start_range->coordinates[j];
             end_range_coordinates[j] = end_range->coordinates[j];
         }
@@ -819,7 +819,7 @@ void md_trie::range_traverse_trie(leaf_config *start_range, leaf_config *end_ran
         representation[index] = 0;
         range_traverse_trie(start_range, end_range, representation, index + 1, current_trie_node, level, found_points);
 
-        for (int j = 0; j < dimensions_; j ++){
+        for (dimension_type j = 0; j < dimensions_; j ++){
             start_range->coordinates[j] = start_range_coordinates[j];
             end_range->coordinates[j] = end_range_coordinates[j];
         }
@@ -827,7 +827,7 @@ void md_trie::range_traverse_trie(leaf_config *start_range, leaf_config *end_ran
 
         range_traverse_trie(start_range, end_range, representation, index + 1, current_trie_node, level, found_points);
 
-        for (int j = 0; j < dimensions_; j ++){
+        for (dimension_type j = 0; j < dimensions_; j ++){
             start_range->coordinates[j] = start_range_coordinates[j];
             end_range->coordinates[j] = end_range_coordinates[j];
         }

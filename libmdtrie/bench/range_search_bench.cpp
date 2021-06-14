@@ -15,7 +15,7 @@ static TimeStamp GetTimestamp() {
   return now.tv_usec + (TimeStamp) now.tv_sec * 1000000;
 }
 
-void test_real_data(int dimensions, level_type max_depth, level_type trie_depth, preorder_type max_tree_node, int n_itr){
+void test_real_data(dimension_type dimensions, level_type max_depth, level_type trie_depth, preorder_type max_tree_node, int n_itr){
 
     fptr = fopen(file_path, "a");
     auto *mdtrie = new md_trie(dimensions, max_depth, trie_depth, max_tree_node);
@@ -40,10 +40,10 @@ void test_real_data(int dimensions, level_type max_depth, level_type trie_depth,
     }
     TimeStamp start, diff;
     
-    int n_points = 0;
+    n_leaves_type n_points = 0;
     auto max = (uint64_t *)malloc(dimensions * sizeof(uint64_t));
     auto min = (uint64_t *)malloc(dimensions * sizeof(uint64_t));
-    int n_lines = 14583357;
+    n_leaves_type n_lines = 14583357;
     diff = 0;
     tqdm bar;
     while ((read = getline(&line, &len, fp)) != -1)
@@ -51,10 +51,10 @@ void test_real_data(int dimensions, level_type max_depth, level_type trie_depth,
         bar.progress(n_points, n_lines);
         char *token = strtok(line, " ");
         char *ptr;
-        for (int i = 0; i < 2; i ++){
+        for (uint8_t i = 0; i < 2; i ++){
             token = strtok(nullptr, " ");
         }
-        for (int i = 0; i < dimensions; i++){
+        for (dimension_type i = 0; i < dimensions; i++){
             token = strtok(nullptr, " ");
             leaf_point->coordinates[i] = strtoul(token, &ptr, 10);
             if (n_points == 0){
@@ -83,7 +83,7 @@ void test_real_data(int dimensions, level_type max_depth, level_type trie_depth,
     tqdm bar1;
     while (itr <= n_itr){
         bar1.progress(itr, n_itr);
-        for (int i = 0; i < dimensions; i++){
+        for (dimension_type i = 0; i < dimensions; i++){
             start_range->coordinates[i] = min[i] + rand() % (max[i] - min[i] + 1);
             end_range->coordinates[i] = start_range->coordinates[i] + rand() % (max[i] - start_range->coordinates[i] + 1);
         }
@@ -95,7 +95,7 @@ void test_real_data(int dimensions, level_type max_depth, level_type trie_depth,
         }
 
         msec = diff * 1000 / CLOCKS_PER_SEC;
-        fprintf(fptr, "%d, %f\n", found_points->n_points, (float)msec*1000);
+        fprintf(fptr, "%ld, %f\n", found_points->n_points, (float)msec*1000);
         
         found_points->reset();
         itr++;
