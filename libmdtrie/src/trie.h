@@ -15,12 +15,6 @@
 
 using namespace std;
 
-// Naming styles:
-// class: md_tire
-// function: walk_trie
-// local variable names: n_branches
-// class variable: n_branches_
-
 // Maximum number of bits for node configuration
 typedef uint64_t node_type;
 // Maximum number of nodes/preorder numbers
@@ -31,14 +25,8 @@ typedef uint64_t symbol_type;
 typedef uint8_t dimension_type;
 typedef uint64_t point_type;
 extern uint64_t dfuds_size;
-// Depth of the trie (leaves are pointers to treeblocks)
-// const level_type trie_depth = 3;
-// Maximum number of nodes in a treeblock
-// const preorder_type initial_tree_capacity = 32;
-// const preorder_type max_tree_nodes = 256;
 const preorder_type null_node = -1;
-// MAX_DPETH specifies the range of each dimension (0 to 2^MAX_DEPTH -1)
-// const level_type max_depth = 10;
+
 #define MAX_UINT_16 65535
 #endif
 
@@ -63,20 +51,6 @@ public:
         points = (leaf_config **)malloc(sizeof(leaf_config *));
     }
 };
-
-
-// class search_range
-// {
-// public:
-//     point_type *from = NULL;
-//     point_type *to = NULL;
-//     leaf_config(dimension_type _dimensions)
-//     {
-//         from = (point_type *)calloc(_dimensions, sizeof(point_type));
-//         to = (point_type *)calloc(_dimensions, sizeof(point_type));
-//     }
-// };
-
 
 // node_info and subtree info are used to obtain subtree size when splitting the treeblock
 class node_info
@@ -163,7 +137,6 @@ public:
     preorder_type preorder_;
     treeblock *pointer_;
 };
-
 
 class md_trie
 {

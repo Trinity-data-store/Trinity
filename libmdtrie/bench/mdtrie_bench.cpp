@@ -84,7 +84,7 @@ void test_real_data(int dimensions, level_type max_depth, level_type trie_depth,
         }
         for (int i = 0; i < dimensions; i++){
             token = strtok(nullptr, " ");
-            leaf_point->coordinates[i] = strtoul(token, &ptr, 10);;
+            leaf_point->coordinates[i] = strtoul(token, &ptr, 10);
         }
         start = GetTimestamp();
         mdtrie->insert_trie(leaf_point, max_depth);
@@ -141,7 +141,7 @@ void test_real_data(int dimensions, level_type max_depth, level_type trie_depth,
         }
         for (int i = 0; i < dimensions; i++){
             token = strtok(NULL, " ");
-            leaf_point->coordinates[i] = strtoul(token, &ptr, 10);;
+            leaf_point->coordinates[i] = strtoul(token, &ptr, 10);
         }
         start = GetTimestamp();
         if (!mdtrie->check(leaf_point, max_depth)){
@@ -200,7 +200,7 @@ void test_insert_data(int dimensions, level_type max_depth, level_type trie_dept
         }
         for (int i = 0; i < dimensions; i++){
             token = strtok(nullptr, " ");
-            leaf_point->coordinates[i] = strtoul(token, &ptr, 10);;
+            leaf_point->coordinates[i] = strtoul(token, &ptr, 10);
         }
         start = GetTimestamp();
         mdtrie->insert_trie(leaf_point, max_depth);
@@ -254,7 +254,7 @@ void test_mdtrie_size(int dimensions, level_type max_depth, level_type trie_dept
         }
         for (int i = 0; i < dimensions; i++){
             token = strtok(nullptr, " ");
-            leaf_point->coordinates[i] = strtoul(token, &ptr, 10);;
+            leaf_point->coordinates[i] = strtoul(token, &ptr, 10);
         }
         start = GetTimestamp();
         mdtrie->insert_trie(leaf_point, max_depth);

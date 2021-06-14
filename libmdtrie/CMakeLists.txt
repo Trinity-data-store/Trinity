@@ -13,13 +13,22 @@ if (BUILD_TESTS)
   include_directories(${CATCH_INCLUDE_DIR})
   add_executable(mdtrie_tests
           test/test_main.cpp
-          test/mdtrie_test.cpp
+          test/mdtrie_test.cpp)
+
+  add_executable(range_search_tests
+          test/test_main.cpp
           test/range_search_test.cpp)
+
   target_link_libraries(mdtrie_tests mdtrie)
-  
+  target_link_libraries(range_search_tests mdtrie)
+
   add_dependencies(mdtrie_tests catch_ep)
+  add_dependencies(range_search_tests catch_ep)
+
   # Register test
   add_test(MdTrieTest mdtrie_tests)
+  add_test(RangeSearchTest range_search_tests)
+
 endif ()
 
 add_executable(mdtrie_bench
@@ -34,4 +43,9 @@ add_executable(orig_bench_no_table
         bench/treeBlock_no_table.cpp
         )
 
+add_executable(range_search_bench
+        bench/range_search_bench.cpp
+        )
+
 target_link_libraries(mdtrie_bench mdtrie)
+target_link_libraries(range_search_bench mdtrie)
