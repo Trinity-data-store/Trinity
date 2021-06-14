@@ -26,7 +26,7 @@ bool test_range_search(int n_points, int dimensions, level_type max_depth, level
             }
         }
 
-        mdtrie->range_search_trie(start_range, end_range, mdtrie->root_, 0, found_points);
+        mdtrie->range_search_trie(start_range, end_range, mdtrie->get_root(), 0, found_points);
         
         for (int i = 0; i < found_points->n_points; i++){
             leaf_config *leaf = found_points->points[i];
@@ -68,9 +68,7 @@ bool test_range_search(int n_points, int dimensions, level_type max_depth, level
                     return false;
             }
         }
-        found_points->n_points = 0;
-        free(found_points->points);
-        found_points->points = (leaf_config **)malloc(sizeof(leaf_config *));
+        found_points->reset();
     }    
     return true;
 }
@@ -78,5 +76,5 @@ bool test_range_search(int n_points, int dimensions, level_type max_depth, level
 // int n_points, int dimensions, level_type max_depth, level_type trie_depth, preorder_type max_tree_nodes, int n_itr, int n_checked_points
 TEST_CASE( "Test", "Range Search Trie" ) {
     srand(static_cast<unsigned int>(time(0)));
-    REQUIRE(test_range_search(5000, 8, 10, 3, 128, 50, 50000));
+    REQUIRE(test_range_search(5000, 8, 10, 3, 128, 50, 10000));
 }

@@ -18,7 +18,6 @@ static TimeStamp GetTimestamp() {
 void test_real_data(int dimensions, level_type max_depth, level_type trie_depth, preorder_type max_tree_node, int n_itr){
 
     fptr = fopen(file_path, "a");
-    // fprintf(fptr,"n_points, time\n");
     auto *mdtrie = new md_trie(dimensions, max_depth, trie_depth, max_tree_node);
     auto *leaf_point = new leaf_config(dimensions);
 
@@ -89,7 +88,7 @@ void test_real_data(int dimensions, level_type max_depth, level_type trie_depth,
             end_range->coordinates[i] = start_range->coordinates[i] + rand() % (max[i] - start_range->coordinates[i] + 1);
         }
         start = GetTimestamp();
-        mdtrie->range_search_trie(start_range, end_range, mdtrie->root_, 0, found_points); 
+        mdtrie->range_search_trie(start_range, end_range, mdtrie->get_root(), 0, found_points); 
         diff = GetTimestamp() - start;
         if (found_points->n_points == 0){
             continue;
@@ -98,9 +97,7 @@ void test_real_data(int dimensions, level_type max_depth, level_type trie_depth,
         msec = diff * 1000 / CLOCKS_PER_SEC;
         fprintf(fptr, "%d, %f\n", found_points->n_points, (float)msec*1000);
         
-        found_points->n_points = 0;
-        free(found_points->points);
-        found_points->points = (leaf_config **)malloc(sizeof(leaf_config *)); 
+        found_points->reset();
         itr++;
         fclose(fptr);
         fptr = fopen(file_path, "a");            
@@ -112,5 +109,5 @@ void test_real_data(int dimensions, level_type max_depth, level_type trie_depth,
 // int dimensions, level_type max_depth, level_type trie_depth, preorder_type max_tree_node, int n_itr
 int main() {
     srand(static_cast<unsigned int>(time(0)));
-    test_real_data(3, 32, 10, 1024, 100);
+    test_real_data(4, 32, 10, 1024, 100);
 }

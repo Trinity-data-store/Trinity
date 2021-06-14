@@ -1,7 +1,7 @@
 #include "trie.h"
 uint64_t dfuds_size = 0;
 
-void copy_node_cod(bitmap::Bitmap *from_dfuds, bitmap::Bitmap *to_dfuds, node_type from, node_type to, symbol_type n_branches, symbol_type width)
+void treeblock::copy_node_cod(bitmap::Bitmap *from_dfuds, bitmap::Bitmap *to_dfuds, node_type from, node_type to, symbol_type n_branches, symbol_type width)
 { 
 
     symbol_type visited = 0;
@@ -41,27 +41,16 @@ void treeblock::set_pointer(preorder_type current_frontier, treeblock *pointer) 
     ((frontier_node *)frontiers_)[current_frontier].pointer_ = pointer;
 }
 
-preorder_type get_n_children(bitmap::Bitmap *dfuds, node_type node, symbol_type n_branches)
+preorder_type treeblock::get_n_children(node_type node, symbol_type n_branches) const
 {
-
-    return dfuds->popcount(node * n_branches, n_branches);
+    return dfuds_->popcount(node * n_branches, n_branches);
 }
 
-preorder_type get_child_skip(bitmap::Bitmap *dfuds, node_type node, symbol_type col, symbol_type n_branches)
+preorder_type treeblock::get_child_skip(node_type node, symbol_type col, symbol_type n_branches) const
 {
-    return dfuds->popcount(node * n_branches, col);
+    return dfuds_->popcount(node * n_branches, col);
 }
 
-treeblock *create_new_treeblock(level_type root_depth, preorder_type n_nodes, preorder_type tree_capacity, int dimensions, level_type max_depth)
-{
-    auto n_branches = (symbol_type) pow(2, dimensions);
-    auto *current_treeblock = new treeblock(dimensions, max_depth);
-    current_treeblock->dfuds_ = new bitmap::Bitmap((tree_capacity + 1) * n_branches);
-    current_treeblock->root_depth_ = root_depth;
-    current_treeblock->n_nodes_ = n_nodes;
-    current_treeblock->tree_capacity_ = tree_capacity;
-    return current_treeblock;
-}
 // This function selects the subTree starting from node 0
 // The selected subtree has the maximum subtree size
 node_type treeblock::select_subtree(preorder_type &subtree_size, preorder_type &selected_node_depth) const
@@ -79,7 +68,7 @@ node_type treeblock::select_subtree(preorder_type &subtree_size, preorder_type &
     preorder_type current_frontier = 0;
 
     index_to_node[node_stack_top].preorder_ = 0;
-    index_to_node[node_stack_top++].n_children_ = get_n_children(dfuds_, 0, n_branches_);
+    index_to_node[node_stack_top++].n_children_ = get_n_children(0, n_branches_);
     depth = root_depth_ + 1;
     preorder_type next_frontier_preorder;
 
@@ -104,7 +93,7 @@ node_type treeblock::select_subtree(preorder_type &subtree_size, preorder_type &
         else if (depth < max_depth_ - 1)
         {
             index_to_node[node_stack_top].preorder_ = i;
-            index_to_node[node_stack_top++].n_children_ = get_n_children(dfuds_, i, n_branches_);
+            index_to_node[node_stack_top++].n_children_ = get_n_children(i, n_branches_);
             depth++;
         }
         //  Reached the maxDepth level
@@ -186,7 +175,7 @@ void treeblock::insert(node_type node, leaf_config *leaf_point, level_type level
     //  node is a frontier node
     if (frontiers_ != nullptr && current_frontier < n_frontiers_ && node == get_preorder(current_frontier))
     {
-        dfuds_->SetBit(node * n_branches_ + leaf_to_symbol(leaf_point, level, dimensions_, max_depth_));
+        dfuds_->SetBit(node * n_branches_ + leaf_point->leaf_to_symbol(level, dimensions_, max_depth_));
         get_pointer(current_frontier)->insert(0, leaf_point, level, length, 0);
 
         return;
@@ -195,14 +184,14 @@ void treeblock::insert(node_type node, leaf_config *leaf_point, level_type level
     //  Insert that character into the correct position
     else if (length == 1)
     {
-        dfuds_->SetBit(node * n_branches_ + leaf_to_symbol(leaf_point, level, dimensions_, max_depth_));
+        dfuds_->SetBit(node * n_branches_ + leaf_point->leaf_to_symbol(level, dimensions_, max_depth_));
         return;
     }
     // there is room in current block for new nodes
     else if (n_nodes_ + (length - level) - 1 <= tree_capacity_)
     {
         // skip_children_subtree returns the position under node where the new str[0] will be inserted
-        symbol_type current_symbol = leaf_to_symbol(leaf_point, level, dimensions_, max_depth_);
+        symbol_type current_symbol = leaf_point->leaf_to_symbol(level, dimensions_, max_depth_);
         node = skip_children_subtree(node, current_symbol, level, current_frontier);
 
         node_type dest_node = n_nodes_ + (length - level) - 2;
@@ -231,7 +220,7 @@ void treeblock::insert(node_type node, leaf_config *leaf_point, level_type level
         for (level_type i = level; i < length; i++)
         {
             dfuds_->ClearWidth(from_node * n_branches_, n_branches_);
-            dfuds_->SetBit(from_node * n_branches_ + leaf_to_symbol(leaf_point, i, dimensions_, max_depth_));
+            dfuds_->SetBit(from_node * n_branches_ + leaf_point->leaf_to_symbol(i, dimensions_, max_depth_));
             n_nodes_++;
             from_node++;
         }
@@ -318,8 +307,8 @@ void treeblock::insert(node_type node, leaf_config *leaf_point, level_type level
         bool insertion_before_selected_tree = true;
         if (!insertion_in_new_block && frontier <= current_frontier)
             insertion_before_selected_tree = false;
-
-        treeblock *new_block = create_new_treeblock(selected_node_depth, subtree_size, subtree_size, dimensions_, max_depth_);
+        auto new_block = new treeblock(dimensions_, selected_node_depth, subtree_size, subtree_size, max_depth_);
+        // treeblock *new_block = create_new_treeblock(selected_node_depth, subtree_size, subtree_size, dimensions_, max_depth_);
         // Memory leak
         new_block->dfuds_ = new_dfuds;
 
@@ -430,8 +419,8 @@ node_type treeblock::skip_children_subtree(node_type &node, symbol_type symbol, 
     if (current_level == max_depth_)
         return node;
     int sTop = -1;
-    preorder_type n_children_skip = get_child_skip(dfuds_, node, symbol, n_branches_);
-    preorder_type n_children = get_n_children(dfuds_, node, n_branches_);
+    preorder_type n_children_skip = get_child_skip(node, symbol, n_branches_);
+    preorder_type n_children = get_n_children(node, n_branches_);
     preorder_type diff = n_children - n_children_skip;
     preorder_type stack[100];
     stack[++sTop] = n_children;
@@ -462,7 +451,7 @@ node_type treeblock::skip_children_subtree(node_type &node, symbol_type symbol, 
         // It is "-1" because current_level is 0th indexed.
         else if (current_level < max_depth_ - 1)
         {
-            stack[++sTop] = get_n_children(dfuds_, current_node, n_branches_);
+            stack[++sTop] = get_n_children(current_node, n_branches_);
             ++current_level;
         }
         else
@@ -485,7 +474,7 @@ node_type treeblock::skip_children_subtree(node_type &node, symbol_type symbol, 
 // This function differs from skip_children_subtree as it checks if that child node is present
 node_type treeblock::child(treeblock *&p, node_type &node, symbol_type symbol, level_type &current_level, preorder_type &current_frontier) const
 {
-    bool has_child = (bool)dfuds_->GetBit(node * n_branches_ + symbol);
+    auto has_child = dfuds_->GetBit(node * n_branches_ + symbol);
     if (!has_child)
         return null_node;
     if (current_level == max_depth_)
@@ -517,11 +506,11 @@ void md_trie::insert_remaining(treeblock *root, leaf_config *leaf_point, level_t
     node_type temp_node = 0;
     while (level < length)
     {
-        temp_node = current_block->child(current_block, current_node, leaf_to_symbol(leaf_point, level, dimensions_, max_depth_), level, current_frontier);
+        temp_node = current_block->child(current_block, current_node, leaf_point->leaf_to_symbol(level, dimensions_, max_depth_), level, current_frontier);
         if (temp_node == (node_type)-1)
             break;
         current_node = temp_node;
-        if (current_block->n_frontiers_ > 0 && current_frontier < current_block->n_frontiers_ && current_node == current_block->get_preorder(current_frontier))
+        if (current_block->get_n_frontiers() > 0 && current_frontier < current_block->get_n_frontiers() && current_node == current_block->get_preorder(current_frontier))
         {
             current_block = current_block->get_pointer(current_frontier);
             current_node = (node_type)0;
@@ -536,18 +525,17 @@ void md_trie::insert_remaining(treeblock *root, leaf_config *leaf_point, level_t
 // It differs from above as it only returns True or False.
 bool md_trie::walk_treeblock(treeblock *current_block, leaf_config *leaf_point, level_type length, level_type level) const
 {
-
     preorder_type current_frontier = 0;
     node_type current_node = 0;
     node_type temp_node = 0;
     while (level < length)
     {
-        temp_node = current_block->child(current_block, current_node, leaf_to_symbol(leaf_point, level, dimensions_, max_depth_), level, current_frontier);
+        temp_node = current_block->child(current_block, current_node, leaf_point->leaf_to_symbol(level, dimensions_, max_depth_), level, current_frontier);
         if (temp_node == (node_type)-1)
             return false;
         current_node = temp_node;
 
-        if (current_block->n_frontiers_ > 0 && current_frontier < current_block->n_frontiers_ && current_node == current_block->get_preorder(current_frontier))
+        if (current_block->get_n_frontiers() > 0 && current_frontier < current_block->get_n_frontiers() && current_node == current_block->get_preorder(current_frontier))
         {
             current_block = current_block->get_pointer(current_frontier);
             current_node = (node_type)0;
@@ -563,19 +551,20 @@ bool md_trie::walk_treeblock(treeblock *current_block, leaf_config *leaf_point, 
 treeblock *md_trie::walk_trie(trie_node *current_trie_node, leaf_config *leaf_point, level_type &level) const
 {
     symbol_type current_symbol;
-    while (current_trie_node->children_[leaf_to_symbol(leaf_point, level, dimensions_, max_depth_)])
-        current_trie_node = current_trie_node->children_[leaf_to_symbol(leaf_point, level++, dimensions_, max_depth_)];
+    while (current_trie_node->get_child(leaf_point->leaf_to_symbol(level, dimensions_, max_depth_)))
+        current_trie_node = current_trie_node->get_child(leaf_point->leaf_to_symbol(level++, dimensions_, max_depth_));
     while (level < trie_depth_)
     {
-        current_symbol = leaf_to_symbol(leaf_point, level, dimensions_, max_depth_);
-        current_trie_node->children_[current_symbol] = new trie_node(n_branches_);
-        current_trie_node = current_trie_node->children_[current_symbol];
+        current_symbol = leaf_point->leaf_to_symbol(level, dimensions_, max_depth_);
+        current_trie_node->set_child(current_symbol, new trie_node(n_branches_));
+        current_trie_node = current_trie_node->get_child(current_symbol);
         level++;
     }
     treeblock *current_treeblock = nullptr;
     if (current_trie_node->block == nullptr)
     {
-        current_treeblock = create_new_treeblock(trie_depth_, 1, initial_tree_capacity_, dimensions_, max_depth_);
+        current_treeblock = new treeblock(dimensions_, trie_depth_, initial_tree_capacity_, 1, max_depth_);
+        // current_treeblock = create_new_treeblock(trie_depth_, 1, initial_tree_capacity_, dimensions_, max_depth_);
         current_trie_node->block = current_treeblock;
     }
     else
@@ -597,28 +586,10 @@ void md_trie::insert_trie(leaf_config *leaf_point, level_type length)
     insert_remaining(current_treeblock, leaf_point, length, level);
 }
 
-// Given the leaf_point and the level we are at, return the Morton code corresponding to that level
-symbol_type leaf_to_symbol(leaf_config *leaf_point, level_type level, int dimensions, level_type max_depth)
-{
-    symbol_type result = 0;
-    for (int j = 0; j < dimensions; j++)
-    {
-        bool bit = (leaf_point->coordinates[j] >> (max_depth - level - 1)) & 1;
-        result = result << 1;
-        result += bit;
-    }
-    
-    return result;
-}
-
 // Used for Test script to check whether a leaf_point is present
-bool md_trie::check(leaf_config *leaf_point, level_type strlen)
+bool md_trie::check(leaf_config *leaf_point, level_type strlen) const
 {
     level_type level = 0;
-    if (root_ == nullptr)
-    {
-        root_ = new trie_node(n_branches_);
-    }
     trie_node *current_trie_node = root_;
     treeblock *current_treeblock = walk_trie(current_trie_node, leaf_point, level);
     return walk_treeblock(current_treeblock, leaf_point, strlen, level);
@@ -637,15 +608,14 @@ uint64_t treeblock::size() const
     total_size += n_frontiers_ * (sizeof(preorder_type) + sizeof(treeblock *)) + sizeof(frontier_node *);
     total_size += dfuds_->size();
     dfuds_size += dfuds_->size();
-
     for(uint16_t i = 0; i < n_frontiers_; i++)
        total_size += ((frontier_node*)frontiers_)[i].pointer_->size();    
     
     return total_size;
  }
 
-uint64_t trie_node::size(symbol_type n_branches) const{
-
+uint64_t trie_node::size(symbol_type n_branches) const
+{
     uint64_t total_size = n_branches * sizeof(trie_node *);
     if (!block){
         for (symbol_type i = 0; i < n_branches; i++){
@@ -660,7 +630,8 @@ uint64_t trie_node::size(symbol_type n_branches) const{
     return total_size;
 }
 
-uint64_t md_trie::size() const{
+uint64_t md_trie::size() const
+{
     uint64_t total_size = sizeof(uint8_t) + sizeof(symbol_type) + sizeof(trie_node *) + sizeof(level_type) * 2 + sizeof(preorder_type) * 2;
     return total_size + root_->size(n_branches_);
 }
@@ -669,24 +640,13 @@ uint64_t md_trie::size() const{
 void treeblock::range_search_treeblock(leaf_config *start_range, leaf_config *end_range, treeblock *current_block, level_type level , preorder_type current_node, node_type current_frontier, leaf_array *found_points)
 {
     if (level == max_depth_){
-        // printf("Found: (");
-
         auto *leaf = new leaf_config(dimensions_);
 
         for (uint8_t j = 0; j < dimensions_; j ++){
             point_type start_coordinate = start_range->coordinates[j];
-            // point_type end_coordinate = end_range->coordinates[j];
-            // printf("%ld", start_coordinate);
             leaf->coordinates[j] = start_coordinate;
-            // if (j != dimensions_ - 1){
-            //     printf(", ");
-            // }
         }
-        // printf(")\n");
-        
-        found_points->points[found_points->n_points] = leaf;
-        found_points->n_points ++;
-        found_points->points = (leaf_config **)realloc(found_points->points, (found_points->n_points + 1) * sizeof(leaf_config *));
+        found_points->add_leaf(leaf);
         return;        
     }
     int *representation = (int *)malloc(sizeof(int) * dimensions_);
@@ -705,7 +665,8 @@ void treeblock::range_search_treeblock(leaf_config *start_range, leaf_config *en
     range_traverse_treeblock(start_range, end_range, representation, 0, current_block, level, current_node, current_frontier, found_points);
 }
 
-void treeblock::range_traverse_treeblock(leaf_config *start_range, leaf_config *end_range, int representation[], int index, treeblock *current_block, level_type level, preorder_type current_node, node_type current_frontier, leaf_array *found_points){
+void treeblock::range_traverse_treeblock(leaf_config *start_range, leaf_config *end_range, int representation[], int index, treeblock *current_block, level_type level, preorder_type current_node, node_type current_frontier, leaf_array *found_points)
+{
     if (index == dimensions_){
         for (uint8_t j = 0; j < dimensions_; j++){
             point_type start_coordinate = start_range->coordinates[j];
@@ -739,14 +700,13 @@ void treeblock::range_traverse_treeblock(leaf_config *start_range, leaf_config *
                 current_symbol += 1;
             }
         }
-
         node_type temp_node = current_block->child(current_block, current_node, current_symbol, level, current_frontier);
 
         if (temp_node == (node_type)-1)
             return;
         current_node = temp_node;
 
-        if (current_block->n_frontiers_ > 0 && current_frontier < current_block->n_frontiers_ && current_node == current_block->get_preorder(current_frontier))
+        if (current_block->get_n_frontiers() > 0 && current_frontier < current_block->get_n_frontiers() && current_node == current_block->get_preorder(current_frontier))
         {
             current_block = current_block->get_pointer(current_frontier);
             current_node = (node_type)0;
@@ -763,7 +723,6 @@ void treeblock::range_traverse_treeblock(leaf_config *start_range, leaf_config *
             start_range_coordinates[j] = start_range->coordinates[j];
             end_range_coordinates[j] = end_range->coordinates[j];
         }
-
         representation[index] = 0;
         range_traverse_treeblock(start_range, end_range, representation, index + 1, current_block, level, current_node, current_frontier, found_points);
 
@@ -809,7 +768,8 @@ void md_trie::range_search_trie(leaf_config *start_range, leaf_config *end_range
     range_traverse_trie(start_range, end_range, representation, 0, current_trie_node, level, found_points);
 }
 
-void md_trie::range_traverse_trie(leaf_config *start_range, leaf_config *end_range, int representation[], int index, trie_node *current_trie_node, level_type level, leaf_array *found_points){
+void md_trie::range_traverse_trie(leaf_config *start_range, leaf_config *end_range, int representation[], int index, trie_node *current_trie_node, level_type level, leaf_array *found_points)
+{
     if (index == dimensions_){
         for (uint8_t j = 0; j < dimensions_; j++){
             point_type start_coordinate = start_range->coordinates[j];
@@ -843,8 +803,8 @@ void md_trie::range_traverse_trie(leaf_config *start_range, leaf_config *end_ran
                 current_symbol += 1;
             }
         }
-        if (current_trie_node->children_[current_symbol]){
-            range_search_trie(start_range, end_range, current_trie_node->children_[current_symbol], level + 1, found_points);
+        if (current_trie_node->get_child(current_symbol)){
+            range_search_trie(start_range, end_range, current_trie_node->get_child(current_symbol), level + 1, found_points);
         }
         return;
     }
@@ -876,5 +836,4 @@ void md_trie::range_traverse_trie(leaf_config *start_range, leaf_config *end_ran
     else {
         range_traverse_trie(start_range, end_range, representation, index + 1, current_trie_node,level, found_points);
     }
-
 }

@@ -39,6 +39,19 @@ public:
     {
         coordinates = (point_type *)calloc(_dimensions, sizeof(point_type));
     }
+
+    // Given the leaf_point and the level we are at, return the Morton code corresponding to that level
+    symbol_type leaf_to_symbol(level_type _level, int _dimensions, level_type _max_depth)
+    {
+        symbol_type result = 0;
+        for (int j = 0; j < _dimensions; j++)
+        {
+            bool bit = (coordinates[j] >> (_max_depth - _level - 1)) & 1;
+            result = result << 1;
+            result += bit;
+        }
+        return result;
+    }
 };
 
 class leaf_array
@@ -50,6 +63,17 @@ public:
     {
         points = (leaf_config **)malloc(sizeof(leaf_config *));
     }
+    void add_leaf(leaf_config *leaf){
+        points[n_points] = leaf;
+        n_points ++;
+        points = (leaf_config **)realloc(points, (n_points + 1) * sizeof(leaf_config *));
+    }
+    void reset(){
+        n_points = 0;
+        free(points);
+        points = (leaf_config **)malloc(sizeof(leaf_config *)); 
+    }
+
 };
 
 // node_info and subtree info are used to obtain subtree size when splitting the treeblock
@@ -58,12 +82,6 @@ class node_info
 public:
     preorder_type preorder_ = 0;
     preorder_type n_children_ = 0;
-    node_info()= default;
-    node_info(preorder_type _preorder, preorder_type _n_children)
-    {
-        preorder_ = _preorder;
-        n_children_ = _n_children;
-    };
 };
  
 class subtree_info
@@ -71,33 +89,37 @@ class subtree_info
 public:
     preorder_type preorder_ = 0;
     preorder_type subtree_size_ = 0;
-    subtree_info()= default;
-    subtree_info(preorder_type _preorder, preorder_type _subtree_size)
-    {
-        preorder_ = _preorder;
-        subtree_size_ = _subtree_size;
-    };
 };
 
 class trie_node
 {
-public:
+private:
     trie_node **children_ = nullptr;
+public:
+    void *block = nullptr;
+    trie_node *get_child(symbol_type symbol){
+        return children_[symbol];
+    }
+
+    void set_child(symbol_type symbol, trie_node *node){
+        children_[symbol] = node;
+    }
+
     explicit trie_node(symbol_type _n_branches)
     {
         // Assume null to be 0;
         children_ = (trie_node **)calloc(_n_branches, sizeof(trie_node *));
     }
-    void *block = nullptr;
     uint64_t size(symbol_type _n_branches) const;
 };
 
 class treeblock
 {
-public: 
+private:
     uint8_t dimensions_;
     symbol_type n_branches_;
-
+    node_n_type max_tree_nodes_;
+    node_n_type initial_tree_capacity_;
     level_type root_depth_{};
     node_n_type n_nodes_{};
     node_n_type tree_capacity_{};
@@ -105,18 +127,25 @@ public:
     bitmap::Bitmap *dfuds_{};
     void *frontiers_ = nullptr;
     node_n_type n_frontiers_ = 0;
-    node_n_type max_tree_nodes_;
-
-    node_n_type initial_tree_capacity_;
-    explicit treeblock(uint8_t _dimensions, level_type _max_depth = 10, node_n_type _max_tree_nodes = 256, uint8_t initial_capacity_nodes = 8)
+    
+public: 
+    explicit treeblock(uint8_t _dimensions, level_type _root_depth, node_n_type _tree_capacity, node_n_type _n_nodes, level_type _max_depth = 10, node_n_type _max_tree_nodes = 256, uint8_t initial_capacity_nodes = 8)
     {
         dimensions_ = _dimensions;
+        root_depth_ = _root_depth;
+        tree_capacity_ = _tree_capacity;
         n_branches_ = (symbol_type)pow(2, _dimensions);
         initial_tree_capacity_ = n_branches_ * initial_capacity_nodes;
         max_depth_ = _max_depth;
         max_tree_nodes_ = _max_tree_nodes;
+        n_nodes_ = _n_nodes;
+        dfuds_ = new bitmap::Bitmap((initial_tree_capacity_ + 1) * n_branches_);
     }
-
+    
+    node_n_type get_n_frontiers(){
+        return n_frontiers_;
+    }
+    
     void insert(node_type, leaf_config *, level_type, level_type, preorder_type);
     node_type child(treeblock *&, node_type &, symbol_type, level_type &, preorder_type &) const;
     node_type skip_children_subtree(node_type &, symbol_type, level_type, preorder_type &) const;
@@ -129,6 +158,11 @@ public:
 
     void range_search_treeblock(leaf_config *, leaf_config *, treeblock *, level_type, preorder_type, node_type, leaf_array *);
     void range_traverse_treeblock(leaf_config *, leaf_config *, int [], int, treeblock *, level_type, preorder_type, node_type, leaf_array *);
+
+    preorder_type get_child_skip(node_type, symbol_type, symbol_type) const;
+    preorder_type get_n_children(node_type, symbol_type) const;
+
+    void copy_node_cod(bitmap::Bitmap *, bitmap::Bitmap *, node_type, node_type, symbol_type, symbol_type);
 };
 
 class frontier_node
@@ -140,7 +174,7 @@ public:
 
 class md_trie
 {
-public:
+private:
     uint8_t dimensions_;
     symbol_type n_branches_;
     trie_node *root_ = nullptr;
@@ -148,7 +182,7 @@ public:
     level_type trie_depth_;
     preorder_type max_tree_nodes_;
     node_n_type initial_tree_capacity_;
-
+public:
     explicit md_trie(uint8_t _dimensions, level_type _max_depth = 10, level_type _trie_depth = 3, preorder_type _max_tree_nodes = 256, uint8_t initial_capacity_nodes = 2)
     {
         dimensions_ = _dimensions;
@@ -157,8 +191,12 @@ public:
         max_depth_ = _max_depth;
         trie_depth_ = _trie_depth;
         max_tree_nodes_ = _max_tree_nodes;
+        root_ = new trie_node(n_branches_);
     }
-    bool check(leaf_config *, level_type);
+    trie_node *get_root(){
+        return root_;
+    }
+    bool check(leaf_config *, level_type) const;
     void insert_remaining(treeblock *, leaf_config *, level_type, level_type) const;
     void insert_trie(leaf_config *, level_type);
     treeblock *walk_trie(trie_node *, leaf_config *, level_type &) const;
@@ -168,11 +206,5 @@ public:
     void range_traverse_trie(leaf_config *, leaf_config *, int [], int, trie_node *, level_type, leaf_array *);
 };
 
-// Todo: better arrangement of these functions
-// See how create_new_trie_node is in a different place than create_new_treeblock
 
-treeblock *create_new_treeblock(level_type, preorder_type, preorder_type, int);
-symbol_type leaf_to_symbol(leaf_config *, level_type, int, level_type);
-preorder_type get_child_skip(bitmap::Bitmap *, node_type, symbol_type, symbol_type);
-preorder_type get_n_children(bitmap::Bitmap *, node_type, symbol_type);
-void copy_node_cod(bitmap::Bitmap *, bitmap::Bitmap *, node_type, node_type, symbol_type, symbol_type);
+
