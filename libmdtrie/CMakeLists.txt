@@ -5,7 +5,14 @@ add_library(mdtrie
         src/tqdm.h
         src/trie.cpp
         src/trie.h
-        src/treeBlock_orig.h)
+        src/data_point.h
+        src/defs.h
+        src/data_point.cpp
+        src/point_array.h
+        src/tree_block.cpp
+        src/tree_block.h
+        src/trie_node.cpp
+        src/trie_node.h)
 
 set_target_properties(mdtrie PROPERTIES LINKER_LANGUAGE CXX)
 
@@ -17,7 +24,7 @@ if (BUILD_TESTS)
 
   add_executable(range_search_tests
           test/test_main.cpp
-          test/range_search_test.cpp)
+          )
 
   target_link_libraries(mdtrie_tests mdtrie)
   target_link_libraries(range_search_tests mdtrie)
@@ -27,25 +34,20 @@ if (BUILD_TESTS)
 
   # Register test
   add_test(MdTrieTest mdtrie_tests)
-  add_test(RangeSearchTest range_search_tests)
-
 endif ()
 
 add_executable(mdtrie_bench
-        bench/mdtrie_bench.cpp
-        )
+        bench/mdtrie_bench.cpp)
 
 add_executable(orig_bench
-        bench/treeBlock_orig.cpp
-        )
+        bench/treeBlock_orig.h
+        bench/treeBlock_orig.cpp)
 
 add_executable(orig_bench_no_table
-        bench/treeBlock_no_table.cpp
-        )
+        bench/treeBlock_no_table.cpp)
 
 add_executable(range_search_bench
-        bench/range_search_bench.cpp
-        )
+        bench/range_search_bench.cpp)
 
 target_link_libraries(mdtrie_bench mdtrie)
 target_link_libraries(range_search_bench mdtrie)

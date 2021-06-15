@@ -15,18 +15,18 @@ static TimeStamp GetTimestamp() {
   return now.tv_usec + (TimeStamp) now.tv_sec * 1000000;
 }
 
-void test_random_data(n_leaves_type n_points, dimension_type dimensions, level_type max_depth, level_type trie_depth, preorder_type max_tree_node)
+void test_random_data(n_leaves_t n_points, dimension_t dimensions, level_t max_depth, level_t trie_depth, preorder_t max_tree_node)
 {
-    auto range = (symbol_type)pow(2, max_depth);
+    auto range = (symbol_t)pow(2, max_depth);
     auto *mdtrie = new md_trie(dimensions, max_depth, trie_depth, max_tree_node);
 
-    auto *leaf_point = new leaf_config(dimensions);
+    auto *leaf_point = new data_point(dimensions);
 
     TimeStamp t0, t1;
     t0 = GetTimestamp();
-    for (n_leaves_type itr = 1; itr <= n_points; itr ++){
+    for (n_leaves_t itr = 1; itr <= n_points; itr ++){
 
-        for (dimension_type i = 0; i < dimensions; i++){
+        for (dimension_t i = 0; i < dimensions; i++){
             leaf_point->coordinates[i] = rand() % range;
         }
         mdtrie->insert_trie(leaf_point, max_depth);
@@ -40,12 +40,12 @@ void test_random_data(n_leaves_type n_points, dimension_type dimensions, level_t
     fprintf(fptr, "Average time to insert one point: %llu microseconds\n", (t1 - t0) / n_points);
 }
 
-void test_real_data(dimension_type dimensions, level_type max_depth, level_type trie_depth, preorder_type max_tree_node){
+void test_real_data(dimension_t dimensions, level_t max_depth, level_t trie_depth, preorder_t max_tree_node){
 
     fptr = fopen(file_path, "a");
     fprintf(fptr, "dimensions: %d, trie_depth: %ld, max_tree_node: %ld\n", dimensions, trie_depth, max_tree_node);
     auto *mdtrie = new md_trie(dimensions, max_depth, trie_depth, max_tree_node);
-    auto *leaf_point = new leaf_config(dimensions);
+    auto *leaf_point = new data_point(dimensions);
 
     char *line = nullptr;
     size_t len = 0;
@@ -67,9 +67,9 @@ void test_real_data(dimension_type dimensions, level_type max_depth, level_type 
 
     TimeStamp start, diff;
     
-    n_leaves_type n_points = 0;
+    n_leaves_t n_points = 0;
 
-    n_leaves_type n_lines = 14583357;
+    n_leaves_t n_lines = 14583357;
     diff = 0;
     tqdm bar1;
     while ((read = getline(&line, &len, fp)) != -1)
@@ -82,7 +82,7 @@ void test_real_data(dimension_type dimensions, level_type max_depth, level_type 
         for (uint8_t i = 0; i < 2; i ++){
             token = strtok(nullptr, " ");
         }
-        for (dimension_type i = 0; i < dimensions; i++){
+        for (dimension_t i = 0; i < dimensions; i++){
             token = strtok(nullptr, " ");
             leaf_point->coordinates[i] = strtoul(token, &ptr, 10);
         }
@@ -99,14 +99,14 @@ void test_real_data(dimension_type dimensions, level_type max_depth, level_type 
     // Query n_lines random points
     n_points = 0;
     diff = 0;
-    n_leaves_type n_nonexistent = 0;
+    n_leaves_t n_nonexistent = 0;
     tqdm bar2;
-    auto range = (symbol_type)pow(2, max_depth);
+    auto range = (symbol_t)pow(2, max_depth);
     while (n_points < n_lines)
     {
         bar2.progress(n_points, n_lines);
         // Get the first token
-        for (dimension_type i = 0; i < dimensions; i++){
+        for (dimension_t i = 0; i < dimensions; i++){
             leaf_point->coordinates[i] = rand() % range;
         }
         start = GetTimestamp();
@@ -139,7 +139,7 @@ void test_real_data(dimension_type dimensions, level_type max_depth, level_type 
         for (uint8_t i = 0; i < 2; i ++){
             token = strtok(NULL, " ");
         }
-        for (dimension_type i = 0; i < dimensions; i++){
+        for (dimension_t i = 0; i < dimensions; i++){
             token = strtok(NULL, " ");
             leaf_point->coordinates[i] = strtoul(token, &ptr, 10);
         }
@@ -159,10 +159,10 @@ void test_real_data(dimension_type dimensions, level_type max_depth, level_type 
     fclose(fptr);
 }
 
-void test_insert_data(dimension_type dimensions, level_type max_depth, level_type trie_depth, preorder_type max_tree_node){
+void test_insert_data(dimension_t dimensions, level_t max_depth, level_t trie_depth, preorder_t max_tree_node){
 
     auto *mdtrie = new md_trie(dimensions, max_depth, trie_depth, max_tree_node);
-    auto *leaf_point = new leaf_config(dimensions);
+    auto *leaf_point = new data_point(dimensions);
 
     char *line = nullptr;
     size_t len = 0;
@@ -184,8 +184,8 @@ void test_insert_data(dimension_type dimensions, level_type max_depth, level_typ
 
     TimeStamp start, diff;
     
-    n_leaves_type n_points = 0;
-    n_leaves_type n_lines = 14583357;
+    n_leaves_t n_points = 0;
+    n_leaves_t n_lines = 14583357;
 
     tqdm bar;
     while ((read = getline(&line, &len, fp)) != -1)
@@ -198,7 +198,7 @@ void test_insert_data(dimension_type dimensions, level_type max_depth, level_typ
         for (uint8_t i = 0; i < 2; i ++){
             strtok(nullptr, " ");
         }
-        for (dimension_type i = 0; i < dimensions; i++){
+        for (dimension_t i = 0; i < dimensions; i++){
             token = strtok(nullptr, " ");
             leaf_point->coordinates[i] = strtoul(token, &ptr, 10);
         }
@@ -213,10 +213,10 @@ void test_insert_data(dimension_type dimensions, level_type max_depth, level_typ
 }
 
 
-void test_mdtrie_size(dimension_type dimensions, level_type max_depth, level_type trie_depth, preorder_type max_tree_node){
+void test_mdtrie_size(dimension_t dimensions, level_t max_depth, level_t trie_depth, preorder_t max_tree_node){
     
     auto *mdtrie = new md_trie(dimensions, max_depth, trie_depth, max_tree_node);
-    auto *leaf_point = new leaf_config(dimensions);
+    auto *leaf_point = new data_point(dimensions);
 
     char *line = nullptr;
     size_t len = 0;
@@ -238,8 +238,8 @@ void test_mdtrie_size(dimension_type dimensions, level_type max_depth, level_typ
 
     TimeStamp start, diff;
     
-    n_leaves_type n_points = 0;
-    n_leaves_type n_lines = 14583357;
+    n_leaves_t n_points = 0;
+    n_leaves_t n_lines = 14583357;
 
     tqdm bar;
     while ((read = getline(&line, &len, fp)) != -1)
@@ -252,7 +252,7 @@ void test_mdtrie_size(dimension_type dimensions, level_type max_depth, level_typ
         for (uint8_t i = 0; i < 2; i ++){
             strtok(nullptr, " ");
         }
-        for (dimension_type i = 0; i < dimensions; i++){
+        for (dimension_t i = 0; i < dimensions; i++){
             token = strtok(nullptr, " ");
             leaf_point->coordinates[i] = strtoul(token, &ptr, 10);
         }
