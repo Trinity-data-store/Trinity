@@ -5,7 +5,7 @@
 #include <tqdm.h>
 
 FILE *fptr;
-char file_path[] = "benchmark_range_search.csv";
+char file_path[] = "benchmark_range_search_test.csv";
 
 typedef unsigned long long int TimeStamp;
 static TimeStamp GetTimestamp() {
@@ -76,9 +76,11 @@ void test_real_data(dimension_type dimensions, level_type max_depth, level_type 
     bar.finish();
     uint64_t msec;
 
+    
     auto *start_range = new leaf_config(dimensions);
     auto *end_range = new leaf_config(dimensions);
     auto *found_points = new leaf_array();
+    uint8_t *representation = (uint8_t *)malloc(sizeof(uint8_t) * dimensions);
     int itr = 1;
     tqdm bar1;
     while (itr <= n_itr){
@@ -88,11 +90,11 @@ void test_real_data(dimension_type dimensions, level_type max_depth, level_type 
             end_range->coordinates[i] = start_range->coordinates[i] + rand() % (max[i] - start_range->coordinates[i] + 1);
         }
         start = GetTimestamp();
-        mdtrie->range_search_trie(start_range, end_range, mdtrie->get_root(), 0, found_points); 
+        mdtrie->range_search_trie(start_range, end_range, mdtrie->get_root(), 0, found_points, representation); 
         diff = GetTimestamp() - start;
-        if (found_points->n_points == 0){
-            continue;
-        }
+        // if (found_points->n_points == 0){
+        //     continue;
+        // }
 
         msec = diff * 1000 / CLOCKS_PER_SEC;
         fprintf(fptr, "%ld, %f\n", found_points->n_points, (float)msec*1000);
@@ -109,5 +111,5 @@ void test_real_data(dimension_type dimensions, level_type max_depth, level_type 
 // int dimensions, level_type max_depth, level_type trie_depth, preorder_type max_tree_node, int n_itr
 int main() {
     srand(static_cast<unsigned int>(time(0)));
-    test_real_data(4, 32, 10, 1024, 100);
+    test_real_data(4, 32, 10, 1024, 50);
 }

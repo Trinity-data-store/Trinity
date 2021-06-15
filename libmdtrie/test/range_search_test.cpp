@@ -1,7 +1,7 @@
 #include "catch.hpp"
 #include "trie.h"
 
-bool test_range_search(n_leaves_type n_points, dimension_type dimensions, level_type max_depth, level_type trie_depth, preorder_type max_tree_nodes, uint32_t n_itr = 50, dimension_type n_checked_points = 100000)
+bool test_range_search(n_leaves_type n_points, dimension_type dimensions, level_type max_depth, level_type trie_depth, preorder_type max_tree_nodes, uint32_t n_itr = 50, n_leaves_type n_checked_points = 100000)
 {
     auto range = (symbol_type)pow(2, max_depth);
     auto *mdtrie = new md_trie(dimensions, max_depth, trie_depth, max_tree_nodes);
@@ -16,6 +16,7 @@ bool test_range_search(n_leaves_type n_points, dimension_type dimensions, level_
     auto *start_range = new leaf_config(dimensions);
     auto *end_range = new leaf_config(dimensions);
     auto *found_points = new leaf_array();
+    uint8_t *representation = (uint8_t *)malloc(sizeof(uint8_t) * dimensions);
 
     for (uint32_t itr = 1; itr <= n_itr; itr++){
         for (dimension_type i = 0; i < dimensions; i++){
@@ -26,7 +27,7 @@ bool test_range_search(n_leaves_type n_points, dimension_type dimensions, level_
             }
         }
 
-        mdtrie->range_search_trie(start_range, end_range, mdtrie->get_root(), 0, found_points);
+        mdtrie->range_search_trie(start_range, end_range, mdtrie->get_root(), 0, found_points, representation);
         
         for (n_leaves_type i = 0; i < found_points->n_points; i++){
             leaf_config *leaf = found_points->points[i];
@@ -76,5 +77,5 @@ bool test_range_search(n_leaves_type n_points, dimension_type dimensions, level_
 // int n_points, int dimensions, level_type max_depth, level_type trie_depth, preorder_type max_tree_nodes, int n_itr, int n_checked_points
 TEST_CASE( "Test", "Range Search Trie" ) {
     srand(static_cast<unsigned int>(time(0)));
-    REQUIRE(test_range_search(5000, 8, 10, 3, 128, 50, 10000));
+    REQUIRE(test_range_search(5000, 8, 10, 3, 128, 100, 10000));
 }

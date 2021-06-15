@@ -41,18 +41,9 @@ public:
         coordinates = (point_type *)calloc(_dimensions, sizeof(point_type));
     }
 
-    // Given the leaf_point and the level we are at, return the Morton code corresponding to that level
-    symbol_type leaf_to_symbol(level_type _level, dimension_type _dimensions, level_type _max_depth)
-    {
-        symbol_type result = 0;
-        for (dimension_type j = 0; j < _dimensions; j++)
-        {
-            bool bit = (coordinates[j] >> (_max_depth - _level - 1)) & 1;
-            result = result << 1;
-            result += bit;
-        }
-        return result;
-    }
+    symbol_type leaf_to_symbol(level_type, dimension_type, level_type);
+    void get_representation(leaf_config *, uint8_t *, level_type, dimension_type, level_type);
+    void update_range(leaf_config *, uint8_t *, level_type, dimension_type, level_type);
 };
 
 class leaf_array
@@ -157,7 +148,7 @@ public:
     node_type select_subtree(preorder_type &, preorder_type &) const;
     uint64_t size() const;
 
-    void range_search_treeblock(leaf_config *, leaf_config *, treeblock *, level_type, preorder_type, node_type, leaf_array *);
+    void range_search_treeblock(leaf_config *, leaf_config *, treeblock *, level_type, preorder_type, node_type, leaf_array *, uint8_t *);
     void range_traverse_treeblock(leaf_config *, leaf_config *, uint8_t [], uint8_t, treeblock *, level_type, preorder_type, node_type, leaf_array *);
 
     preorder_type get_child_skip(node_type, symbol_type, symbol_type) const;
@@ -203,7 +194,7 @@ public:
     treeblock *walk_trie(trie_node *, leaf_config *, level_type &) const;
     bool walk_treeblock(treeblock *, leaf_config *, level_type, level_type) const;
     uint64_t size() const;
-    void range_search_trie(leaf_config *, leaf_config *, trie_node *, level_type, leaf_array *);
+    void range_search_trie(leaf_config *, leaf_config *, trie_node *, level_type, leaf_array *, uint8_t *);
     void range_traverse_trie(leaf_config *, leaf_config *, uint8_t [], uint8_t, trie_node *, level_type, leaf_array *);
 };
 
