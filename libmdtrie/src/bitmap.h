@@ -129,16 +129,16 @@ class Bitmap {
 
   // Constructors and Destructors
   Bitmap() {
-    data_ = NULL;
+    data_ = nullptr;
     size_ = 0;
   }
 
-  Bitmap(size_type num_bits) {
+  explicit Bitmap(size_type num_bits) {
     data_ = (data_type *)calloc(BITS2BLOCKS(num_bits), sizeof(data_type));
     size_ = num_bits;
   }
 
-  uint64_t size(){
+  uint64_t size() const{
     return size_ / 8 + sizeof(size_type);
   }
 
@@ -152,9 +152,9 @@ class Bitmap {
   }
 
   virtual ~Bitmap() {
-    if (data_ != NULL) {
+    if (data_ != nullptr) {
       delete[] data_;
-      data_ = NULL;
+      data_ = nullptr;
     }
   }
 
@@ -162,7 +162,7 @@ class Bitmap {
     return data_;
   }
 
-  size_type GetSizeInBits() {
+  size_type GetSizeInBits() const {
     return size_;
   }
 
