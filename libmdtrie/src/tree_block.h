@@ -65,7 +65,7 @@ private:
     node_n_t tree_capacity_{};
     level_t max_depth_;
     bitmap::Bitmap *dfuds_{};
-    void *frontiers_ = nullptr;
+    frontier_node *frontiers_ = nullptr;
     node_n_t num_frontiers_ = 0;
 };
 

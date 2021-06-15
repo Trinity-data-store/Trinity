@@ -19,19 +19,19 @@ void tree_block::copy_node_cod(bitmap::Bitmap *from_dfuds, bitmap::Bitmap *to_df
 }
 
 tree_block *tree_block::get_pointer(preorder_t current_frontier) const {
-    return ((frontier_node *) frontiers_)[current_frontier].pointer_;
+    return frontiers_[current_frontier].pointer_;
 }
 
 preorder_t tree_block::get_preorder(preorder_t current_frontier) const {
-    return ((frontier_node *) frontiers_)[current_frontier].preorder_;
+    return frontiers_[current_frontier].preorder_;
 }
 
 void tree_block::set_preorder(preorder_t current_frontier, preorder_t preorder) {
-    ((frontier_node *) frontiers_)[current_frontier].preorder_ = preorder;
+    frontiers_[current_frontier].preorder_ = preorder;
 }
 
 void tree_block::set_pointer(preorder_t current_frontier, tree_block *pointer) {
-    ((frontier_node *) frontiers_)[current_frontier].pointer_ = pointer;
+    frontiers_[current_frontier].pointer_ = pointer;
 }
 
 preorder_t tree_block::get_n_children(node_t node, symbol_t n_branches) const {
@@ -288,7 +288,7 @@ void tree_block::insert(node_t node, data_point *leaf_point, level_t level, leve
                 free(new_pointer_array);
 
             // Expand frontiers array to add one more frontier node
-            frontiers_ = realloc(frontiers_, sizeof(frontier_node) * (num_frontiers_ + 1));
+            frontiers_ = (frontier_node *) realloc(frontiers_, sizeof(frontier_node) * (num_frontiers_ + 1));
             // Shift right one spot to move the pointers from flagSelectedNode + 1 to nPtrs
             for (preorder_t j = num_frontiers_; j > frontier_selected_node; --j) {
                 set_pointer(j, get_pointer(j - 1));
@@ -313,7 +313,7 @@ void tree_block::insert(node_t node, data_point *leaf_point, level_t level, leve
                 set_preorder(j, get_preorder(frontier) - subtree_size + 1);
             }
             num_frontiers_ = num_frontiers_ - copied_frontier + 1;
-            frontiers_ = realloc(frontiers_, sizeof(frontier_node) * (num_frontiers_));
+            frontiers_ = (frontier_node *) realloc(frontiers_, sizeof(frontier_node) * (num_frontiers_));
         }
 
         // Now, delete the subtree copied to the new block
