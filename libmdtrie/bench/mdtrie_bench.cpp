@@ -208,7 +208,7 @@ void test_insert_data(dimension_t dimensions, level_t max_depth, level_t trie_de
     }
     bar.finish();
     uint64_t msec = diff * 1000 / CLOCKS_PER_SEC;
-    fprintf(fptr, "Average time to insert one point: %f microseconds\n", (float)msec*1000 / n_points);
+    fprintf(stderr, "Average time to insert one point: %f microseconds\n", (float)msec*1000 / n_points);
 }
 
 
@@ -271,7 +271,8 @@ void test_mdtrie_size(dimension_t dimensions, level_t max_depth, level_t trie_de
 int main() {
 
 //  int dimensions, level_type max_depth, level_type trie_depth, preorder_type max_tree_node
-    test_real_data(2, 32, 10, 1024);
+    test_insert_data(2, 32, 10, 1024);
+    // test_real_data(2, 32, 10, 1024);
     // test_real_data(2, 32, 6, 1024);
     // test_real_data(2, 32, 8, 1024);
     // test_real_data(2, 32, 12, 1024);
