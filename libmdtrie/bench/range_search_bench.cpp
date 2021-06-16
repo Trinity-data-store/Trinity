@@ -56,17 +56,17 @@ void test_real_data(dimension_t dimensions, level_t max_depth, level_t trie_dept
         }
         for (dimension_t i = 0; i < dimensions; i++){
             token = strtok(nullptr, " ");
-            leaf_point->coordinates[i] = strtoul(token, &ptr, 10);
+            leaf_point->set_coordinate(i, strtoul(token, &ptr, 10));
             if (n_points == 0){
-                max[i] = leaf_point->coordinates[i];
-                min[i] = leaf_point->coordinates[i];
+                max[i] = leaf_point->get_coordinate(i);
+                min[i] = leaf_point->get_coordinate(i);
             }
             else {
-                if (leaf_point->coordinates[i] > max[i]){
-                    max[i] = leaf_point->coordinates[i];
+                if (leaf_point->get_coordinate(i) > max[i]){
+                    max[i] = leaf_point->get_coordinate(i);
                 }
-                if (leaf_point->coordinates[i] < min[i]){
-                    min[i] = leaf_point->coordinates[i];
+                if (leaf_point->get_coordinate(i) < min[i]){
+                    min[i] = leaf_point->get_coordinate(i);
                 }
             }
         }
@@ -80,24 +80,24 @@ void test_real_data(dimension_t dimensions, level_t max_depth, level_t trie_dept
     auto *start_range = new data_point(dimensions);
     auto *end_range = new data_point(dimensions);
     auto *found_points = new point_array();
-    uint8_t *representation = (uint8_t *)malloc(sizeof(uint8_t) * dimensions);
+    // uint8_t *representation = (uint8_t *)malloc(sizeof(uint8_t) * dimensions);
     int itr = 1;
     tqdm bar1;
     while (itr <= n_itr){
         bar1.progress(itr, n_itr);
         for (dimension_t i = 0; i < dimensions; i++){
-            start_range->coordinates[i] = min[i] + rand() % (max[i] - min[i] + 1);
-            end_range->coordinates[i] = start_range->coordinates[i] + rand() % (max[i] - start_range->coordinates[i] + 1);
+            start_range->set_coordinate(i,  min[i] + rand() % (max[i] - min[i] + 1));
+            end_range->set_coordinate(i, start_range->get_coordinate(i) + rand() % (max[i] - start_range->get_coordinate(i) + 1));
         }
         start = GetTimestamp();
-        mdtrie->range_search_trie(start_range, end_range, mdtrie->root(), 0, found_points, representation);
+        mdtrie->range_search_trie(start_range, end_range, mdtrie->root(), 0, found_points);
         diff = GetTimestamp() - start;
         // if (found_points->n_points == 0){
         //     continue;
         // }
 
         msec = diff * 1000 / CLOCKS_PER_SEC;
-        fprintf(fptr, "%ld, %f\n", found_points->n_points, (float)msec*1000);
+        fprintf(fptr, "%ld, %f\n", found_points->size(), (float)msec*1000);
         
         found_points->reset();
         itr++;

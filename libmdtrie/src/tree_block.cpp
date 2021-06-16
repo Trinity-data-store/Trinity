@@ -99,9 +99,10 @@ node_t tree_block::select_subtree(preorder_t &subtree_size, preorder_t &selected
         }
     }
     // Now I have to go through the index_to_subtree vector to choose the proper subtree
-    // TODO(anuragk): Initialize appropriately
-    preorder_t min_node, min, min_index;
-    preorder_t diff;
+    preorder_t min_node = 0;
+    preorder_t min = (preorder_t) -1;
+    preorder_t min_index = 0;
+    preorder_t diff = (preorder_t) -1;
 
     auto leftmost = (preorder_t) -1;
 
@@ -182,8 +183,6 @@ void tree_block::insert(node_t node, data_point *leaf_point, level_t level, leve
         if (from_node >= node) {
             dfuds_->BulkCopy_backward((from_node + 1) * num_branches_, (dest_node + 1) * num_branches_,
                                       (from_node - node + 1) * num_branches_);
-            // TODO(anuragk): This line is never used
-            dest_node -= from_node - (node - 1);
             from_node = node - 1;
         }
         // while (from_node >= node)
@@ -317,8 +316,6 @@ void tree_block::insert(node_t node, data_point *leaf_point, level_t level, leve
         }
 
         // Now, delete the subtree copied to the new block
-        // TODO(anuragk): This line is never used
-        frontier = frontier_selected_node + 1;
         orig_selected_node++;
 
         // It seems that this optimization is not faster.
@@ -328,10 +325,6 @@ void tree_block::insert(node_t node, data_point *leaf_point, level_t level, leve
             }
             dfuds_->BulkCopy_forward(selected_node * num_branches_, orig_selected_node * num_branches_,
                                      num_branches_ * (num_nodes_ - selected_node));
-
-            // TODO(anuragk): These two lines are never used
-            orig_selected_node += num_nodes_ - selected_node;
-            selected_node = num_nodes_;
         }
 
         // while (selected_node < n_nodes_)
@@ -451,12 +444,6 @@ node_t tree_block::child(tree_block *&p, node_t &node, symbol_t symbol, level_t 
 
 uint64_t tree_block::size() const {
 
-    // Can be hard coded as global variable:
-    // preorder_type max_tree_nodes_;
-    // level_type max_depth_;
-    // uint8_t dimensions_;
-    // symbol_type n_branches_;
-
     uint64_t total_size = sizeof(level_t) * 1 + sizeof(node_n_t) * 4;
     total_size += num_frontiers_ * (sizeof(preorder_t) + sizeof(tree_block *)) + sizeof(frontier_node *);
     total_size += dfuds_->size();
@@ -469,21 +456,21 @@ uint64_t tree_block::size() const {
 
 void tree_block::range_search_treeblock(data_point *start_range, data_point *end_range, tree_block *current_block,
                                         level_t level, preorder_t current_node, node_t current_frontier,
-                                        point_array *found_points, uint8_t *representation) {
+                                        point_array *found_points) {
     if (level == max_depth_) {
         auto *leaf = new data_point(dimensions_);
-
-        for (uint8_t j = 0; j < dimensions_; j++) {
-            point_t start_coordinate = start_range->coordinates[j];
-            leaf->coordinates[j] = start_coordinate;
-        }
+        leaf->set(start_range->get());
+        // for (uint8_t j = 0; j < dimensions_; j++) {
+        //     leaf->coordinates[j] = start_range->coordinates[j];
+        // }
         found_points->add_leaf(leaf);
         return;
     }
-
+    uint8_t *representation = (uint8_t *) malloc(sizeof(uint8_t) * dimensions_);
     start_range->get_representation(end_range, representation, level, max_depth_);
     range_traverse_treeblock(start_range, end_range, representation, 0, current_block, level, current_node,
                              current_frontier, found_points);
+    free(representation);
 }
 
 void tree_block::range_traverse_treeblock(data_point *start_range, data_point *end_range, uint8_t representation[],
@@ -516,24 +503,28 @@ void tree_block::range_traverse_treeblock(data_point *start_range, data_point *e
             current_frontier = 0;
         }
         range_search_treeblock(start_range, end_range, current_block, level + 1, current_node, current_frontier,
-                               found_points, representation);
+                               found_points);
+
 
         return;
     }
     if (representation[index] == 2) {
-        coordinates_t original_start_coordinates(start_range->coordinates);
-        coordinates_t original_end_coordinates(end_range->coordinates);
+        coordinates_t original_start_coordinates(start_range->get());
+        coordinates_t original_end_coordinates(end_range->get());
 
         representation[index] = 0;
         range_traverse_treeblock(start_range, end_range, representation, index + 1, current_block, level, current_node,
                                  current_frontier, found_points);
 
-        start_range->coordinates = original_start_coordinates;
-        end_range->coordinates = original_end_coordinates;
+        start_range->set(original_start_coordinates);
+        end_range->set(original_end_coordinates);
 
         representation[index] = 1;
         range_traverse_treeblock(start_range, end_range, representation, index + 1, current_block, level, current_node,
                                  current_frontier, found_points);
+        start_range->set(original_start_coordinates);
+        end_range->set(original_end_coordinates);
+        representation[index] = 2;
     } else {
         range_traverse_treeblock(start_range, end_range, representation, index + 1, current_block, level, current_node,
                                  current_frontier, found_points);

@@ -100,16 +100,17 @@ uint64_t md_trie::size() const {
 }
 
 void md_trie::range_search_trie(data_point *start_range, data_point *end_range, trie_node *current_trie_node,
-                                level_t level, point_array *found_points, uint8_t *representation) {
+                                level_t level, point_array *found_points) {
     // If we reach the bottom of the top-level trie
     if (level == trie_depth_) {
         auto *current_treeblock = (tree_block *) current_trie_node->block();
-        current_treeblock->range_search_treeblock(start_range, end_range, current_treeblock, level, 0, 0, found_points,
-                                                  representation);
+        current_treeblock->range_search_treeblock(start_range, end_range, current_treeblock, level, 0, 0, found_points);
         return;
     }
+    uint8_t *representation = (uint8_t *) malloc(sizeof(uint8_t) * dimensions_);    
     start_range->get_representation(end_range, representation, level, max_depth_);
     range_traverse_trie(start_range, end_range, representation, 0, current_trie_node, level, found_points);
+    free(representation);
 }
 
 void
@@ -128,28 +129,26 @@ md_trie::range_traverse_trie(data_point *start_range, data_point *end_range, uin
         }
         if (current_trie_node->get_child(current_symbol)) {
             range_search_trie(start_range, end_range, current_trie_node->get_child(current_symbol), level + 1,
-                              found_points, representation);
+                              found_points);
         }
         return;
     }
     if (representation[index] == 2) {
-        coordinates_t original_start_coordinates(start_range->coordinates);
-        coordinates_t original_end_coordinates(end_range->coordinates);
-
-        start_range->coordinates = original_start_coordinates;
-        end_range->coordinates = original_end_coordinates;
+        coordinates_t original_start_coordinates(start_range->get());
+        coordinates_t original_end_coordinates(end_range->get());
 
         representation[index] = 0;
         range_traverse_trie(start_range, end_range, representation, index + 1, current_trie_node, level, found_points);
 
-        start_range->coordinates = original_start_coordinates;
-        end_range->coordinates = original_end_coordinates;
-
+        start_range->set(original_start_coordinates);
+        end_range->set(original_end_coordinates);
+        
         representation[index] = 1;
-
         range_traverse_trie(start_range, end_range, representation, index + 1, current_trie_node, level, found_points);
 
-        // TODO(anuragk): Removed backtracking logic
+        start_range->set(original_start_coordinates);
+        end_range->set(original_end_coordinates);
+        representation[index] = 2;      
     } else {
         range_traverse_trie(start_range, end_range, representation, index + 1, current_trie_node, level, found_points);
     }

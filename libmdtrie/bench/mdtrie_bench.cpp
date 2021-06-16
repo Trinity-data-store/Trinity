@@ -5,7 +5,7 @@
 #include <tqdm.h>
 
 FILE *fptr;
-char file_path[] = "benchmark_output_nonexistent.txt";
+char file_path[] = "benchmark_output_vector.txt";
 
 typedef unsigned long long int TimeStamp;
 static TimeStamp GetTimestamp() {
@@ -27,7 +27,7 @@ void test_random_data(n_leaves_t n_points, dimension_t dimensions, level_t max_d
     for (n_leaves_t itr = 1; itr <= n_points; itr ++){
 
         for (dimension_t i = 0; i < dimensions; i++){
-            leaf_point->coordinates[i] = rand() % range;
+            leaf_point->set_coordinate(i, rand() % range);
         }
         mdtrie->insert_trie(leaf_point, max_depth);
         if (!mdtrie->check(leaf_point, max_depth)){
@@ -84,7 +84,7 @@ void test_real_data(dimension_t dimensions, level_t max_depth, level_t trie_dept
         }
         for (dimension_t i = 0; i < dimensions; i++){
             token = strtok(nullptr, " ");
-            leaf_point->coordinates[i] = strtoul(token, &ptr, 10);
+            leaf_point->set_coordinate(i, strtoul(token, &ptr, 10));
         }
         start = GetTimestamp();
         mdtrie->insert_trie(leaf_point, max_depth);
@@ -107,7 +107,7 @@ void test_real_data(dimension_t dimensions, level_t max_depth, level_t trie_dept
         bar2.progress(n_points, n_lines);
         // Get the first token
         for (dimension_t i = 0; i < dimensions; i++){
-            leaf_point->coordinates[i] = rand() % range;
+            leaf_point->set_coordinate(i, rand() % range);
         }
         start = GetTimestamp();
         if(!mdtrie->check(leaf_point, max_depth)){
@@ -122,7 +122,6 @@ void test_real_data(dimension_t dimensions, level_t max_depth, level_t trie_dept
     fprintf(fptr, "Average time to query nonexistent points: %f microseconds per query\n", (float)msec*1000 / n_nonexistent); 
     fprintf(fptr, "\n");
     fclose(fptr);
-    return
 
     // Time to query the inserted points
     rewind(fp);
@@ -141,7 +140,7 @@ void test_real_data(dimension_t dimensions, level_t max_depth, level_t trie_dept
         }
         for (dimension_t i = 0; i < dimensions; i++){
             token = strtok(NULL, " ");
-            leaf_point->coordinates[i] = strtoul(token, &ptr, 10);
+            leaf_point->set_coordinate(i, strtoul(token, &ptr, 10));
         }
         start = GetTimestamp();
         if (!mdtrie->check(leaf_point, max_depth)){
@@ -200,7 +199,7 @@ void test_insert_data(dimension_t dimensions, level_t max_depth, level_t trie_de
         }
         for (dimension_t i = 0; i < dimensions; i++){
             token = strtok(nullptr, " ");
-            leaf_point->coordinates[i] = strtoul(token, &ptr, 10);
+            leaf_point->set_coordinate(i, strtoul(token, &ptr, 10));
         }
         start = GetTimestamp();
         mdtrie->insert_trie(leaf_point, max_depth);
@@ -254,7 +253,7 @@ void test_mdtrie_size(dimension_t dimensions, level_t max_depth, level_t trie_de
         }
         for (dimension_t i = 0; i < dimensions; i++){
             token = strtok(nullptr, " ");
-            leaf_point->coordinates[i] = strtoul(token, &ptr, 10);
+            leaf_point->set_coordinate(i, strtoul(token, &ptr, 10));
         }
         start = GetTimestamp();
         mdtrie->insert_trie(leaf_point, max_depth);
@@ -273,13 +272,13 @@ int main() {
 
 //  int dimensions, level_type max_depth, level_type trie_depth, preorder_type max_tree_node
     test_real_data(2, 32, 10, 1024);
-    test_real_data(2, 32, 6, 1024);
-    test_real_data(2, 32, 8, 1024);
-    test_real_data(2, 32, 12, 1024);
-    test_real_data(2, 32, 14, 1024);
-    test_real_data(2, 32, 16, 1024);
-    test_real_data(4, 32, 10, 1024);
-    test_real_data(3, 32, 10, 1024);
+    // test_real_data(2, 32, 6, 1024);
+    // test_real_data(2, 32, 8, 1024);
+    // test_real_data(2, 32, 12, 1024);
+    // test_real_data(2, 32, 14, 1024);
+    // test_real_data(2, 32, 16, 1024);
+    // test_real_data(4, 32, 10, 1024);
+    // test_real_data(3, 32, 10, 1024);
 
 }
 

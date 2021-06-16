@@ -21,13 +21,13 @@
 class md_trie {
 public:
     explicit md_trie(uint8_t dimensions, level_t max_depth = 10, level_t trie_depth = 3,
-                     preorder_t max_tree_nodes = 256, uint8_t initial_capacity_nodes = 2) {
+                     uint8_t initial_capacity_nodes = 2) {
         dimensions_ = dimensions;
         n_branches_ = (symbol_t) pow(2, dimensions);
         initial_tree_capacity_ = n_branches_ * initial_capacity_nodes;
         max_depth_ = max_depth;
         trie_depth_ = trie_depth;
-        max_tree_nodes_ = max_tree_nodes;
+        // max_tree_nodes_ = max_tree_nodes;
         root_ = new trie_node(n_branches_);
     }
 
@@ -47,7 +47,7 @@ public:
 
     uint64_t size() const;
 
-    void range_search_trie(data_point *, data_point *, trie_node *, level_t, point_array *, uint8_t *);
+    void range_search_trie(data_point *, data_point *, trie_node *, level_t, point_array *);
 
     void range_traverse_trie(data_point *, data_point *, uint8_t [], uint8_t, trie_node *, level_t, point_array *);
 
@@ -57,7 +57,6 @@ private:
     trie_node *root_ = nullptr;
     level_t max_depth_;
     level_t trie_depth_;
-    preorder_t max_tree_nodes_; // TODO(anuragk): Not used
     node_n_t initial_tree_capacity_;
 };
 

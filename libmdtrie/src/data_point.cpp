@@ -4,6 +4,7 @@
 // For example, 0?1 means it can be either 001 or 011
 void
 data_point::get_representation(data_point *end_range, uint8_t *representation, level_t level, level_t max_depth) {
+    
     for (size_t j = 0; j < coordinates.size(); j++) {
         point_t start_coordinate = coordinates[j];
         point_t end_coordinate = end_range->coordinates[j];
@@ -56,3 +57,4 @@ void data_point::update_range(data_point *end_range, const uint8_t *representati
         end_range->coordinates[j] = end_coordinate;
     }
 }
+

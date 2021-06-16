@@ -43,7 +43,7 @@ public:
     uint64_t size() const;
 
     void range_search_treeblock(data_point *, data_point *, tree_block *, level_t, preorder_t, node_t,
-                                point_array *, uint8_t *);
+                                point_array *);
 
     void
     range_traverse_treeblock(data_point *, data_point *, uint8_t [], uint8_t, tree_block *, level_t, preorder_t,
@@ -65,7 +65,8 @@ private:
     node_n_t tree_capacity_{};
     level_t max_depth_;
     bitmap::Bitmap *dfuds_{};
-    frontier_node *frontiers_ = nullptr; // TODO(anuragk): Should be replaced by std::vector<frontier_node> if possible
+    // TODO(anuragk): Should be replaced by std::vector<frontier_node> if possible
+    frontier_node *frontiers_ = nullptr; 
     node_n_t num_frontiers_ = 0;
 };
 
