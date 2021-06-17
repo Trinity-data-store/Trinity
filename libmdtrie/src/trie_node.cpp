@@ -4,9 +4,12 @@
 uint64_t trie_node::size() const {
     uint64_t total_size = children_.size() * sizeof(trie_node *);
     if (!block_) {
-        for (auto i : children_) {
-            if (i) {
-                total_size += i->size();
+        unsigned int children_size = children_.size(); 
+        for (unsigned int i = 0; i < children_size; i++)
+        // for (auto i : children_) {
+        {
+            if (children_[i]) {
+                total_size += children_[i]->size();
             }
         }
     } else {

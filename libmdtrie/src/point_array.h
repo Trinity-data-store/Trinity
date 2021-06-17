@@ -20,7 +20,7 @@ public:
     }
 
     data_point *at(size_t i) {
-        return points_.at(i);
+        return points_[i];
     }
 
 private:
