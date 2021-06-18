@@ -31,7 +31,7 @@ symbol_t data_point::leaf_to_symbol(level_t level, level_t max_depth) {
 }
 
 
-void data_point::update_range(data_point *end_range, const uint8_t *representation, level_t level, level_t max_depth) {
+bool data_point::update_range(data_point *end_range, const uint8_t *representation, level_t level, level_t max_depth) {
     // size_t coordinate_size = coordinates.size();    
     for (size_t j = 0; j < size_; j++) {
         point_t start_coordinate = coordinates[j];
@@ -39,18 +39,18 @@ void data_point::update_range(data_point *end_range, const uint8_t *representati
         bool start_bit = (start_coordinate >> (max_depth - level - 1U)) & 1U;
         bool end_bit = (end_coordinate >> (max_depth - level - 1U)) & 1U;
         if (representation[j] == 1) {
-            if (start_bit == 0) {
+            if (!start_bit) {
                 start_coordinate =
                         ((start_coordinate >> (max_depth - level - 1U)) | 1U) << (max_depth - level - 1U);
             }
-            if (end_bit == 0) {
-                return;
+            if (!end_bit) {
+                return false;
             }
         } else if (representation[j] == 0) {
-            if (start_bit == 1) {
-                return;
+            if (start_bit) {
+                return false;
             }
-            if (end_bit == 1) {
+            if (end_bit) {
                 end_coordinate = ((end_coordinate >> (max_depth - level)) << (max_depth - level)) +
                                  ((1U << (max_depth - level - 1U)) - 1U);
             }
@@ -58,5 +58,6 @@ void data_point::update_range(data_point *end_range, const uint8_t *representati
         coordinates[j] = start_coordinate;
         end_range->coordinates[j] = end_coordinate;
     }
+    return true;
 }
 

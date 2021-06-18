@@ -17,7 +17,7 @@ public:
 
     void get_representation(data_point *end_range, uint8_t *representation, level_t level, level_t max_depth);
 
-    void update_range(data_point *end_range, const uint8_t *representation, level_t level, level_t max_depth);
+    bool update_range(data_point *end_range, const uint8_t *representation, level_t level, level_t max_depth);
 
     void set(coordinates_t new_coordinates){
         coordinates = new_coordinates;

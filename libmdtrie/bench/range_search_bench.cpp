@@ -5,7 +5,7 @@
 #include <tqdm.h>
 
 FILE *fptr;
-char file_path[] = "benchmark_range_search.csv";
+char file_path[] = "benchmark_range_search_3d.csv";
 
 typedef unsigned long long int TimeStamp;
 static TimeStamp GetTimestamp() {
@@ -111,11 +111,58 @@ void test_real_data(dimension_t dimensions, level_t max_depth, level_t trie_dept
     fclose(fptr);
 }
 
+
+bool test_random_range_search(n_leaves_t n_points, dimension_t dimensions, level_t max_depth, level_t trie_depth,
+                       preorder_t max_tree_nodes, uint32_t n_itr = 50) {
+    auto range = (symbol_t) pow(2, max_depth);
+    auto *mdtrie = new md_trie(dimensions, max_depth, trie_depth, max_tree_nodes);
+    auto *leaf_point = new data_point(dimensions);
+    auto max = (uint64_t *) malloc(dimensions * sizeof(uint64_t));
+    auto min = (uint64_t *) malloc(dimensions * sizeof(uint64_t));
+
+    for (n_leaves_t itr = 1; itr <= n_points; itr++) {
+
+        for (dimension_t i = 0; i < dimensions; i++) {
+            leaf_point->set_coordinate(i, rand() % range);
+            if (itr == 1) {
+                max[i] = leaf_point->get_coordinate(i);
+                min[i] = leaf_point->get_coordinate(i);
+            } else {
+                if (leaf_point->get_coordinate(i) > max[i]) {
+                    max[i] = leaf_point->get_coordinate(i);
+                }
+                if (leaf_point->get_coordinate(i) < min[i]) {
+                    min[i] = leaf_point->get_coordinate(i);
+                }
+            }
+        }
+        mdtrie->insert_trie(leaf_point, max_depth);
+    }
+    auto *start_range = new data_point(dimensions);
+    auto *end_range = new data_point(dimensions);
+    auto *found_points = new point_array();
+    tqdm bar1;
+    for (uint32_t itr = 1; itr <= n_itr; itr++) {
+        bar1.progress(itr, n_itr);
+        for (dimension_t i = 0; i < dimensions; i++) {
+            start_range->set_coordinate(i, min[i] + rand() % (max[i] - min[i] + 1));
+            end_range->set_coordinate(i, start_range->get_coordinate(i) + rand() % (max[i] - start_range->get_coordinate(i) + 1));
+        }
+
+        mdtrie->range_search_trie(start_range, end_range, mdtrie->root(), 0, found_points);
+        found_points->reset();
+    }
+    bar1.finish();
+    return true;
+}
+
 // int dimensions, level_type max_depth, level_type trie_depth, preorder_type max_tree_node, int n_itr
 int main() {
     srand(static_cast<unsigned int>(time(0)));
     // test_real_data(2, 32, 10, 1024, 200);
-    test_real_data(3, 32, 10, 1024, 200);
+    test_real_data(3, 32, 10, 1024, 50);
     // test_real_data(4, 32, 10, 1024, 200);
+
+    // test_random_range_search(50000, 3, 10, 3, 1024, 200);
 
 }
