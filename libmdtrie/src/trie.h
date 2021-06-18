@@ -21,13 +21,13 @@
 class md_trie {
 public:
     explicit md_trie(uint8_t dimensions, level_t max_depth = 10, level_t trie_depth = 3,
-                     uint8_t initial_capacity_nodes = 2) {
+                     preorder_t max_tree_nodes = 256, uint8_t initial_capacity_nodes = 2) {
         dimensions_ = dimensions;
         n_branches_ = (symbol_t) pow(2, dimensions);
         initial_tree_capacity_ = n_branches_ * initial_capacity_nodes;
         max_depth_ = max_depth;
         trie_depth_ = trie_depth;
-        // max_tree_nodes_ = max_tree_nodes;
+        max_tree_nodes_ = max_tree_nodes;
         root_ = new trie_node(n_branches_);
     }
 
@@ -58,6 +58,7 @@ private:
     level_t max_depth_;
     level_t trie_depth_;
     node_n_t initial_tree_capacity_;
+    preorder_t max_tree_nodes_;
 };
 
 

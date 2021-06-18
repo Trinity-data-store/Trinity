@@ -7,8 +7,11 @@
 class data_point {
 private:
     coordinates_t coordinates;
+    dimension_t size_;
 public:
-    explicit data_point(dimension_t dimensions) : coordinates(dimensions) {}
+    explicit data_point(dimension_t dimensions) : coordinates(dimensions) {
+        size_ = dimensions;
+    }
 
     symbol_t leaf_to_symbol(level_t level, level_t max_depth);
 

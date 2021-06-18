@@ -5,7 +5,7 @@
 #include <tqdm.h>
 
 FILE *fptr;
-char file_path[] = "benchmark_range_search_test.csv";
+char file_path[] = "benchmark_range_search.csv";
 
 typedef unsigned long long int TimeStamp;
 static TimeStamp GetTimestamp() {
@@ -18,6 +18,7 @@ static TimeStamp GetTimestamp() {
 void test_real_data(dimension_t dimensions, level_t max_depth, level_t trie_depth, preorder_t max_tree_node, int n_itr){
 
     fptr = fopen(file_path, "a");
+    fprintf(fptr, "Number of Points, Volume, Latency, %d\n", dimensions);
     auto *mdtrie = new md_trie(dimensions, max_depth, trie_depth, max_tree_node);
     auto *leaf_point = new data_point(dimensions);
 
@@ -85,19 +86,21 @@ void test_real_data(dimension_t dimensions, level_t max_depth, level_t trie_dept
     tqdm bar1;
     while (itr <= n_itr){
         bar1.progress(itr, n_itr);
+        uint64_t volume = 1;
         for (dimension_t i = 0; i < dimensions; i++){
             start_range->set_coordinate(i,  min[i] + rand() % (max[i] - min[i] + 1));
             end_range->set_coordinate(i, start_range->get_coordinate(i) + rand() % (max[i] - start_range->get_coordinate(i) + 1));
+            volume *= (end_range->get_coordinate(i) - start_range->get_coordinate(i));
         }
         start = GetTimestamp();
         mdtrie->range_search_trie(start_range, end_range, mdtrie->root(), 0, found_points);
         diff = GetTimestamp() - start;
-        // if (found_points->n_points == 0){
-        //     continue;
-        // }
+        if (found_points->size() == 0){
+            continue;
+        }
 
         msec = diff * 1000 / CLOCKS_PER_SEC;
-        fprintf(fptr, "%ld, %f\n", found_points->size(), (float)msec*1000);
+        fprintf(fptr, "%ld, %ld, %f\n", found_points->size(), volume, (float)msec*1000);
         
         found_points->reset();
         itr++;
@@ -111,5 +114,8 @@ void test_real_data(dimension_t dimensions, level_t max_depth, level_t trie_dept
 // int dimensions, level_type max_depth, level_type trie_depth, preorder_type max_tree_node, int n_itr
 int main() {
     srand(static_cast<unsigned int>(time(0)));
-    test_real_data(4, 32, 10, 1024, 50);
+    // test_real_data(2, 32, 10, 1024, 200);
+    test_real_data(3, 32, 10, 1024, 200);
+    // test_real_data(4, 32, 10, 1024, 200);
+
 }

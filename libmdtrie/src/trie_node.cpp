@@ -2,10 +2,10 @@
 #include "tree_block.h"
 
 uint64_t trie_node::size() const {
-    uint64_t total_size = children_.size() * sizeof(trie_node *);
+    symbol_t children_size = children_.size(); 
+    uint64_t total_size = children_size * sizeof(trie_node *);
     if (!block_) {
-        unsigned int children_size = children_.size(); 
-        for (unsigned int i = 0; i < children_size; i++)
+        for (symbol_t i = 0; i < children_size; i++)
         // for (auto i : children_) {
         {
             if (children_[i]) {
