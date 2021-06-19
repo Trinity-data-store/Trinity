@@ -47,6 +47,8 @@ public:
 
     uint64_t size() const;
 
+    void density(density_array *);
+
     void range_search_trie(data_point *, data_point *, trie_node *, level_t, point_array *);
 
     void range_traverse_trie(data_point *, data_point *, uint8_t [], uint8_t, trie_node *, level_t, point_array *);

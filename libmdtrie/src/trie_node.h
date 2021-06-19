@@ -25,6 +25,8 @@ public:
 
     uint64_t size() const;
 
+    void density(density_array *);
+
 private:
     std::vector<trie_node *> children_;
     tree_block *block_;

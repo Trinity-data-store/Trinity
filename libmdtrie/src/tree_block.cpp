@@ -454,6 +454,14 @@ uint64_t tree_block::size() const {
     return total_size;
 }
 
+void tree_block::density(density_array *array){
+    for (uint16_t i = 0; i < num_nodes_; i++){
+        uint8_t n_children = get_n_children(i, num_branches_);
+        // fprintf(stderr, "%d\n", n_children);
+        array->push_back(n_children);
+    }
+}
+
 void tree_block::range_search_treeblock(data_point *start_range, data_point *end_range, tree_block *current_block,
                                         level_t level, preorder_t current_node, node_t current_frontier,
                                         point_array *found_points) {

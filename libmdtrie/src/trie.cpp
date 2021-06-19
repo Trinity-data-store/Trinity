@@ -99,6 +99,10 @@ uint64_t md_trie::size() const {
     return total_size + root_->size();
 }
 
+void md_trie::density(density_array *array) {
+    root_->density(array);
+}
+
 void md_trie::range_search_trie(data_point *start_range, data_point *end_range, trie_node *current_trie_node,
                                 level_t level, point_array *found_points) {
     // If we reach the bottom of the top-level trie

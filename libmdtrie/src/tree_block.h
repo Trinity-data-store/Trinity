@@ -42,6 +42,8 @@ public:
 
     uint64_t size() const;
 
+    void density(density_array *);
+
     void range_search_treeblock(data_point *, data_point *, tree_block *, level_t, preorder_t, node_t,
                                 point_array *);
 
