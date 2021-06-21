@@ -3,6 +3,7 @@
 
 #include "defs.h"
 #include <cstdlib>
+#include <cstring>
 
 // Struct for each point that we want to insert
 class data_point {
@@ -23,10 +24,10 @@ public:
     bool update_range(data_point *end_range, const uint8_t *representation, level_t level, level_t max_depth);
 
     void set(coordinates_t new_coordinates){
-        for (size_t j = 0; j < size_; j++) {
-            coordinates[j] = new_coordinates[j];
-        }
-        // coordinates = new_coordinates;
+        memcpy(coordinates, new_coordinates, sizeof(point_t) * size_);
+        // for (size_t j = 0; j < size_; j++) {
+        //     coordinates[j] = new_coordinates[j];
+        // }
     }
 
     coordinates_t get(){

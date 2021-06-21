@@ -57,14 +57,10 @@ bool data_point::update_range(data_point *end_range, const representation_t *rep
         if (representation[j] && !start_bit) {
             start_coordinate = start_coordinate & bitmap::low_bits_unset[offset];
             SETBIT(start_coordinate, offset);
-            // start_coordinate =
-            //         ((start_coordinate >> offset) | 1U) << offset;
-
-        } else if (!representation[j] && end_bit) {
+        } 
+        else if (!representation[j] && end_bit) {
             end_coordinate = end_coordinate & bitmap::low_bits_unset[offset + 1];
             end_coordinate = end_coordinate | bitmap::low_bits_set[offset];
-            // end_coordinate = ((end_coordinate >> (max_depth - level)) << (max_depth - level)) +
-                                // ((1U << offset) - 1U);
         }
         coordinates[j] = start_coordinate;
         end_range->coordinates[j] = end_coordinate;
