@@ -111,21 +111,21 @@ void md_trie::range_search_trie(data_point *start_range, data_point *end_range, 
         current_treeblock->range_search_treeblock(start_range, end_range, current_treeblock, level, 0, 0, found_points);
         return;
     }
-    uint8_t *representation = (uint8_t *) malloc(sizeof(uint8_t) * dimensions_);    
+    representation_t *representation = (representation_t *) malloc(sizeof(representation_t) * dimensions_);    
     start_range->get_representation(end_range, representation, level, max_depth_);
     range_traverse_trie(start_range, end_range, representation, 0, current_trie_node, level, found_points);
     free(representation);
 }
 
 void
-md_trie::range_traverse_trie(data_point *start_range, data_point *end_range, uint8_t representation[], uint8_t index,
+md_trie::range_traverse_trie(data_point *start_range, data_point *end_range, representation_t representation[], uint8_t index,
                              trie_node *current_trie_node, level_t level, point_array *found_points) {
     if (index == dimensions_) {
 
         start_range->update_range(end_range, representation, level, max_depth_);
 
         symbol_t current_symbol = 0;
-        for (uint8_t j = 0; j < dimensions_; j++) {
+        for (dimension_t j = 0; j < dimensions_; j++) {
             current_symbol = current_symbol << 1U;
             if (representation[j] == 1) {
                 current_symbol += 1;
@@ -138,21 +138,27 @@ md_trie::range_traverse_trie(data_point *start_range, data_point *end_range, uin
         return;
     }
     if (representation[index] == 2) {
-        coordinates_t original_start_coordinates(start_range->get());
-        coordinates_t original_end_coordinates(end_range->get());
+        data_point original_start_range(dimensions_);
+        original_start_range.set(start_range->get());
+        data_point original_end_range(dimensions_);
+        original_end_range.set(end_range->get());  
 
         representation[index] = 0;
         range_traverse_trie(start_range, end_range, representation, index + 1, current_trie_node, level, found_points);
 
-        start_range->set(original_start_coordinates);
-        end_range->set(original_end_coordinates);
+        start_range->set(original_start_range.get());
+        end_range->set(original_end_range.get());
         
         representation[index] = 1;
         range_traverse_trie(start_range, end_range, representation, index + 1, current_trie_node, level, found_points);
 
-        start_range->set(original_start_coordinates);
-        end_range->set(original_end_coordinates);
-        representation[index] = 2;      
+        start_range->set(original_start_range.get());
+        end_range->set(original_end_range.get());
+        representation[index] = 2;  
+
+        original_start_range.free_coordinates();
+        original_end_range.free_coordinates();
+
     } else {
         range_traverse_trie(start_range, end_range, representation, index + 1, current_trie_node, level, found_points);
     }

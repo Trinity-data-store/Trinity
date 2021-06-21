@@ -457,9 +457,11 @@ uint64_t tree_block::size() const {
 void tree_block::density(density_array *array){
     for (uint16_t i = 0; i < num_nodes_; i++){
         uint8_t n_children = get_n_children(i, num_branches_);
-        // fprintf(stderr, "%d\n", n_children);
-        array->push_back(n_children);
+        (*array)[n_children] = (*array)[n_children] + 1;
+        // array->push_back(n_children);
     }
+    for (uint16_t i = 0; i < num_frontiers_; i++)
+        ((frontier_node *) frontiers_)[i].pointer_->density(array);
 }
 
 void tree_block::range_search_treeblock(data_point *start_range, data_point *end_range, tree_block *current_block,
@@ -468,20 +470,18 @@ void tree_block::range_search_treeblock(data_point *start_range, data_point *end
     if (level == max_depth_) {
         auto *leaf = new data_point(dimensions_);
         leaf->set(start_range->get());
-        // for (uint8_t j = 0; j < dimensions_; j++) {
-        //     leaf->coordinates[j] = start_range->coordinates[j];
-        // }
         found_points->add_leaf(leaf);
         return;
     }
-    uint8_t *representation = (uint8_t *) malloc(sizeof(uint8_t) * dimensions_);
+    
+    representation_t *representation = (representation_t *) malloc(sizeof(representation_t) * dimensions_);
     start_range->get_representation(end_range, representation, level, max_depth_);
     range_traverse_treeblock(start_range, end_range, representation, 0, current_block, level, current_node,
                              current_frontier, found_points);
     free(representation);
 }
 
-void tree_block::range_traverse_treeblock(data_point *start_range, data_point *end_range, uint8_t representation[],
+void tree_block::range_traverse_treeblock(data_point *start_range, data_point *end_range, representation_t representation[],
                                           uint8_t index, tree_block *current_block, level_t level,
                                           preorder_t current_node, node_t current_frontier,
                                           point_array *found_points) {
@@ -517,22 +517,28 @@ void tree_block::range_traverse_treeblock(data_point *start_range, data_point *e
         return;
     }
     if (representation[index] == 2) {
-        coordinates_t original_start_coordinates(start_range->get());
-        coordinates_t original_end_coordinates(end_range->get());
+        data_point original_start_range(dimensions_);
+        original_start_range.set(start_range->get());
+        data_point original_end_range(dimensions_);
+        original_end_range.set(end_range->get());        
 
         representation[index] = 0;
         range_traverse_treeblock(start_range, end_range, representation, index + 1, current_block, level, current_node,
                                  current_frontier, found_points);
 
-        start_range->set(original_start_coordinates);
-        end_range->set(original_end_coordinates);
+        start_range->set(original_start_range.get());
+        end_range->set(original_end_range.get());
 
         representation[index] = 1;
         range_traverse_treeblock(start_range, end_range, representation, index + 1, current_block, level, current_node,
                                  current_frontier, found_points);
-        start_range->set(original_start_coordinates);
-        end_range->set(original_end_coordinates);
+        start_range->set(original_start_range.get());
+        end_range->set(original_end_range.get());
         representation[index] = 2;
+        
+        original_start_range.free_coordinates();
+        original_end_range.free_coordinates();
+
     } else {
         range_traverse_treeblock(start_range, end_range, representation, index + 1, current_block, level, current_node,
                                  current_frontier, found_points);

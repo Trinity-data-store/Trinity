@@ -2,14 +2,17 @@
 #define MD_TRIE_DATA_POINT_H
 
 #include "defs.h"
+#include <cstdlib>
 
 // Struct for each point that we want to insert
 class data_point {
 private:
+    // coordinates_t coordinates;
     coordinates_t coordinates;
     dimension_t size_;
 public:
-    explicit data_point(dimension_t dimensions) : coordinates(dimensions) {
+    explicit data_point(dimension_t dimensions) {
+        coordinates = (coordinates_t)malloc(dimensions * sizeof(point_t));
         size_ = dimensions;
     }
 
@@ -37,7 +40,10 @@ public:
     void set_coordinate(dimension_t index, point_t value){
         coordinates[index] = value;
     }
-
+    
+    void free_coordinates(){
+        free(coordinates);
+    }
 };
 
 #endif //MD_TRIE_DATA_POINT_H

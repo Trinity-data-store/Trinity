@@ -2,10 +2,9 @@
 #include "tree_block.h"
 
 uint64_t trie_node::size() const {
-    symbol_t children_size = children_.size(); 
-    uint64_t total_size = children_size * sizeof(trie_node *);
+    uint64_t total_size = size_ * sizeof(trie_node *);
     if (!block_) {
-        for (symbol_t i = 0; i < children_size; i++)
+        for (symbol_t i = 0; i < size_; i++)
         {
             if (children_[i]) {
                 total_size += children_[i]->size();
@@ -18,10 +17,9 @@ uint64_t trie_node::size() const {
 }
 
 void trie_node::density(density_array *array) {
-    symbol_t children_size = children_.size(); 
     uint8_t current_node = 0;
     if (!block_) {
-        for (symbol_t i = 0; i < children_size; i++)
+        for (symbol_t i = 0; i < size_; i++)
         {
             if (children_[i]) {
                 current_node += 1;
@@ -30,6 +28,8 @@ void trie_node::density(density_array *array) {
         }
     } else {
         ((tree_block *) block_)->density(array);
+        return;
     }
-    array->push_back(current_node);
+    (*array)[current_node] = (*array)[current_node] + 1;
+    // array->push_back(current_node);
 }

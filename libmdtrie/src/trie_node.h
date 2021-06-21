@@ -2,10 +2,14 @@
 #define MD_TRIE_TRIE_NODE_H
 
 #include "defs.h"
+#include <cstdlib>
 
 class trie_node {
 public:
-    explicit trie_node(symbol_t num_branches) : children_(num_branches), block_(nullptr) {}
+    explicit trie_node(symbol_t num_branches) : block_(nullptr) {
+        children_ = (trie_node **)calloc(num_branches, sizeof(trie_node *));
+        size_ = num_branches;
+    }
 
     trie_node *get_child(symbol_t symbol) {
         return children_[symbol];
@@ -28,7 +32,9 @@ public:
     void density(density_array *);
 
 private:
-    std::vector<trie_node *> children_;
+    trie_node **children_;
+    // std::vector<trie_node *> children_;
+    symbol_t size_;
     tree_block *block_;
 };
 

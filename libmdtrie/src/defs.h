@@ -14,8 +14,10 @@ typedef uint64_t level_t;
 typedef uint64_t symbol_t;
 typedef uint8_t dimension_t;
 typedef uint64_t point_t;
-typedef std::vector<point_t> coordinates_t;
-typedef std::vector<uint8_t> density_array;
+typedef uint8_t representation_t;
+// typedef std::vector<point_t> coordinates_t;
+typedef point_t * coordinates_t;
+typedef std::vector<uint64_t> density_array;
 
 extern uint64_t dfuds_size;
 const preorder_t null_node = -1;

@@ -4,6 +4,7 @@
 #include <climits>
 #include <tqdm.h>
 #include <vector>
+#include <math.h> 
 
 FILE *fptr;
 char file_path[] = "benchmark_output_vector.txt";
@@ -268,14 +269,20 @@ void test_density(dimension_t dimensions, level_t max_depth, level_t trie_depth,
     fprintf(stderr, "Average time to insert one point: %f microseconds\n", (float)msec*1000 / n_points);
     fprintf(stderr, "Size of data structure that contains %ld points: %ld bytes\n", n_lines, mdtrie->size());
 
-    density_array array;
+    density_array array(pow(2, dimensions) + 1);
+    for (uint8_t i = 0; i <= pow(2, dimensions); i++){
+        array[i] = 0;
+    }
     mdtrie->density(&array);
     
-    fptr = fopen("density_analysis.csv", "w");
-    for (auto i = array.begin(); i != array.end(); ++i){
-        fprintf(fptr, "%d\n", *i); 
+    // fptr = fopen("density_analysis.csv", "w");
+    // for (auto i = array.begin(); i != array.end(); ++i){
+    //     fprintf(stderr, "%d\n", *i); 
+    // }
+    // fclose(fptr);
+    for (uint8_t i = 0; i <= pow(2, dimensions); i++){
+        printf("%d children: %ld\n", i, array[i]);
     }
-    fclose(fptr);
 
 }
 
