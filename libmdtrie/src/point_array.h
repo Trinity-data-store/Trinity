@@ -5,18 +5,34 @@
 
 class point_array {
 public:
-    point_array() = default;
+    explicit point_array(){
+        capacity = 1;
+        n_nodes = 0;
+        points_ = (data_point **)malloc(capacity * sizeof(data_point *));
+    }
 
     void add_leaf(data_point *p) {
-        points_.push_back(p);
+        points_[n_nodes] = p;
+        n_nodes += 1;
+        if (n_nodes == capacity){
+            capacity *= 2;
+            points_ = (data_point **)realloc(points_, capacity * sizeof(data_point *));
+        }
+        // points_.push_back(p);
     }
 
     void reset() {
-        points_.clear();
+
+        free(points_);
+        capacity = 1;
+        n_nodes = 0;
+        points_ = (data_point **)malloc(capacity * sizeof(data_point *));
+        // points_.clear();
     }
 
-    size_t size() const {
-        return points_.size();
+    n_leaves_t size() const {
+        return n_nodes;
+        // return points_.size();
     }
 
     data_point *at(size_t i) {
@@ -24,7 +40,10 @@ public:
     }
 
 private:
-    std::vector<data_point *> points_;
+    data_point **points_;
+    n_leaves_t capacity;
+    n_leaves_t n_nodes; 
+    // std::vector<data_point *> points_;
 };
 
 

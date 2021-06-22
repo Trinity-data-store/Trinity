@@ -46,10 +46,10 @@ void test_real_data(dimension_t dimensions, level_t max_depth, level_t trie_dept
     auto min = (uint64_t *)malloc(dimensions * sizeof(uint64_t));
     n_leaves_t n_lines = 14583357;
     diff = 0;
-    tqdm bar;
+    // tqdm bar;
     while ((read = getline(&line, &len, fp)) != -1)
     {
-        bar.progress(n_points, n_lines);
+        // bar.progress(n_points, n_lines);
         char *token = strtok(line, " ");
         char *ptr;
         for (uint8_t i = 0; i < 2; i ++){
@@ -74,7 +74,7 @@ void test_real_data(dimension_t dimensions, level_t max_depth, level_t trie_dept
         mdtrie->insert_trie(leaf_point, max_depth);
         n_points ++;
     }
-    bar.finish();
+    // bar.finish();
     uint64_t msec;
 
     
@@ -83,9 +83,10 @@ void test_real_data(dimension_t dimensions, level_t max_depth, level_t trie_dept
     auto *found_points = new point_array();
     // uint8_t *representation = (uint8_t *)malloc(sizeof(uint8_t) * dimensions);
     int itr = 1;
-    tqdm bar1;
+    // tqdm bar1;
+
     while (itr <= n_itr){
-        bar1.progress(itr, n_itr);
+        // bar1.progress(itr, n_itr);
         uint64_t volume = 1;
         for (dimension_t i = 0; i < dimensions; i++){
             start_range->set_coordinate(i,  min[i] + rand() % (max[i] - min[i] + 1));
@@ -107,7 +108,8 @@ void test_real_data(dimension_t dimensions, level_t max_depth, level_t trie_dept
         fclose(fptr);
         fptr = fopen(file_path, "a");            
     }
-    bar1.finish();
+
+    // bar1.finish();
     fclose(fptr);
 }
 

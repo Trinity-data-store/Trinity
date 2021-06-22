@@ -13,6 +13,11 @@ data_point::get_representation(data_point *end_range, representation_t *represen
 
     // 0010 - A & B
     // 0100 - A ^ B
+    // 0110
+    
+    // 0100
+    // 0010
+    // 0110
 
     level_t offset = max_depth - level - 1U; 
     for (size_t j = 0; j < size_; j++) {
