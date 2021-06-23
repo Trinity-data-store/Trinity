@@ -497,12 +497,11 @@ void tree_block::range_traverse_treeblock(data_point *start_range, data_point *e
             }
         }
 
-        node_t temp_node = current_block->child(current_block, current_node, current_symbol, level,
+        current_node = current_block->child(current_block, current_node, current_symbol, level,
                                                 current_frontier);
 
-        if (temp_node == (node_t) -1)
+        if (current_node == (node_t) -1)
             return;
-        current_node = temp_node;
 
         if (current_block->num_frontiers() > 0 && current_frontier < current_block->num_frontiers() &&
             current_node == current_block->get_preorder(current_frontier)) {
@@ -512,7 +511,6 @@ void tree_block::range_traverse_treeblock(data_point *start_range, data_point *e
         }
         range_search_treeblock(start_range, end_range, current_block, level + 1, current_node, current_frontier,
                                found_points);
-
 
         return;
     }

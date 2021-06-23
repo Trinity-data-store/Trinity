@@ -20,7 +20,7 @@ public:
         dfuds_ = new bitmap::Bitmap((initial_tree_capacity_ + 1) * num_branches_);
     }
 
-    node_n_t num_frontiers() {
+    inline node_n_t num_frontiers() {
         return num_frontiers_;
     }
 

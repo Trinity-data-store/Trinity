@@ -30,12 +30,12 @@ public:
         // points_.clear();
     }
 
-    n_leaves_t size() const {
+    inline n_leaves_t size() const {
         return n_nodes;
         // return points_.size();
     }
 
-    data_point *at(size_t i) {
+    inline data_point *at(size_t i) {
         return points_[i];
     }
 

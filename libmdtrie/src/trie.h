@@ -31,7 +31,7 @@ public:
         root_ = new trie_node(n_branches_);
     }
 
-    trie_node *root() {
+    inline trie_node *root() {
         return root_;
     }
 

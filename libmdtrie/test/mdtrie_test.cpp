@@ -103,7 +103,7 @@ bool test_range_search(n_leaves_t n_points, dimension_t dimensions, level_t max_
             start_range->set_coordinate(i, min[i] + rand() % (max[i] - min[i] + 1));
             end_range->set_coordinate(i, start_range->get_coordinate(i) + rand() % (max[i] - start_range->get_coordinate(i) + 1));
         }
-
+    
         mdtrie->range_search_trie(start_range, end_range, mdtrie->root(), 0, found_points);
 
         if (!check) {

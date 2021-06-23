@@ -48,24 +48,25 @@ symbol_t data_point::leaf_to_symbol(level_t level, level_t max_depth) {
 
 
 bool data_point::update_range(data_point *end_range, const representation_t *representation, level_t level, level_t max_depth) {
-    // size_t coordinate_size = coordinates.size();
+
     level_t offset = max_depth - level - 1U;    
     for (size_t j = 0; j < size_; j++) {
         point_t start_coordinate = coordinates[j];
         point_t end_coordinate = end_range->coordinates[j];
-        // Change to GETBIT in bitmap.h
         bool start_bit = GETBIT(start_coordinate, offset); 
         bool end_bit = GETBIT(end_coordinate, offset);
-        if ((representation[j] && !end_bit) || (!representation[j] && start_bit)){
-            return false;
-        }
+
+        // Bring the start of the search range to second half
         if (representation[j] && !start_bit) {
             start_coordinate = start_coordinate & bitmap::low_bits_unset[offset];
             SETBIT(start_coordinate, offset);
         } 
+        // Bring the end of the search range to first half
         else if (!representation[j] && end_bit) {
-            end_coordinate = end_coordinate & bitmap::low_bits_unset[offset + 1];
             end_coordinate = end_coordinate | bitmap::low_bits_set[offset];
+
+            // In the end, only the start_coordinate is kept as the returned point
+            // CLRBIT(end_coordinate, (offset + 1));            
         }
         coordinates[j] = start_coordinate;
         end_range->coordinates[j] = end_coordinate;

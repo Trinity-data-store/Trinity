@@ -9,6 +9,7 @@
 class data_point {
 private:
     // coordinates_t coordinates;
+    // std::array<point_t, DIMENSIONS> coordinates_;
     coordinates_t coordinates;
     dimension_t size_;
 public:
@@ -23,26 +24,26 @@ public:
 
     bool update_range(data_point *end_range, const uint8_t *representation, level_t level, level_t max_depth);
 
-    void set(coordinates_t new_coordinates){
+    inline void set(coordinates_t new_coordinates){
         memcpy(coordinates, new_coordinates, sizeof(point_t) * size_);
         // for (size_t j = 0; j < size_; j++) {
         //     coordinates[j] = new_coordinates[j];
         // }
     }
 
-    coordinates_t get(){
+    inline coordinates_t get(){
         return coordinates;
     }
 
-    point_t get_coordinate(dimension_t index){
+    inline point_t get_coordinate(dimension_t index){
         return coordinates[index];
     }
 
-    void set_coordinate(dimension_t index, point_t value){
+    inline void set_coordinate(dimension_t index, point_t value){
         coordinates[index] = value;
     }
     
-    void free_coordinates(){
+    inline void free_coordinates(){
         free(coordinates);
     }
 };

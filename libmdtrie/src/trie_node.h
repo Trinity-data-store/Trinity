@@ -11,19 +11,19 @@ public:
         size_ = num_branches;
     }
 
-    trie_node *get_child(symbol_t symbol) {
+    inline trie_node *get_child(symbol_t symbol) {
         return children_[symbol];
     }
 
-    void set_child(symbol_t symbol, trie_node *node) {
+    inline void set_child(symbol_t symbol, trie_node *node) {
         children_[symbol] = node;
     }
 
-    tree_block *block() const {
+    inline tree_block *block() const {
         return block_;
     }
 
-    void block(tree_block *blk) {
+    inline void block(tree_block *blk) {
         block_ = blk;
     }
 
