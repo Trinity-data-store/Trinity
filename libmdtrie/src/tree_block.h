@@ -5,19 +5,21 @@
 #include "bitmap.h"
 #include <cmath>
 
+uint64_t get_bit_count = 0;
+
 template<dimension_t DIMENSION>
 class tree_block {
 public:
     explicit tree_block(level_t root_depth, node_n_t tree_capacity, node_n_t num_nodes,
-                        level_t max_depth = 10, node_n_t max_tree_nodes = 256, uint8_t initial_capacity_nodes = 8) {
+                        level_t max_depth, node_n_t max_tree_nodes) {
         root_depth_ = root_depth;
         tree_capacity_ = tree_capacity;
         num_branches_ = (symbol_t) pow(2, DIMENSION);
-        initial_tree_capacity_ = num_branches_ * initial_capacity_nodes;
+        // initial_tree_capacity_ = initial_capacity_nodes;
         max_depth_ = max_depth;
         max_tree_nodes_ = max_tree_nodes;
         num_nodes_ = num_nodes;
-        dfuds_ = new bitmap::Bitmap((initial_tree_capacity_ + 1) * num_branches_);
+        dfuds_ = new bitmap::Bitmap((tree_capacity_ + 1) * num_branches_);
     }
 
     inline node_n_t num_frontiers() {
@@ -297,7 +299,7 @@ public:
             bool insertion_before_selected_tree = true;
             if (!insertion_in_new_block && frontier <= current_frontier)
                 insertion_before_selected_tree = false;
-            auto new_block = new tree_block(selected_node_depth, subtree_size, subtree_size, max_depth_);
+            auto new_block = new tree_block(selected_node_depth, subtree_size, subtree_size, max_depth_, max_tree_nodes_);
             // Memory leak
             new_block->dfuds_ = new_dfuds;
 
@@ -443,6 +445,7 @@ public:
     // This function differs from skip_children_subtree as it checks if that child node is present
     node_t child(tree_block *&p, node_t &node, symbol_t symbol, level_t &current_level,
                             preorder_t &current_frontier) const {
+        get_bit_count ++;
         auto has_child = dfuds_->GetBit(node * num_branches_ + symbol);
         if (!has_child)
             return null_node;
@@ -559,7 +562,7 @@ public:
 private:
     symbol_t num_branches_;
     node_n_t max_tree_nodes_;
-    node_n_t initial_tree_capacity_;
+    // node_n_t initial_tree_capacity_;
     level_t root_depth_{};
     node_n_t num_nodes_{};
     node_n_t tree_capacity_{};

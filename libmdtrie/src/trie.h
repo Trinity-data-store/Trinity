@@ -21,10 +21,10 @@
 template<dimension_t DIMENSION>
 class md_trie {
 public:
-    explicit md_trie(level_t max_depth = 10, level_t trie_depth = 3,
-                     preorder_t max_tree_nodes = 256, uint8_t initial_capacity_nodes = 2) {
+    explicit md_trie(level_t max_depth, level_t trie_depth,
+                     preorder_t max_tree_nodes, uint8_t initial_capacity_nodes = 8) {
         n_branches_ = (symbol_t) pow(2, DIMENSION);
-        initial_tree_capacity_ = n_branches_ * initial_capacity_nodes;
+        initial_tree_capacity_ = initial_capacity_nodes;
         max_depth_ = max_depth;
         trie_depth_ = trie_depth;
         max_tree_nodes_ = max_tree_nodes;
@@ -100,7 +100,7 @@ public:
         }
         tree_block<DIMENSION> *current_treeblock = nullptr;
         if (current_trie_node->block() == nullptr) {
-            current_treeblock = new tree_block<DIMENSION>(trie_depth_, initial_tree_capacity_, 1, max_depth_);
+            current_treeblock = new tree_block<DIMENSION>(trie_depth_, initial_tree_capacity_, 1, max_depth_, max_tree_nodes_);
             current_trie_node->block(current_treeblock);
         } else
             current_treeblock = (tree_block<DIMENSION> *) current_trie_node->block();

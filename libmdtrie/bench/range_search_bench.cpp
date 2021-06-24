@@ -4,7 +4,7 @@
 #include <climits>
 #include <tqdm.h>
 
-const int DIMENSION = 4;
+const int DIMENSION = 2;
 FILE *fptr;
 char file_path[] = "benchmark_range_search_3d.csv";
 
@@ -19,8 +19,6 @@ static TimeStamp GetTimestamp() {
 void test_real_data(level_t max_depth, level_t trie_depth, preorder_t max_tree_node, int n_itr){
     // to-do
     
-
-
     fptr = fopen(file_path, "a");
     fprintf(fptr, "Number of Points, Volume, Latency, %d\n", DIMENSION);
     auto *mdtrie = new md_trie<DIMENSION>(max_depth, trie_depth, max_tree_node);
@@ -245,8 +243,8 @@ bool test_random_range_search(n_leaves_t n_points, level_t max_depth, level_t tr
 int main() {
     srand(static_cast<unsigned int>(time(0)));
     
-    test_real_data(32, 10, 1024, 100);
-    // test_range_only(32, 10, 1024, 50);
+    // test_real_data(32, 10, 1024, 100);
+    test_range_only(32, 10, 1024, 50);
     // test_real_data(4, 32, 10, 1024, 200);
 
 }
