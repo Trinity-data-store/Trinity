@@ -22,6 +22,7 @@ typedef std::vector<uint64_t> density_array;
 extern uint64_t dfuds_size;
 const preorder_t null_node = -1;
 
+template<dimension_t DIMENSION>
 class tree_block;
 
 // node_info and subtree info are used to obtain subtree size when splitting the treeblock
@@ -35,9 +36,10 @@ struct subtree_info {
     preorder_t subtree_size_ = 0;
 };
 
+template<dimension_t DIMENSION>
 struct frontier_node {
     preorder_t preorder_;
-    tree_block *pointer_;
+    tree_block<DIMENSION> *pointer_;
 };
 
 #endif //MD_TRIE_DEFS_H

@@ -3,22 +3,22 @@
 
 #include "data_point.h"
 
+template<dimension_t DIMENSION>
 class point_array {
 public:
     explicit point_array(){
         capacity = 1;
         n_nodes = 0;
-        points_ = (data_point **)malloc(capacity * sizeof(data_point *));
+        points_ = (data_point<DIMENSION> **)malloc(capacity * sizeof(data_point<DIMENSION> *));
     }
 
-    void add_leaf(data_point *p) {
+    void add_leaf(data_point<DIMENSION> *p) {
         points_[n_nodes] = p;
         n_nodes += 1;
         if (n_nodes == capacity){
             capacity *= 2;
-            points_ = (data_point **)realloc(points_, capacity * sizeof(data_point *));
+            points_ = (data_point<DIMENSION> **)realloc(points_, capacity * sizeof(data_point<DIMENSION> *));
         }
-        // points_.push_back(p);
     }
 
     void reset() {
@@ -26,24 +26,21 @@ public:
         free(points_);
         capacity = 1;
         n_nodes = 0;
-        points_ = (data_point **)malloc(capacity * sizeof(data_point *));
-        // points_.clear();
+        points_ = (data_point<DIMENSION> **)malloc(capacity * sizeof(data_point<DIMENSION> *));
     }
 
     inline n_leaves_t size() const {
         return n_nodes;
-        // return points_.size();
     }
 
-    inline data_point *at(size_t i) {
+    inline data_point<DIMENSION> *at(size_t i) {
         return points_[i];
     }
 
 private:
-    data_point **points_;
+    data_point<DIMENSION> **points_;
     n_leaves_t capacity;
     n_leaves_t n_nodes; 
-    // std::vector<data_point *> points_;
 };
 
 
