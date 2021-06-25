@@ -138,11 +138,11 @@ class Bitmap {
     size_ = num_bits;
   }
 
-  uint64_t size() const{
+  inline uint64_t size() const{
     return size_ / 8 + sizeof(size_type);
   }
 
-  void Realloc(size_type num_bits){
+  inline void Realloc(size_type num_bits){
     
     data_ = (data_type *)realloc(data_, BITS2BLOCKS(num_bits) * sizeof(data_type));
     for (size_type i = BITS2BLOCKS(size_); i < BITS2BLOCKS(num_bits); i ++){
@@ -158,31 +158,31 @@ class Bitmap {
     }
   }
 
-  data_type* GetData() {
+  inline data_type* GetData() {
     return data_;
   }
 
-  size_type GetSizeInBits() const {
+  inline size_type GetSizeInBits() const {
     return size_;
   }
 
-  void Clear() {
+  inline void Clear() {
     memset((void *) data_, 0, BITS2BLOCKS(size_) * sizeof(uint64_t));
   }
 
-  void SetBit(pos_type i) {
+  inline void SetBit(pos_type i) {
     SETBITVAL(data_, i);
   }
 
-  void UnsetBit(pos_type i) {
+  inline void UnsetBit(pos_type i) {
     CLRBITVAL(data_, i);
   }
 
-  bool GetBit(pos_type i) const {
+  inline bool GetBit(pos_type i) const {
     return GETBITVAL(data_, i);
   }
   
-  void ClearWidth(pos_type pos, width_type width){
+  inline void ClearWidth(pos_type pos, width_type width){
     
 
     // for (pos_type j = pos; j < pos + width; j ++){
@@ -215,7 +215,7 @@ class Bitmap {
     // }    
   }
 
-  uint64_t popcount(size_t pos, uint16_t width){
+  inline uint64_t popcount(size_t pos, uint16_t width){
     
     // uint64_t count = 0;
     // for (pos_type j = pos; j < pos + width; j ++){
@@ -243,7 +243,7 @@ class Bitmap {
     return count + __builtin_popcountll(GetValPos(s_idx * 64, width));    
   }
 
-  void BulkCopy_backward(pos_type from, pos_type destination, width_type bits){
+  inline void BulkCopy_backward(pos_type from, pos_type destination, width_type bits){
     if (bits <= 64){
       SetValPos(destination - bits, GetValPos(from - bits, bits), bits);
     }
@@ -253,7 +253,7 @@ class Bitmap {
     }
   }
 
-  void BulkCopy_forward(pos_type from, pos_type destination, width_type bits){
+  inline void BulkCopy_forward(pos_type from, pos_type destination, width_type bits){
     if (bits <= 64){
       SetValPos(destination, GetValPos(from, bits), bits);
     }
@@ -270,7 +270,7 @@ class Bitmap {
     //   BulkCopy(from_start + 64, from_to + 64, dest_start);
     // }
   
-  void SetValPos(pos_type pos, data_type val, width_type bits) {
+  inline void SetValPos(pos_type pos, data_type val, width_type bits) {
 
     pos_type s_off = pos % 64;
     pos_type s_idx = pos / 64;
@@ -290,7 +290,7 @@ class Bitmap {
     }
   }
 
-  data_type GetValPos(pos_type pos, width_type bits) const {
+  inline data_type GetValPos(pos_type pos, width_type bits) const {
     
     pos_type s_off = pos % 64;
     pos_type s_idx = pos / 64;
