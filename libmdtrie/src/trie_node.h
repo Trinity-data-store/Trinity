@@ -2,32 +2,69 @@
 #define MD_TRIE_TRIE_NODE_H
 
 #include "defs.h"
+#include <cstdlib>
+#include "tree_block.h"
 
+template<dimension_t DIMENSION>
 class trie_node {
 public:
-    explicit trie_node(symbol_t num_branches) : children_(num_branches), block_(nullptr) {}
+    explicit trie_node(symbol_t num_branches) : block_(nullptr) {
+        children_ = (trie_node<DIMENSION> **)calloc(num_branches, sizeof(trie_node<DIMENSION> *));
+        size_ = num_branches;
+    }
 
-    trie_node *get_child(symbol_t symbol) {
+    inline trie_node<DIMENSION> *get_child(symbol_t symbol) {
         return children_[symbol];
     }
 
-    void set_child(symbol_t symbol, trie_node *node) {
+    inline void set_child(symbol_t symbol, trie_node *node) {
         children_[symbol] = node;
     }
 
-    tree_block *block() const {
+    inline tree_block<DIMENSION> *block() const {
         return block_;
     }
 
-    void block(tree_block *blk) {
+    inline void block(tree_block<DIMENSION> *blk) {
         block_ = blk;
     }
 
-    uint64_t size() const;
+    uint64_t size() const {
+        uint64_t total_size = size_ * sizeof(trie_node *);
+        if (!block_) {
+            for (symbol_t i = 0; i < size_; i++)
+            {
+                if (children_[i]) {
+                    total_size += children_[i]->size();
+                }
+            }
+        } else {
+            total_size += ((tree_block<DIMENSION> *) block_)->size();
+        }
+        return total_size;
+    }
+
+    void density(density_array *array) {
+        uint8_t current_node = 0;
+        if (!block_) {
+            for (symbol_t i = 0; i < size_; i++)
+            {
+                if (children_[i]) {
+                    current_node += 1;
+                    children_[i]->density(array);
+                }
+            }
+        } else {
+            ((tree_block<DIMENSION> *) block_)->density(array);
+            return;
+        }
+        (*array)[current_node] = (*array)[current_node] + 1;
+    }
 
 private:
-    std::vector<trie_node *> children_;
-    tree_block *block_;
+    trie_node<DIMENSION> **children_;
+    symbol_t size_;
+    tree_block<DIMENSION> *block_;
 };
 
 
