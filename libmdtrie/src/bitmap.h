@@ -226,6 +226,13 @@ class Bitmap {
 
   inline void BulkCopy_backward(pos_type from, pos_type destination, width_type bits){
 
+    // if (bits <= 64){
+    //   SetValPos(destination - bits, GetValPos(from - bits, bits), bits);
+    // }
+    // else {
+    //   SetValPos(destination - 64, GetValPos(from - 64, 64), 64);
+    //   BulkCopy_backward(from - 64, destination - 64, bits - 64);
+    // }
     while (bits > 64){
       SetValPos(destination - 64, GetValPos(from - 64, 64), 64);
       bits -= 64;
@@ -236,6 +243,14 @@ class Bitmap {
   }
 
   inline void BulkCopy_forward(pos_type from, pos_type destination, width_type bits){
+
+    // if (bits <= 64){
+    //   SetValPos(destination, GetValPos(from, bits), bits);
+    // }
+    // else {
+    //   SetValPos(destination, GetValPos(from, 64), 64);
+    //   BulkCopy_forward(from + 64, destination + 64, bits - 64);
+    // }
 
     while (bits > 64){
       SetValPos(destination, GetValPos(from, 64), 64);
