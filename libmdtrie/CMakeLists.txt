@@ -3,15 +3,11 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src)
 add_library(mdtrie
         src/bitmap.h
         src/tqdm.h
-        src/trie.cpp
         src/trie.h
         src/data_point.h
         src/defs.h
-        src/data_point.cpp
         src/point_array.h
-        src/tree_block.cpp
         src/tree_block.h
-        src/trie_node.cpp
         src/trie_node.h)
 
 set_target_properties(mdtrie PROPERTIES LINKER_LANGUAGE CXX)
