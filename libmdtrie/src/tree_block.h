@@ -507,8 +507,6 @@ public:
                                             point_array<DIMENSION> *found_points) {
         if (index == DIMENSION) {
 
-            start_range->update_range(end_range, representation, level, max_depth_);
-
             symbol_t current_symbol = 0;
             for (uint8_t j = 0; j < DIMENSION; j++) {
                 current_symbol = current_symbol << 1U;
@@ -529,6 +527,9 @@ public:
                 current_node = (node_t) 0;
                 current_frontier = 0;
             }
+
+            start_range->update_range(end_range, representation, level, max_depth_);
+
             range_search_treeblock(start_range, end_range, current_block, level + 1, current_node, current_frontier,
                                 found_points);
 

@@ -148,57 +148,11 @@ public:
         representation_t representation[DIMENSION];
         start_range->get_representation(end_range, representation, level, max_depth_);
         range_traverse_trie(start_range, end_range, representation, 0, current_trie_node, level, found_points);
-
-        // uint8_t index
-        // dimension_t backtrack_size = 0;
-        // representation_t backtrack_array[DIMENSIONS];
-
-        // while (index <= DIMENSION){
-        //     if (representation[index] == 1 || representation[index] == 0){
-        //         index += 1;
-        //     }
-        //     else if (representation[index] == 2){
-        //         backtrack_array[backtrack_size] = index;
-        //         backtrack_size += 1;
-        //         index += 1;
-        //         representation[index] = 0;
-        //     }
-        //     if (index == DIMENSION){
-        //         start_range->update_range(end_range, representation, level, max_depth_);
-
-        //         symbol_t current_symbol = 0;
-        //         for (dimension_t j = 0; j < DIMENSION; j++) {
-        //             current_symbol = current_symbol << 1U;
-        //             if (representation[j] == 1) {
-        //                 current_symbol += 1;
-        //             }
-        //         }
-        //         if (current_trie_node->get_child(current_symbol)) {
-        //             range_search_trie(start_range, end_range, current_trie_node->get_child(current_symbol), level + 1,
-        //                             found_points);
-        //         }
-        //         if (backtrack_size > 0){
-        //             dimension_t index_previous = backtrack_array[backtrack_size - 1];
-        //             backtrack_size --;
-        //             representation[index_previous] = 1;
-        //             index = index_previous + 1;
-        //         }
-        //         else {
-        //             break;
-        //         }
-
-        //     }
-
-            
-        // }
-
     }
 
     void range_traverse_trie(data_point<DIMENSION> *start_range, data_point<DIMENSION> *end_range, representation_t representation[], uint8_t index,
                                 trie_node<DIMENSION> *current_trie_node, level_t level, point_array<DIMENSION> *found_points) {
         if (index == DIMENSION) {
-
-            start_range->update_range(end_range, representation, level, max_depth_);
 
             symbol_t current_symbol = 0;
             for (dimension_t j = 0; j < DIMENSION; j++) {
@@ -208,6 +162,9 @@ public:
                 }
             }
             if (current_trie_node->get_child(current_symbol)) {
+
+                start_range->update_range(end_range, representation, level, max_depth_);
+
                 range_search_trie(start_range, end_range, current_trie_node->get_child(current_symbol), level + 1,
                                 found_points);
             }

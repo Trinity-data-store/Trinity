@@ -4,9 +4,9 @@
 #include <climits>
 #include <tqdm.h>
 
-const int DIMENSION = 2;
+const int DIMENSION = 6;
 FILE *fptr;
-char file_path[] = "benchmark_range_search_3d.csv";
+char file_path[] = "benchmark_range_search.csv";
 
 typedef unsigned long long int TimeStamp;
 static TimeStamp GetTimestamp() {
