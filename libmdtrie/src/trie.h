@@ -145,50 +145,46 @@ public:
             current_treeblock->range_search_treeblock(start_range, end_range, current_treeblock, level, 0, 0, found_points);
             return;
         }
-        representation_t representation[DIMENSION];
-        start_range->get_representation(end_range, representation, level, max_depth_);
-        range_traverse_trie(start_range, end_range, representation, 0, current_trie_node, level, found_points);
+        symbol_t start_morton = start_range->leaf_to_symbol(level, max_depth_);
+        symbol_t end_morton = end_range->leaf_to_symbol(level, max_depth_);
+        symbol_t representation = start_morton ^ end_morton;
+
+        range_traverse_trie(start_range, end_range, start_morton, representation, 0, current_trie_node, level, found_points);
     }
 
-    void range_traverse_trie(data_point<DIMENSION> *start_range, data_point<DIMENSION> *end_range, representation_t representation[], uint8_t index,
-                                trie_node<DIMENSION> *current_trie_node, level_t level, point_array<DIMENSION> *found_points) {
+    void range_traverse_trie(data_point<DIMENSION> *start_range, data_point<DIMENSION> *end_range, symbol_t current_morton, symbol_t representation, uint8_t index, trie_node<DIMENSION> *current_trie_node, level_t level, point_array<DIMENSION> *found_points) {
+
+        dimension_t offset = DIMENSION - index - 1U;
         if (index == DIMENSION) {
 
-            symbol_t current_symbol = 0;
-            for (dimension_t j = 0; j < DIMENSION; j++) {
-                current_symbol = current_symbol << 1U;
-                if (representation[j] == 1) {
-                    current_symbol += 1;
-                }
-            }
-            if (current_trie_node->get_child(current_symbol)) {
+            if (current_trie_node->get_child(current_morton)) {
 
-                start_range->update_range(end_range, representation, level, max_depth_);
+                start_range->update_range_morton(end_range, current_morton, level, max_depth_);
 
-                range_search_trie(start_range, end_range, current_trie_node->get_child(current_symbol), level + 1,
+                range_search_trie(start_range, end_range, current_trie_node->get_child(current_morton), level + 1,
                                 found_points);
             }
             return;
         }
-        if (representation[index] == 2) {
+        if (GETBIT(representation, offset)) {
+
             struct data_point<DIMENSION> original_start_range = (*start_range);
             struct data_point<DIMENSION> original_end_range = (*end_range); 
 
-            representation[index] = 0;
-            range_traverse_trie(start_range, end_range, representation, index + 1, current_trie_node, level, found_points);
+            SETBIT(current_morton, offset);
+            range_traverse_trie(start_range, end_range, current_morton, representation, index + 1, current_trie_node, level, found_points);
 
             (*start_range) = original_start_range;
             (*end_range) = original_end_range;
             
-            representation[index] = 1;
-            range_traverse_trie(start_range, end_range, representation, index + 1, current_trie_node, level, found_points);
+            CLRBIT(current_morton, offset);
+            range_traverse_trie(start_range, end_range, current_morton, representation, index + 1, current_trie_node, level, found_points);
 
             (*start_range) = original_start_range;
             (*end_range) = original_end_range;
-            representation[index] = 2;  
 
         } else {
-            range_traverse_trie(start_range, end_range, representation, index + 1, current_trie_node, level, found_points);
+            range_traverse_trie(start_range, end_range, current_morton, representation, index + 1, current_trie_node, level, found_points);
         }
     }
 

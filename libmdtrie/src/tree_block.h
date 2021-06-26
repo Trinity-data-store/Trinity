@@ -495,27 +495,21 @@ public:
             return;
         }
         
-        representation_t representation[DIMENSION];
-        start_range->get_representation(end_range, representation, level, max_depth_);
-        range_traverse_treeblock(start_range, end_range, representation, 0, current_block, level, current_node,
+        symbol_t start_morton = start_range->leaf_to_symbol(level, max_depth_);
+        symbol_t end_morton = end_range->leaf_to_symbol(level, max_depth_);
+        symbol_t representation = start_morton ^ end_morton;
+
+        range_traverse_treeblock(start_range, end_range, start_morton, representation, 0, current_block, level, current_node,
                                 current_frontier, found_points);
     }
 
-    void range_traverse_treeblock(data_point<DIMENSION> *start_range, data_point<DIMENSION> *end_range, representation_t representation[],
-                                            uint8_t index, tree_block *current_block, level_t level,
-                                            preorder_t current_node, node_t current_frontier,
-                                            point_array<DIMENSION> *found_points) {
+    void range_traverse_treeblock(data_point<DIMENSION> *start_range, data_point<DIMENSION> *end_range, symbol_t current_morton, symbol_t representation, uint8_t index, tree_block *current_block, level_t level, preorder_t current_node, node_t current_frontier,                 point_array<DIMENSION> *found_points) {
+
+        dimension_t offset = DIMENSION - index - 1U;
+
         if (index == DIMENSION) {
 
-            symbol_t current_symbol = 0;
-            for (uint8_t j = 0; j < DIMENSION; j++) {
-                current_symbol = current_symbol << 1U;
-                if (representation[j] == 1) {
-                    current_symbol += 1;
-                }
-            }
-
-            current_node = current_block->child(current_block, current_node, current_symbol, level,
+            current_node = current_block->child(current_block, current_node, current_morton, level,
                                                     current_frontier);
 
             if (current_node == (node_t) -1)
@@ -528,34 +522,32 @@ public:
                 current_frontier = 0;
             }
 
-            start_range->update_range(end_range, representation, level, max_depth_);
+            start_range->update_range_morton(end_range, current_morton, level, max_depth_);
 
             range_search_treeblock(start_range, end_range, current_block, level + 1, current_node, current_frontier,
                                 found_points);
-
             return;
         }
         // Iterative approach?
-        if (representation[index] == 2) {
+        if (GETBIT(representation, offset)) {
             struct data_point<DIMENSION> original_start_range = (*start_range);
             struct data_point<DIMENSION> original_end_range = (*end_range); 
 
-            representation[index] = 0;
-            range_traverse_treeblock(start_range, end_range, representation, index + 1, current_block, level, current_node,
+            SETBIT(current_morton, offset);
+            range_traverse_treeblock(start_range, end_range, current_morton, representation, index + 1, current_block, level, current_node,
                                     current_frontier, found_points);
 
             (*start_range) = original_start_range;
             (*end_range) = original_end_range;
 
-            representation[index] = 1;
-            range_traverse_treeblock(start_range, end_range, representation, index + 1, current_block, level, current_node,
+            CLRBIT(current_morton, offset);
+            range_traverse_treeblock(start_range, end_range, current_morton, representation, index + 1, current_block, level, current_node,
                                     current_frontier, found_points);
             (*start_range) = original_start_range;
             (*end_range) = original_end_range;
-            representation[index] = 2;
 
         } else {
-            range_traverse_treeblock(start_range, end_range, representation, index + 1, current_block, level, current_node,
+            range_traverse_treeblock(start_range, end_range, current_morton, representation, index + 1, current_block, level, current_node,
                                     current_frontier, found_points);
         }
     }
