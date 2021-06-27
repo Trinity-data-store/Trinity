@@ -511,7 +511,6 @@ public:
 
             current_node = current_block->child(current_block, current_node, current_morton, level,
                                                     current_frontier);
-
             if (current_node == (node_t) -1)
                 return;
 
@@ -536,7 +535,6 @@ public:
             SETBIT(current_morton, offset);
             range_traverse_treeblock(start_range, end_range, current_morton, representation, index + 1, current_block, level, current_node,
                                     current_frontier, found_points);
-
             (*start_range) = original_start_range;
             (*end_range) = original_end_range;
 

@@ -157,13 +157,15 @@ public:
         dimension_t offset = DIMENSION - index - 1U;
         if (index == DIMENSION) {
 
-            if (current_trie_node->get_child(current_morton)) {
-
-                start_range->update_range_morton(end_range, current_morton, level, max_depth_);
-
-                range_search_trie(start_range, end_range, current_trie_node->get_child(current_morton), level + 1,
-                                found_points);
+            if (!current_trie_node->get_child(current_morton)) {
+                return;
             }
+
+            start_range->update_range_morton(end_range, current_morton, level, max_depth_);
+
+            range_search_trie(start_range, end_range, current_trie_node->get_child(current_morton), level + 1,
+                                found_points);
+            
             return;
         }
         if (GETBIT(representation, offset)) {
