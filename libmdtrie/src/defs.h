@@ -14,7 +14,7 @@ typedef uint64_t level_t;
 typedef uint64_t symbol_t;
 typedef uint8_t dimension_t;
 typedef uint64_t point_t;
-typedef uint8_t representation_t;
+typedef uint16_t representation_t;
 // typedef std::vector<point_t> coordinates_t;
 typedef point_t * coordinates_t;
 typedef std::vector<uint64_t> density_array;

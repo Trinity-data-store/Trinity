@@ -148,8 +148,30 @@ public:
         symbol_t start_morton = start_range->leaf_to_symbol(level, max_depth_);
         symbol_t end_morton = end_range->leaf_to_symbol(level, max_depth_);
         symbol_t representation = start_morton ^ end_morton;
+        symbol_t neg_representation = ~representation;
 
-        range_traverse_trie(start_range, end_range, start_morton, representation, 0, current_trie_node, level, found_points);
+        struct data_point<DIMENSION> original_start_range = (*start_range);
+        struct data_point<DIMENSION> original_end_range = (*end_range); 
+
+        for (symbol_t current_morton = 0; current_morton < n_branches_; current_morton++){
+
+            if ((start_morton & neg_representation) != (current_morton & neg_representation)){
+                continue;
+            }
+            
+            if (!current_trie_node->get_child(current_morton)) {
+                continue;
+            }
+
+            start_range->update_range_morton(end_range, current_morton, level, max_depth_);
+
+            range_search_trie(start_range, end_range, current_trie_node->get_child(current_morton), level + 1,
+                                found_points);
+
+            (*start_range) = original_start_range;
+            (*end_range) = original_end_range;                
+        }
+        // range_traverse_trie(start_range, end_range, start_morton, representation, 0, current_trie_node, level, found_points);
     }
 
     void range_traverse_trie(data_point<DIMENSION> *start_range, data_point<DIMENSION> *end_range, symbol_t current_morton, symbol_t representation, uint8_t index, trie_node<DIMENSION> *current_trie_node, level_t level, point_array<DIMENSION> *found_points) {
