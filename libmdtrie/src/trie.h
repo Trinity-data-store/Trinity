@@ -152,7 +152,7 @@ public:
 
         struct data_point<DIMENSION> original_start_range = (*start_range);
         struct data_point<DIMENSION> original_end_range = (*end_range); 
-
+        
         for (symbol_t current_morton = 0; current_morton < n_branches_; current_morton++){
 
             if ((start_morton & neg_representation) != (current_morton & neg_representation)){

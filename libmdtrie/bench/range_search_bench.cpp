@@ -4,7 +4,7 @@
 #include <climits>
 #include <tqdm.h>
 
-const int DIMENSION = 8;
+const int DIMENSION = 2;
 FILE *fptr;
 char file_path[] = "benchmark_range_search.csv";
 

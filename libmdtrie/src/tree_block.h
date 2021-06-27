@@ -485,6 +485,32 @@ public:
             ((frontier_node<DIMENSION> *) frontiers_)[i].pointer_->density(array);
     }
 
+    symbol_t next_morton(symbol_t current_morton, preorder_t current_node){
+        // return current_morton + 1;
+        // raise(SIGINT);
+        symbol_t next_one = current_morton + 1;
+        // return  next_one;
+        symbol_t limit = num_branches_ - next_one;
+        if (limit > 64)
+            limit = 64;
+        uint64_t next_block = dfuds_->GetValPos(current_node * num_branches_+ next_one, limit);
+        if (next_block){
+            symbol_t adder = __builtin_ctzll(next_block);
+            // if (!dfuds_->GetBit(current_node * num_branches_ + adder + next_one)){
+            //     raise(SIGINT);
+            // }
+            // for (symbol_t i = next_one; i < adder + next_one; i++){
+            //     if (dfuds_->GetBit(current_node * num_branches_ + i)){
+            //         raise(SIGINT);
+            //     }
+            // }
+            return adder + next_one;
+        }
+        else {
+            return next_one + limit;
+        }
+    }
+
     void range_search_treeblock(data_point<DIMENSION> *start_range, data_point<DIMENSION> *end_range, tree_block *current_block,
                                             level_t level, preorder_t current_node, node_t current_frontier,
                                             point_array<DIMENSION> *found_points) {
@@ -506,10 +532,12 @@ public:
         preorder_t new_current_node;
         tree_block *new_current_block;
         node_t new_current_frontier;
+        symbol_t current_morton = 0;
 
-        for (symbol_t current_morton = 0; current_morton < num_branches_; current_morton++){
+        while (current_morton < num_branches_){
 
             if ((start_morton & neg_representation) != (current_morton & neg_representation)){
+                current_morton = next_morton(current_morton, current_node);
                 continue;
             }
 
@@ -517,8 +545,10 @@ public:
             new_current_frontier = current_frontier;
             new_current_node = new_current_block->child(new_current_block, current_node, current_morton, level,
                                                     new_current_frontier);
-            if (new_current_node == (node_t) -1)
+            if (new_current_node == (node_t) -1){
+                current_morton = next_morton(current_morton, current_node);
                 continue;
+            }
 
             if (new_current_block->num_frontiers() > 0 && new_current_frontier < new_current_block->num_frontiers() &&
                 new_current_node == new_current_block->get_preorder(new_current_frontier)) {
@@ -529,11 +559,12 @@ public:
 
             start_range->update_range_morton(end_range, current_morton, level, max_depth_);
 
-            range_search_treeblock(start_range, end_range, new_current_block, level + 1, new_current_node, new_current_frontier,
+            new_current_block->range_search_treeblock(start_range, end_range, new_current_block, level + 1, new_current_node, new_current_frontier,
                                 found_points);
 
             (*start_range) = original_start_range;
             (*end_range) = original_end_range;    
+            current_morton = next_morton(current_morton, current_node);
 
         }
 
