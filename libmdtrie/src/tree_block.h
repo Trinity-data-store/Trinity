@@ -486,25 +486,14 @@ public:
     }
 
     symbol_t next_morton(symbol_t current_morton, preorder_t current_node){
-        // return current_morton + 1;
-        // raise(SIGINT);
+
         symbol_t next_one = current_morton + 1;
-        // return  next_one;
         symbol_t limit = num_branches_ - next_one;
         if (limit > 64)
             limit = 64;
         uint64_t next_block = dfuds_->GetValPos(current_node * num_branches_+ next_one, limit);
         if (next_block){
-            symbol_t adder = __builtin_ctzll(next_block);
-            // if (!dfuds_->GetBit(current_node * num_branches_ + adder + next_one)){
-            //     raise(SIGINT);
-            // }
-            // for (symbol_t i = next_one; i < adder + next_one; i++){
-            //     if (dfuds_->GetBit(current_node * num_branches_ + i)){
-            //         raise(SIGINT);
-            //     }
-            // }
-            return adder + next_one;
+            return __builtin_ctzll(next_block) + next_one;
         }
         else {
             return next_one + limit;
