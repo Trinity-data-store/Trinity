@@ -521,9 +521,15 @@ public:
         preorder_t new_current_node;
         tree_block *new_current_block;
         node_t new_current_frontier;
+        // TODO: Initialize to start_morton & neg_representation
         symbol_t current_morton = 0;
 
+        // TODO: possible optimization by case, number of children, smaller search range 
         while (current_morton < num_branches_){
+            
+            // TODO: rename variables
+            // TODO: Move start_morton & neg_representation out of the loop
+            // TODO: restructure next_morton
 
             if ((start_morton & neg_representation) != (current_morton & neg_representation)){
                 current_morton = next_morton(current_morton, current_node);
@@ -534,6 +540,7 @@ public:
             new_current_frontier = current_frontier;
             new_current_node = new_current_block->child(new_current_block, current_node, current_morton, level,
                                                     new_current_frontier);
+            // TODO: Assert
             if (new_current_node == (node_t) -1){
                 current_morton = next_morton(current_morton, current_node);
                 continue;
@@ -554,7 +561,6 @@ public:
             (*start_range) = original_start_range;
             (*end_range) = original_end_range;    
             current_morton = next_morton(current_morton, current_node);
-
         }
 
         // range_traverse_treeblock(start_range, end_range, start_morton, representation, 0, current_block, level, current_node,

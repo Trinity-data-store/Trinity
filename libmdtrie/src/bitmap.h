@@ -119,6 +119,7 @@ static const uint64_t low_bits_unset[65] = { 0xFFFFFFFFFFFFFFFFULL,
     0xE000000000000000ULL, 0xC000000000000000ULL, 0x8000000000000000ULL,
     0x0000000000000000ULL };
 
+// TODO: finalize the function calls of the Bitmap
 class Bitmap {
  public:
   // Type definitions

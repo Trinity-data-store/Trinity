@@ -178,6 +178,7 @@ void range_search_insert(md_trie<DIMENSION> *mdtrie, level_t max_depth, uint64_t
     }
     bar.finish();
 }
+
 void test_range_only(level_t max_depth, level_t trie_depth, preorder_t max_tree_node, int n_itr){
 
     uint64_t max[DIMENSION];
@@ -189,6 +190,7 @@ void test_range_only(level_t max_depth, level_t trie_depth, preorder_t max_tree_
     auto *end_range = new data_point<DIMENSION>();
     auto *found_points = new point_array<DIMENSION>();
     int itr = 1;
+    // TODO: warm up the cache. First 10%
     while (itr <= n_itr){
         uint64_t volume = 1;
         for (dimension_t i = 0; i < DIMENSION; i++){
