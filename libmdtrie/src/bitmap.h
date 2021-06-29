@@ -7,6 +7,7 @@
 #include <cstdlib>
 #include <cstring>
 #include <iostream>
+#include <defs.h>
 
 namespace bitmap {
 
@@ -204,6 +205,19 @@ class Bitmap {
 
     SetValPos(s_idx * 64, 0, width);  
   }
+
+  // symbol_t next_jump_size(symbol_t pos, preorder_t limit){
+
+  //     if (limit > 64)
+  //         limit = 64;
+  //     uint64_t next_block = GetValPos(pos, limit);
+  //     if (next_block){
+  //         return __builtin_ctzll(next_block);
+  //     }
+  //     else {
+  //         return limit;
+  //     }
+  // }
 
   inline uint64_t popcount(size_t pos, uint16_t width){
     

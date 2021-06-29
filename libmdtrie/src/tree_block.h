@@ -485,18 +485,17 @@ public:
             ((frontier_node<DIMENSION> *) frontiers_)[i].pointer_->density(array);
     }
 
-    symbol_t next_morton(symbol_t current_morton, preorder_t current_node){
+    symbol_t next_symbol(symbol_t current_symbol, preorder_t current_node, symbol_t end_symbol_range){
 
-        symbol_t next_one = current_morton + 1;
-        symbol_t limit = num_branches_ - next_one;
+        symbol_t limit = end_symbol_range - current_symbol + 1;
         if (limit > 64)
             limit = 64;
-        uint64_t next_block = dfuds_->GetValPos(current_node * num_branches_+ next_one, limit);
+        uint64_t next_block = dfuds_->GetValPos(current_node * num_branches_ + current_symbol, limit);
         if (next_block){
-            return __builtin_ctzll(next_block) + next_one;
+            return __builtin_ctzll(next_block) + current_symbol;
         }
         else {
-            return next_one + limit;
+            return current_symbol + limit;
         }
     }
 
@@ -510,10 +509,9 @@ public:
             return;
         }
         
-        symbol_t start_morton = start_range->leaf_to_symbol(level, max_depth_);
-        symbol_t end_morton = end_range->leaf_to_symbol(level, max_depth_);
-        representation_t representation = start_morton ^ end_morton;
-        // [ToDo]
+        symbol_t start_range_symbol = start_range->leaf_to_symbol(level, max_depth_);
+        symbol_t end_range_symbol = end_range->leaf_to_symbol(level, max_depth_);
+        representation_t representation = start_range_symbol ^ end_range_symbol;
         representation_t neg_representation = ~representation;
 
         struct data_point<DIMENSION> original_start_range = (*start_range);
@@ -521,59 +519,58 @@ public:
         preorder_t new_current_node;
         tree_block *new_current_block;
         node_t new_current_frontier;
-        // TODO: Initialize to start_morton & neg_representation
-        symbol_t current_morton = 0;
+
+        symbol_t start_symbol_overlap = start_range_symbol & neg_representation;
+        symbol_t current_symbol = next_symbol(start_range_symbol, current_node, end_range_symbol);
 
         // TODO: possible optimization by case, number of children, smaller search range 
-        while (current_morton < num_branches_){
+        // Note: start_range_symbol  <=  end_range_symbol
+        // If we update range correctly, this will always be true
+        while (current_symbol <= end_range_symbol){
             
-            // TODO: rename variables
-            // TODO: Move start_morton & neg_representation out of the loop
-            // TODO: restructure next_morton
+            if (start_symbol_overlap == (current_symbol & neg_representation)){
 
-            if ((start_morton & neg_representation) != (current_morton & neg_representation)){
-                current_morton = next_morton(current_morton, current_node);
-                continue;
+                new_current_block = current_block;
+                new_current_frontier = current_frontier;
+                new_current_node = new_current_block->child(new_current_block, current_node, current_symbol, level,
+                                                        new_current_frontier);
+
+                // Because 64 bit at a time, this will happen
+                if (new_current_node == (node_t) -1){
+                    current_symbol = next_symbol(current_symbol + 1, current_node, end_range_symbol);
+                    continue;
+                }
+
+                if (new_current_block->num_frontiers() > 0 && new_current_frontier < new_current_block->num_frontiers() &&
+                    new_current_node == new_current_block->get_preorder(new_current_frontier)) {
+                    new_current_block = new_current_block->get_pointer(new_current_frontier);
+                    new_current_node = (node_t) 0;
+                    new_current_frontier = 0;
+                }
+
+                start_range->update_range_morton(end_range, current_symbol, level, max_depth_);
+
+                new_current_block->range_search_treeblock(start_range, end_range, new_current_block, level + 1, new_current_node, new_current_frontier,
+                                    found_points);
+
+                (*start_range) = original_start_range;
+                (*end_range) = original_end_range;    
             }
 
-            new_current_block = current_block;
-            new_current_frontier = current_frontier;
-            new_current_node = new_current_block->child(new_current_block, current_node, current_morton, level,
-                                                    new_current_frontier);
-            // TODO: Assert
-            if (new_current_node == (node_t) -1){
-                current_morton = next_morton(current_morton, current_node);
-                continue;
-            }
-
-            if (new_current_block->num_frontiers() > 0 && new_current_frontier < new_current_block->num_frontiers() &&
-                new_current_node == new_current_block->get_preorder(new_current_frontier)) {
-                new_current_block = new_current_block->get_pointer(new_current_frontier);
-                new_current_node = (node_t) 0;
-                new_current_frontier = 0;
-            }
-
-            start_range->update_range_morton(end_range, current_morton, level, max_depth_);
-
-            new_current_block->range_search_treeblock(start_range, end_range, new_current_block, level + 1, new_current_node, new_current_frontier,
-                                found_points);
-
-            (*start_range) = original_start_range;
-            (*end_range) = original_end_range;    
-            current_morton = next_morton(current_morton, current_node);
+            current_symbol = next_symbol(current_symbol + 1, current_node, end_range_symbol);
         }
 
-        // range_traverse_treeblock(start_range, end_range, start_morton, representation, 0, current_block, level, current_node,
+        // range_traverse_treeblock(start_range, end_range, start_symbol, representation, 0, current_block, level, current_node,
         //                         current_frontier, found_points);
     }
 
-    void range_traverse_treeblock(data_point<DIMENSION> *start_range, data_point<DIMENSION> *end_range, symbol_t current_morton, symbol_t representation, uint8_t index, tree_block *current_block, level_t level, preorder_t current_node, node_t current_frontier,                 point_array<DIMENSION> *found_points) {
+    void range_traverse_treeblock(data_point<DIMENSION> *start_range, data_point<DIMENSION> *end_range, symbol_t current_symbol, symbol_t representation, uint8_t index, tree_block *current_block, level_t level, preorder_t current_node, node_t current_frontier,                 point_array<DIMENSION> *found_points) {
 
         dimension_t offset = DIMENSION - index - 1U;
 
         if (index == DIMENSION) {
 
-            current_node = current_block->child(current_block, current_node, current_morton, level,
+            current_node = current_block->child(current_block, current_node, current_symbol, level,
                                                     current_frontier);
             if (current_node == (node_t) -1)
                 return;
@@ -585,7 +582,7 @@ public:
                 current_frontier = 0;
             }
 
-            start_range->update_range_morton(end_range, current_morton, level, max_depth_);
+            start_range->update_range_morton(end_range, current_symbol, level, max_depth_);
 
             range_search_treeblock(start_range, end_range, current_block, level + 1, current_node, current_frontier,
                                 found_points);
@@ -596,20 +593,20 @@ public:
             struct data_point<DIMENSION> original_start_range = (*start_range);
             struct data_point<DIMENSION> original_end_range = (*end_range); 
 
-            SETBIT(current_morton, offset);
-            range_traverse_treeblock(start_range, end_range, current_morton, representation, index + 1, current_block, level, current_node,
+            SETBIT(current_symbol, offset);
+            range_traverse_treeblock(start_range, end_range, current_symbol, representation, index + 1, current_block, level, current_node,
                                     current_frontier, found_points);
             (*start_range) = original_start_range;
             (*end_range) = original_end_range;
 
-            CLRBIT(current_morton, offset);
-            range_traverse_treeblock(start_range, end_range, current_morton, representation, index + 1, current_block, level, current_node,
+            CLRBIT(current_symbol, offset);
+            range_traverse_treeblock(start_range, end_range, current_symbol, representation, index + 1, current_block, level, current_node,
                                     current_frontier, found_points);
             (*start_range) = original_start_range;
             (*end_range) = original_end_range;
 
         } else {
-            range_traverse_treeblock(start_range, end_range, current_morton, representation, index + 1, current_block, level, current_node,
+            range_traverse_treeblock(start_range, end_range, current_symbol, representation, index + 1, current_block, level, current_node,
                                     current_frontier, found_points);
         }
     }
