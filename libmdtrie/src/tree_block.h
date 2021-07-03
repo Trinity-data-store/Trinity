@@ -10,6 +10,10 @@ uint64_t get_bit_count = 0;
 template<dimension_t DIMENSION>
 class tree_block {
 public:
+
+    tree_block *parent_tree_block_ = NULL;
+    preorder_t treeblock_frontier_num_ = 0;
+
     explicit tree_block(level_t root_depth, node_n_t tree_capacity, node_n_t num_nodes,
                         level_t max_depth, node_n_t max_tree_nodes) {
         root_depth_ = root_depth;
@@ -56,6 +60,9 @@ public:
 
     inline void set_pointer(preorder_t current_frontier, tree_block *pointer) {
         frontiers_[current_frontier].pointer_ = pointer;
+        pointer->parent_tree_block_ = this;
+        pointer->treeblock_frontier_num_ = get_preorder(current_frontier);
+
     }
 
     inline preorder_t get_n_children(node_t node, symbol_t n_branches) const {
@@ -440,6 +447,10 @@ public:
         return current_node;
     }
 
+
+
+
+
     // This function takes in a node (in preorder) and a symbol (branch index)
     // Return the child node (in preorder) designated by that symbol
     // This function differs from skip_children_subtree as it checks if that child node is present
@@ -499,10 +510,93 @@ public:
         }
     }
 
+    void get_node_path(node_t node) {
+
+        int sTop = 0;
+        preorder_t n_children = get_n_children(0, num_branches_);
+        preorder_t stack[100];
+        node_t path[100];
+        int symbol[100] = {-1};
+
+        preorder_t current_frontier = 0;
+
+        
+        symbol[sTop] = next_symbol(symbol[sTop] + 1, 0, num_branches_);
+        stack[sTop] = n_children;
+        path[sTop] = 0;
+
+        level_t current_level = root_depth_;
+        node_t current_node = 1;
+
+        if (frontiers_ != nullptr && current_frontier < num_frontiers_ && current_node > get_preorder(current_frontier))
+            ++current_frontier;
+        preorder_t next_frontier_preorder;
+
+        if (num_frontiers_ == 0 || current_frontier >= num_frontiers_)
+            next_frontier_preorder = -1;
+        else
+            next_frontier_preorder = get_preorder(current_frontier);
+
+        ++current_level;
+        while (current_node < num_nodes_ && sTop >= 0) {
+            
+            if (current_node == next_frontier_preorder) {
+                ++current_frontier;
+                if (num_frontiers_ == 0 || current_frontier >= num_frontiers_)
+                    next_frontier_preorder = -1;
+                else
+                    next_frontier_preorder = get_preorder(current_frontier);
+                --stack[sTop];
+            }
+            // It is "-1" because current_level is 0th indexed.
+            else if (current_level < max_depth_ - 1) {
+                sTop++;
+                stack[sTop] = get_n_children(current_node, num_branches_);
+                path[sTop] = current_node;
+                // TODO: num_branches > 64
+                    
+                symbol[sTop] = next_symbol(symbol[sTop] + 1, current_node, num_branches_ - 1);
+                
+                ++current_level;
+            } else
+                --stack[sTop];
+
+            if (current_node == node){
+                break;
+            }
+
+            ++current_node;
+            while (sTop >= 0 && stack[sTop] == 0) {
+                path[sTop] = 0;
+                --sTop;
+                --current_level;
+                if (sTop >= 0)
+                    --stack[sTop];
+            }
+        }
+        if (current_node == num_nodes_){
+            fprintf(stderr, "node not found!\n");
+            return;
+        }
+        for (int i = 0; i <= sTop; i++){
+            fprintf(stderr, "level: %ld, node_number: %ld, symbol: %d\n", root_depth_ + i, path[i], symbol[i]);
+        }
+
+        if (parent_tree_block_){
+            parent_tree_block_->get_node_path(treeblock_frontier_num_);
+        }
+    }
+
     void range_search_treeblock(data_point<DIMENSION> *start_range, data_point<DIMENSION> *end_range, tree_block *current_block,
                                             level_t level, preorder_t current_node, node_t current_frontier,
                                             point_array<DIMENSION> *found_points) {
+
         if (level == max_depth_) {
+            raise(SIGINT);
+            // Because leaf doesn't have a node_num. That's why -1
+            fprintf(stderr, "current_node: %ld, num_nodes: %d\n", current_node - 1, num_nodes_);
+            get_node_path(current_node - 1);
+         
             auto *leaf = new data_point<DIMENSION>();
             leaf->set(start_range->get());
             found_points->add_leaf(leaf);

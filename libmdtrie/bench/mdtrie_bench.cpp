@@ -18,7 +18,7 @@ static TimeStamp GetTimestamp() {
   return now.tv_usec + (TimeStamp) now.tv_sec * 1000000;
 }
 
-const int DIMENSION = 8;
+const int DIMENSION = 2;
 
 void test_random_data(n_leaves_t n_points, level_t max_depth, level_t trie_depth, preorder_t max_tree_node)
 {
@@ -226,7 +226,7 @@ void test_insert_data(level_t max_depth, level_t trie_depth, preorder_t max_tree
     uint64_t msec = diff * 1000 / CLOCKS_PER_SEC;
     fprintf(stderr, "Average time to insert one point: %f microseconds\n", (float)msec*1000 / n_points);
     fprintf(stderr, "Size of data structure that contains %ld points: %ld bytes\n", n_lines, mdtrie->size());
-    fprintf(stderr, "getbit calls: %ld \n", get_bit_count);
+    // fprintf(stderr, "getbit calls: %ld \n", get_bit_count);
 }
 
 void test_density(level_t max_depth, level_t trie_depth, preorder_t max_tree_node){
