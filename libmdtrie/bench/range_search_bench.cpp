@@ -91,6 +91,7 @@ void test_real_data(level_t max_depth, level_t trie_depth, preorder_t max_tree_n
     int itr = 1;
     tqdm bar1;
 
+    uint64_t total_found_points = 0;
     while (itr <= n_itr){
         bar1.progress(itr, n_itr);
         uint64_t volume = 1;
@@ -107,6 +108,7 @@ void test_real_data(level_t max_depth, level_t trie_depth, preorder_t max_tree_n
         }
 
         msec = diff * 1000 / CLOCKS_PER_SEC;
+        total_found_points += found_points->size();
         fprintf(fptr, "%ld, %ld, %f\n", found_points->size(), volume, (float)msec*1000);
         
         found_points->reset();
@@ -115,6 +117,8 @@ void test_real_data(level_t max_depth, level_t trie_depth, preorder_t max_tree_n
         fptr = fopen(file_path, "a");            
     }
     bar1.finish();
+    msec = backtrace_time * 1000 / CLOCKS_PER_SEC;
+    fprintf(stderr, "Time per Checking: %f, out of %ld points\n", (float)msec*1000 / total_found_points, total_found_points);
     fclose(fptr);
 }
 
@@ -255,7 +259,7 @@ bool test_random_range_search(n_leaves_t n_points, level_t max_depth, level_t tr
 int main() {
     // srand(static_cast<unsigned int>(time(0)));
     
-    test_real_data(32, 10, 1024, 500);
+    test_real_data(32, 10, 1024, 200);
     // test_range_only(32, 10, 1024, 50);
     // test_real_data(4, 32, 10, 1024, 200);
 

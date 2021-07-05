@@ -64,10 +64,13 @@ public:
                 SETBIT(start_coordinate, offset);
             } 
             // Bring the end of the search range to first half
-            else if (!morton_bit && end_bit) {
+            if (!morton_bit && end_bit) {
                 end_coordinate = end_coordinate | bitmap::low_bits_set[offset];
                 // In the end, only the start_coordinate is kept as the returned point
-                // CLRBIT(end_coordinate, (offset + 1));            
+                CLRBIT(end_coordinate, offset);            
+            }
+            if (GETBIT(start_coordinate, offset) != GETBIT(end_coordinate, offset)){
+                raise(SIGINT);
             }
             coordinates[j] = start_coordinate;
             end_range->coordinates[j] = end_coordinate;
