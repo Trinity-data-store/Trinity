@@ -8,6 +8,9 @@
 template<dimension_t DIMENSION>
 class trie_node {
 public:
+
+    trie_node *parent_trie_node = NULL;
+
     explicit trie_node(symbol_t num_branches) : block_(nullptr) {
         children_ = (trie_node<DIMENSION> **)calloc(num_branches, sizeof(trie_node<DIMENSION> *));
         size_ = num_branches;
@@ -59,6 +62,26 @@ public:
             return;
         }
         (*array)[current_node] = (*array)[current_node] + 1;
+    }
+
+    void get_node_path_from_treeblock(level_t level, symbol_t *node_path){
+
+        get_node_path(this, level, node_path);
+    }
+
+    void get_node_path(trie_node *prev, level_t level, symbol_t *node_path){
+        for (symbol_t i = 0; i < size_; i++)
+        {
+            if (children_[i] == prev){
+                node_path[level] = i;
+                // fprintf(stderr, "level: %ld, symbol: %ld\n", level, i);
+                break;
+            }
+        }
+
+        if (parent_trie_node){
+            parent_trie_node->get_node_path(this, level - 1, node_path);
+        }
     }
 
 private:

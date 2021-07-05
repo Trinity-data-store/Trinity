@@ -253,7 +253,7 @@ bool test_random_range_search(n_leaves_t n_points, level_t max_depth, level_t tr
 
 // int dimensions, level_type max_depth, level_type trie_depth, preorder_type max_tree_node, int n_itr
 int main() {
-    srand(static_cast<unsigned int>(time(0)));
+    // srand(static_cast<unsigned int>(time(0)));
     
     test_real_data(32, 10, 1024, 500);
     // test_range_only(32, 10, 1024, 50);

@@ -10,7 +10,7 @@
 template<dimension_t DIMENSION>
 class data_point {
 private:
-    point_t coordinates[DIMENSION];
+    point_t coordinates[DIMENSION] = {};
 public:
     explicit data_point(){
         

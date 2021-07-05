@@ -95,6 +95,7 @@ public:
         while (level < trie_depth_) {
             current_symbol = leaf_point->leaf_to_symbol(level, max_depth_);
             current_trie_node->set_child(current_symbol, new trie_node<DIMENSION>(n_branches_));
+            current_trie_node->get_child(current_symbol)->parent_trie_node = current_trie_node;
             current_trie_node = current_trie_node->get_child(current_symbol);
             level++;
         }
@@ -102,6 +103,7 @@ public:
         if (current_trie_node->block() == nullptr) {
             current_treeblock = new tree_block<DIMENSION>(trie_depth_, initial_tree_capacity_, 1, max_depth_, max_tree_nodes_);
             current_trie_node->block(current_treeblock);
+            current_treeblock->parent_trie_node = current_trie_node;
         } else
             current_treeblock = (tree_block<DIMENSION> *) current_trie_node->block();
         return current_treeblock;
@@ -142,7 +144,7 @@ public:
         // If we reach the bottom of the top-level trie
         if (level == trie_depth_) {
             auto *current_treeblock = (tree_block<DIMENSION> *) current_trie_node->block();
-            current_treeblock->range_search_treeblock(start_range, end_range, current_treeblock, level, 0, 0, found_points);
+            current_treeblock->range_search_treeblock(start_range, end_range, current_treeblock, level, 0, 0, 0, found_points);
             return;
         }
         symbol_t start_morton = start_range->leaf_to_symbol(level, max_depth_);
