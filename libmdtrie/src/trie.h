@@ -96,6 +96,7 @@ public:
             current_symbol = leaf_point->leaf_to_symbol(level, max_depth_);
             current_trie_node->set_child(current_symbol, new trie_node<DIMENSION>(n_branches_));
             current_trie_node->get_child(current_symbol)->parent_trie_node = current_trie_node;
+            current_trie_node->get_child(current_symbol)->parent_symbol = current_symbol;
             current_trie_node = current_trie_node->get_child(current_symbol);
             level++;
         }

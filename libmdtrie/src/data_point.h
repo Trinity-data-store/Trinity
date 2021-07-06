@@ -5,13 +5,19 @@
 #include <cstdlib>
 #include <cstring>
 #include "bitmap.h"
+// #include "tree_block.h"
 
 // Struct for each point that we want to insert
 template<dimension_t DIMENSION>
 class data_point {
 private:
+    tree_block<DIMENSION> *parent_treeblock = NULL;
+    symbol_t parent_symbol;
+    node_t parent_node;
     point_t coordinates[DIMENSION] = {};
+
 public:
+
     explicit data_point(){
         
     };
@@ -30,6 +36,31 @@ public:
 
     inline void set_coordinate(dimension_t index, point_t value){
         coordinates[index] = value;
+    }
+
+    inline symbol_t get_parent_symbol(){
+        return parent_symbol;
+    }
+
+    inline node_t get_parent_node(){
+        return parent_node;
+    }
+
+    inline tree_block<DIMENSION> *get_parent_treeblock(){
+        return parent_treeblock;
+    }
+
+    inline void set_parent_symbol(symbol_t symbol){
+        parent_symbol = symbol;
+    }
+
+    inline void set_parent_node(node_t node){
+        parent_node = node;
+    }
+
+
+    inline void set_parent_treeblock(tree_block<DIMENSION> *treeblock){
+        parent_treeblock = treeblock;
     }
 
     // Given the leaf_point and the level we are at, return the Morton code corresponding to that level

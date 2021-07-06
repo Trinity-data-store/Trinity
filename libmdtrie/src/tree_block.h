@@ -9,14 +9,14 @@
 
 uint64_t get_bit_count = 0;
 
-static TimeStamp GetTime() {
-  struct timeval now;
-  gettimeofday(&now, nullptr);
+// static TimeStamp GetTime() {
+//   struct timeval now;
+//   gettimeofday(&now, nullptr);
 
-  return now.tv_usec + (TimeStamp) now.tv_sec * 1000000;
-}
+//   return now.tv_usec + (TimeStamp) now.tv_sec * 1000000;
+// }
 
-TimeStamp backtrace_time = 0;
+// TimeStamp backtrace_time = 0;
 
 
 template<dimension_t DIMENSION>
@@ -75,9 +75,9 @@ public:
     inline void set_pointer(preorder_t current_frontier, tree_block *pointer) {
         frontiers_[current_frontier].pointer_ = pointer;
         pointer->parent_tree_block_ = this;
-        if (get_preorder(current_frontier) == 0){
-            raise(SIGINT);
-        }
+        // if (get_preorder(current_frontier) == 0){
+        //     raise(SIGINT);
+        // }
         pointer->treeblock_frontier_num_ = get_preorder(current_frontier);
     }
 
@@ -471,10 +471,6 @@ public:
         return current_node;
     }
 
-
-
-
-
     // This function takes in a node (in preorder) and a symbol (branch index)
     // Return the child node (in preorder) designated by that symbol
     // This function differs from skip_children_subtree as it checks if that child node is present
@@ -523,13 +519,19 @@ public:
     symbol_t next_symbol(symbol_t current_symbol, preorder_t current_node, symbol_t end_symbol_range){
 
         symbol_t limit = end_symbol_range - current_symbol + 1;
-        if (limit > 64)
+        bool over_64 = false;
+        if (limit > 64){
             limit = 64;
+            over_64 = true;
+        }
         uint64_t next_block = dfuds_->GetValPos(current_node * num_branches_ + current_symbol, limit);
         if (next_block){
             return __builtin_ctzll(next_block) + current_symbol;
         }
         else {
+            if (over_64){
+                return next_symbol(current_symbol + limit, current_node, end_symbol_range);
+            }
             return current_symbol + limit;
         }
     }
@@ -537,9 +539,7 @@ public:
     void get_node_path(node_t node, symbol_t *node_path) {
         
         if (node == 0){
-            // raise(SIGINT);
             node_path[root_depth_] = next_symbol(0, 0, num_branches_ - 1);
-            // fprintf(stderr, "=> level: %ld, set symbol[%d] = %ld. Node: %ld\n", root_depth_, 0, node_path[root_depth_], node);
             if (parent_tree_block_){
                 parent_tree_block_->get_node_path(treeblock_frontier_num_, node_path);
             }
@@ -549,28 +549,20 @@ public:
             return;          
         }
 
-        // fprintf(stderr, "node: %ld, num_nodes: %d\n", node, num_nodes_);
-        
-        // preorder_t n_children = get_n_children(0, num_branches_);
-        preorder_t stack[100] = {};
-        node_t path[100] = {};
-        int symbol[100];
-        for (uint i = 0; i < 100; i++){
+        preorder_t stack[35] = {};
+        node_t path[35] = {};
+        int symbol[35];
+        for (uint8_t i = 0; i < 35; i++){
             symbol[i] = -1;
         }
-        
 
         preorder_t current_frontier = 0;
 
         // current_symbol, current_node, end_symbol_range (<= num_branches)
         int sTop = 0;
-        path[sTop] = 0;
         symbol[sTop] = next_symbol(symbol[sTop] + 1, path[sTop], num_branches_ - 1);
-        // fprintf(stderr, "=> level: %ld, set symbol[%d] = %d. Node: %ld， total_num, %d\n", root_depth_ + sTop, sTop, symbol[sTop], node, num_nodes_);
-        // fprintf(stderr, "=> root: %ld\n", dfuds_->GetValPos(0, num_branches_));
         stack[sTop] = get_n_children(0, num_branches_);
         
-
         level_t current_level = root_depth_ + 1;
         node_t current_node = 1;
 
@@ -589,7 +581,6 @@ public:
                 if (current_node != node){
                     symbol[sTop] = next_symbol(symbol[sTop] + 1, path[sTop], num_branches_ - 1);
                 }
-                    // fprintf(stderr, "frontier node! level: %ld, current_node: %ld. \n", root_depth_ + sTop + 1, current_node);
                 ++current_frontier;
                 if (num_frontiers_ == 0 || current_frontier >= num_frontiers_)
                     next_frontier_preorder = -1;
@@ -599,77 +590,35 @@ public:
                 --stack[sTop];
             }
             // It is "-1" because current_level is 0th indexed.
-            else if (current_level < max_depth_ - 1) {
-                // symbol[sTop] = next_symbol(symbol[sTop] + 1, path[sTop], num_branches_ - 1);
-                // fprintf(stderr, "level: %ld, current_node: %ld, set symbol[%d] = %d\n", root_depth_ + sTop, current_node, sTop, symbol[sTop]);
+            else if (current_level < max_depth_ - 1) 
+            {
                 sTop++;
                 stack[sTop] = get_n_children(current_node, num_branches_);
                 path[sTop] = current_node;
 
                 // TODO: num_branches > 64
                 symbol[sTop] = next_symbol(symbol[sTop] + 1, path[sTop], num_branches_ - 1);
-                // fprintf(stderr, "level: %ld, current_node: %ld, set symbol[%d] = %d\n", root_depth_ + sTop, current_node, sTop, symbol[sTop]);
-                // if (sTop == 12 && symbol[sTop] == 0 && stack[sTop] == 2 && current_node == 82){
-                //     raise(SIGINT);
-                // }
                 ++current_level;
             }
-            else if (current_level == max_depth_ - 1 && stack[sTop] > 1){
-                // sTop++;
-                // fprintf(stderr, "before: current_node: %ld, set symbol[%d] = %d, stack[sTop] = %ld\n", current_node, sTop, symbol[sTop], stack[sTop]);
-                if (current_node < node){
-                    symbol[sTop] = next_symbol(symbol[sTop] + 1, path[sTop], num_branches_ - 1);
-                }
-                // if (symbol[sTop] == 4){
-                //     raise(SIGINT);
-                // }
-                --stack[sTop]; 
-                // fprintf(stderr, "after: current_node: %ld, set symbol[%d] = %d, stack[sTop] = %ld\n", current_node, sTop, symbol[sTop], stack[sTop]);
-                // sTop--;   
-                
-                // if (current_node != node){
-                // sTop++;
-                // stack[sTop] = 0;
-                // //     path[sTop] = current_node; 
-                // // }
-                // ++current_level;
-                // fprintf(stderr, "current_level: %ld, sTop: %d, current_node: %ld\n", current_level, sTop, current_node);    
+            else if (current_level == max_depth_ - 1 && stack[sTop] > 1 && current_node < node)
+            {
+                symbol[sTop] = next_symbol(symbol[sTop] + 1, path[sTop], num_branches_ - 1);
+                --stack[sTop];   
             } 
             else
             {
                 --stack[sTop];
             }
 
-            // fprintf(stderr, "current_node %ld\n", current_node);
             if (current_node == node){
-                // Immediate parent to the leaf
-                // fprintf(stderr, "current_level: %ld\n", current_level);
-                // if (current_level == max_depth_ - 1){
-                //     sTop++;
-                
-                //     symbol[sTop] = next_symbol(symbol[sTop] + 1, current_node, num_branches_ - 1);
-                //     fprintf(stderr, "level: %ld, current_node: %ld, set symbol[%d] = %d\n", sTop + root_depth_, current_node, sTop, symbol[sTop]);
-                // }
-                // else {
-                //     // fprintf(stderr, "Exit: frontier node! level: %ld, current_node: %ld. \n", root_depth_ + sTop + 1, current_node);
-                // }
                 break;
             }
-
             ++current_node;
             bool backtracekd = false;
             while (sTop >= 0 && stack[sTop] == 0) {
                 backtracekd = true;
                 path[sTop] = 0;
-                // if (current_level == max_depth_ - 1){
-                //     sTop++;
-                //     symbol[sTop] = -1;
-                //     fprintf(stderr, "set symbol[%d] = %d\n", sTop, symbol[sTop]);
-                //     sTop--;                     
-                // }
-
                 symbol[sTop] = -1;
-                // fprintf(stderr, "level: %ld, current_node: %ld, set symbol[%d] = %d\n", root_depth_ + sTop, current_node, sTop, symbol[sTop]);
                 --sTop;
                 --current_level;
                 if (sTop >= 0)
@@ -677,7 +626,6 @@ public:
             }
             if (backtracekd){
                 symbol[sTop] = next_symbol(symbol[sTop] + 1, path[sTop], num_branches_ - 1);
-                // fprintf(stderr, "~~ level: %ld, set symbol[%d] = %d\n", root_depth_ + sTop, sTop, symbol[sTop]);
             }
         }
         if (current_node == num_nodes_){
@@ -686,10 +634,7 @@ public:
         }
         for (int i = 0; i <= sTop; i++){
             node_path[root_depth_ + i] = symbol[i];
-            // fprintf(stderr, "level: %ld, node_number: %ld, symbol: %d\n", root_depth_ + i, path[i], symbol[i]);
         }
-
-        // raise(SIGINT);
         if (parent_tree_block_){
             parent_tree_block_->get_node_path(treeblock_frontier_num_, node_path);
         }
@@ -718,52 +663,27 @@ public:
     void range_search_treeblock(data_point<DIMENSION> *start_range, data_point<DIMENSION> *end_range, tree_block *current_block,
                                             level_t level, preorder_t current_node, preorder_t prev_node, node_t current_frontier,
                                             point_array<DIMENSION> *found_points) {
-        // if (root_depth_ == 19 && treeblock_frontier_num_ == 33){
-        //     raise(SIGINT);
-        // }
-
         if (level == max_depth_) {
             
-            // fprintf(stderr, "\nsymbol:");
-            // for (level_t i = 0; i < max_depth_; i++){
-            //     fprintf(stderr, "%ld, ", start_range->leaf_to_symbol(i, max_depth_));
-            // }
-            // fprintf(stderr, "\nsymbol:");
-            // for (level_t i = 0; i < max_depth_; i++){
-            //     fprintf(stderr, "%ld, ", end_range->leaf_to_symbol(i, max_depth_));
-            // }   
-            
-            // Because leaf doesn't have a node_num. That's why -1
-            symbol_t *node_path = (symbol_t *)malloc((max_depth_ + 1) * sizeof(symbol_t));
+            // symbol_t *node_path = (symbol_t *)malloc((max_depth_ + 1) * sizeof(symbol_t));
 
-            // fprintf(stderr, "\ncurrent_node: %ld, total_nodes: %d\n", current_node - 1, num_nodes_);
-            // raise(SIGINT);  
-            // fprintf(stderr, "\n");
-            TimeStamp start = GetTime();
-            get_node_path(prev_node, node_path);
-            backtrace_time += GetTime() - start;
+            // TimeStamp start = GetTime();
+            // get_node_path(prev_node, node_path);            
+            // node_path[max_depth_ - 1] = start_range->leaf_to_symbol(max_depth_ - 1, max_depth_);
+            // auto returned_coordinates = node_path_to_coordinates(node_path);
+            // backtrace_time += GetTime() - start;
             
-            node_path[max_depth_ - 1] = start_range->leaf_to_symbol(max_depth_ - 1, max_depth_);
-            // fprintf(stderr, "symbol:");
-            // for (level_t i = 0; i < max_depth_; i++){
-            //     fprintf(stderr, "%ld, ", node_path[i]);
-            // }
-            // raise(SIGINT);            
-            // fprintf(stderr, "\n");
-            auto returned_coordinates = node_path_to_coordinates(node_path);
-            for (dimension_t i = 0; i < DIMENSION; i++){
-                if (returned_coordinates->get_coordinate(i) != start_range->get_coordinate(i)){
-                    raise(SIGINT);
-                }
-                // fprintf(stderr, "dimension: %d, coordinate: %ld\n", i, returned_coordinates->get_coordinate(i));
-            }
             // for (dimension_t i = 0; i < DIMENSION; i++){
-            //     // fprintf(stderr, "dimension: %d, coordinate: %ld\n", i, start_range->get_coordinate(i));
+            //     if (returned_coordinates->get_coordinate(i) != start_range->get_coordinate(i)){
+            //         raise(SIGINT);
+            //     }
             // }
-
             // raise(SIGINT);
             auto *leaf = new data_point<DIMENSION>();
             leaf->set(start_range->get());
+            leaf->set_parent_treeblock(this);
+            leaf->set_parent_node(prev_node);
+            leaf->set_parent_symbol(start_range->leaf_to_symbol(max_depth_ - 1, max_depth_));
             found_points->add_leaf(leaf);
             return;
         }
@@ -798,22 +718,9 @@ public:
                                                         new_current_frontier);
 
                 // Because 64 bit at a time, this will happen
-                if (new_current_node == (node_t) -1){
-                    current_symbol = next_symbol(current_symbol + 1, current_node, end_range_symbol);
-                    continue;
-                }
-
-                // if (new_current_block->num_frontiers() > 0 && new_current_frontier < new_current_block->num_frontiers() &&
-                //     new_current_node == new_current_block->get_preorder(new_current_frontier)) {
-
-
-                //     new_current_block = new_current_block->get_pointer(new_current_frontier);
-                //     new_current_node = (node_t) 0;
-                //     new_current_frontier = 0;
-
-                // if (new_current_block->root_depth_ != level + 1){
-                //     raise(SIGINT);
-                // }
+                // if (new_current_node == (node_t) -1){
+                //     current_symbol = next_symbol(current_symbol + 1, current_node, end_range_symbol);
+                //     continue;
                 // }
 
                 start_range->update_range_morton(end_range, current_symbol, level, max_depth_);
