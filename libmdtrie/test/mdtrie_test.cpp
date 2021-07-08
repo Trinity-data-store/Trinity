@@ -102,7 +102,6 @@ bool test_range_search(n_leaves_t n_points, level_t max_depth, level_t trie_dept
     auto *start_range = new data_point<DIMENSION_RANGE>();
     auto *end_range = new data_point<DIMENSION_RANGE>();
     auto *found_points = new point_array<DIMENSION_RANGE>();
-
     for (uint32_t itr = 1; itr <= n_itr; itr++) {
         for (dimension_t i = 0; i < DIMENSION_RANGE; i++) {
             start_range->set_coordinate(i, min[i] + rand() % (max[i] - min[i] + 1));
@@ -118,6 +117,7 @@ bool test_range_search(n_leaves_t n_points, level_t max_depth, level_t trie_dept
         for (n_leaves_t i = 0; i < found_points->size(); i++) {
             data_point<DIMENSION_RANGE> *leaf = found_points->at(i);
             if (!mdtrie->check(leaf, max_depth)) {
+                // raise(SIGINT);
                 return false;
             }
         }
@@ -145,15 +145,20 @@ bool test_range_search(n_leaves_t n_points, level_t max_depth, level_t trie_dept
             }
             if (!found) {
                 checked_points++;
-                if (mdtrie->check(leaf_check, max_depth))
+                if (mdtrie->check(leaf_check, max_depth)){
+                    // raise(SIGINT);
                     return false;
+                }
             } else {
-                if (!mdtrie->check(leaf_check, max_depth))
+                if (!mdtrie->check(leaf_check, max_depth)){
+                    // raise(SIGINT);
                     return false;
+                }
             }
         }
         found_points->reset();
     }
+    // raise(SIGINT);
     return true;
 }
 
@@ -187,6 +192,7 @@ bool test_range_search_exact(n_leaves_t n_points, level_t max_depth, level_t tri
     auto *end_range = new data_point<DIMENSION_EXACT>();
     auto *found_points = new point_array<DIMENSION_EXACT>();
 
+    // raise(SIGINT);
     for (uint32_t itr = 1; itr <= n_itr; itr++) {
         for (dimension_t i = 0; i < DIMENSION_EXACT; i++) {
             start_range->set_coordinate(i, min[i] + rand() % (max[i] - min[i] + 1));
@@ -217,11 +223,15 @@ bool test_range_search_exact(n_leaves_t n_points, level_t max_depth, level_t tri
                             break;
                     }
                     if (!found) {
-                        if (mdtrie->check(leaf_check, max_depth))
+                        if (mdtrie->check(leaf_check, max_depth)){
+                            // raise(SIGINT);
                             return false;
+                        }
                     } else {
-                        if (!mdtrie->check(leaf_check, max_depth))
+                        if (!mdtrie->check(leaf_check, max_depth)){
+                            // raise(SIGINT);
                             return false;
+                        }
                     }
                 }
             }
@@ -234,27 +244,32 @@ bool test_range_search_exact(n_leaves_t n_points, level_t max_depth, level_t tri
 
 //  n_points, dimensions, max_depth, trie_depth, max_tree_node
 TEST_CASE("Check Random Data Insertion", "[trie]") {
+    srand(static_cast<unsigned int>(time(0)));
     bool result = test_random_data(100000, 20, 10, 1024);
     REQUIRE(result);
 }
 
 TEST_CASE("Check Nonexistent Data", "[trie]") {
+    srand(static_cast<unsigned int>(time(0)));
     REQUIRE(test_nonexistent_data(10000, 10, 3, 128));
 }
 
 TEST_CASE("Check Contiguous Data", "[trie]") {
+    srand(static_cast<unsigned int>(time(0)));
     REQUIRE(test_contiguous_data(10000, 10, 3, 128));
 }
 
 // n_leaves_t n_points, dimension_t dimensions, level_t max_depth, level_t trie_depth, preorder_t max_tree_nodes, uint32_t n_itr = 50
 TEST_CASE("Test Exact Range Search", "[trie]") {
     srand(static_cast<unsigned int>(time(0)));
-    REQUIRE(test_range_search_exact(2000, 10, 3, 128, 10));
+    REQUIRE(test_range_search_exact(2000, 10, 3, 128, 20));
+    // raise(SIGINT);
 }
 
 // int n_points, int dimensions, level_type max_depth, level_type trie_depth, preorder_type max_tree_nodes, int n_itr, int n_checked_points
 TEST_CASE("Test Range Search", "[trie]") {
     srand(static_cast<unsigned int>(time(0)));
     REQUIRE(test_range_search(5000, 10, 3, 128, 50, 1000));
+    // raise(SIGINT);
 }
 

@@ -8,6 +8,7 @@
 
 FILE *fptr;
 char file_path[] = "benchmark_output_vector.txt";
+char file_path_csv[] = "cdf_8.txt";
 
 typedef unsigned long long int TimeStamp;
 
@@ -48,7 +49,7 @@ void test_random_data(n_leaves_t n_points, level_t max_depth, level_t trie_depth
 void test_real_data(level_t max_depth, level_t trie_depth, preorder_t max_tree_node){
 
     fptr = fopen(file_path, "a");
-    fprintf(fptr, "dimensions: %d, trie_depth: %ld, max_tree_node: %ld\n", DIMENSION, trie_depth, max_tree_node);
+    // fprintf(fptr, "dimensions: %d, trie_depth: %ld, max_tree_node: %ld\n", DIMENSION, trie_depth, max_tree_node);
     auto *mdtrie = new md_trie<DIMENSION>(max_depth, trie_depth, max_tree_node);
     auto *leaf_point = new data_point<DIMENSION>();
 
@@ -226,7 +227,7 @@ void test_insert_data(level_t max_depth, level_t trie_depth, preorder_t max_tree
     uint64_t msec = diff * 1000 / CLOCKS_PER_SEC;
     fprintf(stderr, "Average time to insert one point: %f microseconds\n", (float)msec*1000 / n_points);
     fprintf(stderr, "Size of data structure that contains %ld points: %ld bytes\n", n_lines, mdtrie->size());
-    fprintf(stderr, "getbit calls: %ld \n", get_bit_count);
+    // fprintf(stderr, "getbit calls: %ld \n", get_bit_count);
 }
 
 void test_density(level_t max_depth, level_t trie_depth, preorder_t max_tree_node){
@@ -355,11 +356,70 @@ void test_mdtrie_size(level_t max_depth, level_t trie_depth, preorder_t max_tree
     // fprintf(fptr, "Size of dfuds: %ld bytes\n", dfuds_size);
 }
 
+void cdf_insert(level_t max_depth, level_t trie_depth, preorder_t max_tree_node){
+
+    fptr = fopen(file_path_csv, "w");
+    n_leaves_t n_lines = 14583357;
+    // fprintf(fptr, "num_points, Latency\n");
+    auto *mdtrie = new md_trie<DIMENSION>(max_depth, trie_depth, max_tree_node);
+    auto *leaf_point = new data_point<DIMENSION>();
+
+    char *line = nullptr;
+    size_t len = 0;
+    ssize_t read;
+    FILE *fp = fopen("../libmdtrie/bench/data/sample_shuf.txt", "r");
+
+    // If the file cannot be open
+    if (fp == nullptr)
+    {
+        fprintf(stderr, "file not found\n");
+        char cwd[PATH_MAX];
+        if (getcwd(cwd, sizeof(cwd)) != nullptr) {
+            printf("Current working dir: %s\n", cwd);
+        } else {
+            perror("getcwd() error");
+        }
+        exit(EXIT_FAILURE);
+    }
+    TimeStamp latency, start;
+    
+    n_leaves_t n_points = 0;
+    latency = 0;
+    tqdm bar;
+    while ((read = getline(&line, &len, fp)) != -1)
+    {
+        bar.progress(n_points, n_lines);
+        char *token = strtok(line, " ");
+        char *ptr;
+        for (uint8_t i = 0; i < 2; i ++){
+            token = strtok(nullptr, " ");
+        }
+        for (dimension_t i = 0; i < DIMENSION; i++){
+            if (i >= 4){
+                leaf_point->set_coordinate(i, leaf_point->get_coordinate(i % 4));
+            }
+            else {
+                token = strtok(nullptr, " ");
+                leaf_point->set_coordinate(i, strtoul(token, &ptr, 10));
+            }
+        }
+        n_points ++;
+        start = GetTimestamp();
+        mdtrie->insert_trie(leaf_point, max_depth);
+        // latency += GetTimestamp() - start;
+        latency = GetTimestamp() - start;
+
+        float msec = latency * 1000 *1000 / CLOCKS_PER_SEC;
+        fprintf(fptr, "%f\n", msec);
+    }
+    bar.finish();
+    fclose(fptr);
+}
 
 int main() {
 
 //  int level_type max_depth, level_type trie_depth, preorder_type max_tree_node
-    test_insert_data(32,10,1024);
+    cdf_insert(32,10,1024);
     // test_density(4, 32, 10, 1024);
     // test_real_data(2, 32, 10, 1024);
     // test_real_data(2, 32, 6, 1024);

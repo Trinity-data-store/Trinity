@@ -7,6 +7,7 @@
 #include <cstdlib>
 #include <cstring>
 #include <iostream>
+#include <defs.h>
 
 namespace bitmap {
 
@@ -119,6 +120,7 @@ static const uint64_t low_bits_unset[65] = { 0xFFFFFFFFFFFFFFFFULL,
     0xE000000000000000ULL, 0xC000000000000000ULL, 0x8000000000000000ULL,
     0x0000000000000000ULL };
 
+// TODO: finalize the function calls of the Bitmap
 class Bitmap {
  public:
   // Type definitions
@@ -204,6 +206,19 @@ class Bitmap {
     SetValPos(s_idx * 64, 0, width);  
   }
 
+  // symbol_t next_jump_size(symbol_t pos, preorder_t limit){
+
+  //     if (limit > 64)
+  //         limit = 64;
+  //     uint64_t next_block = GetValPos(pos, limit);
+  //     if (next_block){
+  //         return __builtin_ctzll(next_block);
+  //     }
+  //     else {
+  //         return limit;
+  //     }
+  // }
+
   inline uint64_t popcount(size_t pos, uint16_t width){
     
     if (width <= 64){
@@ -226,6 +241,13 @@ class Bitmap {
 
   inline void BulkCopy_backward(pos_type from, pos_type destination, width_type bits){
 
+    // if (bits <= 64){
+    //   SetValPos(destination - bits, GetValPos(from - bits, bits), bits);
+    // }
+    // else {
+    //   SetValPos(destination - 64, GetValPos(from - 64, 64), 64);
+    //   BulkCopy_backward(from - 64, destination - 64, bits - 64);
+    // }
     while (bits > 64){
       SetValPos(destination - 64, GetValPos(from - 64, 64), 64);
       bits -= 64;
@@ -236,6 +258,14 @@ class Bitmap {
   }
 
   inline void BulkCopy_forward(pos_type from, pos_type destination, width_type bits){
+
+    // if (bits <= 64){
+    //   SetValPos(destination, GetValPos(from, bits), bits);
+    // }
+    // else {
+    //   SetValPos(destination, GetValPos(from, 64), 64);
+    //   BulkCopy_forward(from + 64, destination + 64, bits - 64);
+    // }
 
     while (bits > 64){
       SetValPos(destination, GetValPos(from, 64), 64);
