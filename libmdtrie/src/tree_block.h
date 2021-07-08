@@ -499,6 +499,13 @@ public:
     uint64_t size() const {
 
         uint64_t total_size = sizeof(level_t) * 1 + sizeof(node_n_t) * 4;
+        total_size += sizeof(preorder_t);
+        if (parent_tree_block_){
+            total_size += sizeof(tree_block *);
+        }
+        if (parent_tree_block_){
+            total_size += sizeof(trie_node<DIMENSION> *);
+        }
         total_size += num_frontiers_ * (sizeof(preorder_t) + sizeof(tree_block *)) + sizeof(frontier_node<DIMENSION> *);
         total_size += dfuds_->size();
         for (uint16_t i = 0; i < num_frontiers_; i++)

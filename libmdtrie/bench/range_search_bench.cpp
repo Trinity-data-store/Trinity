@@ -4,7 +4,7 @@
 #include <climits>
 #include <tqdm.h>
 
-const int DIMENSION = 2;
+const int DIMENSION = 8;
 FILE *fptr;
 char file_path[] = "benchmark_range_search_2.csv";
 
@@ -82,7 +82,7 @@ void insert_for_node_path(point_array<DIMENSION> *found_points, level_t max_dept
     }
     bar.finish();
     // uint64_t msec;
-
+    fprintf(stderr, "md-trie size: %ld\n", mdtrie->size());   
     
     auto *start_range = new data_point<DIMENSION>();
     auto *end_range = new data_point<DIMENSION>();
@@ -145,12 +145,54 @@ void test_node_path_only(level_t max_depth, level_t trie_depth, preorder_t max_t
                 raise(SIGINT);
             }
         }
+        free(node_path);
+    }
+    // return diff;
+    uint64_t msec;
+    msec = diff * 1000 / CLOCKS_PER_SEC;
+    fprintf(stderr, "Time per Checking: %f, out of %ld points\n", (float)msec*1000 / found_points->size(), found_points->size());
+     
+}
+
+TimeStamp get_node_path_time(point_array<DIMENSION> *found_points, level_t max_depth){
+    // auto *found_points = new point_array<DIMENSION>();
+    // insert_for_node_path(found_points, max_depth, trie_depth, max_tree_node);
+    // while (found_points->size() == 0){
+    //     found_points = insert_for_node_path(max_depth, trie_depth, max_tree_node);
+    // }
+
+    TimeStamp diff = 0;
+    TimeStamp start;
+    n_leaves_t found_points_size = found_points->size();
+    
+    for (n_leaves_t i = 0; i < found_points_size; i++){
+        
+        symbol_t *node_path = (symbol_t *)malloc((max_depth + 1) * sizeof(symbol_t));
+        data_point<DIMENSION> *point = found_points->at(i);
+        tree_block<DIMENSION> *parent_treeblock = point->get_parent_treeblock();
+        symbol_t parent_symbol = point->get_parent_symbol();
+        node_t parent_node = point->get_parent_node();
+
+        start = GetTimestamp();
+        parent_treeblock->get_node_path(parent_node, node_path); 
+
+        node_path[max_depth - 1] = parent_symbol;
+        
+        auto returned_coordinates = parent_treeblock->node_path_to_coordinates(node_path);
+        diff += GetTimestamp() - start;
+
+        for (dimension_t i = 0; i < DIMENSION; i++){
+            if (returned_coordinates->get_coordinate(i) != point->get_coordinate(i)){
+                raise(SIGINT);
+            }
+        }
 
         free(node_path);
     }
-    uint64_t msec;
-    msec = diff * 1000 / CLOCKS_PER_SEC;
-    fprintf(stderr, "Time per Checking: %f, out of %ld points\n", (float)msec*1000 / found_points->size(), found_points->size());    
+    return diff;
+    // uint64_t msec;
+    // msec = diff * 1000 / CLOCKS_PER_SEC;
+    // fprintf(stderr, "Time per Checking: %f, out of %ld points\n", (float)msec*1000 / found_points->size(), found_points->size());    
 }
 
 void test_real_data(level_t max_depth, level_t trie_depth, preorder_t max_tree_node, int n_itr){
@@ -247,8 +289,8 @@ void test_real_data(level_t max_depth, level_t trie_depth, preorder_t max_tree_n
 
         msec = diff * 1000 / CLOCKS_PER_SEC;
         total_found_points += found_points->size();
-        // lookup_time += test_node_path_only(found_points, max_depth);
-        fprintf(fptr, "%ld, %ld, %f\n", found_points->size(), volume, (float)msec*1000);
+        lookup_time += get_node_path_time(found_points, max_depth);
+        // fprintf(fptr, "%ld, %ld, %f\n", found_points->size(), volume, (float)msec*1000);
         
         found_points->reset();
         itr++;
@@ -256,6 +298,7 @@ void test_real_data(level_t max_depth, level_t trie_depth, preorder_t max_tree_n
         fptr = fopen(file_path, "a");            
     }
     bar1.finish();
+    fprintf(stderr, "md-trie size: %ld\n", mdtrie->size()); 
     msec = lookup_time * 1000 / CLOCKS_PER_SEC;
     fprintf(stderr, "Time per Checking: %f, out of %ld points\n", (float)msec*1000 / total_found_points, total_found_points);
     fclose(fptr);
@@ -398,10 +441,10 @@ bool test_random_range_search(n_leaves_t n_points, level_t max_depth, level_t tr
 
 // int dimensions, level_type max_depth, level_type trie_depth, preorder_type max_tree_node, int n_itr
 int main() {
-    // srand(static_cast<unsigned int>(time(0)));
+    srand(static_cast<unsigned int>(time(0)));
     
-    test_node_path_only(32, 10, 1024);
+    test_real_data(32, 10, 1024, 50);
     // test_range_only(32, 10, 1024, 50);
-    // test_real_data(32, 10, 1024, 200);
+    // test_real_data(32, 10, 1024, 50);
 
 }

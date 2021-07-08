@@ -34,7 +34,11 @@ public:
     }
 
     uint64_t size() const {
-        uint64_t total_size = size_ * sizeof(trie_node *);
+        uint64_t total_size = size_ * sizeof(trie_node *) + sizeof(trie_node *);
+        if (parent_trie_node){
+            total_size += sizeof(trie_node *);
+        }
+
         if (!block_) {
             for (symbol_t i = 0; i < size_; i++)
             {
