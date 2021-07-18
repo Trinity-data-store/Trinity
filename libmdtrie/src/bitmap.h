@@ -219,6 +219,23 @@ class Bitmap {
   //     }
   // }
 
+  void copy_node_cod(bitmap::Bitmap *to_dfuds, node_t from, node_t to,
+                              symbol_t n_branches, symbol_t width) {
+      symbol_t visited = 0;
+      while (visited < width) {
+          if (width - visited > 64) {
+              to_dfuds->SetValPos(to * n_branches + visited, GetValPos(from * n_branches + visited, 64), 64);
+              visited += 64;
+          } else {
+              symbol_t left = width - visited;
+              to_dfuds->SetValPos(to * n_branches + visited, GetValPos(from * n_branches + visited, left),
+                                  left);
+              break;
+          }
+      }
+  }
+
+
   inline uint64_t popcount(size_t pos, uint16_t width){
     
     if (width <= 64){
@@ -237,6 +254,43 @@ class Bitmap {
       s_idx += 1;
     }
     return count + __builtin_popcountll(GetValPos(s_idx * 64, width));    
+  }
+
+  void set_symbol(preorder_t node, symbol_t symbol, symbol_t n_branches){
+
+    SetBit(node * n_branches + symbol);
+  }
+
+  bool has_symbol(preorder_t node, symbol_t symbol, symbol_t n_branches){
+    return GetBit(node * n_branches + symbol);
+  }
+
+  inline preorder_t get_n_children(node_t node, symbol_t n_branches) {
+      return popcount(node * n_branches, n_branches);
+  }
+
+  inline preorder_t get_child_skip(node_t node, symbol_t col, symbol_t n_branches) {
+      return popcount(node * n_branches, col);
+  }
+
+  symbol_t next_symbol(symbol_t current_symbol, preorder_t current_node, symbol_t end_symbol_range, symbol_t num_branches){
+
+      symbol_t limit = end_symbol_range - current_symbol + 1;
+      bool over_64 = false;
+      if (limit > 64){
+          limit = 64;
+          over_64 = true;
+      }
+      uint64_t next_block = GetValPos(current_node * num_branches + current_symbol, limit);
+      if (next_block){
+          return __builtin_ctzll(next_block) + current_symbol;
+      }
+      else {
+          if (over_64){
+              return next_symbol(current_symbol + limit, current_node, end_symbol_range, num_branches);
+          }
+          return current_symbol + limit;
+      }
   }
 
   inline void BulkCopy_backward(pos_type from, pos_type destination, width_type bits){
