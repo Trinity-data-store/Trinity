@@ -190,7 +190,6 @@ class Bitmap {
       SetValPos(pos, 0, width);
       return;      
     }
-
     pos_type s_off = pos % 64;
     pos_type s_idx = pos / 64;
     SetValPos(pos, 0, 64 - s_off);
@@ -205,19 +204,6 @@ class Bitmap {
 
     SetValPos(s_idx * 64, 0, width);  
   }
-
-  // symbol_t next_jump_size(symbol_t pos, preorder_t limit){
-
-  //     if (limit > 64)
-  //         limit = 64;
-  //     uint64_t next_block = GetValPos(pos, limit);
-  //     if (next_block){
-  //         return __builtin_ctzll(next_block);
-  //     }
-  //     else {
-  //         return limit;
-  //     }
-  // }
 
   void copy_node_cod(bitmap::Bitmap *to_dfuds, node_t from, node_t to,
                               symbol_t n_branches, symbol_t width) {
@@ -257,7 +243,6 @@ class Bitmap {
   }
 
   void set_symbol(preorder_t node, symbol_t symbol, symbol_t n_branches){
-
     SetBit(node * n_branches + symbol);
   }
 
@@ -295,13 +280,6 @@ class Bitmap {
 
   inline void BulkCopy_backward(pos_type from, pos_type destination, width_type bits){
 
-    // if (bits <= 64){
-    //   SetValPos(destination - bits, GetValPos(from - bits, bits), bits);
-    // }
-    // else {
-    //   SetValPos(destination - 64, GetValPos(from - 64, 64), 64);
-    //   BulkCopy_backward(from - 64, destination - 64, bits - 64);
-    // }
     while (bits > 64){
       SetValPos(destination - 64, GetValPos(from - 64, 64), 64);
       bits -= 64;
@@ -312,14 +290,6 @@ class Bitmap {
   }
 
   inline void BulkCopy_forward(pos_type from, pos_type destination, width_type bits){
-
-    // if (bits <= 64){
-    //   SetValPos(destination, GetValPos(from, bits), bits);
-    // }
-    // else {
-    //   SetValPos(destination, GetValPos(from, 64), 64);
-    //   BulkCopy_forward(from + 64, destination + 64, bits - 64);
-    // }
 
     while (bits > 64){
       SetValPos(destination, GetValPos(from, 64), 64);
