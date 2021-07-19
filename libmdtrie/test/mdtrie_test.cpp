@@ -17,8 +17,10 @@ bool test_random_data(n_leaves_t n_points, level_t max_depth, level_t trie_depth
         for (dimension_t i = 0; i < DIMENSION_RANDOM; i++) {
             leaf_point->set_coordinate(i, (point_t) rand() % range);
         }
+        // 
         mdtrie->insert_trie(leaf_point, max_depth);
         if (!mdtrie->check(leaf_point, max_depth)) {
+            raise(SIGINT);
             return false;
         }
     }

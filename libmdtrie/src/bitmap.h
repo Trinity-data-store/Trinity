@@ -129,221 +129,408 @@ class Bitmap {
   typedef uint64_t data_type;
   typedef uint16_t width_type;
 
-  // Constructors and Destructors
-  Bitmap() {
-    data_ = nullptr;
-    size_ = 0;
+  explicit Bitmap(node_n_t node_num, dimension_t dimension) 
+  { 
+    data_size_ = (node_num - 1) * dimension + pow(2, dimension);
+    flag_size_ = node_num;
+    data_ = (data_type *)calloc(BITS2BLOCKS(data_size_), sizeof(data_type));
+    flag_ = (data_type *)calloc(BITS2BLOCKS(flag_size_), sizeof(data_type));
+    SetBit(0, false);
+    dimension_ = dimension;
   }
 
-  explicit Bitmap(size_type num_bits) {
-    data_ = (data_type *)calloc(BITS2BLOCKS(num_bits), sizeof(data_type));
-    size_ = num_bits;
+  inline uint64_t size() const
+  {
+    // Simply take the number of bits here
+    return (data_size_ + flag_size_) / 8 + 2 * sizeof(size_type) /* size_ number */ + 2 * sizeof(data_type *) /* two arrays */;
   }
 
-  inline uint64_t size() const{
-    return size_ / 8 + sizeof(size_type);
+  inline void realloc_decrease(node_n_t decrease_node_num)
+  {
+    // Remove the last n nodes
+    flag_size_ -= decrease_node_num;
+    flag_ = (data_type *)realloc(flag_, BITS2BLOCKS(flag_size_) * sizeof(data_type));
+
+    data_size_ = get_node_data_pos(flag_size_ - 1);
+    if (is_collapse(flag_size_ - 1)){
+      data_size_ += dimension_;
+    }
+    else {
+      data_size_ += pow(2, dimension_);
+    }
+    data_ = (data_type *)realloc(data_, BITS2BLOCKS(data_size_) * sizeof(data_type));
   }
 
-  inline void Realloc(size_type num_bits){
+  inline void increase_bits(width_type increase_width, bool is_on_data){
     
-    data_ = (data_type *)realloc(data_, BITS2BLOCKS(num_bits) * sizeof(data_type));
-    for (size_type i = BITS2BLOCKS(size_); i < BITS2BLOCKS(num_bits); i ++){
+    if (is_on_data){
+      data_ = (data_type *)realloc(data_, BITS2BLOCKS(data_size_ + increase_width) * sizeof(data_type));
+      for (size_type i = BITS2BLOCKS(data_size_); i < BITS2BLOCKS(data_size_ + increase_width); i ++){
+        data_[i] = 0;
+      }
+      data_size_ += increase_width;
+    }
+    else {
+      flag_ = (data_type *)realloc(flag_, BITS2BLOCKS(flag_size_ + increase_width) * sizeof(data_type));
+      for (size_type i = BITS2BLOCKS(flag_size_); i < BITS2BLOCKS(flag_size_ + increase_width); i ++){
+        flag_[i] = 0;
+      }
+      flag_size_ += increase_width;      
+    }
+  }
+
+  inline void realloc_increase(node_n_t extra_node_num)
+  {  
+    size_t new_data_size = data_size_ + extra_node_num * dimension_;
+    size_t new_flag_size = flag_size_ + extra_node_num;
+    data_ = (data_type *)realloc(data_, BITS2BLOCKS(new_data_size) * sizeof(data_type));
+    flag_ = (data_type *)realloc(flag_, BITS2BLOCKS(new_flag_size) * sizeof(data_type));
+    for (size_type i = BITS2BLOCKS(data_size_); i < BITS2BLOCKS(new_data_size); i ++){
       data_[i] = 0;
     }
-    size_ = num_bits;
-  }
-
-  virtual ~Bitmap() {
-    if (data_ != nullptr) {
-      delete[] data_;
-      data_ = nullptr;
+    for (size_type i = BITS2BLOCKS(flag_size_); i < BITS2BLOCKS(new_flag_size); i ++){
+      flag_[i] = 0;
     }
+    data_size_ = new_data_size;
+    flag_size_ = new_flag_size;
   }
 
-  inline data_type* GetData() {
-    return data_;
+  inline void SetBit(pos_type i, bool is_on_data) {
+    if (is_on_data)
+      SETBITVAL(data_, i);
+    else
+      SETBITVAL(flag_, i);
   }
 
-  inline size_type GetSizeInBits() const {
-    return size_;
+  inline void UnsetBit(pos_type i, bool is_on_data) {
+    if (is_on_data)
+      CLRBITVAL(data_, i);
+    else
+      CLRBITVAL(flag_, i);
   }
 
-  inline void Clear() {
-    memset((void *) data_, 0, BITS2BLOCKS(size_) * sizeof(uint64_t));
+  inline bool GetBit(pos_type i, bool is_on_data) const {
+    if (is_on_data)
+      return GETBITVAL(data_, i);
+    else
+      return GETBITVAL(flag_, i);
   }
 
-  inline void SetBit(pos_type i) {
-    SETBITVAL(data_, i);
-  }
-
-  inline void UnsetBit(pos_type i) {
-    CLRBITVAL(data_, i);
-  }
-
-  inline bool GetBit(pos_type i) const {
-    return GETBITVAL(data_, i);
-  }
-  
-  inline void ClearWidth(pos_type pos, width_type width){
+  inline uint64_t popcount(size_t pos, uint16_t width, bool is_on_data){
     
     if (width <= 64){
-      SetValPos(pos, 0, width);
-      return;      
-    }
-    pos_type s_off = pos % 64;
-    pos_type s_idx = pos / 64;
-    SetValPos(pos, 0, 64 - s_off);
-
-    width -= 64 - s_off;
-    s_idx += 1;
-    while (width > 64){
-      data_[s_idx] = 0;
-      width -= 64;
-      s_idx += 1;
-    }
-
-    SetValPos(s_idx * 64, 0, width);  
-  }
-
-  void copy_node_cod(bitmap::Bitmap *to_dfuds, node_t from, node_t to,
-                              symbol_t n_branches, symbol_t width) {
-      symbol_t visited = 0;
-      while (visited < width) {
-          if (width - visited > 64) {
-              to_dfuds->SetValPos(to * n_branches + visited, GetValPos(from * n_branches + visited, 64), 64);
-              visited += 64;
-          } else {
-              symbol_t left = width - visited;
-              to_dfuds->SetValPos(to * n_branches + visited, GetValPos(from * n_branches + visited, left),
-                                  left);
-              break;
-          }
-      }
-  }
-
-
-  inline uint64_t popcount(size_t pos, uint16_t width){
-    
-    if (width <= 64){
-      return __builtin_popcountll(GetValPos(pos, width));      
+      return __builtin_popcountll(GetValPos(pos, width, is_on_data));      
     }
 
     pos_type s_off = pos % 64;
     pos_type s_idx = pos / 64;
-    uint64_t count = __builtin_popcountll(GetValPos(pos, 64 - s_off));
+    uint64_t count = __builtin_popcountll(GetValPos(pos, 64 - s_off, is_on_data));
     width -= 64 - s_off;
     s_idx += 1;
 
     while (width > 64){
-      count += __builtin_popcountll(data_[s_idx]);
-      width -= 64;
-      s_idx += 1;
-    }
-    return count + __builtin_popcountll(GetValPos(s_idx * 64, width));    
-  }
-
-  void set_symbol(preorder_t node, symbol_t symbol, symbol_t n_branches){
-    SetBit(node * n_branches + symbol);
-  }
-
-  bool has_symbol(preorder_t node, symbol_t symbol, symbol_t n_branches){
-    return GetBit(node * n_branches + symbol);
-  }
-
-  inline preorder_t get_n_children(node_t node, symbol_t n_branches) {
-      return popcount(node * n_branches, n_branches);
-  }
-
-  inline preorder_t get_child_skip(node_t node, symbol_t col, symbol_t n_branches) {
-      return popcount(node * n_branches, col);
-  }
-
-  symbol_t next_symbol(symbol_t current_symbol, preorder_t current_node, symbol_t end_symbol_range, symbol_t num_branches){
-
-      symbol_t limit = end_symbol_range - current_symbol + 1;
-      bool over_64 = false;
-      if (limit > 64){
-          limit = 64;
-          over_64 = true;
-      }
-      uint64_t next_block = GetValPos(current_node * num_branches + current_symbol, limit);
-      if (next_block){
-          return __builtin_ctzll(next_block) + current_symbol;
+      if (is_on_data){
+        count += __builtin_popcountll(data_[s_idx]);
       }
       else {
-          if (over_64){
-              return next_symbol(current_symbol + limit, current_node, end_symbol_range, num_branches);
-          }
-          return current_symbol + limit;
+        count += __builtin_popcountll(flag_[s_idx]);
       }
-  }
-
-  inline void BulkCopy_backward(pos_type from, pos_type destination, width_type bits){
-
-    while (bits > 64){
-      SetValPos(destination - 64, GetValPos(from - 64, 64), 64);
-      bits -= 64;
-      destination -= 64;
-      from -= 64;
+      width -= 64;
+      s_idx += 1;
     }
-    SetValPos(destination - bits, GetValPos(from - bits, bits), bits);
-  }
-
-  inline void BulkCopy_forward(pos_type from, pos_type destination, width_type bits){
-
-    while (bits > 64){
-      SetValPos(destination, GetValPos(from, 64), 64);
-      from += 64;
-      destination += 64;
-      bits -= 64;
+    if (width > 0){
+      return count + __builtin_popcountll(GetValPos(s_idx * 64, width, is_on_data));  
     }
-    SetValPos(destination, GetValPos(from, bits), bits);
+    return count;
   }
-  
-  inline void SetValPos(pos_type pos, data_type val, width_type bits) {
+
+  pos_type get_node_data_pos(preorder_t node)
+  {
+    pos_type num_set_bits = popcount(0, node, false);
+    pos_type num_unset_bits = node - num_set_bits;
+    return num_unset_bits * dimension_ + num_set_bits * pow(2, dimension_);
+  }
+
+  inline void SetValPos(pos_type pos, data_type val, width_type bits, bool is_on_data) {
 
     pos_type s_off = pos % 64;
     pos_type s_idx = pos / 64;
 
     if (s_off + bits <= 64) {
       // Can be accommodated in 1 bitmap block
-      data_[s_idx] = (data_[s_idx]
-          & (low_bits_set[s_off] | low_bits_unset[s_off + bits]))
-          | val << s_off;
+      if (is_on_data){
+        data_[s_idx] = (data_[s_idx]
+            & (low_bits_set[s_off] | low_bits_unset[s_off + bits]))
+            | val << s_off;
+      }
+      else {
+        flag_[s_idx] = (flag_[s_idx]
+            & (low_bits_set[s_off] | low_bits_unset[s_off + bits]))
+            | val << s_off;        
+      }
       
     } else {
       // Must use 2 bitmap blocks
-      data_[s_idx] = (data_[s_idx] & low_bits_set[s_off]) | val << s_off;
-      data_[s_idx + 1] =
-          (data_[s_idx + 1] & low_bits_unset[(s_off + bits) % 64])
-              | (val >> (64 - s_off));
+      if (is_on_data){
+        data_[s_idx] = (data_[s_idx] & low_bits_set[s_off]) | val << s_off;
+        data_[s_idx + 1] =
+            (data_[s_idx + 1] & low_bits_unset[(s_off + bits) % 64])
+                | (val >> (64 - s_off));
+      }
+      else {
+        flag_[s_idx] = (flag_[s_idx] & low_bits_set[s_off]) | val << s_off;
+        flag_[s_idx + 1] =
+            (flag_[s_idx + 1] & low_bits_unset[(s_off + bits) % 64])
+                | (val >> (64 - s_off));
+      }
     }
   }
 
-  inline data_type GetValPos(pos_type pos, width_type bits) const {
+  inline data_type GetValPos(pos_type pos, width_type bits, bool is_on_data) const {
     
     pos_type s_off = pos % 64;
     pos_type s_idx = pos / 64;
 
     if (s_off + bits <= 64) {
       // Can be read from a single block
-      return (data_[s_idx] >> s_off) & low_bits_set[bits];
+      if (is_on_data){
+        return (data_[s_idx] >> s_off) & low_bits_set[bits];
+      }
+      else {
+        return (flag_[s_idx] >> s_off) & low_bits_set[bits];
+      }
     } else {
       // Must be read from two blocks
-      return ((data_[s_idx] >> s_off) | (data_[s_idx + 1] << (64 - s_off)))
-          & low_bits_set[bits];
+      if (is_on_data){
+        return ((data_[s_idx] >> s_off) | (data_[s_idx + 1] << (64 - s_off)))
+            & low_bits_set[bits];
+      }
+      else {
+        return ((flag_[s_idx] >> s_off) | (flag_[s_idx + 1] << (64 - s_off)))
+            & low_bits_set[bits];        
+      }
     }
+  }
+
+  inline void ClearWidth(pos_type pos, width_type width, bool is_on_data)
+  {  
+    if (width <= 64){
+      SetValPos(pos, 0, width, is_on_data);
+      return;      
+    }
+    pos_type s_off = pos % 64;
+    pos_type s_idx = pos / 64;
+    SetValPos(pos, 0, 64 - s_off, is_on_data);
+
+    width -= 64 - s_off;
+    s_idx += 1;
+    while (width > 64){
+      if (is_on_data)
+        data_[s_idx] = 0;
+      else
+        flag_[s_idx] = 0;
+      width -= 64;
+      s_idx += 1;
+    }
+    SetValPos(s_idx * 64, 0, width, is_on_data);  
+  }
+
+  inline void BulkCopy_backward(pos_type from, pos_type destination, width_type bits, bool is_on_data)
+  {
+
+    // raise(SIGINT);
+    while (bits > 64){
+      SetValPos(destination - 64, GetValPos(from - 64, 64, is_on_data), 64, is_on_data);
+      bits -= 64;
+      destination -= 64;
+      from -= 64;
+    }
+    // raise(SIGINT);
+    SetValPos(destination - bits, GetValPos(from - bits, bits, is_on_data), bits, is_on_data);
+  }
+
+  inline void BulkCopy_forward(pos_type from, pos_type destination, width_type bits, bool is_on_data){
+
+    while (bits > 64){
+      SetValPos(destination, GetValPos(from, 64, is_on_data), 64, is_on_data);
+      from += 64;
+      destination += 64;
+      bits -= 64;
+    }
+    SetValPos(destination, GetValPos(from, bits, is_on_data), bits, is_on_data);
+  }
+
+  inline void shift_backward(preorder_t from_node, size_type num_nodes, bool collapse)
+  {
+    width_type shift_amount;
+
+    if (collapse)
+      shift_amount = dimension_;
+    else
+      shift_amount = pow(2, dimension_);
+    
+    size_type orig_data_size = data_size_;
+    size_type orig_flag_size = flag_size_;
+    increase_bits(shift_amount * num_nodes, true);
+    increase_bits(num_nodes, false);
+  
+    BulkCopy_backward(orig_data_size, orig_data_size + num_nodes * shift_amount,  orig_data_size - get_node_data_pos(from_node), true);
+    BulkCopy_backward(orig_flag_size, orig_flag_size + num_nodes, orig_flag_size - from_node, false);
+    ClearWidth(get_node_data_pos(from_node), num_nodes * shift_amount, true);
+    ClearWidth(from_node, num_nodes, false);
+  }
+
+  inline void shift_backward_to_uncollapse(preorder_t from_node)
+  {
+    size_type orig_data_size = data_size_;
+    width_type shift_amount = pow(2, dimension_) - dimension_;
+    increase_bits(shift_amount, true);
+    increase_bits(1, false);
+
+    BulkCopy_backward(orig_data_size, orig_data_size + shift_amount,  orig_data_size - get_node_data_pos(from_node + 1), true);
+    ClearWidth(get_node_data_pos(from_node), pow(2, dimension_), true);
+    SetBit(from_node, false);
+  }
+
+  inline void shift_forward(preorder_t from_node, preorder_t to_node)
+  {
+    BulkCopy_forward(get_node_data_pos(from_node), get_node_data_pos(to_node), data_size_ - get_node_data_pos(from_node), true);
+    // raise(SIGINT);
+    BulkCopy_forward(from_node, to_node, flag_size_ - from_node, false);
+  }
+
+  // collapse = 1
+  bool is_collapse(preorder_t node){
+    return !GetBit(node, false);
+  }
+
+  bool has_symbol(preorder_t node, symbol_t symbol){
+
+    if (is_collapse(node)){
+      return symbol == GetValPos(get_node_data_pos(node), dimension_, true);
+    }
+    else {
+      return GetBit(get_node_data_pos(node) + symbol, true);
+    }
+  }
+
+  inline preorder_t get_n_children(node_t node) {
+
+    if (is_collapse(node)){
+      return 1;
+    }
+    else {
+      return popcount(get_node_data_pos(node), pow(2, dimension_), true);
+    }
+  }
+
+  inline preorder_t get_child_skip(node_t node, symbol_t symbol) {
+
+    if (is_collapse(node)){
+      symbol_t only_symbol = GetValPos(get_node_data_pos(node), dimension_, true);
+      if (symbol > only_symbol){
+        return 1;
+      }
+      else
+        return 0;
+    }
+    else {
+      return popcount(get_node_data_pos(node), symbol, true);
+    }  
+  }
+
+  symbol_t next_symbol(symbol_t symbol, preorder_t node, symbol_t end_symbol_range){
+    
+    if (is_collapse(node)){
+      symbol_t only_symbol = GetValPos(get_node_data_pos(node), dimension_, true);
+      if (symbol <= only_symbol)
+        return only_symbol;
+      else
+        return end_symbol_range + 1;
+    }
+
+    symbol_t limit = end_symbol_range - symbol + 1;
+    bool over_64 = false;
+    if (limit > 64){
+        limit = 64;
+        over_64 = true;
+    }
+    uint64_t next_block = GetValPos(get_node_data_pos(node) + symbol, limit, true);
+    if (next_block){
+        return __builtin_ctzll(next_block) + symbol;
+    }
+    else {
+        if (over_64){
+            return next_symbol(symbol + limit, node, end_symbol_range);
+        }
+        return symbol + limit;
+    }
+  }
+
+  void set_symbol(preorder_t node, symbol_t symbol, bool was_empty){
+    
+    // if (node == 0){
+    // raise(SIGINT);
+    // }
+    if (is_collapse(node))
+    {
+      if (!was_empty){
+        symbol_t only_symbol = GetValPos(get_node_data_pos(node), dimension_, true);
+        if (symbol == only_symbol){
+          return;
+        }
+        shift_backward_to_uncollapse(node);
+
+        SetBit(get_node_data_pos(node) + only_symbol, true);
+        SetBit(get_node_data_pos(node) + symbol, true);
+
+        SetBit(node, false);
+      }
+      else {
+        SetValPos(get_node_data_pos(node), symbol, dimension_, true);
+      }
+    }
+    else {
+      SetBit(get_node_data_pos(node) + symbol, true);
+    }
+  }
+
+  void copy_node_cod(bitmap::Bitmap *to_dfuds, node_t from, node_t to) {
+
+      // raise(SIGINT);
+      // TODO: error starts here
+      width_type width;
+      if (is_collapse(from)){
+        width = dimension_;
+        to_dfuds->UnsetBit(to, false);
+      }
+      else {
+        width = pow(2, dimension_);
+        to_dfuds->SetBit(to, false);
+        to_dfuds->shift_backward_to_uncollapse(to);
+      }
+      symbol_t visited = 0;
+      while (visited < width) {
+          if (width - visited > 64) {
+              to_dfuds->SetValPos(to_dfuds->get_node_data_pos(to) + visited, GetValPos(get_node_data_pos(from) + visited, 64, true), 64, true);
+              visited += 64;
+          } else {
+              symbol_t left = width - visited;
+              to_dfuds->SetValPos(to_dfuds->get_node_data_pos(to) + visited, GetValPos(get_node_data_pos(from) + visited, left, true), left, true);
+              break;
+          }
+      }
   }
 
   virtual size_type Serialize(std::ostream& out) {
     size_t out_size = 0;
 
-    out.write(reinterpret_cast<const char *>(&size_), sizeof(size_type));
+    out.write(reinterpret_cast<const char *>(&data_size_), sizeof(size_type));
     out_size += sizeof(size_type);
 
     out.write(reinterpret_cast<const char *>(data_),
-              sizeof(data_type) * BITS2BLOCKS(size_));
-    out_size += (BITS2BLOCKS(size_) * sizeof(uint64_t));
+              sizeof(data_type) * BITS2BLOCKS(data_size_));
+    out_size += (BITS2BLOCKS(data_size_) * sizeof(uint64_t));
 
     return out_size;
   }
@@ -351,13 +538,13 @@ class Bitmap {
   virtual size_type Deserialize(std::istream& in) {
     size_t in_size = 0;
 
-    in.read(reinterpret_cast<char *>(&size_), sizeof(size_type));
+    in.read(reinterpret_cast<char *>(&data_size_), sizeof(size_type));
     in_size += sizeof(size_type);
 
-    data_ = new data_type[BITS2BLOCKS(size_)];
+    data_ = new data_type[BITS2BLOCKS(data_size_)];
     in.read(reinterpret_cast<char *>(data_),
-    BITS2BLOCKS(size_) * sizeof(data_type));
-    in_size += (BITS2BLOCKS(size_) * sizeof(data_type));
+    BITS2BLOCKS(data_size_) * sizeof(data_type));
+    in_size += (BITS2BLOCKS(data_size_) * sizeof(data_type));
 
     return in_size;
   }
@@ -365,7 +552,10 @@ class Bitmap {
  protected:
   // Data members
   data_type *data_;
-  size_type size_;
+  data_type *flag_;
+  size_type data_size_;
+  size_type flag_size_;
+  dimension_t dimension_;
 };
 
 }
