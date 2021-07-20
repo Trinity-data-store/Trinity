@@ -41,7 +41,7 @@ public:
         tree_block<DIMENSION> *current_block = root;
         node_t current_node = 0;
         preorder_t current_frontier = 0;
-
+        
         node_t temp_node = 0;
         while (level < length) {
             temp_node = current_block->child(current_block, current_node,

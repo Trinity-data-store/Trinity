@@ -197,16 +197,28 @@ public:
             if (from_node >= node) {
                 // dfuds_->BulkCopy_backward((from_node + 1) * num_branches_, (dest_node + 1) * num_branches_,
                 //                         (from_node - node + 1) * num_branches_);
-                dfuds_->shift_backward(node, length - level - 1, true);
+                // raise(SIGINT);
+                // dfuds_->shift_backward_no_realloc(from_node, dest_node, node);
+                // dfuds_->shift_backward_no_realloc(node, length - level - 1, true);
+                
+                dfuds_->shift_backward(node, length - level - 1);
+                // dfuds_->trim_bitmap(tree_capacity_);
                 from_node = node - 1;
             }
+
+            // while (from_node >= node)
+            // {
+            //     dfuds_->copy_node_cod(dfuds_, from_node, dest_node);
+            //     dest_node--;
+            //     from_node--;
+            // }
 
             dfuds_->set_symbol(original_node, current_symbol, false);
             level++;
             from_node++;
             //  Insert all remaining characters (Remember length -- above)
             for (level_t i = level; i < length; i++) {
-                // dfuds_->ClearNode(from_node, DIMENSION);
+                dfuds_->clear_node(from_node);
                 dfuds_->set_symbol(from_node, leaf_point->leaf_to_symbol(i, max_depth_), true);
                 num_nodes_++;
                 from_node++;
@@ -217,8 +229,10 @@ public:
                     set_preorder(j, get_preorder(j) + length - level);
                     set_pointer(j, get_pointer(j));
                 }
+
+            // 
         } else if (num_nodes_ + (length - level) - 1 <= max_tree_nodes) {
-            dfuds_->realloc_increase(length - level);
+            dfuds_->realloc_bitmap(num_nodes_ + length - level);
             tree_capacity_ = num_nodes_ + (length - level);
             insert(node, leaf_point, level, length, current_frontier);
         } else {
@@ -340,10 +354,10 @@ public:
             }
 
             if (subtree_size > length) {
-                dfuds_->realloc_decrease(subtree_size - length);
+                dfuds_->realloc_bitmap(tree_capacity_ - (subtree_size - length));
                 tree_capacity_ -= subtree_size - length;
             } else {
-                dfuds_->realloc_decrease(subtree_size - 1);
+                dfuds_->realloc_bitmap(tree_capacity_ - (subtree_size - 1));
                 tree_capacity_ -= subtree_size - 1;
             }
 
@@ -457,18 +471,22 @@ public:
         if (parent_tree_block_){
             total_size += sizeof(trie_node<DIMENSION> *);
         }
+        uint64_t v2_save_current_pos = 0;
+        uint64_t v2_save_current_neg = 0;
         for (preorder_t i = 0; i < num_nodes_; i++){
             if (dfuds_->get_n_children(i) == 1){
                 v2_storage_save_pos += num_branches_ - DIMENSION - 1;
+                v2_save_current_pos += num_branches_ - DIMENSION - 1;
                 single_node_count += 1;
             }
             else {
                 v2_storage_save_neg += 1;
+                v2_save_current_neg += 1;
             }
         }
-        if (dfuds_->size() * 8 < num_nodes_ * num_branches_){
-            raise(SIGINT);
-        }
+        // if (dfuds_->size() + v2_save_current_pos != (tree_capacity_ + 1) * num_branches_ / 8 + sizeof(size_t) + v2_save_current_neg ){
+        //     raise(SIGINT);
+        // }
         total_number_nodes += num_nodes_;
         total_size += num_frontiers_ * (sizeof(preorder_t) + sizeof(tree_block *)) + sizeof(frontier_node<DIMENSION> *);
         total_size += dfuds_->size();

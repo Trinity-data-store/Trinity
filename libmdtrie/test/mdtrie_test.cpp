@@ -43,8 +43,12 @@ bool test_contiguous_data(n_leaves_t n_points, level_t max_depth, level_t trie_d
         for (dimension_t i = DIMENSION_CONTIGUOUS / 2; i < DIMENSION_CONTIGUOUS; i++) {
             leaf_point->set_coordinate(i, second_half_value);
         }
+        // if (itr == 1061){
+        //     raise(SIGINT);
+        // }
         mdtrie->insert_trie(leaf_point, max_depth);
         if (!mdtrie->check(leaf_point, max_depth)) {
+            raise(SIGINT);
             return false;
         }
     }
@@ -264,7 +268,7 @@ TEST_CASE("Check Contiguous Data", "[trie]") {
 // n_leaves_t n_points, dimension_t dimensions, level_t max_depth, level_t trie_depth, preorder_t max_tree_nodes, uint32_t n_itr = 50
 TEST_CASE("Test Exact Range Search", "[trie]") {
     srand(static_cast<unsigned int>(time(0)));
-    // REQUIRE(test_range_search_exact(2000, 10, 3, 128, 20));
+    REQUIRE(test_range_search_exact(2000, 10, 3, 128, 20));
     // raise(SIGINT);
 }
 
