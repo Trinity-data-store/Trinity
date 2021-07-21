@@ -188,6 +188,7 @@ public:
             node = skip_children_subtree(node, current_symbol, level, current_frontier);
 
             // node_t dest_node = num_nodes_ + (length - level) - 2;
+            dfuds_->set_symbol(original_node, current_symbol, false);
             node_t from_node = num_nodes_ - 1;
 
             //  In this while loop, we are making space for str
@@ -198,15 +199,18 @@ public:
                 //     raise(SIGINT);
                 // }
                 dfuds_->shift_backward(node, length - level - 1);
-                from_node = node - 1;
+                from_node = node;
+                // dfuds_->bulk_clear_node(node, node + length - level - 2);
+            }
+            else {
+                from_node++;
+                dfuds_->bulk_clear_node(from_node, from_node + length - level - 2);
             }
 
-            dfuds_->set_symbol(original_node, current_symbol, false);
             level++;
-            from_node++;
             //  Insert all remaining characters (Remember length -- above)
             
-            dfuds_->bulk_clear_node(from_node, from_node + length - level - 1);
+            
             for (level_t i = level; i < length; i++) {
                 // dfuds_->clear_node(from_node);
                 dfuds_->set_symbol(from_node, leaf_point->leaf_to_symbol(i, max_depth_), true);
