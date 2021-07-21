@@ -193,32 +193,22 @@ public:
             //  In this while loop, we are making space for str
             //  By shifting nodes to the right of str[i] by len(str) spots
 
-            // dfuds_->BulkCopy(from_node * n_branches_, node * n_branches_, dest_node * n_branches_);
             if (from_node >= node) {
-                // dfuds_->BulkCopy_backward((from_node + 1) * num_branches_, (dest_node + 1) * num_branches_,
-                //                         (from_node - node + 1) * num_branches_);
-                // raise(SIGINT);
-                // dfuds_->shift_backward_no_realloc(from_node, dest_node, node);
-                // dfuds_->shift_backward_no_realloc(node, length - level - 1, true);
-                
+                // if (dfuds_->flag_size_ < num_nodes_ + length - level - 1){
+                //     raise(SIGINT);
+                // }
                 dfuds_->shift_backward(node, length - level - 1);
-                // dfuds_->trim_bitmap(tree_capacity_);
                 from_node = node - 1;
             }
-
-            // while (from_node >= node)
-            // {
-            //     dfuds_->copy_node_cod(dfuds_, from_node, dest_node);
-            //     dest_node--;
-            //     from_node--;
-            // }
 
             dfuds_->set_symbol(original_node, current_symbol, false);
             level++;
             from_node++;
             //  Insert all remaining characters (Remember length -- above)
+            
+            dfuds_->bulk_clear_node(from_node, from_node + length - level - 1);
             for (level_t i = level; i < length; i++) {
-                dfuds_->clear_node(from_node);
+                // dfuds_->clear_node(from_node);
                 dfuds_->set_symbol(from_node, leaf_point->leaf_to_symbol(i, max_depth_), true);
                 num_nodes_++;
                 from_node++;
@@ -230,7 +220,6 @@ public:
                     set_pointer(j, get_pointer(j));
                 }
 
-            // 
         } else if (num_nodes_ + (length - level) - 1 <= max_tree_nodes) {
             dfuds_->realloc_bitmap(num_nodes_ + length - level);
             tree_capacity_ = num_nodes_ + (length - level);
@@ -349,8 +338,6 @@ public:
                     insertion_node = node - selected_node + orig_selected_node;
                 }
                 dfuds_->shift_forward(selected_node, orig_selected_node);
-                // dfuds_->BulkCopy_forward(selected_node * num_branches_, orig_selected_node * num_branches_,
-                //                         num_branches_ * (num_nodes_ - selected_node));
             }
 
             if (subtree_size > length) {
@@ -375,7 +362,7 @@ public:
                     new_block->insert(insertion_node, leaf_point, level, length, current_frontier_new_block);
                 }
             }
-                // If the insertion is in the old block
+            // If the insertion is in the old block
             else {
                 insert(insertion_node, leaf_point, level, length, current_frontier);
             }

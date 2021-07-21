@@ -128,14 +128,15 @@ class Bitmap {
   typedef size_t size_type;
   typedef uint64_t data_type;
   typedef uint64_t width_type;
+  size_type flag_size_;
 
   explicit Bitmap(node_n_t node_num, dimension_t dimension) 
   { 
-    data_size_ = (node_num - 1) * dimension + pow(2, dimension);
+    data_size_ = (node_num - 1) * dimension + (1 << dimension);
     flag_size_ = node_num;
     data_ = (data_type *)calloc(BITS2BLOCKS(data_size_), sizeof(data_type));
     flag_ = (data_type *)calloc(BITS2BLOCKS(flag_size_), sizeof(data_type));
-    SetBit(0, false);
+    SETBITVAL(flag_, 0);
     dimension_ = dimension;
   }
 
@@ -143,38 +144,23 @@ class Bitmap {
   {
     // Simply take the number of bits here
     // return (data_size_ + flag_size_) / 8 + 2 * sizeof(size_type);
-    return (data_size_ + flag_size_) / 8 + 2 * sizeof(size_type) /* size_ number */ + 2 * sizeof(data_type *) /* two arrays */;
+    // Flag_ can be obtained from num_nodes
+    return (data_size_ + flag_size_) / 8 + sizeof(size_type) /* size_ number */ + 2 * sizeof(data_type *) /* two arrays */;
   }
-
-
 
   inline void increase_bits(width_type increase_width, bool is_on_data){
     
     if (is_on_data){
       data_ = (data_type *)realloc(data_, BITS2BLOCKS(data_size_ + increase_width) * sizeof(data_type));
-      for (pos_type p = data_size_; p < data_size_ + increase_width; p++){
-        UnsetBit(p, true);
-      }
+      ClearWidth(data_size_, increase_width, true);
       data_size_ += increase_width;
     }
     else {
       flag_ = (data_type *)realloc(flag_, BITS2BLOCKS(flag_size_ + increase_width) * sizeof(data_type));
-      for (pos_type p = flag_size_; p < flag_size_ + increase_width; p++){
-        UnsetBit(p, false);
-      }
+      ClearWidth(flag_size_, increase_width, false);
       flag_size_ += increase_width;      
     }
-    
   }
-
-  // void trim_bitmap(preorder_t tree_capacity_){
-
-  //   sanity_check();
-    
-
-  //   sanity_check();
-  // }
-
 
   inline void decrease_bits(width_type decrease_width, bool is_on_data){
     
@@ -186,7 +172,6 @@ class Bitmap {
       flag_ = (data_type *)realloc(flag_, BITS2BLOCKS(flag_size_ - decrease_width) * sizeof(data_type));
       flag_size_ -= decrease_width;      
     }
-    
   }
 
   inline void realloc_bitmap(node_n_t node_num){
@@ -200,21 +185,19 @@ class Bitmap {
 
   inline void realloc_increase(node_n_t extra_node_num)
   {  
-    sanity_check();
+    // sanity_check();
     size_t new_data_size = data_size_ + extra_node_num * dimension_;
     size_t new_flag_size = flag_size_ + extra_node_num;
+    
     data_ = (data_type *)realloc(data_, BITS2BLOCKS(new_data_size) * sizeof(data_type));
     flag_ = (data_type *)realloc(flag_, BITS2BLOCKS(new_flag_size) * sizeof(data_type));
 
-    for (pos_type p = data_size_; p < new_data_size; p++){
-      UnsetBit(p, true);
-    }
-    for (pos_type p = flag_size_; p < new_flag_size; p++){
-      UnsetBit(p, false);
-    }
+    ClearWidth(data_size_, new_data_size - data_size_, true);
+    ClearWidth(flag_size_, new_flag_size - flag_size_, false);
     data_size_ = new_data_size;
     flag_size_ = new_flag_size;
-    sanity_check();
+
+    // sanity_check();
   }
 
   inline void realloc_decrease(node_n_t decrease_node_num)
@@ -223,35 +206,7 @@ class Bitmap {
     flag_ = (data_type *)realloc(flag_, BITS2BLOCKS(flag_size_) * sizeof(data_type));
 
     data_size_ = get_node_data_pos(flag_size_);
-    // if (is_collapse(flag_size_ - 1)){
-    //   data_size_ += dimension_;
-    // }
-    // else {
-    //   data_size_ += pow(2, dimension_);
-    // }
     data_ = (data_type *)realloc(data_, BITS2BLOCKS(data_size_) * sizeof(data_type));
-    sanity_check();
-  }
-
-  inline void SetBit(pos_type i, bool is_on_data) {
-    if (is_on_data)
-      SETBITVAL(data_, i);
-    else
-      SETBITVAL(flag_, i);
-  }
-
-  inline void UnsetBit(pos_type i, bool is_on_data) {
-    if (is_on_data)
-      CLRBITVAL(data_, i);
-    else
-      CLRBITVAL(flag_, i);
-  }
-
-  inline bool GetBit(pos_type i, bool is_on_data) const {
-    if (is_on_data)
-      return GETBITVAL(data_, i);
-    else
-      return GETBITVAL(flag_, i);
   }
 
   void sanity_check(){
@@ -259,7 +214,7 @@ class Bitmap {
     pos_type num_set_bits = popcount(0, flag_size_, false);
     pos_type num_unset_bits = flag_size_ - num_set_bits;
 
-    if (num_unset_bits * dimension_ + num_set_bits * pow(2, dimension_) != data_size_){
+    if (num_unset_bits * dimension_ + (num_set_bits << dimension_) != data_size_){
       raise(SIGINT);
     }
   }
@@ -276,28 +231,33 @@ class Bitmap {
     width -= 64 - s_off;
     s_idx += 1;
 
-    while (width > 64){
-      if (is_on_data){
+    if (is_on_data){
+      while (width > 64){
         count += __builtin_popcountll(data_[s_idx]);
+        width -= 64;
+        s_idx += 1;
       }
-      else {
-        count += __builtin_popcountll(flag_[s_idx]);
-      }
-      width -= 64;
-      s_idx += 1;
     }
+    else {
+      while (width > 64){
+        count += __builtin_popcountll(flag_[s_idx]);
+        width -= 64;
+        s_idx += 1;
+      }
+    }
+
     if (width > 0){
       return count + __builtin_popcountll(GetValPos(s_idx * 64, width, is_on_data));  
     }
     return count;
   }
 
-  pos_type get_node_data_pos(preorder_t node)
+  inline pos_type get_node_data_pos(preorder_t node)
   {
     pos_type num_set_bits = popcount(0, node, false);
     pos_type num_unset_bits = node - num_set_bits;
     
-    return num_unset_bits * dimension_ + num_set_bits * pow(2, dimension_);
+    return num_unset_bits * dimension_ + (num_set_bits << dimension_);
   }
 
   inline void SetValPos(pos_type pos, data_type val, width_type bits, bool is_on_data) {
@@ -399,9 +359,9 @@ class Bitmap {
   // from position is one spot to the right
   inline void BulkCopy_backward(pos_type from, pos_type destination, width_type bits, bool is_on_data)
   {
-    if (destination > data_size_ || from < bits || from > destination){
-      raise(SIGINT);
-    }
+    // if (destination > data_size_ || from < bits || from > destination){
+    //   raise(SIGINT);
+    // }
 
     while (bits > 64){
       SetValPos(destination - 64, GetValPos(from - 64, 64, is_on_data), 64, is_on_data);
@@ -414,7 +374,7 @@ class Bitmap {
 
   inline void shift_backward(preorder_t from_node, size_type num_nodes)
   {
-    sanity_check();
+    // sanity_check();
     width_type shift_amount = dimension_ * num_nodes;
    
     size_type orig_data_size = data_size_;
@@ -427,126 +387,138 @@ class Bitmap {
     BulkCopy_backward(orig_flag_size, flag_size_, orig_flag_size - from_node, false);
     ClearWidth(get_node_data_pos(from_node), shift_amount, true);
     ClearWidth(from_node, num_nodes, false);
-    sanity_check();
+    // sanity_check();
   }
 
   inline void shift_backward_to_uncollapse(preorder_t from_node)
   {
     if (!is_collapse(from_node)){
-      // raise(SIGINT);
       return;
     }
-    sanity_check();
+    // sanity_check();
     size_t orig_data_size = data_size_;
-    width_type shift_amount = pow(2, dimension_) - dimension_;
+    width_type shift_amount = (1 << dimension_) - dimension_;
     increase_bits(shift_amount, true);  
 
     BulkCopy_backward(orig_data_size, orig_data_size + shift_amount,  orig_data_size - get_node_data_pos(from_node), true);
 
-    ClearWidth(get_node_data_pos(from_node), pow(2, dimension_), true);
-    SetBit(from_node, false);
-
-    sanity_check();
+    ClearWidth(get_node_data_pos(from_node), 1 << dimension_, true);
+    // SetBit(from_node, false);
+    SETBITVAL(flag_, from_node);
+    // sanity_check();
   }
 
-  inline void clear_node(preorder_t node){
+  inline void bulk_clear_node(preorder_t start_node, preorder_t end_node){
 
-    sanity_check();
-    shift_forward_to_collapse(node);
-    ClearWidth(get_node_data_pos(node), dimension_, true);
-    sanity_check();
+    // for (preorder_t i = start_node; i <= end_node; i ++){
+    //   clear_node(i);
+    // }
+    pos_type start_node_pos = get_node_data_pos(start_node);
+    pos_type end_node_pos = get_node_data_pos(end_node + 1);
+
+    ClearWidth(start_node_pos, end_node_pos - start_node_pos, true);
+    ClearWidth(start_node, end_node + 1 - start_node, false);
+
+
   }
+
+  // inline void clear_node(preorder_t node){
+
+  //   // sanity_check();
+  //   shift_forward_to_collapse(node);
+  //   ClearWidth(get_node_data_pos(node), dimension_, true);
+  //   // sanity_check();
+  // }
 
   inline void shift_forward_to_collapse(preorder_t from_node)
   {
     if (is_collapse(from_node)){
-      // raise(SIGINT);
       return;
     }
-    sanity_check();
-    width_type shift_amount = pow(2, dimension_) - dimension_;
+    // sanity_check();
+    width_type shift_amount = (1 << dimension_) - dimension_;
 
-    if (from_node + 1 < flag_size_)
-    {
-      BulkCopy_forward(get_node_data_pos(from_node + 1), get_node_data_pos(from_node + 1) - shift_amount, data_size_ - get_node_data_pos(from_node + 1), true);
-    }
+    // if (from_node + 1 < flag_size_)
+    // {
+    pos_type from_node_next_pos = get_node_data_pos(from_node + 1);
+    BulkCopy_forward(from_node_next_pos, from_node_next_pos - shift_amount, data_size_ - from_node_next_pos, true);
+    // }
 
     decrease_bits(shift_amount, true);  
     ClearWidth(get_node_data_pos(from_node), dimension_, true);
-    UnsetBit(from_node, false);
-    sanity_check();
+    CLRBITVAL(flag_, from_node);
+    // UnsetBit(from_node, false);
+    // sanity_check();
   }
 
   inline void shift_forward(preorder_t from_node, preorder_t to_node)
   {
-    sanity_check();
-    BulkCopy_forward(get_node_data_pos(from_node), get_node_data_pos(to_node), data_size_ - get_node_data_pos(from_node), true);
+    // sanity_check();
+    pos_type from_node_pos = get_node_data_pos(from_node);
+    pos_type to_node_pos = get_node_data_pos(to_node);
+    BulkCopy_forward(from_node_pos, to_node_pos, data_size_ - from_node_pos, true);
     BulkCopy_forward(from_node, to_node, flag_size_ - from_node, false);
     // Here it is followed by realloc_decrease
   }
 
   // collapse = 1
-  bool is_collapse(preorder_t node){
-    return !GetBit(node, false);
+  inline bool is_collapse(preorder_t node){
+    // return !GetBit(node, false);
+    return !GETBITVAL(flag_, node);
   }
 
-  bool has_symbol(preorder_t node, symbol_t symbol){
+  inline bool has_symbol(preorder_t node, symbol_t symbol){
 
     if (node >= flag_size_){
       // raise(SIGINT);
       return false;
     }
-
+    pos_type node_pos = get_node_data_pos(node);
     if (is_collapse(node)){
-      return symbol == GetValPos(get_node_data_pos(node), dimension_, true);
+      return symbol == GetValPos(node_pos, dimension_, true);
     }
     else {
-      return GetBit(get_node_data_pos(node) + symbol, true);
+      return GETBITVAL(data_, node_pos + symbol);
     }
   }
 
   inline preorder_t get_n_children(node_t node) {
 
-    if (node >= flag_size_){
-      raise(SIGINT);
-    }
-
     if (is_collapse(node)){
       return 1;
     }
     else {
-      return popcount(get_node_data_pos(node), pow(2, dimension_), true);
+      return popcount(get_node_data_pos(node), 1 << dimension_, true);
     }
   }
 
   inline preorder_t get_child_skip(node_t node, symbol_t symbol) {
     
     // BUG at dimension >= 6
-    if (node >= flag_size_){
-      raise(SIGINT);
-    }
+    // if (node >= flag_size_){
+    //   raise(SIGINT);
+    // }
 
     if (is_collapse(node)){
       symbol_t only_symbol = GetValPos(get_node_data_pos(node), dimension_, true);
       if (symbol > only_symbol){
         return 1;
       }
-      else
-        return 0;
+      return 0;
     }
     else {
       return popcount(get_node_data_pos(node), symbol, true);
     }  
   }
 
-  symbol_t next_symbol(symbol_t symbol, preorder_t node, symbol_t end_symbol_range){
+  inline symbol_t next_symbol(symbol_t symbol, preorder_t node, symbol_t end_symbol_range){
     
     if (is_collapse(node)){
       symbol_t only_symbol = GetValPos(get_node_data_pos(node), dimension_, true);
       if (symbol <= only_symbol)
         return only_symbol;
-      else
-        return end_symbol_range + 1;
+      
+      return end_symbol_range + 1;
     }
 
     symbol_t limit = end_symbol_range - symbol + 1;
@@ -567,53 +539,50 @@ class Bitmap {
     }
   }
 
-  void set_symbol(preorder_t node, symbol_t symbol, bool was_empty){
+  inline void set_symbol(preorder_t node, symbol_t symbol, bool was_empty){
     
-    sanity_check();
-    if (node >= flag_size_){
-      raise(SIGINT);
-    }
-
+    pos_type node_pos = get_node_data_pos(node);
+    // sanity_check();
     if (is_collapse(node))
     {
       if (!was_empty){
-        symbol_t only_symbol = GetValPos(get_node_data_pos(node), dimension_, true);
+        symbol_t only_symbol = GetValPos(node_pos, dimension_, true);
         if (symbol == only_symbol){
           return;
         }
         shift_backward_to_uncollapse(node);
 
-        SetBit(get_node_data_pos(node) + only_symbol, true);
-        SetBit(get_node_data_pos(node) + symbol, true);
-
-        SetBit(node, false);
+        SETBITVAL(data_, node_pos + only_symbol);
+        SETBITVAL(data_, node_pos + symbol);
+        SETBITVAL(flag_, node);
       }
       else {
-        SetValPos(get_node_data_pos(node), symbol, dimension_, true);
+        SetValPos(node_pos, symbol, dimension_, true);
       }
     }
     else {
-      SetBit(get_node_data_pos(node) + symbol, true);
+      SETBITVAL(data_, node_pos + symbol);
     }
-    sanity_check();
+    // sanity_check();
   }
 
-  void copy_node_cod(bitmap::Bitmap *to_dfuds, node_t from, node_t to) {
+  inline void copy_node_cod(bitmap::Bitmap *to_dfuds, node_t from, node_t to) {
 
-      // raise(SIGINT);
-      // TODO: error starts here
-      sanity_check();
-      to_dfuds->sanity_check();
+      // sanity_check();
+      // to_dfuds->sanity_check();
       width_type width;
       if (is_collapse(from)){
         width = dimension_;
         to_dfuds->shift_forward_to_collapse(to);
-        to_dfuds->UnsetBit(to, false);
+        // to_dfuds->UnsetBit(to, false);
+        CLRBITVAL(to_dfuds->flag_, to);
       }
       else {
-        width = pow(2, dimension_);
+        width = 1 << dimension_;
         to_dfuds->shift_backward_to_uncollapse(to);
-        to_dfuds->SetBit(to, false);
+        // to_dfuds->SetBit(to, false);
+        SETBITVAL(to_dfuds->flag_, to);
+        // to_dfuds->SetValPos(flag_, to);
       }
       symbol_t visited = 0;
       while (visited < width) {
@@ -626,8 +595,8 @@ class Bitmap {
               break;
           }
       }
-      sanity_check();
-      to_dfuds->sanity_check();
+      // sanity_check();
+      // to_dfuds->sanity_check();
   }
 
   virtual size_type Serialize(std::ostream& out) {
@@ -662,7 +631,7 @@ class Bitmap {
   data_type *data_;
   data_type *flag_;
   size_type data_size_;
-  size_type flag_size_;
+
   dimension_t dimension_;
 };
 

@@ -20,7 +20,7 @@ static TimeStamp GetTimestamp() {
   return now.tv_usec + (TimeStamp) now.tv_sec * 1000000;
 }
 
-const int DIMENSION = 9;
+const int DIMENSION = 8;
 
 void test_random_data(n_leaves_t n_points, level_t max_depth, level_t trie_depth, preorder_t max_tree_node)
 {
@@ -230,7 +230,7 @@ void test_insert_data(level_t max_depth, level_t trie_depth, preorder_t max_tree
     fprintf(stderr, "Average time to insert one point: %f microseconds\n", (float)msec*1000 / n_points);
     // fprintf(stderr, "Size of data structure that contains %ld points: %ld bytes\n", n_lines, mdtrie->size());
     std::cerr << "Storage: " << mdtrie->size() << " bytes\n";
-
+    return;
     
     // fprintf(stderr, "Storage without v2: %lu bytes\n", mdtrie->size());
     std::cerr << "Storage save (pos): " << v2_storage_save_pos / 8 << " bytes\n";
@@ -239,7 +239,7 @@ void test_insert_data(level_t max_depth, level_t trie_depth, preorder_t max_tree
     // fprintf(stderr, "storage save: %lu bytes\n",  (uint64_t)v2_storage_save / 8);
     // std::cerr << "Storage with v2: " << mdtrie->size() - v2_storage_save / 8 << " bytes\n";
 
-    return;
+    
     // fprintf(stderr, "Storage with v2: %lu bytes\n", mdtrie->size() - (uint64_t)(v2_storage_save / 8));
     std::cerr << "Total number of single node: " << single_node_count << "\n";
     // fprintf(stderr, "total number of single node: %lu\n", single_node_count);
