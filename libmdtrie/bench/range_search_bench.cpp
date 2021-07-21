@@ -4,9 +4,9 @@
 #include <climits>
 #include <tqdm.h>
 
-const int DIMENSION = 2;
+const int DIMENSION = 9;
 FILE *fptr;
-char file_path[] = "benchmark_range_search_2.csv";
+char file_path[] = "benchmark_range_search_9.csv";
 
 typedef unsigned long long int TimeStamp;
 static TimeStamp GetTimestamp() {
@@ -290,7 +290,7 @@ void test_real_data(level_t max_depth, level_t trie_depth, preorder_t max_tree_n
         msec = diff * 1000 / CLOCKS_PER_SEC;
         total_found_points += found_points->size();
         lookup_time += get_node_path_time(found_points, max_depth);
-        // fprintf(fptr, "%ld, %ld, %f\n", found_points->size(), volume, (float)msec*1000);
+        fprintf(fptr, "%ld, %ld, %f\n", found_points->size(), volume, (float)msec*1000);
         
         found_points->reset();
         itr++;
@@ -298,6 +298,7 @@ void test_real_data(level_t max_depth, level_t trie_depth, preorder_t max_tree_n
         fptr = fopen(file_path, "a");            
     }
     bar1.finish();
+    fprintf(stderr, "dimension: %d", DIMENSION);
     fprintf(stderr, "md-trie size: %ld\n", mdtrie->size()); 
     msec = lookup_time * 1000 / CLOCKS_PER_SEC;
     fprintf(stderr, "Time per Checking: %f, out of %ld points\n", (float)msec*1000 / total_found_points, total_found_points);
@@ -443,7 +444,7 @@ bool test_random_range_search(n_leaves_t n_points, level_t max_depth, level_t tr
 int main() {
     srand(static_cast<unsigned int>(time(0)));
     
-    test_real_data(32, 10, 1024, 50);
+    test_real_data(32, 10, 1024, 100);
     // test_range_only(32, 10, 1024, 50);
     // test_real_data(32, 10, 1024, 50);
 
