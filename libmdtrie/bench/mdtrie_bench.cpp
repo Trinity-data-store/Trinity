@@ -5,6 +5,7 @@
 #include <tqdm.h>
 #include <vector>
 #include <math.h> 
+#include <iostream>
 
 FILE *fptr;
 char file_path[] = "benchmark_output_vector.txt";
@@ -19,7 +20,7 @@ static TimeStamp GetTimestamp() {
   return now.tv_usec + (TimeStamp) now.tv_sec * 1000000;
 }
 
-const int DIMENSION = 8;
+const int DIMENSION = 9;
 
 void test_random_data(n_leaves_t n_points, level_t max_depth, level_t trie_depth, preorder_t max_tree_node)
 {
@@ -225,9 +226,28 @@ void test_insert_data(level_t max_depth, level_t trie_depth, preorder_t max_tree
     }
     bar.finish();
     uint64_t msec = diff * 1000 / CLOCKS_PER_SEC;
+    fprintf(stderr, "Dimension: %d\n", DIMENSION);
     fprintf(stderr, "Average time to insert one point: %f microseconds\n", (float)msec*1000 / n_points);
-    fprintf(stderr, "Size of data structure that contains %ld points: %ld bytes\n", n_lines, mdtrie->size());
+    // fprintf(stderr, "Size of data structure that contains %ld points: %ld bytes\n", n_lines, mdtrie->size());
+    std::cerr << "Storage: " << mdtrie->size() << " bytes\n";
+    return;
+    
+    // fprintf(stderr, "Storage without v2: %lu bytes\n", mdtrie->size());
+    std::cerr << "Storage save (pos): " << v2_storage_save_pos / 8 << " bytes\n";
+    std::cerr << "storage save (neg): " << v2_storage_save_neg / 8 << " bytes\n";
+    // std::cerr << "Storage with v2" << mdtrie->size() - (v2_storage_save_pos -  v2_storage_save_neg)/ 8 << " bytes\n";
+    // fprintf(stderr, "storage save: %lu bytes\n",  (uint64_t)v2_storage_save / 8);
+    // std::cerr << "Storage with v2: " << mdtrie->size() - v2_storage_save / 8 << " bytes\n";
+
+    
+    // fprintf(stderr, "Storage with v2: %lu bytes\n", mdtrie->size() - (uint64_t)(v2_storage_save / 8));
+    std::cerr << "Total number of single node: " << single_node_count << "\n";
+    // fprintf(stderr, "total number of single node: %lu\n", single_node_count);
+    std::cerr << "Total number nodes: " << total_number_nodes << "\n";
+    // fprintf(stderr, "total number nodes: %lu\n", total_number_nodes);
     // fprintf(stderr, "getbit calls: %ld \n", get_bit_count);
+    // fprintf(stderr, "v2 saving: %d\n", v2_storage_save);
+    
 }
 
 void test_density(level_t max_depth, level_t trie_depth, preorder_t max_tree_node){
@@ -419,9 +439,9 @@ void cdf_insert(level_t max_depth, level_t trie_depth, preorder_t max_tree_node)
 int main() {
 
 //  int level_type max_depth, level_type trie_depth, preorder_type max_tree_node
-    cdf_insert(32,10,1024);
+    // cdf_insert(32,10,1024);
     // test_density(4, 32, 10, 1024);
-    // test_real_data(2, 32, 10, 1024);
+    test_insert_data(32, 10, 1024);
     // test_real_data(2, 32, 6, 1024);
     // test_real_data(2, 32, 8, 1024);
     // test_real_data(2, 32, 12, 1024);

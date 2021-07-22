@@ -74,16 +74,8 @@ public:
         get_node_path(level, node_path);
     }
 
-    void get_node_path(level_t level, symbol_t *node_path){
-        // for (symbol_t i = 0; i < size_; i++)
-        // {
-        //     if (children_[i] == prev){
-        //         node_path[level] = i;
-        //         // fprintf(stderr, "level: %ld, symbol: %ld\n", level, i);
-        //         break;
-        //     }
-        // }
-        
+    void get_node_path(level_t level, symbol_t *node_path)
+    {
         if (parent_trie_node){
             node_path[level - 1] = parent_symbol;
             parent_trie_node->get_node_path(level - 1, node_path);
