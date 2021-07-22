@@ -17,6 +17,8 @@
 #include "point_array.h"
 #include "tree_block.h"
 #include "trie_node.h"
+#include <mutex>
+std::mutex mutex;
 
 template<dimension_t DIMENSION>
 class md_trie {
@@ -113,6 +115,8 @@ public:
     // This function inserts a string into a trie_node.
     // The first part it traverses is the trie, followed by traversing the treeblock
     void insert_trie(data_point<DIMENSION> *leaf_point, level_t length) {
+
+        mutex.lock();
         if (root_ == nullptr) {
             root_ = new trie_node<DIMENSION>(n_branches_);
         }
@@ -120,6 +124,8 @@ public:
         trie_node<DIMENSION> *current_trie_node = root_;
         tree_block<DIMENSION> *current_treeblock = walk_trie(current_trie_node, leaf_point, level);
         insert_remaining(current_treeblock, leaf_point, length, level);
+
+        mutex.unlock();
     }
 
     // Used for Test script to check whether a leaf_point is present

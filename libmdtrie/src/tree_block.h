@@ -6,6 +6,8 @@
 #include "bitmap.h"
 #include <sys/time.h>
 #include <cmath>
+#include <mutex>
+// std::mutex mutex;
 
 uint64_t get_bit_count = 0;
 uint64_t v2_storage_save_pos = 0;
@@ -160,9 +162,14 @@ public:
     // This function inserts the string at the node position
     void insert(node_t node, data_point<DIMENSION> *leaf_point, level_t level, level_t length,
                             preorder_t current_frontier) {
+
+        
         if (level == length) {
             return;
         }
+        
+        // mutex.lock();
+
         node_t original_node = node;
         uint64_t max_tree_nodes;
         if (root_depth_ <=/*=*/ 16) max_tree_nodes = 64;
@@ -173,13 +180,13 @@ public:
             dfuds_->set_symbol(node, leaf_point->leaf_to_symbol(level, max_depth_), false);
             get_pointer(current_frontier)->insert(0, leaf_point, level, length, 0);
 
-            return;
+            // return;
         }
             //  If there is only one character left
             //  Insert that character into the correct position
         else if (length == 1) {
             dfuds_->set_symbol(node, leaf_point->leaf_to_symbol(level, max_depth_), false);
-            return;
+            // return;
         }
             // there is room in current block for new nodes
         else if (num_nodes_ + (length - level) - 1 <= tree_capacity_) {
@@ -362,6 +369,7 @@ public:
                 insert(insertion_node, leaf_point, level, length, current_frontier);
             }
         }
+        // mutex.unlock();  
     }
 
     // This function takes in a node (in preorder) and a symbol (branch index)

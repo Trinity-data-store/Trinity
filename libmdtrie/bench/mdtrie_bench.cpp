@@ -6,6 +6,10 @@
 #include <vector>
 #include <math.h> 
 #include <iostream>
+#include <thread>
+#include <mutex>
+
+// std::mutex mutex;
 
 FILE *fptr;
 char file_path[] = "benchmark_output_vector.txt";
@@ -20,7 +24,79 @@ static TimeStamp GetTimestamp() {
   return now.tv_usec + (TimeStamp) now.tv_sec * 1000000;
 }
 
-const int DIMENSION = 9;
+const int DIMENSION = 2;
+
+
+void test_concurrency(level_t max_depth, level_t trie_depth, preorder_t max_tree_node){
+
+    // mutex.lock();
+    auto *mdtrie = new md_trie<DIMENSION>(max_depth, trie_depth, max_tree_node);
+    auto *leaf_point = new data_point<DIMENSION>();
+
+    char *line = nullptr;
+    size_t len = 0;
+    ssize_t read;
+    FILE *fp = fopen("../libmdtrie/bench/data/sample_shuf.txt", "r");
+
+    
+    // If the file cannot be open
+    if (fp == nullptr)
+    {
+        fprintf(stderr, "file not found\n");
+        char cwd[PATH_MAX];
+        if (getcwd(cwd, sizeof(cwd)) != nullptr) {
+            printf("Current working dir: %s\n", cwd);
+        } else {
+            perror("getcwd() error");
+        }
+        exit(EXIT_FAILURE);
+    }
+
+    TimeStamp start, diff;
+    
+    n_leaves_t n_points = 0;
+    n_leaves_t n_lines = 14583357;
+
+    tqdm bar;
+    while ((read = getline(&line, &len, fp)) != -1)
+    {
+        bar.progress(n_points, n_lines);
+        // Get the first token
+        char *token = strtok(line, " ");
+        char *ptr;
+        // Skip the second and third token
+        for (uint8_t i = 0; i < 2; i ++){
+            strtok(nullptr, " ");
+        }
+
+        for (dimension_t i = 0; i < DIMENSION; i++){
+            // raise(SIGINT);
+            if (i >= 4){
+                leaf_point->set_coordinate(i, leaf_point->get_coordinate(i % 4));
+            }
+            else {
+                token = strtok(nullptr, " ");
+                leaf_point->set_coordinate(i, strtoul(token, &ptr, 10));
+            }
+        }
+        
+        start = GetTimestamp();
+        
+        mdtrie->insert_trie(leaf_point, max_depth);
+        
+        diff += GetTimestamp() - start;
+        n_points ++;
+    }
+    bar.finish();
+    uint64_t msec = diff * 1000 / CLOCKS_PER_SEC;
+    fprintf(stderr, "Dimension: %d\n", DIMENSION);
+    fprintf(stderr, "Average time to insert one point: %f microseconds\n", (float)msec*1000 / n_points);
+    std::cerr << "Storage: " << mdtrie->size() << " bytes\n";
+
+    // mutex.unlock();
+    return;    
+}
+
 
 void test_random_data(n_leaves_t n_points, level_t max_depth, level_t trie_depth, preorder_t max_tree_node)
 {
@@ -436,19 +512,26 @@ void cdf_insert(level_t max_depth, level_t trie_depth, preorder_t max_tree_node)
     fclose(fptr);
 }
 
+void test(){
+
+    level_t max_depth = 32;
+    level_t trie_depth = 10;
+    preorder_t max_tree_node = 1024;
+
+    test_concurrency(max_depth, trie_depth, max_tree_node);
+    return;
+}
+
 int main() {
 
-//  int level_type max_depth, level_type trie_depth, preorder_type max_tree_node
-    // cdf_insert(32,10,1024);
-    // test_density(4, 32, 10, 1024);
-    test_insert_data(32, 10, 1024);
-    // test_real_data(2, 32, 6, 1024);
-    // test_real_data(2, 32, 8, 1024);
-    // test_real_data(2, 32, 12, 1024);
-    // test_real_data(2, 32, 14, 1024);
-    // test_real_data(2, 32, 16, 1024);
-    // test_real_data(4, 32, 10, 1024);
-    // test_real_data(3, 32, 10, 1024);
+    //  int level_type max_depth, level_type trie_depth, preorder_type max_tree_node
 
+    // std::function<void()> bound_f = std::bind(test_concurrency, max_depth, std::ref(trie_depth), std::cref(max_tree_node));
+
+    std::thread t1(test);
+    std::thread t2(test);
+
+    t1.join();
+    t2.join();
 }
 
