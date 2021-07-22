@@ -187,7 +187,6 @@ public:
             symbol_t current_symbol = leaf_point->leaf_to_symbol(level, max_depth_);
             node = skip_children_subtree(node, current_symbol, level, current_frontier);
 
-            // node_t dest_node = num_nodes_ + (length - level) - 2;
             dfuds_->set_symbol(original_node, current_symbol, false);
             node_t from_node = num_nodes_ - 1;
 
@@ -195,24 +194,18 @@ public:
             //  By shifting nodes to the right of str[i] by len(str) spots
 
             if (from_node >= node) {
-                // if (dfuds_->flag_size_ < num_nodes_ + length - level - 1){
-                //     raise(SIGINT);
-                // }
+
                 dfuds_->shift_backward(node, length - level - 1);
                 from_node = node;
-                // dfuds_->bulk_clear_node(node, node + length - level - 2);
             }
             else {
                 from_node++;
                 dfuds_->bulk_clear_node(from_node, from_node + length - level - 2);
             }
-
             level++;
+
             //  Insert all remaining characters (Remember length -- above)
-            
-            
             for (level_t i = level; i < length; i++) {
-                // dfuds_->clear_node(from_node);
                 dfuds_->set_symbol(from_node, leaf_point->leaf_to_symbol(i, max_depth_), true);
                 num_nodes_++;
                 from_node++;
@@ -278,7 +271,6 @@ public:
                     new_pointer_index++;
                     copied_frontier++;
                 }
-                // TODO: start here
                 dfuds_->copy_node_cod(new_dfuds, selected_node, dest_node);
 
                 selected_node += 1;
@@ -290,7 +282,6 @@ public:
             if (!insertion_in_new_block && frontier <= current_frontier)
                 insertion_before_selected_tree = false;
             auto new_block = new tree_block(selected_node_depth, subtree_size, subtree_size, max_depth_, max_tree_nodes_);
-            // Memory leak
             new_block->dfuds_ = new_dfuds;
 
             //  If no pointer is copied to the new block
@@ -378,7 +369,6 @@ public:
     node_t skip_children_subtree(node_t node, symbol_t symbol, level_t current_level,
                                             preorder_t &current_frontier) const {
 
-        // raise(SIGINT);
         if (current_level == max_depth_)
             return node;
         int sTop = -1;
@@ -475,9 +465,6 @@ public:
                 v2_save_current_neg += 1;
             }
         }
-        // if (dfuds_->size() + v2_save_current_pos != (tree_capacity_ + 1) * num_branches_ / 8 + sizeof(size_t) + v2_save_current_neg ){
-        //     raise(SIGINT);
-        // }
         total_number_nodes += num_nodes_;
         total_size += num_frontiers_ * (sizeof(preorder_t) + sizeof(tree_block *)) + sizeof(frontier_node<DIMENSION> *);
         total_size += dfuds_->size();
@@ -517,7 +504,6 @@ public:
             symbol[i] = -1;
         }
         preorder_t current_frontier = 0;
-        // current_symbol, current_node, end_symbol_range (<= num_branches)
         int sTop = 0;
         symbol[sTop] = dfuds_->next_symbol(symbol[sTop] + 1, path[sTop], num_branches_ - 1);
         stack[sTop] = dfuds_->get_n_children(0);
@@ -555,7 +541,6 @@ public:
                 stack[sTop] = dfuds_->get_n_children(current_node);
                 path[sTop] = current_node;
 
-                // TODO: num_branches > 64
                 symbol[sTop] = dfuds_->next_symbol(symbol[sTop] + 1, path[sTop], num_branches_ - 1);
                 ++current_level;
             }

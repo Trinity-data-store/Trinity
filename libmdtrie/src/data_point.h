@@ -5,7 +5,6 @@
 #include <cstdlib>
 #include <cstring>
 #include "bitmap.h"
-// #include "tree_block.h"
 
 // Struct for each point that we want to insert
 template<dimension_t DIMENSION>
