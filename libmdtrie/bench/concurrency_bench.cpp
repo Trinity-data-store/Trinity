@@ -10,10 +10,10 @@
 #include <mutex>
 
 const int DIMENSION = 3;
-level_t max_depth = 20;
-level_t trie_depth = 3;
+level_t max_depth = 32;
+level_t trie_depth = 10;
 preorder_t max_tree_node = 1024;
-n_leaves_t n_points = 10000;
+n_leaves_t n_points = 100000;
 const uint8_t max_num_threads = 70;
 
 typedef unsigned long long int TimeStamp;
@@ -28,7 +28,7 @@ static TimeStamp GetTimestamp() {
 void test_concurrency(md_trie<DIMENSION> *mdtrie){
 
     auto *leaf_point = new data_point<DIMENSION>();
-    symbol_t range = 1024;
+    symbol_t range = pow(2, max_depth);
 
     for (n_leaves_t itr = 1; itr <= n_points; itr++) {
         for (dimension_t i = 0; i < DIMENSION; i++) {
@@ -57,6 +57,7 @@ int main() {
 
         TimeStamp start = GetTimestamp();
         for (uint8_t i = 0; i < num_threads; i++){
+            srand(static_cast<unsigned int>(time(0)));
             t_array[i].join();
         }
         TimeStamp diff = GetTimestamp() - start;

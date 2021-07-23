@@ -7,6 +7,7 @@
 #include <sys/time.h>
 #include <cmath>
 #include <mutex>
+// #include <mutex>
 
 uint64_t get_bit_count = 0;
 uint64_t v2_storage_save_pos = 0;
@@ -17,11 +18,9 @@ uint64_t total_number_nodes = 0;
 template<dimension_t DIMENSION>
 class tree_block {
 public:
-    std::recursive_mutex mutex;
-    tree_block *parent_tree_block_ = NULL;
-    preorder_t treeblock_frontier_num_ = 0;
-    trie_node<DIMENSION> *parent_trie_node = NULL;
 
+    std::recursive_mutex mutex;  
+    
     explicit tree_block(level_t root_depth, node_n_t tree_capacity, node_n_t num_nodes,
                         level_t max_depth, node_n_t max_tree_nodes) {
         root_depth_ = root_depth;
@@ -34,42 +33,45 @@ public:
     }
 
     inline node_n_t num_frontiers() {
-        std::lock_guard<std::recursive_mutex> lk(mutex);
+        std::lock_guard<std::recursive_mutex > g(mutex);
         return num_frontiers_;
     }
 
     inline tree_block *get_pointer(preorder_t current_frontier) {
-        std::lock_guard<std::recursive_mutex> lk(mutex);
+        std::lock_guard<std::recursive_mutex > g(mutex);
         return frontiers_[current_frontier].pointer_;
     }
 
     inline preorder_t get_preorder(preorder_t current_frontier)  
     {
-        std::lock_guard<std::recursive_mutex> lk(mutex);
+        std::lock_guard<std::recursive_mutex > g(mutex);
         return frontiers_[current_frontier].preorder_;
     }
 
     inline void set_preorder(preorder_t current_frontier, preorder_t preorder) 
     {
-        std::lock_guard<std::recursive_mutex> lk(mutex);
+        std::lock_guard<std::recursive_mutex > g(mutex);
         frontiers_[current_frontier].preorder_ = preorder;
     }
 
     inline void set_pointer(preorder_t current_frontier, tree_block *pointer) 
     {
-        std::lock_guard<std::recursive_mutex> lk(mutex);
+        std::lock_guard<std::recursive_mutex > g(mutex);
         frontiers_[current_frontier].pointer_ = pointer;
         pointer->parent_tree_block_ = this;
         pointer->treeblock_frontier_num_ = get_preorder(current_frontier);
     }
 
+    inline void set_parent_trie_node(trie_node<DIMENSION> *p){
+        parent_trie_node = p;
+    }
     // This function selects the subTree starting from node 0
     // The selected subtree has the maximum subtree size
     node_t select_subtree(preorder_t &subtree_size, preorder_t &selected_node_depth) {
         // index -> Number of children & preorder
 
         // std::lock_guard<std::mutex> guard(mutex);
-        std::lock_guard<std::recursive_mutex> lk(mutex);
+        std::lock_guard<std::recursive_mutex > g(mutex);
 
         node_info index_to_node[4096];
         // index -> size of subtree & preorder
@@ -175,7 +177,7 @@ public:
         if (level == length) {
             return;
         }
-        std::lock_guard<std::recursive_mutex> lk(mutex);
+        std::lock_guard<std::recursive_mutex > g(mutex);
         // mutex.lock();
 
         node_t original_node = node;
@@ -386,7 +388,7 @@ public:
                                             preorder_t &current_frontier)  {
         
         // std::lock_guard<std::mutex> guard(mutex);
-        std::lock_guard<std::recursive_mutex> lk(mutex);
+        std::lock_guard<std::recursive_mutex > g(mutex);
         if (current_level == max_depth_)
             return node;
         int sTop = -1;
@@ -442,7 +444,7 @@ public:
                             preorder_t &current_frontier)  {
 
         // std::lock_guard<std::mutex> guard(mutex);
-        std::lock_guard<std::recursive_mutex> lk(mutex);
+        std::lock_guard<std::recursive_mutex > g(mutex);
         get_bit_count ++;
         auto has_child = dfuds_->has_symbol(node, symbol);
         if (!has_child)
@@ -687,6 +689,9 @@ private:
     bitmap::Bitmap *dfuds_{};
     frontier_node<DIMENSION> *frontiers_ = nullptr; 
     node_n_t num_frontiers_ = 0;
+    tree_block *parent_tree_block_ = NULL;
+    preorder_t treeblock_frontier_num_ = 0;
+    trie_node<DIMENSION> *parent_trie_node = NULL;
 };
 
 #endif //MD_TRIE_TREE_BLOCK_H
