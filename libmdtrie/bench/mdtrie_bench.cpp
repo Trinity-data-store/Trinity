@@ -9,7 +9,7 @@
 #include <thread>
 #include <mutex>
 
-// std::mutex mutex;
+std::mutex mutex_out;
 
 FILE *fptr;
 char file_path[] = "benchmark_output_vector.txt";
@@ -58,16 +58,24 @@ void test_concurrency(level_t max_depth, level_t trie_depth, preorder_t max_tree
     n_leaves_t n_lines = 14583357;
 
     tqdm bar;
+    
     while ((read = getline(&line, &len, fp)) != -1)
     {
+        
         bar.progress(n_points, n_lines);
+        
         // Get the first token
+
+        mutex_out.lock();
         char *token = strtok(line, " ");
+        
         char *ptr;
         // Skip the second and third token
+        
         for (uint8_t i = 0; i < 2; i ++){
             strtok(nullptr, " ");
         }
+        
 
         for (dimension_t i = 0; i < DIMENSION; i++){
             // raise(SIGINT);
@@ -86,6 +94,7 @@ void test_concurrency(level_t max_depth, level_t trie_depth, preorder_t max_tree
         
         diff += GetTimestamp() - start;
         n_points ++;
+        mutex_out.unlock();
     }
     bar.finish();
     uint64_t msec = diff * 1000 / CLOCKS_PER_SEC;

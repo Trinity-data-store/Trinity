@@ -45,5 +45,9 @@ add_executable(orig_bench_no_table
 add_executable(range_search_bench
         bench/range_search_bench.cpp)
 
+add_executable(concurrency_bench
+        bench/concurrency_bench.cpp)
+
 target_link_libraries(mdtrie_bench mdtrie)
 target_link_libraries(range_search_bench mdtrie)
+target_link_libraries(concurrency_bench mdtrie)

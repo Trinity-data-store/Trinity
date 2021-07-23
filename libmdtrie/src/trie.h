@@ -18,7 +18,7 @@
 #include "tree_block.h"
 #include "trie_node.h"
 #include <mutex>
-std::mutex mutex;
+// std::mutex mutex;
 
 template<dimension_t DIMENSION>
 class md_trie {
@@ -40,6 +40,8 @@ public:
     // Traverse the current TreeBlock, going into frontier nodes as needed
     // Until it cannot traverse further and calls insertion
     void insert_remaining(tree_block<DIMENSION> *root, data_point<DIMENSION> *leaf_point, level_t length, level_t level) const {
+
+        // mutex.lock();
         tree_block<DIMENSION> *current_block = root;
         node_t current_node = 0;
         preorder_t current_frontier = 0;
@@ -60,7 +62,9 @@ public:
             }
             level++;
         }
+        
         current_block->insert(current_node, leaf_point, level, length, current_frontier);
+        // mutex.unlock();
     }
 
     // This function is used for testing.
@@ -116,16 +120,17 @@ public:
     // The first part it traverses is the trie, followed by traversing the treeblock
     void insert_trie(data_point<DIMENSION> *leaf_point, level_t length) {
 
-        mutex.lock();
+        
         if (root_ == nullptr) {
             root_ = new trie_node<DIMENSION>(n_branches_);
         }
         level_t level = 0;
         trie_node<DIMENSION> *current_trie_node = root_;
         tree_block<DIMENSION> *current_treeblock = walk_trie(current_trie_node, leaf_point, level);
-        insert_remaining(current_treeblock, leaf_point, length, level);
 
-        mutex.unlock();
+        
+        insert_remaining(current_treeblock, leaf_point, length, level);
+        
     }
 
     // Used for Test script to check whether a leaf_point is present
