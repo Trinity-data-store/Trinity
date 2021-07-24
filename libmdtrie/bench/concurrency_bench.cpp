@@ -64,6 +64,6 @@ int main() {
         
         fprintf(stderr, "Total time to insert %ld points with %d threads: %ld us\n", total_points, num_threads, msec*1000);
         fprintf(stderr, "Throughput: %f\n", (float) total_points / msec*1000);
-        fprintf(stderr, "Average Time per point: %f us. Total Latency / Total number of points\n\n", (float)msec*1000 / total_points);
+        // fprintf(stderr, "Average Time per point: %f us. Total Latency / Total number of points\n\n", (float)msec*1000 / total_points);
     }
 }
