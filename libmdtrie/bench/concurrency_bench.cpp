@@ -14,7 +14,7 @@ level_t max_depth = 32;
 level_t trie_depth = 10;
 preorder_t max_tree_node = 1024;
 n_leaves_t n_points = 100000;
-const uint8_t max_num_threads = 70;
+const uint8_t max_num_threads = 36;
 
 typedef unsigned long long int TimeStamp;
 
@@ -25,36 +25,55 @@ static TimeStamp GetTimestamp() {
   return now.tv_usec + (TimeStamp) now.tv_sec * 1000000;
 }
 
-void test_concurrency(md_trie<DIMENSION> *mdtrie){
+// void test_concurrency(md_trie<DIMENSION> *mdtrie){
+void test_concurrency(){
 
+    auto *mdtrie_1 = new md_trie<DIMENSION>(max_depth, trie_depth, max_tree_node);
     auto *leaf_point = new data_point<DIMENSION>();
     symbol_t range = pow(2, max_depth);
 
     for (n_leaves_t itr = 1; itr <= n_points; itr++) {
         for (dimension_t i = 0; i < DIMENSION; i++) {
-            leaf_point->set_coordinate(i, (point_t) rand() % range);
+            point_t coordinate = (point_t) rand() % range;
+            leaf_point->set_coordinate(i, coordinate);
         }
 
-        mdtrie->insert_trie(leaf_point, max_depth);
+        mdtrie_1->insert_trie(leaf_point, max_depth);
     }
     return;    
 }
 
+void test_func(){
+
+    usleep(1000000);
+}
+
 int main() {
 
-    auto *mdtrie = new md_trie<DIMENSION>(max_depth, trie_depth, max_tree_node);
+    
+    // auto *mdtrie = new md_trie<DIMENSION>(max_depth, trie_depth, max_tree_node);
 
     fprintf(stderr, "Dimension: %d\n", DIMENSION);
-    
-    for (uint8_t num_threads = 10; num_threads < max_num_threads; num_threads += 10){
+    srand(static_cast<unsigned int>(time(0)));
+
+    unsigned int n = std::thread::hardware_concurrency();
+    // 36 concurrent threads are supported
+    std::cout << n << " concurrent threads are supported.\n";
+
+    for (uint8_t num_threads = 5; num_threads <= max_num_threads; num_threads += 5){
         std::thread *t_array = new std::thread[num_threads];
+
         for (uint8_t i = 0; i < num_threads; i++){
-            t_array[i] = std::thread(test_concurrency, mdtrie);
+            
+            // Works: 
+            // t_array[i] = std::thread(test_func);
+
+            // Doesn't work as expected; throughput stays the same
+            t_array[i] = std::thread(test_concurrency);
         }
 
         TimeStamp start = GetTimestamp();
         for (uint8_t i = 0; i < num_threads; i++){
-            srand(static_cast<unsigned int>(time(0) + i));
             t_array[i].join();
         }
         TimeStamp diff = GetTimestamp() - start;
@@ -64,6 +83,5 @@ int main() {
         
         fprintf(stderr, "Total time to insert %ld points with %d threads: %ld us\n", total_points, num_threads, msec*1000);
         fprintf(stderr, "Throughput: %f\n", (float) total_points / msec*1000);
-        // fprintf(stderr, "Average Time per point: %f us. Total Latency / Total number of points\n\n", (float)msec*1000 / total_points);
     }
 }
