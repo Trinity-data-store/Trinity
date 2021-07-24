@@ -63,6 +63,7 @@ int main() {
     for (uint8_t num_threads = 5; num_threads <= max_num_threads; num_threads += 5){
         std::thread *t_array = new std::thread[num_threads];
 
+        TimeStamp start = GetTimestamp();
         for (uint8_t i = 0; i < num_threads; i++){
             
             // Works: 
@@ -72,7 +73,6 @@ int main() {
             t_array[i] = std::thread(test_concurrency);
         }
 
-        TimeStamp start = GetTimestamp();
         for (uint8_t i = 0; i < num_threads; i++){
             t_array[i].join();
         }
