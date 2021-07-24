@@ -36,10 +36,6 @@ void test_concurrency(md_trie<DIMENSION> *mdtrie){
         }
 
         mdtrie->insert_trie(leaf_point, max_depth);
-        // if (!mdtrie->check(leaf_point, max_depth)) {
-        //     fprintf(stderr, "error!\n");
-        //     return;
-        // }
     }
     return;    
 }
@@ -49,6 +45,7 @@ int main() {
     auto *mdtrie = new md_trie<DIMENSION>(max_depth, trie_depth, max_tree_node);
 
     fprintf(stderr, "Dimension: %d\n", DIMENSION);
+    
     for (uint8_t num_threads = 10; num_threads < max_num_threads; num_threads += 10){
         std::thread *t_array = new std::thread[num_threads];
         for (uint8_t i = 0; i < num_threads; i++){
@@ -57,7 +54,7 @@ int main() {
 
         TimeStamp start = GetTimestamp();
         for (uint8_t i = 0; i < num_threads; i++){
-            srand(static_cast<unsigned int>(time(0)));
+            srand(static_cast<unsigned int>(time(0) + i));
             t_array[i].join();
         }
         TimeStamp diff = GetTimestamp() - start;
@@ -66,7 +63,7 @@ int main() {
         uint64_t total_points = n_points * num_threads;
         
         fprintf(stderr, "Total time to insert %ld points with %d threads: %ld us\n", total_points, num_threads, msec*1000);
-        fprintf(stderr, "Throughput: %f\n", (float)total_points / msec*1000);
-        fprintf(stderr, "Average Time per point: %f us\n\n", (float)msec*1000 / total_points);
+        fprintf(stderr, "Throughput: %f\n", (float) total_points / msec*1000);
+        fprintf(stderr, "Average Time per point: %f us. Total Latency / Total number of points\n\n", (float)msec*1000 / total_points);
     }
 }
