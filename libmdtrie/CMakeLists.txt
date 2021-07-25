@@ -8,7 +8,8 @@ add_library(mdtrie
         src/defs.h
         src/point_array.h
         src/tree_block.h
-        src/trie_node.h)
+        src/trie_node.h
+        src/rand_utils.h)
 
 set_target_properties(mdtrie PROPERTIES LINKER_LANGUAGE CXX)
 
