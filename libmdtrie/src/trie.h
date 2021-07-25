@@ -42,7 +42,7 @@ public:
     void insert_remaining(tree_block<DIMENSION> *root, data_point<DIMENSION> *leaf_point, level_t length, level_t level) const {
 
         // mutex.lock();
-        fprintf(stderr, "insert remaining\n");
+        // fprintf(stderr, "insert remaining\n");
         tree_block<DIMENSION> *current_block = root;
         node_t current_node = 0;
         preorder_t current_frontier = 0;
@@ -129,7 +129,7 @@ public:
         trie_node<DIMENSION> *current_trie_node = root_;
         tree_block<DIMENSION> *current_treeblock = walk_trie(current_trie_node, leaf_point, level);
 
-        return;
+        // return;
         insert_remaining(current_treeblock, leaf_point, length, level);
         
     }
