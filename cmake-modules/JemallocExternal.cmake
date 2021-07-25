@@ -1,6 +1,6 @@
 # Jemaloc external project
 # target:
-#  - zlib_ep
+#  - jemalloc_ep
 # defines:
 #  - JEMALLOC_HOME
 #  - JEMALLOC_INCLUDE_DIR
@@ -26,7 +26,7 @@ if (USE_SYSTEM_JEMALLOC)
 endif ()
 
 if (JEMALLOC_BUILD)
-  set(JEMALLOC_LD_FLAGS "-Wl,--no-as-needed")
+  set(JEMALLOC_LD_FLAGS "-Wl,--no-as-needed -ldl")
   set(JEMALLOC_PREFIX "${PROJECT_BINARY_DIR}/external/jemalloc_ep")
   set(JEMALLOC_HOME "${JEMALLOC_PREFIX}")
   set(JEMALLOC_INCLUDE_DIR "${JEMALLOC_PREFIX}/include")
