@@ -23,7 +23,7 @@ static TimeStamp GetTimestamp() {
   struct timeval now;
   gettimeofday(&now, nullptr);
 
-  return now.tv_usec + (TimeStamp) now.tv_sec * 10000000;
+  return now.tv_usec + (TimeStamp) now.tv_sec * 1000000;
 }
 
 // void test_concurrency(md_trie<DIMENSION> *mdtrie){
@@ -97,7 +97,6 @@ int main() {
 
             // Doesn't work as expected; throughput stays the same
             t_array[i] = std::thread(test_concurrency);
-
         }
 
         for (uint8_t i = 0; i < num_threads; i++){
@@ -105,10 +104,8 @@ int main() {
         }
         TimeStamp diff = GetTimestamp() - start;
 
-        // uint64_t msec = diff * 1000 / CLOCKS_PER_SEC;
         uint64_t total_points = n_points * num_threads;
-        
-        // fprintf(stderr, "msec: %ld\n", msec * 1000);
+
         fprintf(stderr, "Total time to insert %ld points with %d threads: %lld us\n", total_points, num_threads, diff);
         fprintf(stderr, "Throughput: %f per us\n", (float) total_points / diff);
 
