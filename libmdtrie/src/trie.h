@@ -17,6 +17,8 @@
 #include "point_array.h"
 #include "tree_block.h"
 #include "trie_node.h"
+// #include <mutex>
+// std::mutex mutex;
 
 template<dimension_t DIMENSION>
 class md_trie {
@@ -35,56 +37,7 @@ public:
         return root_;
     }
 
-    // Traverse the current TreeBlock, going into frontier nodes as needed
-    // Until it cannot traverse further and calls insertion
-    void insert_remaining(tree_block<DIMENSION> *root, data_point<DIMENSION> *leaf_point, level_t length, level_t level) const {
-        tree_block<DIMENSION> *current_block = root;
-        node_t current_node = 0;
-        preorder_t current_frontier = 0;
-        
-        node_t temp_node = 0;
-        while (level < length) {
-            temp_node = current_block->child(current_block, current_node,
-                                            leaf_point->leaf_to_symbol(level, max_depth_), level,
-                                            current_frontier);
-            if (temp_node == (node_t) -1)
-                break;
-            current_node = temp_node;
-            if (current_block->num_frontiers() > 0 && current_frontier < current_block->num_frontiers() &&
-                current_node == current_block->get_preorder(current_frontier)) {
-                current_block = current_block->get_pointer(current_frontier);
-                current_node = (node_t) 0;
-                current_frontier = 0;
-            }
-            level++;
-        }
-        current_block->insert(current_node, leaf_point, level, length, current_frontier);
-    }
 
-    // This function is used for testing.
-    // It differs from above as it only returns True or False.
-    bool walk_tree_block(tree_block<DIMENSION> *current_block, data_point<DIMENSION> *leaf_point, level_t length, level_t level) const {
-        preorder_t current_frontier = 0;
-        node_t current_node = 0;
-        node_t temp_node = 0;
-        while (level < length) {
-            temp_node = current_block->child(current_block, current_node,
-                                            leaf_point->leaf_to_symbol(level, max_depth_), level,
-                                            current_frontier);
-            if (temp_node == (node_t) -1)
-                return false;
-            current_node = temp_node;
-
-            if (current_block->num_frontiers() > 0 && current_frontier < current_block->num_frontiers() &&
-                current_node == current_block->get_preorder(current_frontier)) {
-                current_block = current_block->get_pointer(current_frontier);
-                current_node = (node_t) 0;
-                current_frontier = 0;
-            }
-            level++;
-        }
-        return true;
-    }
 
     // This function goes down the trie
     // Return the treeblock at the leaf of the trie
@@ -104,7 +57,7 @@ public:
         if (current_trie_node->block() == nullptr) {
             current_treeblock = new tree_block<DIMENSION>(trie_depth_, initial_tree_capacity_, 1, max_depth_, max_tree_nodes_);
             current_trie_node->block(current_treeblock);
-            current_treeblock->parent_trie_node = current_trie_node;
+            // current_treeblock->set_parent_trie_node(current_trie_node);
         } else
             current_treeblock = (tree_block<DIMENSION> *) current_trie_node->block();
         return current_treeblock;
@@ -113,13 +66,18 @@ public:
     // This function inserts a string into a trie_node.
     // The first part it traverses is the trie, followed by traversing the treeblock
     void insert_trie(data_point<DIMENSION> *leaf_point, level_t length) {
+
+        
         if (root_ == nullptr) {
             root_ = new trie_node<DIMENSION>(n_branches_);
         }
         level_t level = 0;
         trie_node<DIMENSION> *current_trie_node = root_;
         tree_block<DIMENSION> *current_treeblock = walk_trie(current_trie_node, leaf_point, level);
-        insert_remaining(current_treeblock, leaf_point, length, level);
+
+        // return;
+        current_treeblock->insert_remaining(leaf_point, length, level);
+        
     }
 
     // Used for Test script to check whether a leaf_point is present
@@ -127,7 +85,7 @@ public:
         level_t level = 0;
         trie_node<DIMENSION> *current_trie_node = root_;
         tree_block<DIMENSION> *current_treeblock = walk_trie(current_trie_node, leaf_point, level);
-        return walk_tree_block(current_treeblock, leaf_point, strlen, level);
+        return current_treeblock->walk_tree_block(leaf_point, strlen, level);
     }
 
     uint64_t size() const {

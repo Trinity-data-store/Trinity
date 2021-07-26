@@ -1028,12 +1028,12 @@ int main()
 
     // }
     
-    uint64_t msec = diff * 1000 / CLOCKS_PER_SEC;
+
     // uint64_t count = 0;
     
     // printf("Nodes in the root block: %d\n",B.nNodes);    
     
-    printf("Insertion time: %f microseconds per insertion\n", (float)msec*1000 / nEdges);
+    printf("Insertion time: %f microseconds per insertion\n", (float)diff / nEdges);
 
     uint64_t treeSize = sizeTrie(t);//B.size();        
 
@@ -1080,8 +1080,8 @@ int main()
         n_points ++;
     }
     bar1.finish();
-    msec = diff * 1000 / CLOCKS_PER_SEC;
-    printf("Query time: %f microseconds per insertion\n", (float)msec*1000 / n_nonexistent);
+   //  msec = diff * 1000 / CLOCKS_PER_SEC;
+    printf("Query time: %f microseconds per insertion\n", (float)diff / n_nonexistent);
 
 
 
@@ -1121,6 +1121,6 @@ int main()
         n_points ++;
     }
     bar2.finish();  
-    msec = diff * 1000 / CLOCKS_PER_SEC;
-    printf("Query time: %f microseconds per insertion\n", (float)msec*1000 / nEdges);  
+   //  msec = diff * 1000 / CLOCKS_PER_SEC;
+    printf("Query time: %f microseconds per insertion\n", (float)diff / nEdges);  
  }

@@ -6,6 +6,9 @@
 #include "bitmap.h"
 #include <sys/time.h>
 #include <cmath>
+#include <mutex>
+
+// #include <mutex>
 
 uint64_t get_bit_count = 0;
 uint64_t v2_storage_save_pos = 0;
@@ -16,13 +19,9 @@ uint64_t total_number_nodes = 0;
 template<dimension_t DIMENSION>
 class tree_block {
 public:
-
-    tree_block *parent_tree_block_ = NULL;
-    preorder_t treeblock_frontier_num_ = 0;
-    trie_node<DIMENSION> *parent_trie_node = NULL;
-
+    
     explicit tree_block(level_t root_depth, node_n_t tree_capacity, node_n_t num_nodes,
-                        level_t max_depth, node_n_t max_tree_nodes) {
+                        level_t max_depth, node_n_t max_tree_nodes, trie_node<DIMENSION> *parent_trie_node = NULL) {
         root_depth_ = root_depth;
         tree_capacity_ = tree_capacity;
         num_branches_ = (symbol_t) pow(2, DIMENSION);
@@ -30,37 +29,53 @@ public:
         max_tree_nodes_ = max_tree_nodes;
         num_nodes_ = num_nodes;
         dfuds_ = new bitmap::Bitmap(tree_capacity_ + 1, DIMENSION);
+        if (parent_trie_node){
+            parent_trie_node_ = parent_trie_node;
+        }
     }
 
     inline node_n_t num_frontiers() {
+        // std::lock_guard<std::recursive_mutex> guard(mutex);
         return num_frontiers_;
     }
 
-    inline tree_block *get_pointer(preorder_t current_frontier) const {
+    inline tree_block *get_pointer(preorder_t current_frontier) {
+        // std::lock_guard<std::recursive_mutex> guard(mutex);
         return frontiers_[current_frontier].pointer_;
     }
 
-    inline preorder_t get_preorder(preorder_t current_frontier) const 
+    inline preorder_t get_preorder(preorder_t current_frontier)  
     {
+        // std::lock_guard<std::recursive_mutex> guard(mutex);
         return frontiers_[current_frontier].preorder_;
     }
 
     inline void set_preorder(preorder_t current_frontier, preorder_t preorder) 
     {
+        // std::lock_guard<std::recursive_mutex> guard(mutex);
         frontiers_[current_frontier].preorder_ = preorder;
     }
 
     inline void set_pointer(preorder_t current_frontier, tree_block *pointer) 
     {
+        // std::lock_guard<std::recursive_mutex> guard(mutex);
         frontiers_[current_frontier].pointer_ = pointer;
         pointer->parent_tree_block_ = this;
         pointer->treeblock_frontier_num_ = get_preorder(current_frontier);
     }
 
+    // inline void set_parent_trie_node(trie_node<DIMENSION> *p){
+    //     parent_trie_node = p;
+    // }
     // This function selects the subTree starting from node 0
     // The selected subtree has the maximum subtree size
-    node_t select_subtree(preorder_t &subtree_size, preorder_t &selected_node_depth) const {
+    node_t select_subtree(preorder_t &subtree_size, preorder_t &selected_node_depth) {
         // index -> Number of children & preorder
+
+        // std::lock_guard<std::mutex> guard(mutex);
+        // std::lock_guard<std::recursive_mutex> guard(mutex);
+        // mutex.lock();
+
         node_info index_to_node[4096];
         // index -> size of subtree & preorder
         subtree_info index_to_subtree[4096];
@@ -154,15 +169,21 @@ public:
         }
         subtree_size = index_to_subtree[min_index].subtree_size_;
         selected_node_depth = index_to_depth[min_index];
+        // mutex.unlock();
         return min_node;
     }
 
     // This function inserts the string at the node position
     void insert(node_t node, data_point<DIMENSION> *leaf_point, level_t level, level_t length,
                             preorder_t current_frontier) {
+
+        
         if (level == length) {
             return;
         }
+        // std::lock_guard<std::recursive_mutex> guard(mutex);
+        mutex.lock();
+
         node_t original_node = node;
         uint64_t max_tree_nodes;
         if (root_depth_ <=/*=*/ 16) max_tree_nodes = 64;
@@ -171,15 +192,18 @@ public:
         //  node is a frontier node
         if (frontiers_ != nullptr && current_frontier < num_frontiers_ && node == get_preorder(current_frontier)) {
             dfuds_->set_symbol(node, leaf_point->leaf_to_symbol(level, max_depth_), false);
+
+            mutex.unlock();
             get_pointer(current_frontier)->insert(0, leaf_point, level, length, 0);
 
-            return;
+            // return;
         }
             //  If there is only one character left
             //  Insert that character into the correct position
         else if (length == 1) {
             dfuds_->set_symbol(node, leaf_point->leaf_to_symbol(level, max_depth_), false);
-            return;
+            mutex.unlock();
+            // return;
         }
             // there is room in current block for new nodes
         else if (num_nodes_ + (length - level) - 1 <= tree_capacity_) {
@@ -216,10 +240,12 @@ public:
                     set_preorder(j, get_preorder(j) + length - level);
                     set_pointer(j, get_pointer(j));
                 }
+            mutex.unlock();
 
         } else if (num_nodes_ + (length - level) - 1 <= max_tree_nodes) {
             dfuds_->realloc_bitmap(num_nodes_ + length - level);
             tree_capacity_ = num_nodes_ + (length - level);
+            mutex.unlock();
             insert(node, leaf_point, level, length, current_frontier);
         } else {
             preorder_t subtree_size, selected_node_depth;
@@ -352,23 +378,33 @@ public:
             if (insertion_in_new_block) {
                 if (is_in_root) {
                     dfuds_->set_symbol(insertion_node, leaf_point->leaf_to_symbol(level, max_depth_), true);
+                    mutex.unlock();
                     insert(insertion_node, leaf_point, level, length, current_frontier);
                 } else {
+                    // release 
+                    mutex.unlock();
                     new_block->insert(insertion_node, leaf_point, level, length, current_frontier_new_block);
                 }
             }
             // If the insertion is in the old block
             else {
+                // release
+                mutex.unlock();
                 insert(insertion_node, leaf_point, level, length, current_frontier);
+                
             }
         }
+        mutex.unlock();  
     }
 
     // This function takes in a node (in preorder) and a symbol (branch index)
     // Return the child node (in preorder) designated by that symbol
     node_t skip_children_subtree(node_t node, symbol_t symbol, level_t current_level,
-                                            preorder_t &current_frontier) const {
-
+                                            preorder_t &current_frontier)  {
+        
+        // std::lock_guard<std::mutex> guard(mutex);
+        // std::lock_guard<std::recursive_mutex> guard(mutex);
+        // mutex.lock();
         if (current_level == max_depth_)
             return node;
         int sTop = -1;
@@ -414,14 +450,19 @@ public:
                     --stack[sTop];
             }
         }
+        // mutex.unlock();
         return current_node;
     }
 
     // This function takes in a node (in preorder) and a symbol (branch index)
     // Return the child node (in preorder) designated by that symbol
     // This function differs from skip_children_subtree as it checks if that child node is present
-    node_t child(tree_block *&p, node_t node, symbol_t symbol, level_t &current_level,
-                            preorder_t &current_frontier) const {
+    node_t child(node_t node, symbol_t symbol, level_t &current_level,
+                            preorder_t &current_frontier)  {
+
+        // std::lock_guard<std::mutex> guard(mutex);
+        // std::lock_guard<std::recursive_mutex> guard(mutex);
+        // mutex.lock();
         get_bit_count ++;
         auto has_child = dfuds_->has_symbol(node, symbol);
         if (!has_child)
@@ -432,15 +473,81 @@ public:
         node_t current_node;
 
         if (frontiers_ != nullptr && current_frontier < num_frontiers_ && node == get_preorder(current_frontier)) {
-            p = get_pointer(current_frontier);
+
             current_frontier = 0;
             node_t temp_node = 0;
-            current_node = p->skip_children_subtree(temp_node, symbol, current_level, current_frontier);
+            current_node = get_pointer(current_frontier)->skip_children_subtree(temp_node, symbol, current_level, current_frontier);
         } else
             current_node = skip_children_subtree(node, symbol, current_level, current_frontier);
 
+        // mutex.unlock();
         return current_node;
     }
+
+    // Traverse the current TreeBlock, going into frontier nodes as needed
+    // Until it cannot traverse further and calls insertion
+    void insert_remaining(data_point<DIMENSION> *leaf_point, level_t length, level_t level) {
+
+        // mutex.lock();
+        // fprintf(stderr, "insert remaining\n");
+        // tree_block<DIMENSION> *current_block = root;
+
+        mutex.lock();
+        node_t current_node = 0;
+        preorder_t current_frontier = 0;
+        
+        node_t temp_node = 0;
+        while (level < length) {
+            temp_node = child(current_node,
+                                            leaf_point->leaf_to_symbol(level, max_depth_), level,
+                                            current_frontier);
+            if (temp_node == (node_t) -1)
+                break;
+            current_node = temp_node;
+            if (num_frontiers() > 0 && current_frontier < num_frontiers() &&
+                current_node == get_preorder(current_frontier)) {
+                
+                tree_block<DIMENSION> *next_block = get_pointer(current_frontier);
+                mutex.unlock();
+                next_block->insert_remaining(leaf_point, length, level + 1);
+                return;
+                // current_node = (node_t) 0;
+                // current_frontier = 0;
+            }
+            level++;
+        }
+        mutex.unlock();
+        insert(current_node, leaf_point, level, length, current_frontier);
+        
+    }
+
+
+    // This function is used for testing.
+    // It differs from above as it only returns True or False.
+    bool walk_tree_block(data_point<DIMENSION> *leaf_point, level_t length, level_t level) {
+        preorder_t current_frontier = 0;
+        node_t current_node = 0;
+        node_t temp_node = 0;
+        mutex.lock();
+        while (level < length) {
+            temp_node = child(current_node,
+                                            leaf_point->leaf_to_symbol(level, max_depth_), level,
+                                            current_frontier);
+            if (temp_node == (node_t) -1)
+                return false;
+            current_node = temp_node;
+
+            if (num_frontiers() > 0 && current_frontier < num_frontiers() &&
+                current_node == get_preorder(current_frontier)) {
+                tree_block<DIMENSION> *next_block = get_pointer(current_frontier);
+                mutex.unlock();
+                return next_block->walk_tree_block(leaf_point, length, level + 1);
+            }
+            level++;
+        }
+        return true;
+    }
+
 
     uint64_t size() const {
 
@@ -492,7 +599,7 @@ public:
                 parent_tree_block_->get_node_path(treeblock_frontier_num_, node_path);
             }
             else {
-                parent_trie_node->get_node_path_from_treeblock(root_depth_, node_path);
+                parent_trie_node_->get_node_path_from_treeblock(root_depth_, node_path);
             }  
             return;          
         }
@@ -583,7 +690,7 @@ public:
             parent_tree_block_->get_node_path(treeblock_frontier_num_, node_path);
         }
         else {
-            parent_trie_node->get_node_path_from_treeblock(root_depth_, node_path);
+            parent_trie_node_->get_node_path_from_treeblock(root_depth_, node_path);
         }
     }
 
@@ -637,7 +744,7 @@ public:
 
                 new_current_block = current_block;
                 new_current_frontier = current_frontier;
-                new_current_node = new_current_block->child(new_current_block, current_node, current_symbol, level,
+                new_current_node = new_current_block->child(current_node, current_symbol, level,
                                                         new_current_frontier);
 
                 start_range->update_range_morton(end_range, current_symbol, level, max_depth_);
@@ -666,6 +773,13 @@ private:
     bitmap::Bitmap *dfuds_{};
     frontier_node<DIMENSION> *frontiers_ = nullptr; 
     node_n_t num_frontiers_ = 0;
+    tree_block *parent_tree_block_ = NULL;
+    preorder_t treeblock_frontier_num_ = 0;
+    trie_node<DIMENSION> *parent_trie_node_ = NULL;
+
+    // Using recursive_mutex is actually faster
+    // std::mutex mutex;
+    std::recursive_mutex mutex;  
 };
 
 #endif //MD_TRIE_TREE_BLOCK_H
