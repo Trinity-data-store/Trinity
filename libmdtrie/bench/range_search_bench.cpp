@@ -81,36 +81,18 @@ void insert_for_node_path(point_array<DIMENSION> *found_points, level_t max_dept
         n_points ++;
     }
     bar.finish();
-    // uint64_t msec;
     fprintf(stderr, "md-trie size: %ld\n", mdtrie->size());   
     
     auto *start_range = new data_point<DIMENSION>();
     auto *end_range = new data_point<DIMENSION>();
-    
-    // int itr = 1;
 
-    // uint64_t total_found_points = 0;
-    // TimeStamp lookup_time = 0;
     while (found_points->size() == 0){
         for (dimension_t i = 0; i < DIMENSION; i++){
             start_range->set_coordinate(i,  min[i] + rand() % (max[i] - min[i] + 1));
             end_range->set_coordinate(i, start_range->get_coordinate(i) + rand() % (max[i] - start_range->get_coordinate(i) + 1));
         }
-        // start = GetTimestamp();
         mdtrie->range_search_trie(start_range, end_range, mdtrie->root(), 0, found_points);
     }
-    // diff = GetTimestamp() - start;
-    // if (found_points->size() == 0){
-    //     continue;
-    // }
-
-    // msec = diff * 1000 / CLOCKS_PER_SEC;
-    // total_found_points += found_points->size();
-    // lookup_time = test_node_path_only(found_points, max_depth);
-
-        
-    // msec = lookup_time * 1000 / CLOCKS_PER_SEC;
-    // fprintf(stderr, "Time per Checking: %f, out of %ld points\n", (float)msec*1000 / total_found_points, total_found_points);
 }
 
 void test_node_path_only(level_t max_depth, level_t trie_depth, preorder_t max_tree_node){
@@ -147,10 +129,8 @@ void test_node_path_only(level_t max_depth, level_t trie_depth, preorder_t max_t
         }
         free(node_path);
     }
-    // return diff;
-    uint64_t msec;
-    msec = diff * 1000 / CLOCKS_PER_SEC;
-    fprintf(stderr, "Time per Checking: %f, out of %ld points\n", (float)msec*1000 / found_points->size(), found_points->size());
+
+    fprintf(stderr, "Time per Checking: %f, out of %ld points\n", (float)diff / found_points->size(), found_points->size());
      
 }
 
@@ -190,9 +170,7 @@ TimeStamp get_node_path_time(point_array<DIMENSION> *found_points, level_t max_d
         free(node_path);
     }
     return diff;
-    // uint64_t msec;
-    // msec = diff * 1000 / CLOCKS_PER_SEC;
-    // fprintf(stderr, "Time per Checking: %f, out of %ld points\n", (float)msec*1000 / found_points->size(), found_points->size());    
+   
 }
 
 void test_real_data(level_t max_depth, level_t trie_depth, preorder_t max_tree_node, int n_itr){
@@ -268,7 +246,6 @@ void test_real_data(level_t max_depth, level_t trie_depth, preorder_t max_tree_n
     auto *found_points = new point_array<DIMENSION>();
     int itr = 1;
     tqdm bar1;
-    uint64_t msec;
     uint64_t total_found_points = 0;
     TimeStamp lookup_time = 0;
     while (itr <= n_itr){
@@ -285,12 +262,9 @@ void test_real_data(level_t max_depth, level_t trie_depth, preorder_t max_tree_n
         if (found_points->size() == 0){
             continue;
         }
-        // uint64_t msec;
-
-        msec = diff * 1000 / CLOCKS_PER_SEC;
         total_found_points += found_points->size();
         lookup_time += get_node_path_time(found_points, max_depth);
-        fprintf(fptr, "%ld, %ld, %f\n", found_points->size(), volume, (float)msec*1000);
+        fprintf(fptr, "%ld, %ld, %f\n", found_points->size(), volume, (float)diff);
         
         found_points->reset();
         itr++;
@@ -300,8 +274,7 @@ void test_real_data(level_t max_depth, level_t trie_depth, preorder_t max_tree_n
     bar1.finish();
     fprintf(stderr, "dimension: %d", DIMENSION);
     fprintf(stderr, "md-trie size: %ld\n", mdtrie->size()); 
-    msec = lookup_time * 1000 / CLOCKS_PER_SEC;
-    fprintf(stderr, "Time per Checking: %f, out of %ld points\n", (float)msec*1000 / total_found_points, total_found_points);
+    fprintf(stderr, "Time per Checking: %f, out of %ld points\n", (float)lookup_time / total_found_points, total_found_points);
     fclose(fptr);
 }
 
@@ -517,7 +490,6 @@ void test_search_one_dimension(level_t max_depth, level_t trie_depth, preorder_t
     auto *found_points = new point_array<DIMENSION>();
     int itr = 1;
     tqdm bar1;
-    uint64_t msec;
     uint64_t total_found_points = 0;
     TimeStamp lookup_time = 0;
 
@@ -546,10 +518,9 @@ void test_search_one_dimension(level_t max_depth, level_t trie_depth, preorder_t
                 continue;
             }
 
-            msec = diff * 1000 / CLOCKS_PER_SEC;
             total_found_points += found_points->size();
             lookup_time += get_node_path_time(found_points, max_depth);
-            fprintf(fptr, "%ld, %ld, %f\n", found_points->size(), volume, (float)msec*1000);
+            fprintf(fptr, "%ld, %ld, %f\n", found_points->size(), volume, (float)diff);
             
             found_points->reset();
             itr++;         
@@ -558,8 +529,7 @@ void test_search_one_dimension(level_t max_depth, level_t trie_depth, preorder_t
     bar1.finish();
     fprintf(stderr, "dimension: %d", DIMENSION);
     fprintf(stderr, "md-trie size: %ld\n", mdtrie->size()); 
-    msec = lookup_time * 1000 / CLOCKS_PER_SEC;
-    fprintf(stderr, "Time per Checking: %f, out of %ld points\n", (float)msec*1000 / total_found_points, total_found_points);
+    fprintf(stderr, "Time per Checking: %f, out of %ld points\n", (float)lookup_time / total_found_points, total_found_points);
     fclose(fptr);
 }
 

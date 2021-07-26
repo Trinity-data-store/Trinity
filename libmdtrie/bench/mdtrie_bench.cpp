@@ -27,86 +27,6 @@ static TimeStamp GetTimestamp() {
 const int DIMENSION = 2;
 
 
-void test_concurrency(level_t max_depth, level_t trie_depth, preorder_t max_tree_node){
-
-    // mutex.lock();
-    auto *mdtrie = new md_trie<DIMENSION>(max_depth, trie_depth, max_tree_node);
-    auto *leaf_point = new data_point<DIMENSION>();
-
-    char *line = nullptr;
-    size_t len = 0;
-    ssize_t read;
-    FILE *fp = fopen("../libmdtrie/bench/data/sample_shuf.txt", "r");
-
-    
-    // If the file cannot be open
-    if (fp == nullptr)
-    {
-        fprintf(stderr, "file not found\n");
-        char cwd[PATH_MAX];
-        if (getcwd(cwd, sizeof(cwd)) != nullptr) {
-            printf("Current working dir: %s\n", cwd);
-        } else {
-            perror("getcwd() error");
-        }
-        exit(EXIT_FAILURE);
-    }
-
-    TimeStamp start, diff;
-    
-    n_leaves_t n_points = 0;
-    n_leaves_t n_lines = 14583357;
-
-    tqdm bar;
-    
-    while ((read = getline(&line, &len, fp)) != -1)
-    {
-        
-        bar.progress(n_points, n_lines);
-        
-        // Get the first token
-
-        mutex_out.lock();
-        char *token = strtok(line, " ");
-        
-        char *ptr;
-        // Skip the second and third token
-        
-        for (uint8_t i = 0; i < 2; i ++){
-            strtok(nullptr, " ");
-        }
-        
-
-        for (dimension_t i = 0; i < DIMENSION; i++){
-            // raise(SIGINT);
-            if (i >= 4){
-                leaf_point->set_coordinate(i, leaf_point->get_coordinate(i % 4));
-            }
-            else {
-                token = strtok(nullptr, " ");
-                leaf_point->set_coordinate(i, strtoul(token, &ptr, 10));
-            }
-        }
-        
-        start = GetTimestamp();
-        
-        mdtrie->insert_trie(leaf_point, max_depth);
-        
-        diff += GetTimestamp() - start;
-        n_points ++;
-        mutex_out.unlock();
-    }
-    bar.finish();
-    uint64_t msec = diff * 1000 / CLOCKS_PER_SEC;
-    fprintf(stderr, "Dimension: %d\n", DIMENSION);
-    fprintf(stderr, "Average time to insert one point: %f microseconds\n", (float)msec*1000 / n_points);
-    std::cerr << "Storage: " << mdtrie->size() << " bytes\n";
-
-    // mutex.unlock();
-    return;    
-}
-
-
 void test_random_data(n_leaves_t n_points, level_t max_depth, level_t trie_depth, preorder_t max_tree_node)
 {
     auto range = (symbol_t)pow(2, max_depth);
@@ -189,8 +109,7 @@ void test_real_data(level_t max_depth, level_t trie_depth, preorder_t max_tree_n
         n_points ++;
     }
     bar1.finish();
-    uint64_t msec = diff * 1000 / CLOCKS_PER_SEC;
-    fprintf(fptr, "Average time to insert one point: %f microseconds per insertion\n", (float)msec*1000 / n_points);
+    fprintf(fptr, "Average time to insert one point: %f microseconds per insertion\n", (float) diff / n_points);
     fprintf(fptr, "Size of data structure that contains %ld points: %ld bytes\n", n_lines, mdtrie->size());
 
     // Query n_lines random points
@@ -215,8 +134,7 @@ void test_real_data(level_t max_depth, level_t trie_depth, preorder_t max_tree_n
         n_points ++;
     }
     bar2.finish();
-    msec = diff * 1000 / CLOCKS_PER_SEC;
-    fprintf(fptr, "Average time to query nonexistent points: %f microseconds per query\n", (float)msec*1000 / n_nonexistent); 
+    fprintf(fptr, "Average time to query nonexistent points: %f microseconds per query\n", (float)diff / n_nonexistent); 
     fprintf(fptr, "\n");
     fclose(fptr);
 
@@ -249,8 +167,7 @@ void test_real_data(level_t max_depth, level_t trie_depth, preorder_t max_tree_n
         n_points ++;
     }
     bar3.finish();
-    msec = diff * 1000 / CLOCKS_PER_SEC;
-    fprintf(fptr, "Average time to query points that are in the trie: %f microseconds per query\n", (float)msec*1000 / n_points);
+    fprintf(fptr, "Average time to query points that are in the trie: %f microseconds per query\n", (float)diff / n_points);
     fprintf(fptr, "\n");
     fclose(fptr);
 }
@@ -310,29 +227,16 @@ void test_insert_data(level_t max_depth, level_t trie_depth, preorder_t max_tree
         n_points ++;
     }
     bar.finish();
-    uint64_t msec = diff * 1000 / CLOCKS_PER_SEC;
     fprintf(stderr, "Dimension: %d\n", DIMENSION);
-    fprintf(stderr, "Average time to insert one point: %f microseconds\n", (float)msec*1000 / n_points);
-    // fprintf(stderr, "Size of data structure that contains %ld points: %ld bytes\n", n_lines, mdtrie->size());
+    fprintf(stderr, "Average time to insert one point: %f microseconds\n", (float)diff / n_points);
     std::cerr << "Storage: " << mdtrie->size() << " bytes\n";
     return;
     
-    // fprintf(stderr, "Storage without v2: %lu bytes\n", mdtrie->size());
     std::cerr << "Storage save (pos): " << v2_storage_save_pos / 8 << " bytes\n";
     std::cerr << "storage save (neg): " << v2_storage_save_neg / 8 << " bytes\n";
-    // std::cerr << "Storage with v2" << mdtrie->size() - (v2_storage_save_pos -  v2_storage_save_neg)/ 8 << " bytes\n";
-    // fprintf(stderr, "storage save: %lu bytes\n",  (uint64_t)v2_storage_save / 8);
-    // std::cerr << "Storage with v2: " << mdtrie->size() - v2_storage_save / 8 << " bytes\n";
 
-    
-    // fprintf(stderr, "Storage with v2: %lu bytes\n", mdtrie->size() - (uint64_t)(v2_storage_save / 8));
     std::cerr << "Total number of single node: " << single_node_count << "\n";
-    // fprintf(stderr, "total number of single node: %lu\n", single_node_count);
     std::cerr << "Total number nodes: " << total_number_nodes << "\n";
-    // fprintf(stderr, "total number nodes: %lu\n", total_number_nodes);
-    // fprintf(stderr, "getbit calls: %ld \n", get_bit_count);
-    // fprintf(stderr, "v2 saving: %d\n", v2_storage_save);
-    
 }
 
 void test_density(level_t max_depth, level_t trie_depth, preorder_t max_tree_node){
@@ -384,8 +288,7 @@ void test_density(level_t max_depth, level_t trie_depth, preorder_t max_tree_nod
         n_points ++;
     }
     bar.finish();
-    uint64_t msec = diff * 1000 / CLOCKS_PER_SEC;
-    fprintf(stderr, "Average time to insert one point: %f microseconds\n", (float)msec*1000 / n_points);
+    fprintf(stderr, "Average time to insert one point: %f microseconds\n", (float)diff / n_points);
     fprintf(stderr, "Size of data structure that contains %ld points: %ld bytes\n", n_lines, mdtrie->size());
 
     density_array array(pow(2, DIMENSION) + 1);
@@ -455,8 +358,7 @@ void test_mdtrie_size(level_t max_depth, level_t trie_depth, preorder_t max_tree
         n_points ++;
     }
     bar.finish();
-    uint64_t msec = diff * 1000 / CLOCKS_PER_SEC;
-    fprintf(fptr, "Average time to insert one point: %f microseconds\n", (float)msec*1000 / n_points);
+    fprintf(fptr, "Average time to insert one point: %f microseconds\n", (float)diff / n_points);
     fprintf(fptr, "Size of data structure: %ld bytes\n", mdtrie->size());
     // fprintf(fptr, "Size of dfuds: %ld bytes\n", dfuds_size);
 }
@@ -514,33 +416,14 @@ void cdf_insert(level_t max_depth, level_t trie_depth, preorder_t max_tree_node)
         // latency += GetTimestamp() - start;
         latency = GetTimestamp() - start;
 
-        float msec = latency * 1000 *1000 / CLOCKS_PER_SEC;
-        fprintf(fptr, "%f\n", msec);
+        fprintf(fptr, "%f\n", (float)latency);
     }
     bar.finish();
     fclose(fptr);
 }
 
-void test(){
-
-    level_t max_depth = 32;
-    level_t trie_depth = 10;
-    preorder_t max_tree_node = 1024;
-
-    test_concurrency(max_depth, trie_depth, max_tree_node);
-    return;
-}
-
 int main() {
 
-    //  int level_type max_depth, level_type trie_depth, preorder_type max_tree_node
-
-    // std::function<void()> bound_f = std::bind(test_concurrency, max_depth, std::ref(trie_depth), std::cref(max_tree_node));
-
-    std::thread t1(test);
-    std::thread t2(test);
-
-    t1.join();
-    t2.join();
+    test_real_data(32, 10, 1024);
 }
 
