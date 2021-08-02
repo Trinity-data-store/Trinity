@@ -7,8 +7,7 @@
 #include <sys/time.h>
 #include <cmath>
 #include <mutex>
-
-// #include <mutex>
+#include <shared_mutex>
 
 uint64_t get_bit_count = 0;
 uint64_t v2_storage_save_pos = 0;
@@ -224,12 +223,14 @@ public:
             }
             else {
                 from_node++;
-                dfuds_->bulk_clear_node(from_node, from_node + length - level - 2);
+                // TODO: bulk clear node doesn't work
+                // dfuds_->bulk_clear_node(from_node, from_node + length - level - 2);
             }
             level++;
 
             //  Insert all remaining characters (Remember length -- above)
             for (level_t i = level; i < length; i++) {
+                dfuds_->clear_node(from_node);
                 dfuds_->set_symbol(from_node, leaf_point->leaf_to_symbol(i, max_depth_), true);
                 num_nodes_++;
                 from_node++;
@@ -394,7 +395,7 @@ public:
                 
             }
         }
-        mutex.unlock();  
+        // mutex.unlock();  
     }
 
     // This function takes in a node (in preorder) and a symbol (branch index)
@@ -464,7 +465,10 @@ public:
         // std::lock_guard<std::recursive_mutex> guard(mutex);
         // mutex.lock();
         get_bit_count ++;
+
+        // return 0;
         auto has_child = dfuds_->has_symbol(node, symbol);
+
         if (!has_child)
             return null_node;
         if (current_level == max_depth_)
@@ -476,7 +480,12 @@ public:
 
             current_frontier = 0;
             node_t temp_node = 0;
-            current_node = get_pointer(current_frontier)->skip_children_subtree(temp_node, symbol, current_level, current_frontier);
+            tree_block *next_tree_block = get_pointer(current_frontier);
+            // TODO: next treeblock
+            // next_tree_block->mutex.lock_shared();
+            // fprintf(stderr, "frontier node: node: %ld\n", node);
+            current_node = next_tree_block->skip_children_subtree(temp_node, symbol, current_level, current_frontier);
+            // next_tree_block->mutex.unlock_shared();
         } else
             current_node = skip_children_subtree(node, symbol, current_level, current_frontier);
 
@@ -492,7 +501,7 @@ public:
         // fprintf(stderr, "insert remaining\n");
         // tree_block<DIMENSION> *current_block = root;
 
-        mutex.lock();
+        mutex.lock_shared();
         node_t current_node = 0;
         preorder_t current_frontier = 0;
         
@@ -508,7 +517,7 @@ public:
                 current_node == get_preorder(current_frontier)) {
                 
                 tree_block<DIMENSION> *next_block = get_pointer(current_frontier);
-                mutex.unlock();
+                mutex.unlock_shared();
                 next_block->insert_remaining(leaf_point, length, level + 1);
                 return;
                 // current_node = (node_t) 0;
@@ -516,7 +525,7 @@ public:
             }
             level++;
         }
-        mutex.unlock();
+        mutex.unlock_shared();
         insert(current_node, leaf_point, level, length, current_frontier);
         
     }
@@ -528,23 +537,31 @@ public:
         preorder_t current_frontier = 0;
         node_t current_node = 0;
         node_t temp_node = 0;
-        mutex.lock();
+        // mutex.lock_shared();
         while (level < length) {
-            temp_node = child(current_node,
-                                            leaf_point->leaf_to_symbol(level, max_depth_), level,
-                                            current_frontier);
-            if (temp_node == (node_t) -1)
-                return false;
-            current_node = temp_node;
+            symbol_t current_symbol = leaf_point->leaf_to_symbol(level, max_depth_);
 
+            
+            temp_node = child(current_node, current_symbol, level,
+                                            current_frontier);
+            
+            // return true;
+
+            if (temp_node == (node_t) -1){
+                // mutex.unlock_shared();
+                return false;
+            }
+            current_node = temp_node;
+    
             if (num_frontiers() > 0 && current_frontier < num_frontiers() &&
                 current_node == get_preorder(current_frontier)) {
                 tree_block<DIMENSION> *next_block = get_pointer(current_frontier);
-                mutex.unlock();
+                // mutex.unlock_shared();
                 return next_block->walk_tree_block(leaf_point, length, level + 1);
             }
             level++;
         }
+        // mutex.unlock_shared();
         return true;
     }
 
@@ -779,7 +796,9 @@ private:
 
     // Using recursive_mutex is actually faster
     // std::mutex mutex;
-    std::recursive_mutex mutex;  
+    // std::recursive_mutex mutex;  
+    // std::mutex mutex;
+    std::shared_mutex mutex;
 };
 
 #endif //MD_TRIE_TREE_BLOCK_H

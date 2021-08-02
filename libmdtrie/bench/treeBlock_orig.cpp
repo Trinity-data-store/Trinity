@@ -318,7 +318,7 @@ void treeBlock::insert(treeNode node, uint8_t str[], uint64_t length, uint16_t l
        // insertion must be carried out in the root of a child block
         uint8_t cNodeCod = (dfuds[node.first]>>shiftT[node.second]) & 0x000f;
         
-        register uint64_t aux = 4*(3-node.second);        
+        uint64_t aux = 4*(3-node.second);        
         
         dfuds[node.first] = dfuds[node.first] & ~(0xF << aux); 
            
@@ -332,7 +332,7 @@ void treeBlock::insert(treeNode node, uint8_t str[], uint64_t length, uint16_t l
     if (length == 1) {
        uint8_t cNodeCod = (dfuds[node.first]>>shiftT[node.second]) & 0x000f;
        
-       register uint64_t aux = 4*(3-node.second);       
+       uint64_t aux = 4*(3-node.second);       
        
        dfuds[node.first] = dfuds[node.first] & ~(0xF << aux); 
           
@@ -360,7 +360,7 @@ void treeBlock::insert(treeNode node, uint8_t str[], uint64_t length, uint16_t l
        uint16_t preorderOrigNode = absolutePosition(origNode);
        uint16_t preorderDestNode =  absolutePosition(destNode);
        
-       register uint64_t aux, aux2;       
+       uint64_t aux, aux2;       
        
        while (preorderOrigNode >= preorderNode) {
           aux = 4*(3-(preorderDestNode & 0x3) /*destNode.second*/);
@@ -482,7 +482,7 @@ void treeBlock::insert(treeNode node, uint8_t str[], uint64_t length, uint16_t l
                 ++copiedFlags;
              }
              
-             register uint64_t aux = 4*(3-selectedNode.second);             
+             uint64_t aux = 4*(3-selectedNode.second);             
              
              new_dfuds[destNode.first] = new_dfuds[destNode.first] 
                                        | (((dfuds[selectedNode.first] >> aux/*4*(3-selectedNode.second)*/)
@@ -560,8 +560,8 @@ void treeBlock::insert(treeNode node, uint8_t str[], uint64_t length, uint16_t l
                    
           
           while (preorderSelectedNode/*absolutePosition(selectedNode)*/ < nNodes) {
-             register uint64_t auxOriginalS = 4*(3-originalSelectedNode.second);
-             register uint64_t auxS = 4*(3-selectedNode.second);             
+             uint64_t auxOriginalS = 4*(3-originalSelectedNode.second);
+             uint64_t auxS = 4*(3-selectedNode.second);             
              
              dfuds[originalSelectedNode.first] =  dfuds[originalSelectedNode.first]
                                     & ~(0xF << auxOriginalS/*4*(3-originalSelectedNode.second)*/); 
