@@ -292,8 +292,10 @@ public:
                 }
                 // If we see a frontier node, copy pointer to the new block
                 if (new_pointer_array != nullptr && frontier < num_frontiers_ && selected_node == get_preorder(frontier)) {
+
                     new_pointer_array[new_pointer_index].preorder_ = dest_node;
                     new_pointer_array[new_pointer_index].pointer_ = get_pointer(frontier);
+                    
                     frontier++;
                     new_pointer_index++;
                     copied_frontier++;
@@ -458,17 +460,10 @@ public:
     // This function takes in a node (in preorder) and a symbol (branch index)
     // Return the child node (in preorder) designated by that symbol
     // This function differs from skip_children_subtree as it checks if that child node is present
-    node_t child(node_t node, symbol_t symbol, level_t &current_level,
-                            preorder_t &current_frontier)  {
-
-        // std::lock_guard<std::mutex> guard(mutex);
-        // std::lock_guard<std::recursive_mutex> guard(mutex);
-        // mutex.lock();
+    node_t child(tree_block *&p, node_t node, symbol_t symbol, level_t &current_level,
+                            preorder_t &current_frontier) {
         get_bit_count ++;
-
-        // return 0;
         auto has_child = dfuds_->has_symbol(node, symbol);
-
         if (!has_child)
             return null_node;
         if (current_level == max_depth_)
@@ -477,19 +472,13 @@ public:
         node_t current_node;
 
         if (frontiers_ != nullptr && current_frontier < num_frontiers_ && node == get_preorder(current_frontier)) {
-
+            p = get_pointer(current_frontier);
             current_frontier = 0;
             node_t temp_node = 0;
-            tree_block *next_tree_block = get_pointer(current_frontier);
-            // TODO: next treeblock
-            // next_tree_block->mutex.lock_shared();
-            // fprintf(stderr, "frontier node: node: %ld\n", node);
-            current_node = next_tree_block->skip_children_subtree(temp_node, symbol, current_level, current_frontier);
-            // next_tree_block->mutex.unlock_shared();
+            current_node = p->skip_children_subtree(temp_node, symbol, current_level, current_frontier);
         } else
             current_node = skip_children_subtree(node, symbol, current_level, current_frontier);
 
-        // mutex.unlock();
         return current_node;
     }
 
@@ -507,7 +496,8 @@ public:
         
         node_t temp_node = 0;
         while (level < length) {
-            temp_node = child(current_node,
+            tree_block *current_treeblock = this;
+            temp_node = child(current_treeblock, current_node,
                                             leaf_point->leaf_to_symbol(level, max_depth_), level,
                                             current_frontier);
             if (temp_node == (node_t) -1)
@@ -541,8 +531,8 @@ public:
         while (level < length) {
             symbol_t current_symbol = leaf_point->leaf_to_symbol(level, max_depth_);
 
-            
-            temp_node = child(current_node, current_symbol, level,
+            tree_block *current_treeblock = this;
+            temp_node = child(current_treeblock, current_node, current_symbol, level,
                                             current_frontier);
             
             // return true;
@@ -731,16 +721,26 @@ public:
     void range_search_treeblock(data_point<DIMENSION> *start_range, data_point<DIMENSION> *end_range, tree_block *current_block,
                                             level_t level, preorder_t current_node, preorder_t prev_node, node_t current_frontier,
                                             point_array<DIMENSION> *found_points) {
+
+
         if (level == max_depth_) {
             auto *leaf = new data_point<DIMENSION>();
             leaf->set(start_range->get());
             leaf->set_parent_treeblock(this);
             leaf->set_parent_node(prev_node);
             leaf->set_parent_symbol(start_range->leaf_to_symbol(max_depth_ - 1, max_depth_));
+
+            if (root_depth_ == 10 && prev_node == 1){
+                raise(SIGINT);
+            }
             found_points->add_leaf(leaf);
             return;
         }
-        
+                                        
+        if (current_node >= num_nodes_){
+            return;
+        }
+
         symbol_t start_range_symbol = start_range->leaf_to_symbol(level, max_depth_);
         symbol_t end_range_symbol = end_range->leaf_to_symbol(level, max_depth_);
         representation_t representation = start_range_symbol ^ end_range_symbol;
@@ -761,8 +761,11 @@ public:
 
                 new_current_block = current_block;
                 new_current_frontier = current_frontier;
-                new_current_node = new_current_block->child(current_node, current_symbol, level,
+                new_current_node = new_current_block->child(new_current_block, current_node, current_symbol, level,
                                                         new_current_frontier);
+                // if (current_node == new_current_node && current_node == 1){
+                //     raise(SIGINT);
+                // }
 
                 start_range->update_range_morton(end_range, current_symbol, level, max_depth_);
                 if (new_current_block != current_block){

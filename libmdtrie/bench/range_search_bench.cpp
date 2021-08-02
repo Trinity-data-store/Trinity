@@ -4,9 +4,9 @@
 #include <climits>
 #include <tqdm.h>
 
-const int DIMENSION = 9;
+const int DIMENSION = 2;
 FILE *fptr;
-char file_path[] = "benchmark_range_search_9.csv";
+char file_path[] = "benchmark_range_search_2.csv";
 
 typedef unsigned long long int TimeStamp;
 static TimeStamp GetTimestamp() {
@@ -154,6 +154,7 @@ TimeStamp get_node_path_time(point_array<DIMENSION> *found_points, level_t max_d
         node_t parent_node = point->get_parent_node();
 
         start = GetTimestamp();
+        // raise(SIGINT);
         parent_treeblock->get_node_path(parent_node, node_path); 
 
         node_path[max_depth - 1] = parent_symbol;
@@ -161,8 +162,8 @@ TimeStamp get_node_path_time(point_array<DIMENSION> *found_points, level_t max_d
         auto returned_coordinates = parent_treeblock->node_path_to_coordinates(node_path);
         diff += GetTimestamp() - start;
 
-        for (dimension_t i = 0; i < DIMENSION; i++){
-            if (returned_coordinates->get_coordinate(i) != point->get_coordinate(i)){
+        for (dimension_t j = 0; j < DIMENSION; j++){
+            if (returned_coordinates->get_coordinate(j) != point->get_coordinate(j)){
                 raise(SIGINT);
             }
         }
@@ -536,10 +537,10 @@ void test_search_one_dimension(level_t max_depth, level_t trie_depth, preorder_t
 
 // int dimensions, level_type max_depth, level_type trie_depth, preorder_type max_tree_node, int n_itr
 int main() {
-    srand(static_cast<unsigned int>(time(0)));
+    // srand(static_cast<unsigned int>(time(0)));
     
-    test_search_one_dimension(32, 10, 1024, 100);
+    // test_search_one_dimension(32, 10, 1024, 100);
     // test_range_only(32, 10, 1024, 50);
-    // test_real_data(32, 10, 1024, 50);
+    test_real_data(32, 10, 1024, 50);
 
 }

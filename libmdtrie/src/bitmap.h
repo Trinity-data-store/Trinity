@@ -480,6 +480,9 @@ class Bitmap {
 
   inline symbol_t next_symbol(symbol_t symbol, preorder_t node, symbol_t end_symbol_range){
     
+    if (node >= flag_size_){
+      raise(SIGINT);
+    }
     pos_type node_pos = get_node_data_pos(node);
 
     if (is_collapse(node)){
@@ -504,7 +507,7 @@ class Bitmap {
         if (over_64){
             return next_symbol(symbol + limit, node, end_symbol_range);
         }
-        return symbol + limit;
+        return end_symbol_range + 1;
     }
   }
 

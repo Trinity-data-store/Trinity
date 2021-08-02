@@ -310,7 +310,7 @@ void test_range_search(){
     fprintf(stderr, "reading existing points begins\n");
 
     // *******************************************************
-    for (uint8_t num_threads = 3; num_threads <= max_num_threads; num_threads ++){
+    for (uint8_t num_threads = 1; num_threads <= max_num_threads; num_threads ++){
         std::thread *t_array = new std::thread[num_threads];
 
         TimeStamp start = GetTimestamp();
@@ -332,8 +332,8 @@ void test_range_search(){
 
 int main() {
 
-    // test_range_search();
+    test_range_search();
     // test_insert_concurrency();
-    test_read_concurrency();
+    // test_read_concurrency();
 
 }
