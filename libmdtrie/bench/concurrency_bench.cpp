@@ -116,10 +116,6 @@ void read_mdtrie_inserted(md_trie<DIMENSION> *mdtrie, uint8_t thread_num, uint8_
     {
 
         count ++;
-
-        // if (count == read_number_count){
-        //     break;
-        // }
         
         if (count % total_thread_num != thread_num){
             continue;
@@ -168,8 +164,6 @@ void test_read_concurrency(){
     
     n_leaves_t n_points = 0;
     n_leaves_t n_lines = 14583357;
-    uint64_t max[DIMENSION];
-    uint64_t min[DIMENSION];
     tqdm bar1;
     while ((read = getline(&line, &len, fp)) != -1)
     {
@@ -192,18 +186,6 @@ void test_read_concurrency(){
                 token = strtok(nullptr, " ");
                 leaf_point->set_coordinate(i, strtoul(token, &ptr, 10));
             }
-            if (n_points == 0){
-                max[i] = leaf_point->get_coordinate(i);
-                min[i] = leaf_point->get_coordinate(i);
-            }
-            else {
-                if (leaf_point->get_coordinate(i) > max[i]){
-                    max[i] = leaf_point->get_coordinate(i);
-                }
-                if (leaf_point->get_coordinate(i) < min[i]){
-                    min[i] = leaf_point->get_coordinate(i);
-                }
-            }
         }
         mdtrie->insert_trie(leaf_point, max_depth);
         n_points ++;
@@ -215,7 +197,7 @@ void test_read_concurrency(){
 
     // *******************************************************
     // uint8_t num_threads = 9;
-    for (uint8_t num_threads = 3; num_threads <= max_num_threads; num_threads ++){
+    for (uint8_t num_threads = 1; num_threads <= max_num_threads; num_threads ++){
         std::thread *t_array = new std::thread[num_threads];
 
         // num_checked_points = 0;
@@ -247,6 +229,7 @@ void test_read_concurrency(){
 
 const int n_itr = 100;
 uint64_t total_found_points = 0;
+// TimeStamp diff_range_search;
 
 void range_search_mdtrie(md_trie<DIMENSION> *mdtrie, uint64_t max[], uint64_t min[]){
 
@@ -255,17 +238,15 @@ void range_search_mdtrie(md_trie<DIMENSION> *mdtrie, uint64_t max[], uint64_t mi
     auto *found_points = new point_array<DIMENSION>();
     int itr = 1;
 
-    TimeStamp lookup_time = 0;
     while (itr <= n_itr){
 
         for (dimension_t i = 0; i < DIMENSION; i++){
             start_range->set_coordinate(i,  min[i] + rand() % (max[i] - min[i] + 1));
             end_range->set_coordinate(i, start_range->get_coordinate(i) + rand() % (max[i] - start_range->get_coordinate(i) + 1));
-            volume *= (end_range->get_coordinate(i) - start_range->get_coordinate(i));
         }
-        start = GetTimestamp();
+        // start = GetTimestamp();
         mdtrie->range_search_trie(start_range, end_range, mdtrie->root(), 0, found_points);
-        diff = GetTimestamp() - start;
+        // diff = GetTimestamp() - start;
 
         total_found_points += found_points->size();
         
@@ -273,7 +254,6 @@ void range_search_mdtrie(md_trie<DIMENSION> *mdtrie, uint64_t max[], uint64_t mi
         itr++;
            
     }
-    fclose(fptr);
 }
 
 void test_range_search(){
@@ -344,7 +324,7 @@ void test_range_search(){
         }
         TimeStamp diff = GetTimestamp() - start;
 
-        fprintf(stderr, "Total time to read %ld points with %d threads: %lld us\n", total_points, num_threads, diff);
+        fprintf(stderr, "Total time to read %ld points with %d threads: %lld us\n", total_found_points, num_threads, diff);
         fprintf(stderr, "Throughput: %f per us\n", (float) total_found_points / diff);
     }
 }
@@ -352,8 +332,8 @@ void test_range_search(){
 
 int main() {
 
-    test_range_search();
+    // test_range_search();
     // test_insert_concurrency();
-    // test_read_concurrency();
+    test_read_concurrency();
 
 }
