@@ -10,6 +10,7 @@
 #include <mutex>
 #include <rand_utils.h>
 
+
 const int DIMENSION = 3;
 level_t max_depth = 32;
 level_t trie_depth = 10;
@@ -107,14 +108,12 @@ void read_mdtrie_inserted(md_trie<DIMENSION> *mdtrie, uint8_t thread_num, uint8_
     size_t len = 0;
     ssize_t read;
     char *saveptr;
-    // auto *rand_generator = new utils::rand_utils();
     
     FILE *fp = fopen("../libmdtrie/bench/data/sample_shuf.txt", "r");
     uint64_t count = 0;
 
     while ((read = getline(&line, &len, fp)) != -1)
     {
-
         count ++;
         
         if (count % total_thread_num != thread_num){
@@ -150,26 +149,38 @@ void read_mdtrie_inserted(md_trie<DIMENSION> *mdtrie, uint8_t thread_num, uint8_
     return;
 }
 
+void read_mdtrie_inserted_from_vector(md_trie<DIMENSION> *mdtrie, uint8_t thread_num, uint8_t total_thread_num, std::vector<data_point<DIMENSION> *> vect){
+
+    n_leaves_t n_lines = 14583357;
+    for (uint64_t count = thread_num; count < n_lines; count += total_thread_num){
+
+        data_point<DIMENSION> *leaf_point = vect[count];
+        TimeStamp start = GetTimestamp();
+        if (!mdtrie->check(leaf_point, max_depth)){
+            fprintf(stderr, "error! not found\n");
+        }
+        total_read_latency += GetTimestamp() - start;
+        total_count ++;
+    }
+    return;
+}
 
 void test_read_concurrency(){
 
     auto *mdtrie = new md_trie<DIMENSION>(max_depth, trie_depth, max_tree_node);
-    auto *leaf_point = new data_point<DIMENSION>();
-
+    
     char *line = nullptr;
     size_t len = 0;
     ssize_t read;
     FILE *fp = fopen("../libmdtrie/bench/data/sample_shuf.txt", "r");
 
-    
     n_leaves_t n_points = 0;
     n_leaves_t n_lines = 14583357;
     tqdm bar1;
+    std::vector<data_point<DIMENSION> *> vect;
     while ((read = getline(&line, &len, fp)) != -1)
     {
-        // if (n_points == read_number_count){
-        //     break;
-        // }
+        auto *leaf_point = new data_point<DIMENSION>();
         bar1.progress(n_points, n_lines);
         // Get the first token
         char *token = strtok(line, " ");
@@ -187,42 +198,55 @@ void test_read_concurrency(){
                 leaf_point->set_coordinate(i, strtoul(token, &ptr, 10));
             }
         }
+        vect.push_back(leaf_point);
         mdtrie->insert_trie(leaf_point, max_depth);
         n_points ++;
+    }
+    if (n_points != n_lines){
+        fprintf(stderr, "correct num lines: %ld\n", n_points);
     }
     bar1.finish();
     fclose(fp);
     fprintf(stderr, "reading existing points begins\n");
 
-
     // *******************************************************
-    // uint8_t num_threads = 9;
+
     for (uint8_t num_threads = 1; num_threads <= max_num_threads; num_threads ++){
         std::thread *t_array = new std::thread[num_threads];
 
-        // num_checked_points = 0;
-
         TimeStamp start = GetTimestamp();
-        for (uint8_t i = 0; i < num_threads; i++){
-            
-            t_array[i] = std::thread(read_mdtrie_inserted, mdtrie, i, num_threads);
-            // t_array[i] = std::thread(read_mdtrie_random, mdtrie, max, min);
+        
+        for (uint8_t i = 0; i < num_threads; i++)
+        {    
+            // t_array[i] = std::thread(read_mdtrie_inserted, mdtrie, i, num_threads, vect);
+            t_array[i] = std::thread(read_mdtrie_inserted_from_vector, mdtrie, i, num_threads, vect);
+
+            // cpu_set_t cpuset;
+            // CPU_ZERO(&cpuset);
+            // CPU_SET(i, &cpuset);
+            // int rc = pthread_setaffinity_np(t_array[i].native_handle(),
+            //                                 sizeof(cpu_set_t), &cpuset);
+            // if (rc != 0) {
+            //     std::cerr << "Error calling pthread_setaffinity_np: " << rc << "\n";
+            // }            
         }
 
         for (uint8_t i = 0; i < num_threads; i++){
             t_array[i].join();
         }
-        TimeStamp diff = GetTimestamp() - start;
 
+        TimeStamp diff = GetTimestamp() - start;
+        
         uint64_t total_points = n_points * num_threads;
         total_points = n_points;
-        // total_points = read_number_count * num_threads;
 
         fprintf(stderr, "Total time to read %ld points with %d threads: %lld us\n", total_points, num_threads, diff);
         fprintf(stderr, "Throughput: %f per us\n", (float) total_points / diff);
         fprintf(stderr, "Latency per read %f\n", (float)total_read_latency / total_count);
         total_read_latency = 0;
         total_count = 0;
+
+        std::cerr << "\n";
     }
 
 }
@@ -230,7 +254,7 @@ void test_read_concurrency(){
 const int n_itr = 100;
 uint64_t total_found_points = 0;
 // TimeStamp diff_range_search;
-
+TimeStamp total_range_search_latency = 0;
 void range_search_mdtrie(md_trie<DIMENSION> *mdtrie, uint64_t max[], uint64_t min[]){
 
     auto *start_range = new data_point<DIMENSION>();
@@ -244,15 +268,14 @@ void range_search_mdtrie(md_trie<DIMENSION> *mdtrie, uint64_t max[], uint64_t mi
             start_range->set_coordinate(i,  min[i] + rand() % (max[i] - min[i] + 1));
             end_range->set_coordinate(i, start_range->get_coordinate(i) + rand() % (max[i] - start_range->get_coordinate(i) + 1));
         }
-        // start = GetTimestamp();
+        TimeStamp start = GetTimestamp();
         mdtrie->range_search_trie(start_range, end_range, mdtrie->root(), 0, found_points);
-        // diff = GetTimestamp() - start;
+        total_range_search_latency += GetTimestamp() - start;
 
         total_found_points += found_points->size();
         
         found_points->reset();
         itr++;
-           
     }
 }
 
@@ -326,14 +349,16 @@ void test_range_search(){
 
         fprintf(stderr, "Total time to read %ld points with %d threads: %lld us\n", total_found_points, num_threads, diff);
         fprintf(stderr, "Throughput: %f per us\n", (float) total_found_points / diff);
+        fprintf(stderr, "Latency per read %f\n", (float)total_range_search_latency / total_found_points);
+        total_range_search_latency = 0;
     }
 }
 
 
 int main() {
 
-    test_range_search();
+    // test_range_search();
     // test_insert_concurrency();
-    // test_read_concurrency();
+    test_read_concurrency();
 
 }

@@ -520,7 +520,6 @@ public:
         
     }
 
-
     // This function is used for testing.
     // It differs from above as it only returns True or False.
     bool walk_tree_block(data_point<DIMENSION> *leaf_point, level_t length, level_t level) {
