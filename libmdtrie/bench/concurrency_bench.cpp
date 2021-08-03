@@ -16,7 +16,7 @@ level_t max_depth = 32;
 level_t trie_depth = 10;
 preorder_t max_tree_node = 1024;
 n_leaves_t n_points = 1000000;
-const uint8_t max_num_threads = 18;
+uint8_t max_num_threads = 18;
 const uint32_t read_number_count = 10000000;
 
 typedef unsigned long long int TimeStamp;
@@ -77,16 +77,16 @@ void test_insert_concurrency(){
     std::cout << n << " concurrent threads are supported.\n";
 
     for (uint8_t num_threads = 1; num_threads <= max_num_threads; num_threads ++){
-        std::thread *t_array = new std::thread[num_threads];
+        std::thread *threads = new std::thread[num_threads];
 
         TimeStamp start = GetTimestamp();
         for (uint8_t i = 0; i < num_threads; i++){
             
-            t_array[i] = std::thread(test_concurrency, mdtrie);
+            threads[i] = std::thread(test_concurrency, mdtrie);
         }
 
         for (uint8_t i = 0; i < num_threads; i++){
-            t_array[i].join();
+            threads[i].join();
         }
         TimeStamp diff = GetTimestamp() - start;
 
@@ -211,28 +211,26 @@ void test_read_concurrency(){
 
     // *******************************************************
 
+    std::cerr << "Maximum number of threads: " << std::thread::hardware_concurrency() << "\n";    
+    
     for (uint8_t num_threads = 1; num_threads <= max_num_threads; num_threads ++){
-        std::thread *t_array = new std::thread[num_threads];
 
         TimeStamp start = GetTimestamp();
-        
+
+        std::vector<std::thread> threads(num_threads);
+
         for (uint8_t i = 0; i < num_threads; i++)
         {    
-            // t_array[i] = std::thread(read_mdtrie_inserted, mdtrie, i, num_threads, vect);
-            t_array[i] = std::thread(read_mdtrie_inserted_from_vector, mdtrie, i, num_threads, vect);
+            threads[i] = std::thread(read_mdtrie_inserted_from_vector, mdtrie, i, num_threads, vect);
 
-            // cpu_set_t cpuset;
-            // CPU_ZERO(&cpuset);
-            // CPU_SET(i, &cpuset);
-            // int rc = pthread_setaffinity_np(t_array[i].native_handle(),
-            //                                 sizeof(cpu_set_t), &cpuset);
-            // if (rc != 0) {
-            //     std::cerr << "Error calling pthread_setaffinity_np: " << rc << "\n";
-            // }            
+            cpu_set_t cpuset;
+            CPU_ZERO(&cpuset);
+            CPU_SET(i, &cpuset);
+            sched_setaffinity(threads[i].native_handle(), sizeof(cpu_set_t), &cpuset);
         }
 
         for (uint8_t i = 0; i < num_threads; i++){
-            t_array[i].join();
+            threads[i].join();
         }
 
         TimeStamp diff = GetTimestamp() - start;
@@ -253,7 +251,6 @@ void test_read_concurrency(){
 
 const int n_itr = 100;
 uint64_t total_found_points = 0;
-// TimeStamp diff_range_search;
 TimeStamp total_range_search_latency = 0;
 void range_search_mdtrie(md_trie<DIMENSION> *mdtrie, uint64_t max[], uint64_t min[]){
 
@@ -334,16 +331,16 @@ void test_range_search(){
 
     // *******************************************************
     for (uint8_t num_threads = 1; num_threads <= max_num_threads; num_threads ++){
-        std::thread *t_array = new std::thread[num_threads];
+        std::thread *threads = new std::thread[num_threads];
 
         TimeStamp start = GetTimestamp();
         for (uint8_t i = 0; i < num_threads; i++){
             
-            t_array[i] = std::thread(range_search_mdtrie, mdtrie, max, min);
+            threads[i] = std::thread(range_search_mdtrie, mdtrie, max, min);
         }
 
         for (uint8_t i = 0; i < num_threads; i++){
-            t_array[i].join();
+            threads[i].join();
         }
         TimeStamp diff = GetTimestamp() - start;
 
