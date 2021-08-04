@@ -98,69 +98,159 @@ void test_insert_concurrency(){
     }
 
 }
-TimeStamp total_read_latency = 0;
-uint64_t total_count = 0;
 
-void read_mdtrie_inserted(md_trie<DIMENSION> *mdtrie, uint8_t thread_num, uint8_t total_thread_num){
-
-    auto *leaf_point = new data_point<DIMENSION>();
+std::vector<data_point<DIMENSION> *>get_dataset_vector()
+{
     char *line = nullptr;
     size_t len = 0;
     ssize_t read;
-    char *saveptr;
-    
     FILE *fp = fopen("../libmdtrie/bench/data/sample_shuf.txt", "r");
-    uint64_t count = 0;
 
+    n_leaves_t n_points = 0;
+    n_leaves_t n_lines = 14583357;
+    tqdm bar1;
+    std::vector<data_point<DIMENSION> *> vect;
     while ((read = getline(&line, &len, fp)) != -1)
     {
-        count ++;
-        
-        if (count % total_thread_num != thread_num){
-            continue;
-        }
-
-        char *token = strtok_r(line, " ", &saveptr);
+        auto *leaf_point = new data_point<DIMENSION>();
+        bar1.progress(n_points, n_lines);
+        // Get the first token
+        char *token = strtok(line, " ");
         char *ptr;
-        
         // Skip the second and third token
         for (uint8_t i = 0; i < 2; i ++){
-            token = strtok_r(nullptr, " ", &saveptr);
+            token = strtok(nullptr, " ");
         }
-
         for (dimension_t i = 0; i < DIMENSION; i++){
             if (i >= 4){
                 leaf_point->set_coordinate(i, leaf_point->get_coordinate(i % 4));
             }
             else {
-                token = strtok_r(nullptr, " ", &saveptr);
+                token = strtok(nullptr, " ");
                 leaf_point->set_coordinate(i, strtoul(token, &ptr, 10));
             }
         }
-        TimeStamp start = GetTimestamp();
-        if (!mdtrie->check(leaf_point, max_depth)){
-            fprintf(stderr, "error! not found\n");
-        }
-        total_read_latency += GetTimestamp() - start;
-        total_count ++;
+        vect.push_back(leaf_point);
+        n_points ++;
     }
-    
-    fclose(fp);
+    return vect;
+}
+
+
+void insert_mdtrie_from_vector(md_trie<DIMENSION> *mdtrie, uint8_t thread_num, uint8_t total_thread_num, std::vector<data_point<DIMENSION> *> vect){
+
+    n_leaves_t n_lines = 14583357;
+    for (uint64_t count = thread_num; count < n_lines; count += total_thread_num)
+    {
+        data_point<DIMENSION> *leaf_point = vect[count];
+        // TimeStamp start = GetTimestamp();
+        mdtrie->insert_trie(leaf_point, max_depth);
+        
+        // total_read_latency += GetTimestamp() - start;
+        // total_count ++;
+    }
     return;
 }
 
-void read_mdtrie_inserted_from_vector(md_trie<DIMENSION> *mdtrie, uint8_t thread_num, uint8_t total_thread_num, std::vector<data_point<DIMENSION> *> vect){
+void test_insert_concurrency_real_dataset(){
+    
+    auto *mdtrie = new md_trie<DIMENSION>(max_depth, trie_depth, max_tree_node);
+    std::vector<data_point<DIMENSION> *> vect = get_dataset_vector();
+    fprintf(stderr, "Dimension: %d\n", DIMENSION);
+    srand(static_cast<unsigned int>(time(0)));
+
+    unsigned int n = std::thread::hardware_concurrency();
+    // 36 concurrent threads are supported
+    // Pick 18 threads since 18 cores per socket
+    std::cout << n << " concurrent threads are supported.\n";
+
+    for (uint8_t num_threads = 1; num_threads <= max_num_threads; num_threads ++){
+        std::thread *threads = new std::thread[num_threads];
+
+        TimeStamp start = GetTimestamp();
+        for (uint8_t i = 0; i < num_threads; i++){
+            
+            threads[i] = std::thread(insert_mdtrie_from_vector, mdtrie, i, num_threads, vect);
+        }
+
+        for (uint8_t i = 0; i < num_threads; i++){
+            threads[i].join();
+        }
+        TimeStamp diff = GetTimestamp() - start;
+
+        uint64_t total_points = 14583357;
+
+        fprintf(stderr, "Total time to insert %ld points with %d threads: %lld us\n", total_points, num_threads, diff);
+        fprintf(stderr, "Throughput: %f per us\n", (float) total_points / diff);
+
+    }
+
+}
+
+// TODO: remove global variable
+// TimeStamp total_read_latency = 0;
+// uint64_t total_count = 0;
+
+// void read_mdtrie_inserted(md_trie<DIMENSION> *mdtrie, uint8_t thread_num, uint8_t total_thread_num){
+
+//     auto *leaf_point = new data_point<DIMENSION>();
+//     char *line = nullptr;
+//     size_t len = 0;
+//     ssize_t read;
+//     char *saveptr;
+    
+//     FILE *fp = fopen("../libmdtrie/bench/data/sample_shuf.txt", "r");
+//     uint64_t count = 0;
+
+//     while ((read = getline(&line, &len, fp)) != -1)
+//     {
+//         count ++;
+        
+//         if (count % total_thread_num != thread_num){
+//             continue;
+//         }
+
+//         char *token = strtok_r(line, " ", &saveptr);
+//         char *ptr;
+        
+//         // Skip the second and third token
+//         for (uint8_t i = 0; i < 2; i ++){
+//             token = strtok_r(nullptr, " ", &saveptr);
+//         }
+
+//         for (dimension_t i = 0; i < DIMENSION; i++){
+//             if (i >= 4){
+//                 leaf_point->set_coordinate(i, leaf_point->get_coordinate(i % 4));
+//             }
+//             else {
+//                 token = strtok_r(nullptr, " ", &saveptr);
+//                 leaf_point->set_coordinate(i, strtoul(token, &ptr, 10));
+//             }
+//         }
+//         // TimeStamp start = GetTimestamp();
+//         if (!mdtrie->check(leaf_point, max_depth)){
+//             fprintf(stderr, "error! not found\n");
+//         }
+//         // total_read_latency += GetTimestamp() - start;
+//         // total_count ++;
+//     }
+    
+//     fclose(fp);
+//     return;
+// }
+
+void read_mdtrie_inserted_from_vector(md_trie<DIMENSION> *mdtrie, uint8_t thread_num, uint8_t total_thread_num, std::vector<data_point<DIMENSION> *> *vect){
 
     n_leaves_t n_lines = 14583357;
     for (uint64_t count = thread_num; count < n_lines; count += total_thread_num){
 
-        data_point<DIMENSION> *leaf_point = vect[count];
-        TimeStamp start = GetTimestamp();
+        data_point<DIMENSION> *leaf_point = (*vect)[count];
+        // TimeStamp start = GetTimestamp();
         if (!mdtrie->check(leaf_point, max_depth)){
             fprintf(stderr, "error! not found\n");
         }
-        total_read_latency += GetTimestamp() - start;
-        total_count ++;
+        // total_read_latency += GetTimestamp() - start;
+        // total_count ++;
     }
     return;
 }
@@ -212,7 +302,7 @@ void test_read_concurrency(){
     // *******************************************************
 
     std::cerr << "Maximum number of threads: " << std::thread::hardware_concurrency() << "\n";    
-    
+
     for (uint8_t num_threads = 1; num_threads <= max_num_threads; num_threads ++){
 
         TimeStamp start = GetTimestamp();
@@ -221,7 +311,8 @@ void test_read_concurrency(){
 
         for (uint8_t i = 0; i < num_threads; i++)
         {    
-            threads[i] = std::thread(read_mdtrie_inserted_from_vector, mdtrie, i, num_threads, vect);
+            // TODO: pass vector by reference
+            threads[i] = std::thread(read_mdtrie_inserted_from_vector, mdtrie, i, num_threads, &vect);
 
             cpu_set_t cpuset;
             CPU_ZERO(&cpuset);
@@ -240,9 +331,9 @@ void test_read_concurrency(){
 
         fprintf(stderr, "Total time to read %ld points with %d threads: %lld us\n", total_points, num_threads, diff);
         fprintf(stderr, "Throughput: %f per us\n", (float) total_points / diff);
-        fprintf(stderr, "Latency per read %f\n", (float)total_read_latency / total_count);
-        total_read_latency = 0;
-        total_count = 0;
+        // fprintf(stderr, "Latency per read %f\n", (float)total_read_latency / total_count);
+        // total_read_latency = 0;
+        // total_count = 0;
 
         std::cerr << "\n";
     }
@@ -351,11 +442,10 @@ void test_range_search(){
     }
 }
 
-
 int main() {
 
     // test_range_search();
-    // test_insert_concurrency();
+    // test_insert_concurrency_real_dataset();
     test_read_concurrency();
 
 }
