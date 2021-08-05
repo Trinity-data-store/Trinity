@@ -473,9 +473,14 @@ public:
 
         if (frontiers_ != nullptr && current_frontier < num_frontiers_ && node == get_preorder(current_frontier)) {
             p = get_pointer(current_frontier);
+
+            // fprintf(stderr, "child reach next frontier\n");
+            // raise(SIGINT);
             current_frontier = 0;
             node_t temp_node = 0;
+            p->mutex.lock_shared();
             current_node = p->skip_children_subtree(temp_node, symbol, current_level, current_frontier);
+            p->mutex.unlock_shared();
         } else
             current_node = skip_children_subtree(node, symbol, current_level, current_frontier);
 
@@ -526,18 +531,18 @@ public:
         preorder_t current_frontier = 0;
         node_t current_node = 0;
         node_t temp_node = 0;
-        // mutex.lock_shared();
+        // return true;
+        mutex.lock_shared();
         while (level < length) {
             symbol_t current_symbol = leaf_point->leaf_to_symbol(level, max_depth_);
 
+            // return true;
             tree_block *current_treeblock = this;
             temp_node = child(current_treeblock, current_node, current_symbol, level,
                                             current_frontier);
             
-            // return true;
-
             if (temp_node == (node_t) -1){
-                // mutex.unlock_shared();
+                mutex.unlock_shared();
                 return false;
             }
             current_node = temp_node;
@@ -545,12 +550,12 @@ public:
             if (num_frontiers() > 0 && current_frontier < num_frontiers() &&
                 current_node == get_preorder(current_frontier)) {
                 tree_block<DIMENSION> *next_block = get_pointer(current_frontier);
-                // mutex.unlock_shared();
+                mutex.unlock_shared();
                 return next_block->walk_tree_block(leaf_point, length, level + 1);
             }
             level++;
         }
-        // mutex.unlock_shared();
+        mutex.unlock_shared();
         return true;
     }
 
@@ -598,13 +603,15 @@ public:
     }
 
     void get_node_path(node_t node, symbol_t *node_path) {
-        
+        mutex.lock_shared();
         if (node == 0){
             node_path[root_depth_] = dfuds_->next_symbol(0, 0, num_branches_ - 1);
             if (parent_tree_block_){
+                mutex.unlock_shared();
                 parent_tree_block_->get_node_path(treeblock_frontier_num_, node_path);
             }
             else {
+                mutex.unlock_shared();
                 parent_trie_node_->get_node_path_from_treeblock(root_depth_, node_path);
             }  
             return;          
@@ -693,11 +700,14 @@ public:
             node_path[root_depth_ + i] = symbol[i];
         }
         if (parent_tree_block_){
+            mutex.unlock_shared();
             parent_tree_block_->get_node_path(treeblock_frontier_num_, node_path);
         }
         else {
+            mutex.unlock_shared();
             parent_trie_node_->get_node_path_from_treeblock(root_depth_, node_path);
         }
+        
     }
 
     data_point<DIMENSION> *node_path_to_coordinates(symbol_t *node_path){
@@ -721,7 +731,7 @@ public:
                                             level_t level, preorder_t current_node, preorder_t prev_node, node_t current_frontier,
                                             point_array<DIMENSION> *found_points) {
 
-
+        mutex.lock_shared();
         if (level == max_depth_) {
             auto *leaf = new data_point<DIMENSION>();
             leaf->set(start_range->get());
@@ -733,10 +743,12 @@ public:
                 raise(SIGINT);
             }
             found_points->add_leaf(leaf);
+            mutex.unlock_shared();
             return;
         }
                                         
         if (current_node >= num_nodes_){
+            mutex.unlock_shared();
             return;
         }
 
@@ -765,13 +777,22 @@ public:
                 // if (current_node == new_current_node && current_node == 1){
                 //     raise(SIGINT);
                 // }
+                // if (num_frontiers() > 0 && current_frontier < num_frontiers() &&
+                //     current_node == get_preorder(new_current_frontier)) {
+                        
+                //     new_current_block = get_pointer(new_current_frontier);
+                // }
 
                 start_range->update_range_morton(end_range, current_symbol, level, max_depth_);
                 if (new_current_block != current_block){
+                    mutex.unlock_shared();
                     new_current_block->range_search_treeblock(start_range, end_range, new_current_block, level + 1, new_current_node, new_current_node, new_current_frontier, found_points);
+                    mutex.lock_shared();
                 }
                 else {
-                    new_current_block->range_search_treeblock(start_range, end_range, new_current_block, level + 1, new_current_node, current_node, new_current_frontier, found_points);                    
+                    mutex.unlock_shared();
+                    current_block->range_search_treeblock(start_range, end_range, new_current_block, level + 1, new_current_node, current_node, new_current_frontier, found_points);           
+                    mutex.lock_shared();         
                 }
 
                 (*start_range) = original_start_range;
@@ -780,6 +801,7 @@ public:
 
             current_symbol = dfuds_->next_symbol(current_symbol + 1, current_node, end_range_symbol);
         }
+        mutex.unlock_shared();
     }
 
 private:

@@ -214,7 +214,7 @@ class Bitmap {
   }
 
   inline uint64_t popcount(size_t pos, uint16_t width, bool is_on_data){
-    
+
     if (width <= 64){
       // return std::bitset<64>(GetValPos(pos, width, is_on_data)).count();
       return __builtin_popcountll(GetValPos(pos, width, is_on_data));      

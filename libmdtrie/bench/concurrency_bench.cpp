@@ -10,12 +10,11 @@
 #include <mutex>
 #include <rand_utils.h>
 
-
 const int DIMENSION = 3;
 level_t max_depth = 32;
 level_t trie_depth = 10;
 preorder_t max_tree_node = 1024;
-n_leaves_t n_points = 1000000;
+n_leaves_t n_points = 2000000;
 uint8_t max_num_threads = 18;
 const uint32_t read_number_count = 10000000;
 
@@ -28,7 +27,26 @@ static TimeStamp GetTimestamp() {
   return now.tv_usec + (TimeStamp) now.tv_sec * 1000000;
 }
 
-void test_concurrency(md_trie<DIMENSION> *mdtrie){
+void test_random_insert(md_trie<DIMENSION> *mdtrie){
+
+    auto *leaf_point = new data_point<DIMENSION>();
+    // TODO: bug, smaller range raise an error
+    symbol_t range = pow(2, max_depth);
+    auto *rand_generator = new utils::rand_utils();
+
+    for (n_leaves_t itr = 1; itr <= n_points; itr++) {
+
+        for (dimension_t i = 0; i < DIMENSION; i++) {
+            point_t coordinate = (point_t) rand_generator->rand_uint64(0, range - 1);
+            leaf_point->set_coordinate(i, coordinate);
+        }
+        
+        mdtrie->insert_trie(leaf_point, max_depth);
+    }
+    return;    
+}
+
+void test_random_read(md_trie<DIMENSION> *mdtrie){
 
     auto *leaf_point = new data_point<DIMENSION>();
     symbol_t range = pow(2, max_depth);
@@ -41,7 +59,7 @@ void test_concurrency(md_trie<DIMENSION> *mdtrie){
             leaf_point->set_coordinate(i, coordinate);
         }
         
-        mdtrie->insert_trie(leaf_point, max_depth);
+        mdtrie->check(leaf_point, max_depth);
     }
     return;    
 }
@@ -82,7 +100,7 @@ void test_insert_concurrency(){
         TimeStamp start = GetTimestamp();
         for (uint8_t i = 0; i < num_threads; i++){
             
-            threads[i] = std::thread(test_concurrency, mdtrie);
+            threads[i] = std::thread(test_random_insert, mdtrie);
         }
 
         for (uint8_t i = 0; i < num_threads; i++){
@@ -139,6 +157,7 @@ std::vector<data_point<DIMENSION> *>get_dataset_vector()
 
 void insert_mdtrie_from_vector(md_trie<DIMENSION> *mdtrie, uint8_t thread_num, uint8_t total_thread_num, std::vector<data_point<DIMENSION> *> vect){
 
+    // md_trie<DIMENSION> *mdtrie2 = new md_trie<DIMENSION>(max_depth, trie_depth, max_tree_node);
     n_leaves_t n_lines = 14583357;
     for (uint64_t count = thread_num; count < n_lines; count += total_thread_num)
     {
@@ -178,7 +197,7 @@ void test_insert_concurrency_real_dataset(){
         }
         TimeStamp diff = GetTimestamp() - start;
 
-        uint64_t total_points = 14583357;
+        uint64_t total_points = 14583357 * num_threads;
 
         fprintf(stderr, "Total time to insert %ld points with %d threads: %lld us\n", total_points, num_threads, diff);
         fprintf(stderr, "Throughput: %f per us\n", (float) total_points / diff);
@@ -238,6 +257,27 @@ void test_insert_concurrency_real_dataset(){
 //     fclose(fp);
 //     return;
 // }
+
+void random_read_mdtrie_inserted_from_vector(md_trie<DIMENSION> *mdtrie, uint8_t total_thread_num, std::vector<data_point<DIMENSION> *> *vect){
+
+    n_leaves_t n_lines = 14583357;
+    uint64_t total_iter = n_lines / total_thread_num;
+    uint64_t count = 0;
+    auto *rand_generator = new utils::rand_utils();
+    while (count < total_iter){
+        count ++;
+
+        data_point<DIMENSION> *leaf_point = (*vect)[rand_generator->rand_uint64(0, n_lines - 1)];
+        // TimeStamp start = GetTimestamp();
+        if (!mdtrie->check(leaf_point, max_depth)){
+            fprintf(stderr, "error! not found\n");
+        }
+        // total_read_latency += GetTimestamp() - start;
+        // total_count ++;
+    }
+    return;
+}
+
 
 void read_mdtrie_inserted_from_vector(md_trie<DIMENSION> *mdtrie, uint8_t thread_num, uint8_t total_thread_num, std::vector<data_point<DIMENSION> *> *vect){
 
@@ -312,7 +352,8 @@ void test_read_concurrency(){
         for (uint8_t i = 0; i < num_threads; i++)
         {    
             // TODO: pass vector by reference
-            threads[i] = std::thread(read_mdtrie_inserted_from_vector, mdtrie, i, num_threads, &vect);
+            threads[i] = std::thread(random_read_mdtrie_inserted_from_vector, mdtrie, num_threads, &vect);
+            // threads[i] = std::thread(read_mdtrie_inserted_from_vector, mdtrie, i, num_threads, &vect);
 
             cpu_set_t cpuset;
             CPU_ZERO(&cpuset);
@@ -442,10 +483,87 @@ void test_range_search(){
     }
 }
 
+void random_range_search_mdtrie(md_trie<DIMENSION> *mdtrie){
+
+    auto *start_range = new data_point<DIMENSION>();
+    auto *end_range = new data_point<DIMENSION>();
+    auto *found_points = new point_array<DIMENSION>();
+    int itr = 1;
+    symbol_t range = pow(2, max_depth);
+    auto *rand_generator = new utils::rand_utils();
+    
+    while (itr <= n_itr){
+
+        for (dimension_t i = 0; i < DIMENSION; i++){
+            point_t start = (point_t) rand_generator->rand_uint64(0, range - 2);
+            point_t end = (point_t) rand_generator->rand_uint64(start + 1, range - 1);
+            start_range->set_coordinate(i,  start);
+            end_range->set_coordinate(i, end);
+        }
+        TimeStamp start = GetTimestamp();
+        mdtrie->range_search_trie(start_range, end_range, mdtrie->root(), 0, found_points);
+        total_range_search_latency += GetTimestamp() - start;
+
+        total_found_points += found_points->size();
+        
+        found_points->reset();
+        itr++;
+    }
+}
+
+void test_read_insert_random(){
+
+    auto *mdtrie = new md_trie<DIMENSION>(max_depth, trie_depth, max_tree_node);
+
+    fprintf(stderr, "Dimension: %d\n", DIMENSION);
+    srand(static_cast<unsigned int>(time(0)));
+
+    unsigned int n = std::thread::hardware_concurrency();
+    // 36 concurrent threads are supported
+    // Pick 18 threads since 18 cores per socket
+    std::cout << n << " concurrent threads are supported.\n";
+
+    for (uint8_t num_threads = 1; num_threads <= max_num_threads; num_threads ++){
+        std::thread *threads = new std::thread[num_threads];
+
+        TimeStamp start = GetTimestamp();
+        for (uint8_t i = 0; i < num_threads; i++){
+
+            // if (i % 3 == 0)
+            //     threads[i] = std::thread(test_random_insert, mdtrie);
+            // else if (i % 3 == 1)
+            //     threads[i] = std::thread(random_range_search_mdtrie, mdtrie);
+            // else
+            //     threads[i] = std::thread(test_random_read, mdtrie);
+
+
+            if (i % 2 == 0)
+                threads[i] = std::thread(test_random_insert, mdtrie);
+            else
+                threads[i] = std::thread(test_random_read, mdtrie);
+        }
+
+        for (uint8_t i = 0; i < num_threads; i++){
+            threads[i].join();
+        }
+        TimeStamp diff = GetTimestamp() - start;
+
+        uint64_t total_points = n_points * num_threads;
+
+        fprintf(stderr, "Total time to insert/read %ld points with %d threads: %lld us\n", total_points, num_threads, diff);
+        fprintf(stderr, "Throughput: %f per us\n", (float) total_points / diff);
+
+    }    
+
+
+
+}
 int main() {
 
+    // test_insert_concurrency();
+    test_read_insert_random();
     // test_range_search();
     // test_insert_concurrency_real_dataset();
-    test_read_concurrency();
+    // test_read_concurrency();
 
 }
