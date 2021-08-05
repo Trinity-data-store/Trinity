@@ -40,6 +40,9 @@ add_executable(range_search_bench
 add_executable(concurrency_bench
         bench/concurrency_bench.cpp)
 
+add_executable(trie_one_dimension_bench
+        bench/trie_one_dimension_bench.cpp)
+
 target_link_libraries(mdtrie_bench ${MDTRIE_LIBS})
 target_link_libraries(range_search_bench ${MDTRIE_LIBS})
 target_link_libraries(concurrency_bench ${MDTRIE_LIBS})

@@ -55,7 +55,7 @@ public:
         }
         tree_block<DIMENSION> *current_treeblock = nullptr;
         if (current_trie_node->block() == nullptr) {
-            current_treeblock = new tree_block<DIMENSION>(trie_depth_, initial_tree_capacity_, 1, max_depth_, max_tree_nodes_);
+            current_treeblock = new tree_block<DIMENSION>(trie_depth_, initial_tree_capacity_, 1, max_depth_, max_tree_nodes_, current_trie_node);
             current_trie_node->block(current_treeblock);
             // current_treeblock->set_parent_trie_node(current_trie_node);
         } else

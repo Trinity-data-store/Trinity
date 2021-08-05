@@ -8,6 +8,7 @@
 #include <cstring>
 #include <iostream>
 #include <defs.h>
+#include <bitset>
 
 namespace bitmap {
 
@@ -148,12 +149,12 @@ class Bitmap {
     
     if (is_on_data){
       data_ = (data_type *)realloc(data_, BITS2BLOCKS(data_size_ + increase_width) * sizeof(data_type));
-      ClearWidth(data_size_, increase_width, true);
+      // ClearWidth(data_size_, increase_width, true);
       data_size_ += increase_width;
     }
     else {
       flag_ = (data_type *)realloc(flag_, BITS2BLOCKS(flag_size_ + increase_width) * sizeof(data_type));
-      ClearWidth(flag_size_, increase_width, false);
+      // ClearWidth(flag_size_, increase_width, false);
       flag_size_ += increase_width;      
     }
   }
@@ -213,18 +214,21 @@ class Bitmap {
   }
 
   inline uint64_t popcount(size_t pos, uint16_t width, bool is_on_data){
-    
+
     if (width <= 64){
+      // return std::bitset<64>(GetValPos(pos, width, is_on_data)).count();
       return __builtin_popcountll(GetValPos(pos, width, is_on_data));      
     }
     pos_type s_off = pos % 64;
     pos_type s_idx = pos / 64;
+    // uint64_t count = std::bitset<64>(GetValPos(pos, 64 - s_off, is_on_data)).count();
     uint64_t count = __builtin_popcountll(GetValPos(pos, 64 - s_off, is_on_data));
     width -= 64 - s_off;
     s_idx += 1;
 
     if (is_on_data){
       while (width > 64){
+        // count += std::bitset<64>(data_[s_idx]).count();
         count += __builtin_popcountll(data_[s_idx]);
         width -= 64;
         s_idx += 1;
@@ -232,12 +236,14 @@ class Bitmap {
     }
     else {
       while (width > 64){
+        // count += std::bitset<64>(flag_[s_idx]).count();
         count += __builtin_popcountll(flag_[s_idx]);
         width -= 64;
         s_idx += 1;
       }
     }
     if (width > 0){
+      // return count + std::bitset<64>(GetValPos(s_idx * 64, width, is_on_data)).count();
       return count + __builtin_popcountll(GetValPos(s_idx * 64, width, is_on_data));  
     }
     return count;
@@ -392,6 +398,12 @@ class Bitmap {
     SETBITVAL(flag_, from_node);
   }
 
+  inline void clear_node(preorder_t node){
+    pos_type node_pos = get_node_data_pos(node);
+    ClearWidth(node_pos, dimension_, true);
+    ClearWidth(node, 1, false);
+  }
+
   inline void bulk_clear_node(preorder_t start_node, preorder_t end_node)
   {
     pos_type start_node_pos = get_node_data_pos(start_node);
@@ -468,6 +480,9 @@ class Bitmap {
 
   inline symbol_t next_symbol(symbol_t symbol, preorder_t node, symbol_t end_symbol_range){
     
+    if (node >= flag_size_){
+      raise(SIGINT);
+    }
     pos_type node_pos = get_node_data_pos(node);
 
     if (is_collapse(node)){
@@ -492,7 +507,7 @@ class Bitmap {
         if (over_64){
             return next_symbol(symbol + limit, node, end_symbol_range);
         }
-        return symbol + limit;
+        return end_symbol_range + 1;
     }
   }
 

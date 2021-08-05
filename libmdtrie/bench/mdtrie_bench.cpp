@@ -54,7 +54,7 @@ void test_random_data(n_leaves_t n_points, level_t max_depth, level_t trie_depth
 
 void test_real_data(level_t max_depth, level_t trie_depth, preorder_t max_tree_node){
 
-    fptr = fopen(file_path, "a");
+    // fptr = fopen(file_path, "a");
     // fprintf(fptr, "dimensions: %d, trie_depth: %ld, max_tree_node: %ld\n", DIMENSION, trie_depth, max_tree_node);
     auto *mdtrie = new md_trie<DIMENSION>(max_depth, trie_depth, max_tree_node);
     auto *leaf_point = new data_point<DIMENSION>();
@@ -109,8 +109,8 @@ void test_real_data(level_t max_depth, level_t trie_depth, preorder_t max_tree_n
         n_points ++;
     }
     bar1.finish();
-    fprintf(fptr, "Average time to insert one point: %f microseconds per insertion\n", (float) diff / n_points);
-    fprintf(fptr, "Size of data structure that contains %ld points: %ld bytes\n", n_lines, mdtrie->size());
+    fprintf(stderr, "Average time to insert one point: %f microseconds per insertion\n", (float) diff / n_points);
+    fprintf(stderr, "Size of data structure that contains %ld points: %ld bytes\n", n_lines, mdtrie->size());
 
     // Query n_lines random points
     n_points = 0;
@@ -134,9 +134,7 @@ void test_real_data(level_t max_depth, level_t trie_depth, preorder_t max_tree_n
         n_points ++;
     }
     bar2.finish();
-    fprintf(fptr, "Average time to query nonexistent points: %f microseconds per query\n", (float)diff / n_nonexistent); 
-    fprintf(fptr, "\n");
-    fclose(fptr);
+    fprintf(stderr, "Average time to query nonexistent points: %f microseconds per query\n", (float)diff / n_nonexistent); 
 
     // Time to query the inserted points
     rewind(fp);
@@ -167,9 +165,7 @@ void test_real_data(level_t max_depth, level_t trie_depth, preorder_t max_tree_n
         n_points ++;
     }
     bar3.finish();
-    fprintf(fptr, "Average time to query points that are in the trie: %f microseconds per query\n", (float)diff / n_points);
-    fprintf(fptr, "\n");
-    fclose(fptr);
+    fprintf(stderr, "Average time to query points that are in the trie: %f microseconds per query\n", (float)diff / n_points);
 }
 
 void test_insert_data(level_t max_depth, level_t trie_depth, preorder_t max_tree_node){
