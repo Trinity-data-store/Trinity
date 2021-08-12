@@ -18,14 +18,14 @@ n_leaves_t n_points = 2000000;
 uint8_t max_num_threads = 18;
 const uint32_t read_number_count = 10000000;
 
-typedef unsigned long long int TimeStamp;
+// typedef unsigned long long int TimeStamp;
 
-static TimeStamp GetTimestamp() {
-  struct timeval now;
-  gettimeofday(&now, nullptr);
+// static TimeStamp GetTimestamp() {
+//   struct timeval now;
+//   gettimeofday(&now, nullptr);
 
-  return now.tv_usec + (TimeStamp) now.tv_sec * 1000000;
-}
+//   return now.tv_usec + (TimeStamp) now.tv_sec * 1000000;
+// }
 
 void test_random_insert(md_trie<DIMENSION> *mdtrie){
 

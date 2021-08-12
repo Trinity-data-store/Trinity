@@ -232,8 +232,7 @@ public:
             for (level_t i = level; i < length; i++) {
                 dfuds_->clear_node(from_node);
                 symbol_t next_symbol = leaf_point->leaf_to_symbol(i, max_depth_);
-                dfuds_->set_symbol(from_node, next_symbol, true);
-                insert_bimap(original_node);
+                dfuds_->set_symbol(from_node, next_symbol, true);                
 
                 num_nodes_++;
                 from_node++;
@@ -244,6 +243,8 @@ public:
                     set_preorder(j, get_preorder(j) + length - level);
                     set_pointer(j, get_pointer(j));
                 }
+
+            insert_bimap(this, from_node, 0);
             mutex.unlock();
 
         } else if (num_nodes_ + (length - level) - 1 <= max_tree_nodes) {

@@ -17,7 +17,7 @@ const int DIMENSION = 2;
 
 void test_real_data(level_t max_depth, level_t trie_depth, preorder_t max_tree_node){
     // to-do
-    Bimap primary_key_tuple;
+    // Bimap primary_key_tuple;
     
     auto *mdtrie = new md_trie<DIMENSION>(max_depth, trie_depth, max_tree_node);
     auto *leaf_point = new data_point<DIMENSION>();

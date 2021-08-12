@@ -47,6 +47,14 @@ struct frontier_node {
     tree_block<DIMENSION> *pointer_;
 };
 
+typedef unsigned long long int TimeStamp;
+
+static TimeStamp GetTimestamp() {
+  struct timeval now;
+  gettimeofday(&now, nullptr);
+
+  return now.tv_usec + (TimeStamp) now.tv_sec * 1000000;
+}
 
 
 #endif //MD_TRIE_DEFS_H

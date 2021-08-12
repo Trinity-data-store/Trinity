@@ -8,13 +8,13 @@ const int DIMENSION = 2;
 FILE *fptr;
 char file_path[] = "benchmark_range_search_2.csv";
 
-typedef unsigned long long int TimeStamp;
-static TimeStamp GetTimestamp() {
-  struct timeval now;
-  gettimeofday(&now, nullptr);
+// typedef unsigned long long int TimeStamp;
+// static TimeStamp GetTimestamp() {
+//   struct timeval now;
+//   gettimeofday(&now, nullptr);
 
-  return now.tv_usec + (TimeStamp) now.tv_sec * 1000000;
-}
+//   return now.tv_usec + (TimeStamp) now.tv_sec * 1000000;
+// }
 
 
 void insert_for_node_path(point_array<DIMENSION> *found_points, level_t max_depth, level_t trie_depth, preorder_t max_tree_node){

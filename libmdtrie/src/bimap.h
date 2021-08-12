@@ -1,38 +1,75 @@
 #ifndef MD_TRIE_BIMAP_H
 #define MD_TRIE_BIMAP_H
 
-
 #include <boost/bimap.hpp>
+#include <sys/time.h>
 
 typedef uint64_t preorder_t;
 typedef uint64_t symbol_t;
 typedef uint8_t dimension_t;
 
-template<dimension_t DIMENSION>
-class tree_block;
+struct node_config {
 
-// typedef std::tuple<void *, preorder_t, symbol_t> node_triple;
-// typedef boost::bimap<preorder_t, node_triple> Bimap;
-// typedef boost::bimap<preorder_t, preorder_t> Bimap;
-// Bimap primary_tuple_map;
+    uint64_t parent_ptr;
+    unsigned int parent_node : 12;
+    unsigned int symbol : 12;
 
-std::unordered_map<preorder_t, preorder_t> p_key_to_node;
-std::unordered_map<preorder_t, preorder_t> node_to_p_key;
+    bool operator==(const node_config &o) const {
+        return parent_ptr == o.parent_ptr && parent_node == o.parent_node && symbol == o.symbol;
+    }
+};
+
+// Reference: https://dawnarc.com/2019/09/c-how-to-use-a-struct-as-key-in-a-std-map/
+
+namespace std {
+
+template <>
+struct hash<node_config>
+{
+    std::size_t operator()(const node_config& n) const
+    {
+        using std::size_t;
+        using std::hash;
+        using std::uint64_t;
+
+        // Compute individual hash values for first,
+        // second and third and combine them using XOR
+        // and bit shifting:
+
+        return ((hash<uint64_t>()(n.parent_ptr)
+        ^ (hash<uint64_t>()(n.parent_node) << 1)) >> 1)
+        ^ (hash<uint64_t>()(n.symbol) << 1);
+        }
+    };
+}
+
+std::unordered_map<preorder_t, node_config> p_key_to_node;
+std::unordered_map<node_config, preorder_t> node_to_p_key;
+
 preorder_t map_size = 0;
 
-preorder_t generate_primary_key()
-{
-    map_size ++;
-    return map_size;
-}
+typedef unsigned long long int TimeStamp;
+static TimeStamp GetTimestamp();
 
-void insert_bimap(preorder_t parent_node)
-{
-    preorder_t p_key = generate_primary_key();
-    p_key_to_node[p_key] = parent_node;
-    node_to_p_key[parent_node] = p_key;
-}
+TimeStamp total_bimap = 0;
+uint64_t bimap_insertion_count = 0;
 
+void insert_bimap(void *treeblock_ptr, preorder_t parent_node, symbol_t symbol)
+{
+    TimeStamp start = GetTimestamp(); 
+    map_size++;
+    bimap_insertion_count++;
+
+    node_config node;
+    node.parent_ptr = (uint64_t) treeblock_ptr;
+    node.parent_node = parent_node;
+    node.symbol = symbol;
+    
+    p_key_to_node.emplace(map_size, node);
+    node_to_p_key.emplace(node, map_size);
+
+    total_bimap += GetTimestamp() - start;
+}
 
 #endif //MD_TRIE_BIMAP_H
 
