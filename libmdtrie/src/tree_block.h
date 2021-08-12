@@ -191,7 +191,7 @@ public:
         //  node is a frontier node
         if (frontiers_ != nullptr && current_frontier < num_frontiers_ && node == get_preorder(current_frontier)) {
             dfuds_->set_symbol(node, leaf_point->leaf_to_symbol(level, max_depth_), false);
-
+    
             mutex.unlock();
             get_pointer(current_frontier)->insert(0, leaf_point, level, length, 0);
 
@@ -200,7 +200,10 @@ public:
             //  If there is only one character left
             //  Insert that character into the correct position
         else if (length == 1) {
-            dfuds_->set_symbol(node, leaf_point->leaf_to_symbol(level, max_depth_), false);
+            symbol_t next_symbol = leaf_point->leaf_to_symbol(level, max_depth_);
+            dfuds_->set_symbol(node, next_symbol, false);
+            insert_bimap(this, node, next_symbol);
+            // assert(check_bimap_node_config(this, node, next_symbol));
             mutex.unlock();
             // return;
         }
@@ -244,7 +247,9 @@ public:
                     set_pointer(j, get_pointer(j));
                 }
 
-            insert_bimap(this, from_node, 0);
+            symbol_t last_symbol = leaf_point->leaf_to_symbol(length - 1, max_depth_);
+            insert_bimap(this, from_node - 1, last_symbol);
+
             mutex.unlock();
 
         } else if (num_nodes_ + (length - level) - 1 <= max_tree_nodes) {

@@ -14,6 +14,7 @@ struct node_config {
     unsigned int parent_node : 12;
     unsigned int symbol : 12;
 
+    // Required for bimap to work
     bool operator==(const node_config &o) const {
         return parent_ptr == o.parent_ptr && parent_node == o.parent_node && symbol == o.symbol;
     }
@@ -69,6 +70,21 @@ void insert_bimap(void *treeblock_ptr, preorder_t parent_node, symbol_t symbol)
     node_to_p_key.emplace(node, map_size);
 
     total_bimap += GetTimestamp() - start;
+}
+
+bool check_bimap_node_config(void *treeblock_ptr, preorder_t parent_node, symbol_t symbol)
+{
+
+    std::unordered_map<node_config, preorder_t>::const_iterator node_to_p_key_itr;  
+
+    node_config node;
+    node.parent_ptr = (uint64_t) treeblock_ptr;
+    node.parent_node = parent_node;
+    node.symbol = symbol;
+    
+    node_to_p_key_itr = node_to_p_key.find(node);
+    return node_to_p_key_itr != node_to_p_key.end();
+
 }
 
 #endif //MD_TRIE_BIMAP_H
