@@ -48,8 +48,8 @@ void test_random_data(n_leaves_t n_points, level_t max_depth, level_t trie_depth
     }
 
     t1 = GetTimestamp();
-    fprintf(fptr, "Time to insert %ld points with %d dimensions: %llu microseconds\n", n_points, DIMENSION, (t1 - t0));
-    fprintf(fptr, "Average time to insert one point: %llu microseconds\n", (t1 - t0) / n_points);
+    fprintf(stderr, "Time to insert %ld points with %d dimensions: %llu microseconds\n", n_points, DIMENSION, (t1 - t0));
+    fprintf(stderr, "Average time to insert one point: %f microseconds\n", (float) (t1 - t0) / n_points);
 }
 
 void test_real_data(level_t max_depth, level_t trie_depth, preorder_t max_tree_node){
@@ -420,6 +420,6 @@ void cdf_insert(level_t max_depth, level_t trie_depth, preorder_t max_tree_node)
 
 int main() {
 
-    test_real_data(32, 10, 1024);
+    test_random_data(10000, 32, 10, 1024);
 }
 

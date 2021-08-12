@@ -231,7 +231,10 @@ public:
             //  Insert all remaining characters (Remember length -- above)
             for (level_t i = level; i < length; i++) {
                 dfuds_->clear_node(from_node);
-                dfuds_->set_symbol(from_node, leaf_point->leaf_to_symbol(i, max_depth_), true);
+                symbol_t next_symbol = leaf_point->leaf_to_symbol(i, max_depth_);
+                dfuds_->set_symbol(from_node, next_symbol, true);
+                insert_bimap(original_node);
+
                 num_nodes_++;
                 from_node++;
             }

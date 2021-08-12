@@ -3,6 +3,7 @@
 
 #include <cinttypes>
 #include <vector>
+#include <bimap.h>
 
 // Maximum number of bits for node configuration
 typedef uint64_t node_t;
@@ -45,5 +46,7 @@ struct frontier_node {
     preorder_t preorder_;
     tree_block<DIMENSION> *pointer_;
 };
+
+
 
 #endif //MD_TRIE_DEFS_H
