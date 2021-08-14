@@ -94,4 +94,3 @@ TEST_CASE("Check Contiguous Data", "[trie]") {
     srand(static_cast<unsigned int>(time(0)));
     REQUIRE(test_contiguous_data(10000, 10, 3, 128));
 }
-

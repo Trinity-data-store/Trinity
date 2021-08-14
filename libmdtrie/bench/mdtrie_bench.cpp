@@ -42,7 +42,7 @@ void test_random_data(n_leaves_t n_points, level_t max_depth, level_t trie_depth
     t1 = GetTimestamp();
     fprintf(stderr, "Time to insert %ld points with %d dimensions: %llu microseconds\n", n_points, DIMENSION, (t1 - t0));
     fprintf(stderr, "Average time to insert one point: %f microseconds\n", (float) (t1 - t0) / n_points);
-    fprintf(stderr, "Total bimap insertion time: %lld, total bimap count: %ld\n", total_bimap, bimap_insertion_count);
+    // fprintf(stderr, "Total bimap insertion time: %lld, total bimap count: %ld\n", total_bimap, bimap_insertion_count);
 }
 
 void test_real_data(level_t max_depth, level_t trie_depth, preorder_t max_tree_node){
@@ -219,7 +219,8 @@ void test_insert_data(level_t max_depth, level_t trie_depth, preorder_t max_tree
     fprintf(stderr, "Dimension: %d\n", DIMENSION);
     fprintf(stderr, "Average time to insert one point: %f microseconds\n", (float)diff / n_points);
     std::cerr << "Storage: " << mdtrie->size() << " bytes\n";
-    fprintf(stderr, "Total bimap insertion time: %lld, total bimap count: %ld\n", total_bimap, bimap_insertion_count);
+    fprintf(stderr, "Total primary key: %ld, out of %ld\n", current_primary_key, n_lines);
+    // fprintf(stderr, "Total bimap insertion time: %lld, total bimap count: %ld\n", total_bimap, bimap_insertion_count);
     return;
     
 }

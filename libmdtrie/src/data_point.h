@@ -14,7 +14,7 @@ private:
     symbol_t parent_symbol;
     node_t parent_node;
     point_t coordinates[DIMENSION] = {};
-
+    preorder_t primary_key = 0;
 public:
 
     explicit data_point(){
@@ -35,6 +35,14 @@ public:
 
     inline void set_coordinate(dimension_t index, point_t value){
         coordinates[index] = value;
+    }
+
+    inline void set_primary(preorder_t value){
+        primary_key = value;
+    }
+
+    inline preorder_t read_primary(){
+        return primary_key;
     }
 
     inline symbol_t get_parent_symbol(){

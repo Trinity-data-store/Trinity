@@ -103,7 +103,7 @@ public:
         // If we reach the bottom of the top-level trie
         if (level == trie_depth_) {
             auto *current_treeblock = (tree_block<DIMENSION> *) current_trie_node->block();
-            current_treeblock->range_search_treeblock(start_range, end_range, current_treeblock, level, 0, 0, 0, found_points);
+            current_treeblock->range_search_treeblock(start_range, end_range, current_treeblock, level, 0, 0, 0, 0, found_points);
             return;
         }
         symbol_t start_morton = start_range->leaf_to_symbol(level, max_depth_);

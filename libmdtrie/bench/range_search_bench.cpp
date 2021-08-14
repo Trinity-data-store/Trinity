@@ -3,6 +3,7 @@
 #include <sys/time.h>
 #include <climits>
 #include <tqdm.h>
+#include <vector>
 
 const int DIMENSION = 2;
 FILE *fptr;
@@ -17,7 +18,7 @@ char file_path[] = "benchmark_range_search_2.csv";
 // }
 
 
-void insert_for_node_path(point_array<DIMENSION> *found_points, level_t max_depth, level_t trie_depth, preorder_t max_tree_node){
+void insert_for_node_path(point_array<DIMENSION> *found_points, level_t max_depth, level_t trie_depth, preorder_t max_tree_node, std::vector<data_point<DIMENSION>> *all_points){
     // to-do
     
     auto *mdtrie = new md_trie<DIMENSION>(max_depth, trie_depth, max_tree_node);
@@ -77,8 +78,20 @@ void insert_for_node_path(point_array<DIMENSION> *found_points, level_t max_dept
                 }
             }
         }
+        (*all_points).push_back((*leaf_point));
+        if (n_points != current_primary_key){
+            raise(SIGINT);
+        }
+        // if (n_points == 86){
+        //     raise(SIGINT);
+        // }
         mdtrie->insert_trie(leaf_point, max_depth);
         n_points ++;
+        // assert(n_points == current_primary_key);
+
+        // if (n_points == 87){
+        //     break;
+        // }
     }
     bar.finish();
     fprintf(stderr, "md-trie size: %ld\n", mdtrie->size());   
@@ -86,18 +99,27 @@ void insert_for_node_path(point_array<DIMENSION> *found_points, level_t max_dept
     auto *start_range = new data_point<DIMENSION>();
     auto *end_range = new data_point<DIMENSION>();
 
-    while (found_points->size() == 0){
-        for (dimension_t i = 0; i < DIMENSION; i++){
-            start_range->set_coordinate(i,  min[i] + rand() % (max[i] - min[i] + 1));
-            end_range->set_coordinate(i, start_range->get_coordinate(i) + rand() % (max[i] - start_range->get_coordinate(i) + 1));
-        }
-        mdtrie->range_search_trie(start_range, end_range, mdtrie->root(), 0, found_points);
+    for (dimension_t i = 0; i < DIMENSION; i++){
+        start_range->set_coordinate(i,  min[i]);
+        end_range->set_coordinate(i, max[i]);
     }
+    mdtrie->range_search_trie(start_range, end_range, mdtrie->root(), 0, found_points);
+
+    // while (found_points->size() == 0){
+    //     for (dimension_t i = 0; i < DIMENSION; i++){
+    //         start_range->set_coordinate(i,  min[i] + rand() % (max[i] - min[i] + 1));
+    //         end_range->set_coordinate(i, start_range->get_coordinate(i) + rand() % (max[i] - start_range->get_coordinate(i) + 1));
+    //     }
+    //     mdtrie->range_search_trie(start_range, end_range, mdtrie->root(), 0, found_points);
+    // }
 }
 
 void test_node_path_only(level_t max_depth, level_t trie_depth, preorder_t max_tree_node){
     auto *found_points = new point_array<DIMENSION>();
-    insert_for_node_path(found_points, max_depth, trie_depth, max_tree_node);
+    auto *all_points = new std::vector<data_point<DIMENSION>>();
+
+    insert_for_node_path(found_points, max_depth, trie_depth, max_tree_node, all_points);
+    // assert(all_points->size() == 14583357);
     // while (found_points->size() == 0){
     //     found_points = insert_for_node_path(max_depth, trie_depth, max_tree_node);
     // }
@@ -122,10 +144,28 @@ void test_node_path_only(level_t max_depth, level_t trie_depth, preorder_t max_t
         auto returned_coordinates = parent_treeblock->node_path_to_coordinates(node_path);
         diff += GetTimestamp() - start;
 
-        for (dimension_t i = 0; i < DIMENSION; i++){
-            if (returned_coordinates->get_coordinate(i) != point->get_coordinate(i)){
+        for (dimension_t j = 0; j < DIMENSION; j++){
+            if (returned_coordinates->get_coordinate(j) != point->get_coordinate(j)){
                 raise(SIGINT);
             }
+        }
+
+        preorder_t returned_primary_key = point->read_primary();
+        bool found = false;
+
+        data_point<DIMENSION> current_point = (*all_points)[returned_primary_key];
+
+        for (dimension_t j = 0; j < DIMENSION; j++){
+            if (returned_coordinates->get_coordinate(j) != current_point.get_coordinate(j)){
+                break;
+            }
+            if (j == DIMENSION - 1){
+                found = true;
+            }
+        }
+
+        if (!found){
+            raise(SIGINT);
         }
         free(node_path);
     }
@@ -541,6 +581,7 @@ int main() {
     
     // test_search_one_dimension(32, 10, 1024, 100);
     // test_range_only(32, 10, 1024, 50);
-    test_real_data(32, 10, 1024, 50);
+    // test_real_data(32, 10, 1024, 50);
+    test_node_path_only(32, 10, 1024);
 
 }
