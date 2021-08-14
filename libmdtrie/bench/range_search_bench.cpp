@@ -5,7 +5,7 @@
 #include <tqdm.h>
 #include <vector>
 
-const int DIMENSION = 2;
+const int DIMENSION = 9;
 FILE *fptr;
 char file_path[] = "benchmark_range_search_2.csv";
 
@@ -49,6 +49,8 @@ void insert_for_node_path(point_array<DIMENSION> *found_points, level_t max_dept
     n_leaves_t n_lines = 14583357;
     // diff = 0;
     tqdm bar;
+    TimeStamp start, diff;
+
     while ((read = getline(&line, &len, fp)) != -1)
     {
         bar.progress(n_points, n_lines);
@@ -85,7 +87,9 @@ void insert_for_node_path(point_array<DIMENSION> *found_points, level_t max_dept
         // if (n_points == 86){
         //     raise(SIGINT);
         // }
+        start = GetTimestamp();
         mdtrie->insert_trie(leaf_point, max_depth);
+        diff += GetTimestamp() - start;
         n_points ++;
         // assert(n_points == current_primary_key);
 
@@ -94,7 +98,9 @@ void insert_for_node_path(point_array<DIMENSION> *found_points, level_t max_dept
         // }
     }
     bar.finish();
+    fprintf(stderr, "dimension: %d\n", DIMENSION);
     fprintf(stderr, "md-trie size: %ld\n", mdtrie->size());   
+    fprintf(stderr, "Average time to insert one point: %f microseconds per insertion\n", (float) diff / n_points);
     
     auto *start_range = new data_point<DIMENSION>();
     auto *end_range = new data_point<DIMENSION>();
@@ -103,8 +109,11 @@ void insert_for_node_path(point_array<DIMENSION> *found_points, level_t max_dept
         start_range->set_coordinate(i,  min[i]);
         end_range->set_coordinate(i, max[i]);
     }
+    start = GetTimestamp();
     mdtrie->range_search_trie(start_range, end_range, mdtrie->root(), 0, found_points);
+    diff = GetTimestamp() - start;
 
+    fprintf(stderr, "Average time to range query one point: %f microseconds\n", (float) diff / found_points->size());
     // while (found_points->size() == 0){
     //     for (dimension_t i = 0; i < DIMENSION; i++){
     //         start_range->set_coordinate(i,  min[i] + rand() % (max[i] - min[i] + 1));

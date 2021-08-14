@@ -117,9 +117,9 @@ public:
                     next_frontier_preorder = get_preorder(current_frontier);
                 --index_to_node[node_stack_top - 1].n_children_;
 
-                if (index_to_primary[i]){
-                    raise(SIGINT);
-                }
+                // if (index_to_primary[i]){
+                //     raise(SIGINT);
+                // }
             }
                 //  Start searching for its children
             else if (depth < max_depth_ - 1) {
@@ -325,10 +325,10 @@ public:
             // symbol_t last_symbol = leaf_point->leaf_to_symbol(length - 1, max_depth_);
             // insert_bimap(this, from_node - 1, last_symbol);
             insert_primary_key_at_index(current_primary);
-            if (!test_primary_key_correctness(node, current_primary)){
-                raise(SIGINT);
-                // test_primary_key_correctness(node, current_primary);
-            }
+            // if (!test_primary_key_correctness(node, current_primary)){
+            //     raise(SIGINT);
+            //     // test_primary_key_correctness(node, current_primary);
+            // }
             mutex.unlock();
 
         } else if (num_nodes_ + (length - level) - 1 <= max_tree_nodes) {
@@ -346,9 +346,9 @@ public:
             // fprintf(stderr, "frontier node!\n");
             // raise(SIGINT);
 
-            if (!test_primary_key_correctness(selected_node, selected_primary_index)){
-                raise(SIGINT);
-            }
+            // if (!test_primary_key_correctness(selected_node, selected_primary_index)){
+            //     raise(SIGINT);
+            // }
             
             node_t orig_selected_node = selected_node;
             auto *new_dfuds = new bitmap::Bitmap(tree_capacity_ + 1, DIMENSION);
@@ -462,12 +462,12 @@ public:
             }
 
             // Copy primary key to the new block
-            for (preorder_t i = selected_primary_index; i < selected_primary_index + num_primary; i++){
+            // for (preorder_t i = selected_primary_index; i < selected_primary_index + num_primary; i++){
                 
-                new_block->primary_key_list.push_back(primary_key_list[i]);
-            }
+            //     new_block->primary_key_list.push_back(primary_key_list[i]);
+            // }
 
-            
+            new_block->primary_key_list.assign(std::next(primary_key_list.begin(), selected_primary_index), std::next(primary_key_list.begin(), selected_primary_index + num_primary));
 
 
             // Erase copied primary keys            
@@ -521,17 +521,17 @@ public:
                     dfuds_->set_symbol(insertion_node, leaf_point->leaf_to_symbol(level, max_depth_), true);
                     mutex.unlock();
                     // fprintf(stderr, "insertion_in_new_block & is_in_root\n");
-                    if (!test_primary_key_correctness(insertion_node, current_primary)){
-                        raise(SIGINT);
-                    }
+                    // if (!test_primary_key_correctness(insertion_node, current_primary)){
+                    //     raise(SIGINT);
+                    // }
                     insert(insertion_node, leaf_point, level, length, current_frontier, current_primary);
                 } else {
                     // release 
                     mutex.unlock();
 
-                    if (!new_block->test_primary_key_correctness(insertion_node, current_primary_new_block)){
-                        raise(SIGINT);
-                    }
+                    // if (!new_block->test_primary_key_correctness(insertion_node, current_primary_new_block)){
+                    //     raise(SIGINT);
+                    // }
 
                     // fprintf(stderr, "insertion_in_new_block & is_not_in_root\n");
                     new_block->insert(insertion_node, leaf_point, level, length, current_frontier_new_block, current_primary_new_block);
@@ -541,9 +541,9 @@ public:
             else {
                 // release
                 mutex.unlock();
-                if (!test_primary_key_correctness(insertion_node, current_primary)){
-                    raise(SIGINT);
-                }
+                // if (!test_primary_key_correctness(insertion_node, current_primary)){
+                //     raise(SIGINT);
+                // }
                 // fprintf(stderr, "insertion in old block\n");
                 insert(insertion_node, leaf_point, level, length, current_frontier, current_primary); 
             }
@@ -604,9 +604,9 @@ public:
 
                     current_primary += dfuds_->get_n_children(current_node);
 
-                    if (current_primary > primary_key_list.size()){
-                        raise(SIGINT);
-                    }
+                    // if (current_primary > primary_key_list.size()){
+                    //     raise(SIGINT);
+                    // }
                 }
             }
 
@@ -696,9 +696,9 @@ public:
         insert(current_node, leaf_point, level, length, current_frontier, current_primary);
         current_leaves_inserted ++;
 
-        if (current_leaves_inserted != current_primary_key){
-            raise(SIGINT);
-        }
+        // if (current_leaves_inserted != current_primary_key){
+        //     raise(SIGINT);
+        // }
     }
 
     // This function is used for testing.
@@ -921,9 +921,9 @@ public:
             symbol_t parent_symbol = start_range->leaf_to_symbol(max_depth_ - 1, max_depth_);
             leaf->set_parent_symbol(parent_symbol);
 
-            if (!test_primary_key_correctness(prev_node, current_primary)){
-                raise(SIGINT);
-            }
+            // if (!test_primary_key_correctness(prev_node, current_primary)){
+            //     raise(SIGINT);
+            // }
             // GET which current primary corresponds to which node;
             // Now current_primary points to the leaf marked by tmp_symbol
             symbol_t tmp_symbol = dfuds_->next_symbol(0, prev_node, num_branches_ - 1);
@@ -931,9 +931,9 @@ public:
             while (tmp_symbol != parent_symbol){
                 tmp_symbol = dfuds_->next_symbol(tmp_symbol + 1, prev_node, num_branches_ - 1);
                 current_primary ++;
-                if (tmp_symbol > parent_symbol){
-                    raise(SIGINT);
-                }
+                // if (tmp_symbol > parent_symbol){
+                //     raise(SIGINT);
+                // }
             }
             
             leaf->set_primary(primary_key_list[current_primary]);
@@ -948,9 +948,9 @@ public:
             return;
         }
 
-        if (!test_primary_key_correctness(current_node, current_primary)){
-            raise(SIGINT);
-        }
+        // if (!test_primary_key_correctness(current_node, current_primary)){
+        //     raise(SIGINT);
+        // }
 
         symbol_t start_range_symbol = start_range->leaf_to_symbol(level, max_depth_);
         symbol_t end_range_symbol = end_range->leaf_to_symbol(level, max_depth_);
@@ -994,9 +994,9 @@ public:
                 }
                 else {
                     mutex.unlock_shared();
-                    if (level == max_depth_ - 1 && current_primary != new_current_primary){
-                        raise(SIGINT);
-                    }
+                    // if (level == max_depth_ - 1 && current_primary != new_current_primary){
+                    //     raise(SIGINT);
+                    // }
                     current_block->range_search_treeblock(start_range, end_range, new_current_block, level + 1, new_current_node, current_node, new_current_frontier, new_current_primary, found_points);           
                     mutex.lock_shared();         
                 }
@@ -1018,9 +1018,9 @@ public:
 
     void insert_primary_key_at_index(n_leaves_t index){
 
-        if (index > primary_key_list.size()){
-            raise(SIGINT);
-        }
+        // if (index > primary_key_list.size()){
+        //     raise(SIGINT);
+        // }
         // raise(SIGINT);
         primary_key_list.insert(primary_key_list.begin() + index, current_primary_key);
         current_primary_key++;
