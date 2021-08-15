@@ -454,6 +454,16 @@ class Bitmap {
     }
   }
 
+  inline preorder_t get_n_children_from_node_pos(node_t node, pos_type node_pos)
+  {
+    if (is_collapse(node)){
+      return 1;
+    }
+    else {
+      return popcount(node_pos, 1 << dimension_, true);
+    }
+  }
+
   inline preorder_t get_n_children(node_t node)
   {
     if (is_collapse(node)){
@@ -478,11 +488,38 @@ class Bitmap {
     }  
   }
 
+  inline symbol_t next_symbol_with_node_pos(symbol_t symbol, preorder_t node, symbol_t end_symbol_range, pos_type node_pos){
+
+    if (is_collapse(node)){
+      symbol_t only_symbol = GetValPos(node_pos, dimension_, true);
+      if (symbol <= only_symbol)
+        return only_symbol;
+      
+      return end_symbol_range + 1;
+    }
+
+    symbol_t limit = end_symbol_range - symbol + 1;
+    bool over_64 = false;
+    if (limit > 64){
+        limit = 64;
+        over_64 = true;
+    }
+    uint64_t next_block = GetValPos(node_pos + symbol, limit, true);
+    if (next_block){
+        return __builtin_ctzll(next_block) + symbol;
+    }
+    else {
+        if (over_64){
+            return next_symbol(symbol + limit, node, end_symbol_range);
+        }
+        return end_symbol_range + 1;
+    }
+
+  }
+
   inline symbol_t next_symbol(symbol_t symbol, preorder_t node, symbol_t end_symbol_range){
     
-    if (node >= flag_size_){
-      raise(SIGINT);
-    }
+
     pos_type node_pos = get_node_data_pos(node);
 
     if (is_collapse(node)){

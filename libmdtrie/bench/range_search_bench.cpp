@@ -5,7 +5,7 @@
 #include <tqdm.h>
 #include <vector>
 
-const int DIMENSION = 3;
+const int DIMENSION = 4;
 FILE *fptr;
 char file_path[] = "benchmark_range_search_2.csv";
 
@@ -93,9 +93,9 @@ void insert_for_node_path(point_array<DIMENSION> *found_points, level_t max_dept
         n_points ++;
         // assert(n_points == current_primary_key);
 
-        // if (n_points == 87){
-        //     break;
-        // }
+        if (n_points == 100000){
+            break;
+        }
     }
     bar.finish();
     fprintf(stderr, "dimension: %d\n", DIMENSION);
@@ -123,6 +123,14 @@ void insert_for_node_path(point_array<DIMENSION> *found_points, level_t max_dept
     // }
 }
 
+data_point<DIMENSION> * profile_func(tree_block<DIMENSION> *parent_treeblock, node_t parent_node, symbol_t *node_path, level_t max_depth, symbol_t parent_symbol){
+    parent_treeblock->get_node_path(parent_node, node_path); 
+
+    node_path[max_depth - 1] = parent_symbol;
+    
+    return parent_treeblock->node_path_to_coordinates(node_path);
+}
+
 void test_node_path_only(level_t max_depth, level_t trie_depth, preorder_t max_tree_node){
     auto *found_points = new point_array<DIMENSION>();
     auto *all_points = new std::vector<data_point<DIMENSION>>();
@@ -146,11 +154,12 @@ void test_node_path_only(level_t max_depth, level_t trie_depth, preorder_t max_t
         node_t parent_node = point->get_parent_node();
 
         start = GetTimestamp();
-        parent_treeblock->get_node_path(parent_node, node_path); 
+        // parent_treeblock->get_node_path(parent_node, node_path); 
 
-        node_path[max_depth - 1] = parent_symbol;
+        // node_path[max_depth - 1] = parent_symbol;
         
-        auto returned_coordinates = parent_treeblock->node_path_to_coordinates(node_path);
+        // auto returned_coordinates = parent_treeblock->node_path_to_coordinates(node_path);
+        auto returned_coordinates = profile_func(parent_treeblock, parent_node, node_path, max_depth, parent_symbol);
         diff += GetTimestamp() - start;
 
         for (dimension_t j = 0; j < DIMENSION; j++){
@@ -193,6 +202,8 @@ void test_node_path_only(level_t max_depth, level_t trie_depth, preorder_t max_t
         node_path_from_primary[max_depth - 1] = parent_symbol_from_primary;
 
         returned_coordinates = t_ptr->node_path_to_coordinates(node_path_from_primary);
+
+        // returned_coordinates = profile_func(t_ptr, returned_primary_key, node_path_from_primary, max_depth);
         diff_primary += GetTimestamp() - start;
 
         for (dimension_t j = 0; j < DIMENSION; j++){
@@ -210,6 +221,7 @@ void test_node_path_only(level_t max_depth, level_t trie_depth, preorder_t max_t
 
      
 }
+
 
 TimeStamp get_node_path_time(point_array<DIMENSION> *found_points, level_t max_depth){
     // auto *found_points = new point_array<DIMENSION>();
