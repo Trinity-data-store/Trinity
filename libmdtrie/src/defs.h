@@ -5,6 +5,7 @@
 #include <vector>
 #include <bimap.h>
 #include <assert.h> 
+#include <boost/bimap.hpp>
 
 // Maximum number of bits for node configuration
 typedef uint64_t node_t;
@@ -59,5 +60,7 @@ static TimeStamp GetTimestamp() {
 
 n_leaves_t current_primary_key = 0;
 n_leaves_t current_leaves_inserted = 0;
+
+std::unordered_map<n_leaves_t, uint64_t> p_key_to_treeblock;
 
 #endif //MD_TRIE_DEFS_H

@@ -5,7 +5,7 @@
 #include <tqdm.h>
 #include <vector>
 
-const int DIMENSION = 9;
+const int DIMENSION = 3;
 FILE *fptr;
 char file_path[] = "benchmark_range_search_2.csv";
 
@@ -136,7 +136,7 @@ void test_node_path_only(level_t max_depth, level_t trie_depth, preorder_t max_t
     TimeStamp diff = 0;
     TimeStamp start;
     n_leaves_t found_points_size = found_points->size();
-    
+    TimeStamp diff_primary = 0;
     for (n_leaves_t i = 0; i < found_points_size; i++){
         
         symbol_t *node_path = (symbol_t *)malloc((max_depth + 1) * sizeof(symbol_t));
@@ -159,6 +159,8 @@ void test_node_path_only(level_t max_depth, level_t trie_depth, preorder_t max_t
             }
         }
 
+
+
         preorder_t returned_primary_key = point->read_primary();
         bool found = false;
 
@@ -176,10 +178,36 @@ void test_node_path_only(level_t max_depth, level_t trie_depth, preorder_t max_t
         if (!found){
             raise(SIGINT);
         }
-        free(node_path);
+
+        
+
+        // Lookup from primary key
+
+        symbol_t *node_path_from_primary = (symbol_t *)malloc((max_depth + 1) * sizeof(symbol_t));
+
+        
+        tree_block<DIMENSION> *t_ptr = (tree_block<DIMENSION> *)p_key_to_treeblock[returned_primary_key];
+        
+        start = GetTimestamp();
+        symbol_t parent_symbol_from_primary = t_ptr->get_node_path_primary_key(returned_primary_key, node_path_from_primary);
+        node_path_from_primary[max_depth - 1] = parent_symbol_from_primary;
+
+        returned_coordinates = t_ptr->node_path_to_coordinates(node_path_from_primary);
+        diff_primary += GetTimestamp() - start;
+
+        for (dimension_t j = 0; j < DIMENSION; j++){
+            if (returned_coordinates->get_coordinate(j) != point->get_coordinate(j)){
+                raise(SIGINT);
+            }
+        }    
+
+        free(node_path);    
+        free(node_path_from_primary);
     }
 
-    fprintf(stderr, "Time per Checking: %f, out of %ld points\n", (float)diff / found_points->size(), found_points->size());
+    fprintf(stderr, "Time per Checking: %f us, out of %ld points\n", (float)diff / found_points->size(), found_points->size());
+    fprintf(stderr, "Time per Primary Key lookup: %f us, out of %ld points\n", (float)diff_primary / found_points->size(), found_points->size());
+
      
 }
 

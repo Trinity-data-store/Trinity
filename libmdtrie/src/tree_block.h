@@ -462,12 +462,14 @@ public:
             }
 
             // Copy primary key to the new block
-            // for (preorder_t i = selected_primary_index; i < selected_primary_index + num_primary; i++){
+            for (preorder_t i = selected_primary_index; i < selected_primary_index + num_primary; i++){
                 
-            //     new_block->primary_key_list.push_back(primary_key_list[i]);
-            // }
+                new_block->primary_key_list.push_back(primary_key_list[i]);
+                p_key_to_treeblock[primary_key_list[i]] = (uint64_t) new_block;
+            }
 
-            new_block->primary_key_list.assign(std::next(primary_key_list.begin(), selected_primary_index), std::next(primary_key_list.begin(), selected_primary_index + num_primary));
+            // new_block->primary_key_list.assign(std::next(primary_key_list.begin(), selected_primary_index), std::next(primary_key_list.begin(), selected_primary_index + num_primary));
+
 
 
             // Erase copied primary keys            
@@ -887,6 +889,126 @@ public:
         
     }
 
+
+    symbol_t get_node_path_primary_key(n_leaves_t primary_key, symbol_t *node_path) {
+        mutex.lock_shared();
+
+        preorder_t stack[35] = {};
+        node_t path[35] = {};
+        int symbol[35];
+        for (uint8_t i = 0; i < 35; i++){
+            symbol[i] = -1;
+        }
+
+        int sTop = 0;
+        symbol[sTop] = dfuds_->next_symbol(symbol[sTop] + 1, path[sTop], num_branches_ - 1);
+        stack[sTop] = dfuds_->get_n_children(0);
+        
+        level_t current_level = root_depth_ + 1;
+        node_t current_node = 1;
+        preorder_t current_frontier = 0;
+        preorder_t current_primary = 0;
+
+        if (frontiers_ != nullptr && current_frontier < num_frontiers_ && current_node > get_preorder(current_frontier))
+            ++current_frontier;
+        preorder_t next_frontier_preorder;
+        symbol_t parent_symbol;
+        if (num_frontiers_ == 0 || current_frontier >= num_frontiers_)
+            next_frontier_preorder = -1;
+        else
+            next_frontier_preorder = get_preorder(current_frontier);
+
+        while (current_node < num_nodes_ && sTop >= 0) {
+            
+            if (current_node == next_frontier_preorder) {
+                symbol[sTop] = dfuds_->next_symbol(symbol[sTop] + 1, path[sTop], num_branches_ - 1);                
+                ++current_frontier;
+                if (num_frontiers_ == 0 || current_frontier >= num_frontiers_)
+                    next_frontier_preorder = -1;
+                else
+                    next_frontier_preorder = get_preorder(current_frontier);
+
+                --stack[sTop];
+            }
+            // It is "-1" because current_level is 0th indexed.
+            else if (current_level < max_depth_ - 1) 
+            {
+                sTop++;
+                stack[sTop] = dfuds_->get_n_children(current_node);
+                path[sTop] = current_node;
+
+                symbol[sTop] = dfuds_->next_symbol(symbol[sTop] + 1, path[sTop], num_branches_ - 1);
+                ++current_level;
+            }
+            else
+            {
+                --stack[sTop];
+                if (current_level == max_depth_ - 1){
+                    
+                    preorder_t new_current_primary = current_primary + dfuds_->get_n_children(current_node);
+                    symbol_t tmp_symbol = -1;
+                    bool found = false;
+                    for (preorder_t p = current_primary; p < new_current_primary; p ++){
+                        tmp_symbol = dfuds_->next_symbol(tmp_symbol + 1, current_node, num_branches_ - 1);
+                        if (primary_key_list[p] == primary_key){
+                            // raise(SIGINT);
+                            parent_symbol = tmp_symbol;
+                            found = true;
+                            break;
+                            // get_node_path(current_node, node_path);
+                            // return tmp_symbol;
+                        }
+                    }
+
+                    current_primary = new_current_primary;
+
+                    if (!found && stack[sTop] > 0){
+
+                        symbol[sTop] = dfuds_->next_symbol(symbol[sTop] + 1, path[sTop], num_branches_ - 1);                        
+
+                    }
+                    if (found){
+                        // stack[sTop]++;
+                        break;
+                    }                    
+                }
+            }
+
+            ++current_node;
+        
+            bool backtraceked = false;
+            while (sTop >= 0 && stack[sTop] == 0) {
+                backtraceked = true;
+                path[sTop] = 0;
+                symbol[sTop] = -1;
+                --sTop;
+                --current_level;
+                if (sTop >= 0)
+                    --stack[sTop];
+            }
+            if (backtraceked){
+                symbol[sTop] = dfuds_->next_symbol(symbol[sTop] + 1, path[sTop], num_branches_ - 1);
+            }
+        }
+        // This shouldn't happen
+        if (current_node == num_nodes_){
+            fprintf(stderr, "node not found!\n");
+            return 0;
+        }
+        for (int i = 0; i <= sTop; i++){
+            node_path[root_depth_ + i] = symbol[i];
+        }
+        if (parent_tree_block_){
+            mutex.unlock_shared();
+            parent_tree_block_->get_node_path(treeblock_frontier_num_, node_path);
+        }
+        else {
+            mutex.unlock_shared();
+            parent_trie_node_->get_node_path_from_treeblock(root_depth_, node_path);
+        }        
+        return parent_symbol;
+    }
+
     data_point<DIMENSION> *node_path_to_coordinates(symbol_t *node_path){
         auto coordinates = new data_point<DIMENSION>();
         for (level_t i = 0; i < max_depth_; i++){
@@ -1022,6 +1144,7 @@ public:
         //     raise(SIGINT);
         // }
         // raise(SIGINT);
+        p_key_to_treeblock[current_primary_key] = (uint64_t)this;
         primary_key_list.insert(primary_key_list.begin() + index, current_primary_key);
         current_primary_key++;
     }
