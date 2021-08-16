@@ -781,127 +781,6 @@ public:
             ((frontier_node<DIMENSION> *) frontiers_)[i].pointer_->density(array);
     }
 
-    // void get_node_path(node_t node, symbol_t *node_path) {
-    //     mutex.lock_shared();
-    //     if (node == 0){
-    //         node_path[root_depth_] = dfuds_->next_symbol(0, 0, num_branches_ - 1);
-    //         if (parent_tree_block_){
-    //             mutex.unlock_shared();
-    //             parent_tree_block_->get_node_path(treeblock_frontier_num_, node_path);
-    //         }
-    //         else {
-    //             mutex.unlock_shared();
-    //             parent_trie_node_->get_node_path_from_treeblock(root_depth_, node_path);
-    //         }  
-    //         return;          
-    //     }
-
-    //     preorder_t stack[35] = {};
-    //     node_t path[35] = {};
-    //     int symbol[35];
-    //     size_t node_positions[2048];
-    //     for (preorder_t i = 0; i < num_nodes_; i++){
-    //         node_positions[i] = dfuds_->get_node_data_pos(i);
-    //     }
-
-    //     for (uint8_t i = 0; i < 35; i++){
-    //         symbol[i] = -1;
-    //     }
-    //     preorder_t current_frontier = 0;
-    //     int sTop = 0;
-
-    //     symbol[sTop] = dfuds_->next_symbol_with_node_pos(symbol[sTop] + 1, path[sTop], num_branches_ - 1, node_positions[path[sTop]]);
-    //     // symbol[sTop] = dfuds_->next_symbol(symbol[sTop] + 1, path[sTop], num_branches_ - 1);
-    //     stack[sTop] = dfuds_->get_n_children_from_node_pos(0, node_positions[0]);
-    //     // stack[sTop] = dfuds_->get_n_children(0);
-        
-    //     level_t current_level = root_depth_ + 1;
-    //     node_t current_node = 1;
-
-    //     if (frontiers_ != nullptr && current_frontier < num_frontiers_ && current_node > get_preorder(current_frontier))
-    //         ++current_frontier;
-    //     preorder_t next_frontier_preorder;
-
-    //     if (num_frontiers_ == 0 || current_frontier >= num_frontiers_)
-    //         next_frontier_preorder = -1;
-    //     else
-    //         next_frontier_preorder = get_preorder(current_frontier);
-
-    //     while (current_node < num_nodes_ && sTop >= 0) {
-            
-    //         if (current_node == next_frontier_preorder) {
-    //             if (current_node != node){
-    //                 symbol[sTop] = dfuds_->next_symbol_with_node_pos(symbol[sTop] + 1, path[sTop], num_branches_ - 1, node_positions[path[sTop]]);
-    //                 // symbol[sTop] = dfuds_->next_symbol(symbol[sTop] + 1, path[sTop], num_branches_ - 1);
-    //             }
-    //             ++current_frontier;
-    //             if (num_frontiers_ == 0 || current_frontier >= num_frontiers_)
-    //                 next_frontier_preorder = -1;
-    //             else
-    //                 next_frontier_preorder = get_preorder(current_frontier);
-
-    //             --stack[sTop];
-    //         }
-    //         // It is "-1" because current_level is 0th indexed.
-    //         else if (current_level < max_depth_ - 1) 
-    //         {
-    //             sTop++;
-    //             stack[sTop] = dfuds_->get_n_children_from_node_pos(current_node, node_positions[current_node]);
-    //             // stack[sTop] = dfuds_->get_n_children(current_node);
-    //             path[sTop] = current_node;
-
-    //             symbol[sTop] = dfuds_->next_symbol_with_node_pos(symbol[sTop] + 1, path[sTop], num_branches_ - 1, node_positions[path[sTop]]);
-    //             // symbol[sTop] = dfuds_->next_symbol(symbol[sTop] + 1, path[sTop], num_branches_ - 1);
-    //             ++current_level;
-    //         }
-    //         else if (current_level == max_depth_ - 1 && stack[sTop] > 1 && current_node < node)
-    //         {
-    //             symbol[sTop] = dfuds_->next_symbol_with_node_pos(symbol[sTop] + 1, path[sTop], num_branches_ - 1, node_positions[path[sTop]]);
-    //             // symbol[sTop] = dfuds_->next_symbol(symbol[sTop] + 1, path[sTop], num_branches_ - 1);
-    //             --stack[sTop];   
-    //         } 
-    //         else
-    //         {
-    //             --stack[sTop];
-    //         }
-
-    //         if (current_node == node){
-    //             break;
-    //         }
-    //         ++current_node;
-    //         bool backtracekd = false;
-    //         while (sTop >= 0 && stack[sTop] == 0) {
-    //             backtracekd = true;
-    //             path[sTop] = 0;
-    //             symbol[sTop] = -1;
-    //             --sTop;
-    //             --current_level;
-    //             if (sTop >= 0)
-    //                 --stack[sTop];
-    //         }
-    //         if (backtracekd){
-    //             symbol[sTop] = dfuds_->next_symbol_with_node_pos(symbol[sTop] + 1, path[sTop], num_branches_ - 1, node_positions[path[sTop]]);
-    //             // symbol[sTop] = dfuds_->next_symbol(symbol[sTop] + 1, path[sTop], num_branches_ - 1);
-    //         }
-    //     }
-    //     if (current_node == num_nodes_){
-    //         fprintf(stderr, "node not found!\n");
-    //         return;
-    //     }
-    //     for (int i = 0; i <= sTop; i++){
-    //         node_path[root_depth_ + i] = symbol[i];
-    //     }
-    //     if (parent_tree_block_){
-    //         mutex.unlock_shared();
-    //         parent_tree_block_->get_node_path(treeblock_frontier_num_, node_path);
-    //     }
-    //     else {
-    //         mutex.unlock_shared();
-    //         parent_trie_node_->get_node_path_from_treeblock(root_depth_, node_path);
-    //     }
-        
-    // }
-
     void get_node_path(node_t node, symbol_t *node_path) {
         mutex.lock_shared();
         if (node == 0){
@@ -920,13 +799,25 @@ public:
         preorder_t stack[35] = {};
         node_t path[35] = {};
         int symbol[35];
+        size_t node_positions[2048];
+        dfuds_->get_node_pos_bulk(node, node_positions);
+        // for (preorder_t i = 0; i <= node; i++){
+        //     // node_positions[i] depends on node_Position[i-1]
+        //     node_positions[i] = dfuds_->get_node_data_pos(i);
+        // }
+
         for (uint8_t i = 0; i < 35; i++){
             symbol[i] = -1;
         }
         preorder_t current_frontier = 0;
         int sTop = 0;
-        symbol[sTop] = dfuds_->next_symbol(symbol[sTop] + 1, path[sTop], num_branches_ - 1);
-        stack[sTop] = dfuds_->get_n_children(0);
+
+        // Todo: save path[sTop]
+        node_t top_node = path[sTop];
+        symbol[sTop] = dfuds_->next_symbol_with_node_pos(symbol[sTop] + 1, top_node, num_branches_ - 1, node_positions[top_node]);
+        // symbol[sTop] = dfuds_->next_symbol(symbol[sTop] + 1, path[sTop], num_branches_ - 1);
+        stack[sTop] = dfuds_->get_n_children_from_node_pos(0, node_positions[0]);
+        // stack[sTop] = dfuds_->get_n_children(0);
         
         level_t current_level = root_depth_ + 1;
         node_t current_node = 1;
@@ -944,7 +835,9 @@ public:
             
             if (current_node == next_frontier_preorder) {
                 if (current_node != node){
-                    symbol[sTop] = dfuds_->next_symbol(symbol[sTop] + 1, path[sTop], num_branches_ - 1);
+                    top_node = path[sTop];
+                    symbol[sTop] = dfuds_->next_symbol_with_node_pos(symbol[sTop] + 1, top_node, num_branches_ - 1, node_positions[top_node]);
+                    // symbol[sTop] = dfuds_->next_symbol(symbol[sTop] + 1, path[sTop], num_branches_ - 1);
                 }
                 ++current_frontier;
                 if (num_frontiers_ == 0 || current_frontier >= num_frontiers_)
@@ -958,15 +851,19 @@ public:
             else if (current_level < max_depth_ - 1) 
             {
                 sTop++;
-                stack[sTop] = dfuds_->get_n_children(current_node);
+                stack[sTop] = dfuds_->get_n_children_from_node_pos(current_node, node_positions[current_node]);
+                // stack[sTop] = dfuds_->get_n_children(current_node);
                 path[sTop] = current_node;
 
-                symbol[sTop] = dfuds_->next_symbol(symbol[sTop] + 1, path[sTop], num_branches_ - 1);
+                symbol[sTop] = dfuds_->next_symbol_with_node_pos(symbol[sTop] + 1, current_node, num_branches_ - 1, node_positions[current_node]);
+                // symbol[sTop] = dfuds_->next_symbol(symbol[sTop] + 1, path[sTop], num_branches_ - 1);
                 ++current_level;
             }
             else if (current_level == max_depth_ - 1 && stack[sTop] > 1 && current_node < node)
             {
-                symbol[sTop] = dfuds_->next_symbol(symbol[sTop] + 1, path[sTop], num_branches_ - 1);
+                top_node = path[sTop];
+                symbol[sTop] = dfuds_->next_symbol_with_node_pos(symbol[sTop] + 1, top_node, num_branches_ - 1, node_positions[top_node]);
+                // symbol[sTop] = dfuds_->next_symbol(symbol[sTop] + 1, path[sTop], num_branches_ - 1);
                 --stack[sTop];   
             } 
             else
@@ -989,7 +886,9 @@ public:
                     --stack[sTop];
             }
             if (backtracekd){
-                symbol[sTop] = dfuds_->next_symbol(symbol[sTop] + 1, path[sTop], num_branches_ - 1);
+                top_node = path[sTop];
+                symbol[sTop] = dfuds_->next_symbol_with_node_pos(symbol[sTop] + 1, top_node, num_branches_ - 1, node_positions[top_node]);
+                // symbol[sTop] = dfuds_->next_symbol(symbol[sTop] + 1, path[sTop], num_branches_ - 1);
             }
         }
         if (current_node == num_nodes_){
@@ -1010,6 +909,114 @@ public:
         
     }
 
+    // void get_node_path(node_t node, symbol_t *node_path) {
+    //     mutex.lock_shared();
+    //     if (node == 0){
+    //         node_path[root_depth_] = dfuds_->next_symbol(0, 0, num_branches_ - 1);
+    //         if (parent_tree_block_){
+    //             mutex.unlock_shared();
+    //             parent_tree_block_->get_node_path(treeblock_frontier_num_, node_path);
+    //         }
+    //         else {
+    //             mutex.unlock_shared();
+    //             parent_trie_node_->get_node_path_from_treeblock(root_depth_, node_path);
+    //         }  
+    //         return;          
+    //     }
+
+    //     preorder_t stack[35] = {};
+    //     node_t path[35] = {};
+    //     int symbol[35];
+    //     for (uint8_t i = 0; i < 35; i++){
+    //         symbol[i] = -1;
+    //     }
+    //     preorder_t current_frontier = 0;
+    //     int sTop = 0;
+    //     symbol[sTop] = dfuds_->next_symbol(symbol[sTop] + 1, path[sTop], num_branches_ - 1);
+    //     stack[sTop] = dfuds_->get_n_children(0);
+        
+    //     level_t current_level = root_depth_ + 1;
+    //     node_t current_node = 1;
+
+    //     if (frontiers_ != nullptr && current_frontier < num_frontiers_ && current_node > get_preorder(current_frontier))
+    //         ++current_frontier;
+    //     preorder_t next_frontier_preorder;
+
+    //     if (num_frontiers_ == 0 || current_frontier >= num_frontiers_)
+    //         next_frontier_preorder = -1;
+    //     else
+    //         next_frontier_preorder = get_preorder(current_frontier);
+
+    //     while (current_node < num_nodes_ && sTop >= 0) {
+            
+    //         if (current_node == next_frontier_preorder) {
+    //             if (current_node != node){
+    //                 symbol[sTop] = dfuds_->next_symbol(symbol[sTop] + 1, path[sTop], num_branches_ - 1);
+    //             }
+    //             ++current_frontier;
+    //             if (num_frontiers_ == 0 || current_frontier >= num_frontiers_)
+    //                 next_frontier_preorder = -1;
+    //             else
+    //                 next_frontier_preorder = get_preorder(current_frontier);
+
+    //             --stack[sTop];
+    //         }
+    //         // It is "-1" because current_level is 0th indexed.
+    //         else if (current_level < max_depth_ - 1) 
+    //         {
+    //             sTop++;
+    //             stack[sTop] = dfuds_->get_n_children(current_node);
+    //             path[sTop] = current_node;
+
+    //             symbol[sTop] = dfuds_->next_symbol(symbol[sTop] + 1, path[sTop], num_branches_ - 1);
+    //             ++current_level;
+    //         }
+    //         else if (current_level == max_depth_ - 1 && stack[sTop] > 1 && current_node < node)
+    //         {
+    //             symbol[sTop] = dfuds_->next_symbol(symbol[sTop] + 1, path[sTop], num_branches_ - 1);
+    //             --stack[sTop];   
+    //         } 
+    //         else
+    //         {
+    //             --stack[sTop];
+    //         }
+
+    //         if (current_node == node){
+    //             break;
+    //         }
+    //         ++current_node;
+    //         bool backtracekd = false;
+    //         while (sTop >= 0 && stack[sTop] == 0) {
+    //             backtracekd = true;
+    //             path[sTop] = 0;
+    //             symbol[sTop] = -1;
+    //             --sTop;
+    //             --current_level;
+    //             if (sTop >= 0)
+    //                 --stack[sTop];
+    //         }
+    //         if (backtracekd){
+    //             symbol[sTop] = dfuds_->next_symbol(symbol[sTop] + 1, path[sTop], num_branches_ - 1);
+    //         }
+    //     }
+    //     if (current_node == num_nodes_){
+    //         fprintf(stderr, "node not found!\n");
+    //         return;
+    //     }
+    //     for (int i = 0; i <= sTop; i++){
+    //         node_path[root_depth_ + i] = symbol[i];
+    //     }
+    //     if (parent_tree_block_){
+    //         mutex.unlock_shared();
+    //         parent_tree_block_->get_node_path(treeblock_frontier_num_, node_path);
+    //     }
+    //     else {
+    //         mutex.unlock_shared();
+    //         parent_trie_node_->get_node_path_from_treeblock(root_depth_, node_path);
+    //     }
+        
+    // }
+
 
     symbol_t get_node_path_primary_key(n_leaves_t primary_key, symbol_t *node_path) {
         mutex.lock_shared();
@@ -1020,13 +1027,20 @@ public:
         for (uint8_t i = 0; i < 35; i++){
             symbol[i] = -1;
         }
+        size_t node_positions[2048];  
+        node_positions[0] = 0;
 
         int sTop = 0;
-        symbol[sTop] = dfuds_->next_symbol(symbol[sTop] + 1, path[sTop], num_branches_ - 1);
-        stack[sTop] = dfuds_->get_n_children(0);
-        
+        node_t top_node = 0;
+        symbol[sTop] = dfuds_->next_symbol_with_node_pos(symbol[sTop] + 1, 0, num_branches_ - 1, 0);
+        stack[sTop] = dfuds_->get_n_children_from_node_pos(0, node_positions[0]);
+          
+        // dfuds_->get_node_pos_bulk(node, node_positions);
+
+
         level_t current_level = root_depth_ + 1;
         node_t current_node = 1;
+        // node_positions[current_node] = dfuds_->get_node_data_pos(current_node);
         preorder_t current_frontier = 0;
         preorder_t current_primary = 0;
 
@@ -1041,8 +1055,11 @@ public:
 
         while (current_node < num_nodes_ && sTop >= 0) {
             
+            dfuds_->get_node_data_pos_increment(current_node, node_positions); 
+
             if (current_node == next_frontier_preorder) {
-                symbol[sTop] = dfuds_->next_symbol(symbol[sTop] + 1, path[sTop], num_branches_ - 1);                
+                top_node = path[sTop];
+                symbol[sTop] = dfuds_->next_symbol_with_node_pos(symbol[sTop] + 1, top_node, num_branches_ - 1, node_positions[top_node]);               
                 ++current_frontier;
                 if (num_frontiers_ == 0 || current_frontier >= num_frontiers_)
                     next_frontier_preorder = -1;
@@ -1055,18 +1072,21 @@ public:
             else if (current_level < max_depth_ - 1) 
             {
                 sTop++;
-                stack[sTop] = dfuds_->get_n_children(current_node);
+                stack[sTop] = dfuds_->get_n_children_from_node_pos(current_node, node_positions[current_node]);
+                // stack[sTop] = dfuds_->get_n_children(current_node);
                 path[sTop] = current_node;
 
-                symbol[sTop] = dfuds_->next_symbol(symbol[sTop] + 1, path[sTop], num_branches_ - 1);
+                symbol[sTop] = dfuds_->next_symbol_with_node_pos(symbol[sTop] + 1, current_node, num_branches_ - 1, node_positions[current_node]);
                 ++current_level;
             }
             else
             {
                 --stack[sTop];
                 if (current_level == max_depth_ - 1){
+
+                    // top_node = path[current_node];
                     
-                    preorder_t new_current_primary = current_primary + dfuds_->get_n_children(current_node);
+                    preorder_t new_current_primary = current_primary + dfuds_->get_n_children_from_node_pos(current_node, node_positions[current_node]);
                     symbol_t tmp_symbol = -1;
                     bool found = false;
                     for (preorder_t p = current_primary; p < new_current_primary; p ++){
@@ -1075,7 +1095,7 @@ public:
                             found = true;
 
                             for (preorder_t j = current_primary; j <= p; j ++){
-                                tmp_symbol = dfuds_->next_symbol(tmp_symbol + 1, current_node, num_branches_ - 1);
+                                tmp_symbol = dfuds_->next_symbol_with_node_pos(tmp_symbol + 1, current_node, num_branches_ - 1, node_positions[current_node]);
                             }    
                             parent_symbol = tmp_symbol;   
                             break;                     
@@ -1085,8 +1105,9 @@ public:
                     current_primary = new_current_primary;
 
                     if (!found && stack[sTop] > 0){
+                        top_node = path[sTop];
 
-                        symbol[sTop] = dfuds_->next_symbol(symbol[sTop] + 1, path[sTop], num_branches_ - 1);                        
+                        symbol[sTop] = dfuds_->next_symbol_with_node_pos(symbol[sTop] + 1, top_node, num_branches_ - 1, node_positions[top_node]);                  
 
                     }
                     if (found){
@@ -1109,7 +1130,8 @@ public:
                     --stack[sTop];
             }
             if (backtraceked){
-                symbol[sTop] = dfuds_->next_symbol(symbol[sTop] + 1, path[sTop], num_branches_ - 1);
+                top_node = path[sTop];
+                symbol[sTop] = dfuds_->next_symbol_with_node_pos(symbol[sTop] + 1, top_node, num_branches_ - 1, node_positions[top_node]);
             }
         }
         // This shouldn't happen
