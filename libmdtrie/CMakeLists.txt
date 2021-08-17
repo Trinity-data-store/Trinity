@@ -12,7 +12,8 @@ if (BUILD_TESTS)
           test/mdtrie_test.cpp)
 
   add_executable(range_search_tests
-          test/test_main.cpp)
+          test/test_main.cpp
+          test/range_search_test.cpp)
 
   target_link_libraries(mdtrie_tests ${MDTRIE_LIBS})
   target_link_libraries(range_search_tests ${MDTRIE_LIBS})
@@ -22,6 +23,7 @@ if (BUILD_TESTS)
 
   # Register test
   add_test(MdTrieTest mdtrie_tests)
+  add_test(RangeSearchTest range_search_tests)
 endif ()
 
 add_executable(mdtrie_bench
@@ -43,6 +45,10 @@ add_executable(concurrency_bench
 add_executable(trie_one_dimension_bench
         bench/trie_one_dimension_bench.cpp)
 
+add_executable(self_index_bench
+        bench/self_index_bench.cpp)
+
 target_link_libraries(mdtrie_bench ${MDTRIE_LIBS})
 target_link_libraries(range_search_bench ${MDTRIE_LIBS})
 target_link_libraries(concurrency_bench ${MDTRIE_LIBS})
+target_link_libraries(self_index_bench ${MDTRIE_LIBS})

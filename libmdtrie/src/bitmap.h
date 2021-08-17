@@ -131,12 +131,14 @@ class Bitmap {
 
   explicit Bitmap(node_n_t node_num, dimension_t dimension) 
   { 
-    data_size_ = (node_num - 1) * dimension + (1 << dimension);
+    num_branches_ = 1 << dimension;
+    data_size_ = (node_num - 1) * dimension + num_branches_;
     flag_size_ = node_num;
     data_ = (data_type *)calloc(BITS2BLOCKS(data_size_), sizeof(data_type));
     flag_ = (data_type *)calloc(BITS2BLOCKS(flag_size_), sizeof(data_type));
     SETBITVAL(flag_, 0);
     dimension_ = dimension;
+    // num_branches_ = 1 << dimension;
   }
 
   inline uint64_t size() const
@@ -254,6 +256,29 @@ class Bitmap {
     pos_type num_set_bits = popcount(0, node, false);
     pos_type num_unset_bits = node - num_set_bits;
     return num_unset_bits * dimension_ + (num_set_bits << dimension_);
+  }
+
+  inline void get_node_data_pos_increment(preorder_t node, size_t node_position[]){
+
+    if (is_collapse(node - 1))
+      node_position[node] = node_position[node - 1] + dimension_;
+    else
+      node_position[node] = node_position[node - 1] + num_branches_;
+
+  }
+  inline void get_node_pos_bulk(preorder_t node, size_t node_positions[]){
+
+    pos_type tmp = 0;
+    for (preorder_t i = 0; i <= node; i++){
+
+      // node_positions[i] = get_node_data_pos(i);
+      node_positions[i] = tmp;
+      if (is_collapse(i))
+        tmp += dimension_;
+      else
+        tmp += num_branches_;
+    }
+    
   }
 
   inline void SetValPos(pos_type pos, data_type val, width_type bits, bool is_on_data) 
@@ -388,13 +413,13 @@ class Bitmap {
       return;
     }
     size_t orig_data_size = data_size_;
-    width_type shift_amount = (1 << dimension_) - dimension_;
+    width_type shift_amount = num_branches_ - dimension_;
     increase_bits(shift_amount, true);  
 
     pos_type from_node_pos = get_node_data_pos(from_node);
     BulkCopy_backward(orig_data_size, orig_data_size + shift_amount,  orig_data_size - from_node_pos, true);
 
-    ClearWidth(from_node_pos, 1 << dimension_, true);
+    ClearWidth(from_node_pos, num_branches_, true);
     SETBITVAL(flag_, from_node);
   }
 
@@ -418,7 +443,7 @@ class Bitmap {
     if (is_collapse(from_node)){
       return;
     }
-    width_type shift_amount = (1 << dimension_) - dimension_;
+    width_type shift_amount = num_branches_ - dimension_;
 
     pos_type from_node_next_pos = get_node_data_pos(from_node + 1);
     BulkCopy_forward(from_node_next_pos, from_node_next_pos - shift_amount, data_size_ - from_node_next_pos, true);
@@ -454,13 +479,23 @@ class Bitmap {
     }
   }
 
+  inline preorder_t get_n_children_from_node_pos(node_t node, pos_type node_pos)
+  {
+    if (is_collapse(node)){
+      return 1;
+    }
+    else {
+      return popcount(node_pos, num_branches_, true);
+    }
+  }
+
   inline preorder_t get_n_children(node_t node)
   {
     if (is_collapse(node)){
       return 1;
     }
     else {
-      return popcount(get_node_data_pos(node), 1 << dimension_, true);
+      return popcount(get_node_data_pos(node), num_branches_, true);
     }
   }
 
@@ -478,11 +513,38 @@ class Bitmap {
     }  
   }
 
+  inline symbol_t next_symbol_with_node_pos(symbol_t symbol, preorder_t node, symbol_t end_symbol_range, pos_type node_pos){
+
+    if (is_collapse(node)){
+      symbol_t only_symbol = GetValPos(node_pos, dimension_, true);
+      if (symbol <= only_symbol)
+        return only_symbol;
+      
+      return end_symbol_range + 1;
+    }
+
+    symbol_t limit = end_symbol_range - symbol + 1;
+    bool over_64 = false;
+    if (limit > 64){
+        limit = 64;
+        over_64 = true;
+    }
+    uint64_t next_block = GetValPos(node_pos + symbol, limit, true);
+    if (next_block){
+        return __builtin_ctzll(next_block) + symbol;
+    }
+    else {
+        if (over_64){
+            return next_symbol_with_node_pos(symbol + limit, node, end_symbol_range, node_pos);
+        }
+        return end_symbol_range + 1;
+    }
+
+  }
+
   inline symbol_t next_symbol(symbol_t symbol, preorder_t node, symbol_t end_symbol_range){
     
-    if (node >= flag_size_){
-      raise(SIGINT);
-    }
+
     pos_type node_pos = get_node_data_pos(node);
 
     if (is_collapse(node)){
@@ -550,7 +612,7 @@ class Bitmap {
         width = dimension_;
       }
       else {
-        width = 1 << dimension_;
+        width = num_branches_;
         to_dfuds->shift_backward_to_uncollapse(to);
         SETBITVAL(to_dfuds->flag_, to);
       }
@@ -602,6 +664,7 @@ class Bitmap {
   size_type flag_size_;
 
   dimension_t dimension_;
+  symbol_t num_branches_;
 };
 
 }

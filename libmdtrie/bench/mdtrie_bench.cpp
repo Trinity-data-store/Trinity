@@ -15,16 +15,8 @@ FILE *fptr;
 char file_path[] = "benchmark_output_vector.txt";
 char file_path_csv[] = "cdf_8.txt";
 
-typedef unsigned long long int TimeStamp;
 
-static TimeStamp GetTimestamp() {
-  struct timeval now;
-  gettimeofday(&now, nullptr);
-
-  return now.tv_usec + (TimeStamp) now.tv_sec * 1000000;
-}
-
-const int DIMENSION = 2;
+const int DIMENSION = 4;
 
 
 void test_random_data(n_leaves_t n_points, level_t max_depth, level_t trie_depth, preorder_t max_tree_node)
@@ -48,8 +40,9 @@ void test_random_data(n_leaves_t n_points, level_t max_depth, level_t trie_depth
     }
 
     t1 = GetTimestamp();
-    fprintf(fptr, "Time to insert %ld points with %d dimensions: %llu microseconds\n", n_points, DIMENSION, (t1 - t0));
-    fprintf(fptr, "Average time to insert one point: %llu microseconds\n", (t1 - t0) / n_points);
+    fprintf(stderr, "Time to insert %ld points with %d dimensions: %llu microseconds\n", n_points, DIMENSION, (t1 - t0));
+    fprintf(stderr, "Average time to insert one point: %f microseconds\n", (float) (t1 - t0) / n_points);
+    // fprintf(stderr, "Total bimap insertion time: %lld, total bimap count: %ld\n", total_bimap, bimap_insertion_count);
 }
 
 void test_real_data(level_t max_depth, level_t trie_depth, preorder_t max_tree_node){
@@ -226,13 +219,10 @@ void test_insert_data(level_t max_depth, level_t trie_depth, preorder_t max_tree
     fprintf(stderr, "Dimension: %d\n", DIMENSION);
     fprintf(stderr, "Average time to insert one point: %f microseconds\n", (float)diff / n_points);
     std::cerr << "Storage: " << mdtrie->size() << " bytes\n";
+    fprintf(stderr, "Total primary key: %ld, out of %ld\n", current_primary_key, n_lines);
+    // fprintf(stderr, "Total bimap insertion time: %lld, total bimap count: %ld\n", total_bimap, bimap_insertion_count);
     return;
     
-    std::cerr << "Storage save (pos): " << v2_storage_save_pos / 8 << " bytes\n";
-    std::cerr << "storage save (neg): " << v2_storage_save_neg / 8 << " bytes\n";
-
-    std::cerr << "Total number of single node: " << single_node_count << "\n";
-    std::cerr << "Total number nodes: " << total_number_nodes << "\n";
 }
 
 void test_density(level_t max_depth, level_t trie_depth, preorder_t max_tree_node){
@@ -420,6 +410,7 @@ void cdf_insert(level_t max_depth, level_t trie_depth, preorder_t max_tree_node)
 
 int main() {
 
-    test_real_data(32, 10, 1024);
+    test_insert_data(32, 10, 1024);
+    // test_random_data(50000, 32, 10, 1024);
 }
 
