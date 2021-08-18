@@ -5,7 +5,7 @@
 #include <tqdm.h>
 #include <vector>
 
-const int DIMENSION = 9;
+const int DIMENSION = 4;
 FILE *fptr;
 char file_path[] = "benchmark_range_search_2.csv";
 
@@ -114,6 +114,11 @@ void insert_for_node_path(point_array<DIMENSION> *found_points, level_t max_dept
     diff = GetTimestamp() - start;
 
     fprintf(stderr, "Average time to range query one point: %f microseconds\n", (float) diff / found_points->size());
+    // HERE! Total_stored is different!!
+    // TODO:
+
+    fprintf(stderr, "total points: %ld\n", total_stored);
+    fprintf(stderr, "max count: %ld\n", max_count);
     // while (found_points->size() == 0){
     //     for (dimension_t i = 0; i < DIMENSION; i++){
     //         start_range->set_coordinate(i,  min[i] + rand() % (max[i] - min[i] + 1));

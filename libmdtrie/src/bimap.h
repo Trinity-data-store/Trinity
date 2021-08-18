@@ -88,5 +88,5 @@ bool check_bimap_node_config(void *treeblock_ptr, preorder_t parent_node, symbol
 
 }
 
-#endif //MD_TRIE_BIMAP_H
 
+#endif //MD_TRIE_BIMAP_H

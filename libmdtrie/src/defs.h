@@ -6,6 +6,8 @@
 #include <bimap.h>
 #include <assert.h> 
 #include <boost/bimap.hpp>
+#include <mutex>
+#include <shared_mutex>
 
 // Maximum number of bits for node configuration
 typedef uint64_t node_t;
@@ -58,9 +60,16 @@ static TimeStamp GetTimestamp() {
   return now.tv_usec + (TimeStamp) now.tv_sec * 1000000;
 }
 
-n_leaves_t current_primary_key = 0;
-n_leaves_t current_leaves_inserted = 0;
 
+n_leaves_t current_leaves_inserted = 0;
+n_leaves_t total_stored = 0;
+// std::vector<uint64_t> p_key_to_treeblock;
+// std::unordered_map<n_leaves_t, uint64_t> p_key_to_count;
+uint64_t max_count = 0;
+
+
+std::shared_mutex mutex_p_key;
+n_leaves_t current_primary_key = 0;
 std::unordered_map<n_leaves_t, uint64_t> p_key_to_treeblock;
 
 #endif //MD_TRIE_DEFS_H

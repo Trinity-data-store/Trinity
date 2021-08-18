@@ -225,7 +225,13 @@ public:
         
         if (level == length) {
             // insert_primary_key_at_index(current_primary);
+            mutex_p_key.lock();
             current_primary_key++;
+            mutex_p_key.unlock();
+            // p_key_to_count[primary_key_list[current_primary]] += 1;
+            // if (p_key_to_count[primary_key_list[current_primary]] > max_count){
+            //     max_count = p_key_to_count[primary_key_list[current_primary]];
+            // }
             return;
         }
         // std::lock_guard<std::recursive_mutex> guard(mutex);
@@ -264,9 +270,9 @@ public:
             while (tmp_symbol != next_symbol){
                 tmp_symbol = dfuds_->next_symbol(tmp_symbol + 1, node, num_branches_ - 1);
                 current_primary ++;
-                if (tmp_symbol > next_symbol){
-                    raise(SIGINT);
-                }
+                // if (tmp_symbol > next_symbol){
+                //     raise(SIGINT);
+                // }
             }
 
             insert_primary_key_at_index(current_primary);
@@ -411,9 +417,9 @@ public:
                 dest_node += 1;
                 n_nodes_copied += 1;
             }
-            if (copied_primary != num_primary){
-                raise(SIGINT);
-            }
+            // if (copied_primary != num_primary){
+            //     raise(SIGINT);
+            // }
 
             bool insertion_before_selected_tree = true;
             if (!insertion_in_new_block && frontier <= current_frontier)
@@ -465,6 +471,10 @@ public:
             for (preorder_t i = selected_primary_index; i < selected_primary_index + num_primary; i++){
                 
                 new_block->primary_key_list.push_back(primary_key_list[i]);
+
+                // if (primary_key_list[i] >= p_key_to_treeblock.size()){
+                //     raise(SIGINT);
+                // }
                 p_key_to_treeblock[primary_key_list[i]] = (uint64_t) new_block;
             }
 
@@ -1288,9 +1298,18 @@ public:
         //     raise(SIGINT);
         // }
         // raise(SIGINT);
+
+        // if (current_primary_key != p_key_to_treeblock.size()){
+        //     raise(SIGINT);
+        // }
+        // p_key_to_treeblock.push_back((uint64_t)this);
+        mutex_p_key.lock();
         p_key_to_treeblock[current_primary_key] = (uint64_t)this;
         primary_key_list.insert(primary_key_list.begin() + index, current_primary_key);
+        // p_key_to_count[current_primary_key] = 1;
         current_primary_key++;
+        total_stored ++;
+        mutex_p_key.unlock();
     }
 
     bool test_primary_key_correctness(preorder_t node, preorder_t current_primary)
