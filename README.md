@@ -9,13 +9,13 @@ cmake ..
 make
 ```
 
-### Running tests
+### Tests
 
 ```bash
 make test
 ```
 
-### Running benchmark
+### Benchmark
 
 Put the dataset under /libmdtrie/bench/data
 ```bash
