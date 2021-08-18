@@ -16,6 +16,9 @@ include(JemallocExternal)
 set(HEAP_MANAGER_EP "jemalloc_ep")
 set(HEAP_MANAGER_LIBRARY ${JEMALLOC_LIBRARY})
 
+# Apache Thrift
+include(ThriftExternal)
+
 # If testing is enabled
 if (BUILD_TESTS)
 	# Catch2

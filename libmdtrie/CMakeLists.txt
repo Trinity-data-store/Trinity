@@ -39,16 +39,16 @@ add_executable(orig_bench_no_table
 add_executable(range_search_bench
         bench/range_search_bench.cpp)
 
-add_executable(concurrency_bench
-        bench/concurrency_bench.cpp)
+#add_executable(concurrency_bench
+#        bench/concurrency_bench.cpp)
 
-add_executable(trie_one_dimension_bench
-        bench/trie_one_dimension_bench.cpp)
+#add_executable(trie_one_dimension_bench
+#        bench/trie_one_dimension_bench.cpp)
 
 add_executable(self_index_bench
         bench/self_index_bench.cpp)
 
 target_link_libraries(mdtrie_bench ${MDTRIE_LIBS})
 target_link_libraries(range_search_bench ${MDTRIE_LIBS})
-target_link_libraries(concurrency_bench ${MDTRIE_LIBS})
+#target_link_libraries(concurrency_bench ${MDTRIE_LIBS})
 target_link_libraries(self_index_bench ${MDTRIE_LIBS})

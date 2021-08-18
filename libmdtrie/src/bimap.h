@@ -3,6 +3,7 @@
 
 #include <boost/bimap.hpp>
 #include <sys/time.h>
+#include <unordered_map>
 
 typedef uint64_t preorder_t;
 typedef uint64_t symbol_t;
