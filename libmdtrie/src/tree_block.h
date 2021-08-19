@@ -1197,8 +1197,9 @@ public:
                 // leaf->set_primary(primary_key_list[current_primary][0]);
 
                 found_points->add_leaf(leaf);
-                mutex.unlock_shared();
             }
+            mutex.unlock_shared();
+
             return;
         }
                                         
