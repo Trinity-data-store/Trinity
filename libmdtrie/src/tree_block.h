@@ -455,14 +455,14 @@ public:
             // Copy primary key to the new block
             for (preorder_t i = selected_primary_index; i < selected_primary_index + num_primary; i++){
                 
-                TimeStamp start = GetTimestamp();
+                // TimeStamp start = GetTimestamp();
                 
                 new_block->primary_key_list.push_back(primary_key_list[i]);
                 // new_block->primary_key_count.push_back(primary_key_count[i]);
                 for (auto p : primary_key_list[i])
                     p_key_to_treeblock[p] = (uint64_t) new_block;
 
-                vector_time += GetTimestamp() - start;
+                // vector_time += GetTimestamp() - start;
             }
 
             // new_block->primary_key_list.assign(std::next(primary_key_list.begin(), selected_primary_index), std::next(primary_key_list.begin(), selected_primary_index + num_primary));
@@ -1270,10 +1270,9 @@ public:
 
         mutex_p_key.lock();
         p_key_to_treeblock[current_primary_key] = (uint64_t)this;
-        std::vector<n_leaves_t> current_vect = primary_key_list[index];
 
         TimeStamp start = GetTimestamp();
-        current_vect.push_back(current_primary_key);
+        primary_key_list[index].push_back(current_primary_key);
         vector_time += GetTimestamp() - start;
         current_primary_key++;
         

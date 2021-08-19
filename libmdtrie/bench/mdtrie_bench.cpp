@@ -16,7 +16,7 @@ char file_path[] = "benchmark_output_vector.txt";
 char file_path_csv[] = "cdf_8.txt";
 
 
-const int DIMENSION = 2;
+const int DIMENSION = 6;
 
 
 void test_random_data(n_leaves_t n_points, level_t max_depth, level_t trie_depth, preorder_t max_tree_node)
