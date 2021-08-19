@@ -746,9 +746,11 @@ public:
         */
 
         total_size += sizeof(primary_key_list);
+        vector_size += sizeof(primary_key_list);
         // raise(SIGINT);
         for (preorder_t i = 0; i < primary_key_list.size(); i++){
             total_size += sizeof(primary_key_list[i]) + (sizeof(n_leaves_t) * primary_key_list[i].size());
+            vector_size += sizeof(primary_key_list[i]) + (sizeof(n_leaves_t) * primary_key_list[i].size());
             // total_size += sizeof(std::vector<n_leaves_t>) + (sizeof(n_leaves_t) * primary_key_list[i].size());
         }
 
@@ -1195,6 +1197,9 @@ public:
 
             for (auto primary_key : primary_key_list[current_primary])
             {
+                // if (found_points->size() == 38){
+                //     raise(SIGINT);
+                // }
                 auto *leaf = new data_point<DIMENSION>();
                 leaf->set(start_range->get());
                 leaf->set_parent_treeblock(this);
@@ -1206,8 +1211,10 @@ public:
                 // leaf->set_primary(primary_key_list[current_primary][0]);
 
                 found_points->add_leaf(leaf);
-                mutex.unlock_shared();
+                // break;
+                
             }
+            mutex.unlock_shared();
             return;
         }
                                         
@@ -1297,11 +1304,11 @@ public:
         p_key_to_treeblock[current_primary_key] = (uint64_t)this;
 
         // std::vector<n_leaves_t> new_vect;
-        TimeStamp start = GetTimestamp();
+        // TimeStamp start = GetTimestamp();
         // new_vect.push_back(current_primary_key);
         primary_key_list.emplace(primary_key_list.begin() + index, std::vector<n_leaves_t>{current_primary_key});
-        vector_time += GetTimestamp() - start;
-        vect_opt_count++;
+        // vector_time += GetTimestamp() - start;
+        // vect_opt_count++;
         // primary_key_count.insert(primary_key_count.begin() + index, 1);
 
         current_primary_key++;

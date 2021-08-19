@@ -73,4 +73,6 @@ std::shared_mutex mutex_p_key;
 n_leaves_t current_primary_key = 0;
 std::unordered_map<n_leaves_t, uint64_t> p_key_to_treeblock;
 
+uint64_t vector_size = 0;
+
 #endif //MD_TRIE_DEFS_H

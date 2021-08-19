@@ -16,7 +16,7 @@ char file_path[] = "benchmark_output_vector.txt";
 char file_path_csv[] = "cdf_8.txt";
 
 
-const int DIMENSION = 6;
+const int DIMENSION = 9;
 
 
 void test_random_data(n_leaves_t n_points, level_t max_depth, level_t trie_depth, preorder_t max_tree_node)
@@ -219,8 +219,9 @@ void test_insert_data(level_t max_depth, level_t trie_depth, preorder_t max_tree
     fprintf(stderr, "Dimension: %d\n", DIMENSION);
     fprintf(stderr, "Average time to insert one point: %f microseconds\n", (float)diff / n_points);
     std::cerr << "Storage: " << mdtrie->size() << " bytes\n";
+    std::cerr << "vector storage: " << vector_size << " bytes\n";
     fprintf(stderr, "Total primary key: %ld, out of %ld\n", current_primary_key, n_lines);
-    fprintf(stderr, "Average vector insertion time: %f, out of %ld times\n", (float)vector_time / vect_opt_count, vect_opt_count);
+    // fprintf(stderr, "Average vector insertion time: %f, out of %ld times\n", (float)vector_time / vect_opt_count, vect_opt_count);
     // fprintf(stderr, "Total bimap insertion time: %lld, total bimap count: %ld\n", total_bimap, bimap_insertion_count);
     return;
     
