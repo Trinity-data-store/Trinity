@@ -464,8 +464,12 @@ public:
                 
                 new_block->primary_key_list.emplace_back(primary_key_list[i]);
                 // new_block->primary_key_count.push_back(primary_key_count[i]);
-                for (auto p : primary_key_list[i])
-                    p_key_to_treeblock[p] = (uint64_t) new_block;
+                uint16_t primary_key_size = primary_key_list[i].size();
+                for (uint16_t j = 0; j < primary_key_size; j++){
+                    p_key_to_treeblock[primary_key_list[i][j]] = (uint64_t) new_block;
+                }
+                // for (auto p : primary_key_list[i])
+                //     p_key_to_treeblock[p] = (uint64_t) new_block;
 
                 // vector_time += GetTimestamp() - start;
             }
