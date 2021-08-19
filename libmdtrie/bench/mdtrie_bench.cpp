@@ -220,6 +220,7 @@ void test_insert_data(level_t max_depth, level_t trie_depth, preorder_t max_tree
     fprintf(stderr, "Average time to insert one point: %f microseconds\n", (float)diff / n_points);
     std::cerr << "Storage: " << mdtrie->size() << " bytes\n";
     fprintf(stderr, "Total primary key: %ld, out of %ld\n", current_primary_key, n_lines);
+    fprintf(stderr, "total vector insertion time: %f\n", (float)vector_time / n_points);
     // fprintf(stderr, "Total bimap insertion time: %lld, total bimap count: %ld\n", total_bimap, bimap_insertion_count);
     return;
     

@@ -224,22 +224,16 @@ public:
 
         
         if (level == length) {
-            // insert_primary_key_at_index(current_primary);
-            mutex_p_key.lock();
-            current_primary_key++;
-            mutex_p_key.unlock();
-            // p_key_to_count[primary_key_list[current_primary]] += 1;
-            // if (p_key_to_count[primary_key_list[current_primary]] > max_count){
-            //     max_count = p_key_to_count[primary_key_list[current_primary]];
-            // }
+
+            insert_primary_key_at_present_index(current_primary);
+            // mutex_p_key.lock();
+            // current_primary_key++;
+            // primary_key_count[current_primary] ++;
+            // mutex_p_key.unlock();
             return;
         }
-        // std::lock_guard<std::recursive_mutex> guard(mutex);
-        mutex.lock();
 
-        // if (!test_primary_key_correctness(node, current_primary)){
-        //     raise(SIGINT);
-        // }
+        mutex.lock();
 
         node_t original_node = node;
         uint64_t max_tree_nodes;
@@ -331,10 +325,7 @@ public:
             // symbol_t last_symbol = leaf_point->leaf_to_symbol(length - 1, max_depth_);
             // insert_bimap(this, from_node - 1, last_symbol);
             insert_primary_key_at_index(current_primary);
-            // if (!test_primary_key_correctness(node, current_primary)){
-            //     raise(SIGINT);
-            //     // test_primary_key_correctness(node, current_primary);
-            // }
+
             mutex.unlock();
 
         } else if (num_nodes_ + (length - level) - 1 <= max_tree_nodes) {
@@ -349,13 +340,7 @@ public:
             preorder_t index_to_primary[4096] = {0};
 
             node_t selected_node = select_subtree(subtree_size, selected_node_depth, num_primary, selected_primary_index, index_to_primary);
-            // fprintf(stderr, "frontier node!\n");
-            // raise(SIGINT);
 
-            // if (!test_primary_key_correctness(selected_node, selected_primary_index)){
-            //     raise(SIGINT);
-            // }
-            
             node_t orig_selected_node = selected_node;
             auto *new_dfuds = new bitmap::Bitmap(tree_capacity_ + 1, DIMENSION);
 
@@ -470,21 +455,21 @@ public:
             // Copy primary key to the new block
             for (preorder_t i = selected_primary_index; i < selected_primary_index + num_primary; i++){
                 
+                TimeStamp start = GetTimestamp();
+                
                 new_block->primary_key_list.push_back(primary_key_list[i]);
+                // new_block->primary_key_count.push_back(primary_key_count[i]);
+                for (auto p : primary_key_list[i])
+                    p_key_to_treeblock[p] = (uint64_t) new_block;
 
-                // if (primary_key_list[i] >= p_key_to_treeblock.size()){
-                //     raise(SIGINT);
-                // }
-                p_key_to_treeblock[primary_key_list[i]] = (uint64_t) new_block;
+                vector_time += GetTimestamp() - start;
             }
 
             // new_block->primary_key_list.assign(std::next(primary_key_list.begin(), selected_primary_index), std::next(primary_key_list.begin(), selected_primary_index + num_primary));
 
-
-
             // Erase copied primary keys            
             primary_key_list.erase(std::next(primary_key_list.begin(), selected_primary_index), std::next(primary_key_list.begin(), selected_primary_index + num_primary));
-
+            // primary_key_count.erase(std::next(primary_key_count.begin(), selected_primary_index), std::next(primary_key_count.begin(), selected_primary_index + num_primary));
 
             // Now, delete the subtree copied to the new block
             orig_selected_node++;
@@ -532,18 +517,11 @@ public:
                 if (is_in_root) {
                     dfuds_->set_symbol(insertion_node, leaf_point->leaf_to_symbol(level, max_depth_), true);
                     mutex.unlock();
-                    // fprintf(stderr, "insertion_in_new_block & is_in_root\n");
-                    // if (!test_primary_key_correctness(insertion_node, current_primary)){
-                    //     raise(SIGINT);
-                    // }
+
                     insert(insertion_node, leaf_point, level, length, current_frontier, current_primary);
                 } else {
                     // release 
                     mutex.unlock();
-
-                    // if (!new_block->test_primary_key_correctness(insertion_node, current_primary_new_block)){
-                    //     raise(SIGINT);
-                    // }
 
                     // fprintf(stderr, "insertion_in_new_block & is_not_in_root\n");
                     new_block->insert(insertion_node, leaf_point, level, length, current_frontier_new_block, current_primary_new_block);
@@ -553,9 +531,7 @@ public:
             else {
                 // release
                 mutex.unlock();
-                // if (!test_primary_key_correctness(insertion_node, current_primary)){
-                //     raise(SIGINT);
-                // }
+
                 // fprintf(stderr, "insertion in old block\n");
                 insert(insertion_node, leaf_point, level, length, current_frontier, current_primary); 
             }
@@ -701,16 +677,9 @@ public:
         }
         mutex.unlock_shared();
 
-        // if (current_leaves_inserted == 63){
-        //     raise(SIGINT);
-        // }
-
         insert(current_node, leaf_point, level, length, current_frontier, current_primary);
         current_leaves_inserted ++;
 
-        // if (current_leaves_inserted != current_primary_key){
-        //     raise(SIGINT);
-        // }
     }
 
     // This function is used for testing.
@@ -1100,7 +1069,8 @@ public:
                     symbol_t tmp_symbol = -1;
                     bool found = false;
                     for (preorder_t p = current_primary; p < new_current_primary; p ++){
-                        if (primary_key_list[p] == primary_key){
+                        std::vector<n_leaves_t> current_vect = primary_key_list[p];
+                        if (std::find(current_vect.begin(), current_vect.end(), primary_key) != current_vect.end()){
 
                             found = true;
 
@@ -1197,9 +1167,6 @@ public:
             symbol_t parent_symbol = start_range->leaf_to_symbol(max_depth_ - 1, max_depth_);
             leaf->set_parent_symbol(parent_symbol);
 
-            // if (!test_primary_key_correctness(prev_node, current_primary)){
-            //     raise(SIGINT);
-            // }
             // GET which current primary corresponds to which node;
             // Now current_primary points to the leaf marked by tmp_symbol
             symbol_t tmp_symbol = dfuds_->next_symbol(0, prev_node, num_branches_ - 1);
@@ -1211,8 +1178,8 @@ public:
                 //     raise(SIGINT);
                 // }
             }
-            
-            leaf->set_primary(primary_key_list[current_primary]);
+            // Todo
+            leaf->set_primary(primary_key_list[current_primary][0]);
 
             found_points->add_leaf(leaf);
             mutex.unlock_shared();
@@ -1224,9 +1191,6 @@ public:
             return;
         }
 
-        // if (!test_primary_key_correctness(current_node, current_primary)){
-        //     raise(SIGINT);
-        // }
 
         symbol_t start_range_symbol = start_range->leaf_to_symbol(level, max_depth_);
         symbol_t end_range_symbol = end_range->leaf_to_symbol(level, max_depth_);
@@ -1286,31 +1250,51 @@ public:
         mutex.unlock_shared();
     }
     
-    // void insert_primary_key_at_back(preorder_t primary_key)
-    // {
-    //     primary_key_list.push_back(current_primary_key);
-    //     current_primary_key++;
-    // }
+    void insert_primary_key_at_present_index(n_leaves_t index){
+
+        mutex_p_key.lock();
+        p_key_to_treeblock[current_primary_key] = (uint64_t)this;
+        std::vector<n_leaves_t> current_vect = primary_key_list[index];
+
+        TimeStamp start = GetTimestamp();
+        current_vect.push_back(current_primary_key);
+        vector_time += GetTimestamp() - start;
+        current_primary_key++;
+        
+        mutex_p_key.unlock();                
+
+    }
 
     void insert_primary_key_at_index(n_leaves_t index){
 
-        // if (index > primary_key_list.size()){
-        //     raise(SIGINT);
-        // }
-        // raise(SIGINT);
-
-        // if (current_primary_key != p_key_to_treeblock.size()){
-        //     raise(SIGINT);
-        // }
-        // p_key_to_treeblock.push_back((uint64_t)this);
         mutex_p_key.lock();
         p_key_to_treeblock[current_primary_key] = (uint64_t)this;
-        primary_key_list.insert(primary_key_list.begin() + index, current_primary_key);
-        // p_key_to_count[current_primary_key] = 1;
+
+        std::vector<n_leaves_t> new_vect;
+        TimeStamp start = GetTimestamp();
+        new_vect.push_back(current_primary_key);
+        primary_key_list.insert(primary_key_list.begin() + index, new_vect);
+        vector_time += GetTimestamp() - start;
+        // primary_key_count.insert(primary_key_count.begin() + index, 1);
+
         current_primary_key++;
         total_stored ++;
         mutex_p_key.unlock();
     }
+
+    // void insert_primary_key_at_index(n_leaves_t index){
+
+    //     mutex_p_key.lock();
+    //     p_key_to_treeblock[current_primary_key] = (uint64_t)this;
+
+    //     primary_key_list.insert(primary_key_list.begin() + index, current_primary_key);
+    //     primary_key_count.insert(primary_key_count.begin() + index, 1);
+
+    //     current_primary_key++;
+    //     total_stored ++;
+    //     mutex_p_key.unlock();
+    // }
+
 
     bool test_primary_key_correctness(preorder_t node, preorder_t current_primary)
     {
@@ -1321,7 +1305,8 @@ public:
         preorder_t index_to_primary[4096] = {0};
         select_subtree(subtree_size, selected_node_depth, num_primary, selected_primary_index, index_to_primary);
         preorder_t total_primary_count = 0;
-        for (int i = 0; i < 4096; i++){
+        for (int i = 0; i < 4096; i++)
+        {
 
             total_primary_count += index_to_primary[i];
         }
@@ -1357,7 +1342,9 @@ private:
     preorder_t treeblock_frontier_num_ = 0;
     trie_node<DIMENSION> *parent_trie_node_ = NULL;
 
-    std::vector<n_leaves_t> primary_key_list;
+    std::vector<std::vector<n_leaves_t>> primary_key_list;
+    // std::vector<n_leaves_t> primary_key_list;
+    // std::vector<n_leaves_t> primary_key_count;
     // Using recursive_mutex is actually faster
     // std::mutex mutex;
     // std::recursive_mutex mutex;  

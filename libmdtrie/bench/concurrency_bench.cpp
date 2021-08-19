@@ -14,9 +14,9 @@ const int DIMENSION = 3;
 level_t max_depth = 32;
 level_t trie_depth = 10;
 preorder_t max_tree_node = 1024;
-n_leaves_t n_points = 2000000;
+n_leaves_t n_points = 1000000;
 uint8_t max_num_threads = 18;
-const uint32_t read_number_count = 10000000;
+const uint32_t read_number_count = 1000000;
 
 // typedef unsigned long long int TimeStamp;
 
