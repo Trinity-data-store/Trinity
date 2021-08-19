@@ -10,10 +10,10 @@
 #include <shared_mutex>
 
 uint64_t get_bit_count = 0;
-uint64_t v2_storage_save_pos = 0;
-uint64_t v2_storage_save_neg = 0;
-uint64_t single_node_count = 0;
-uint64_t total_number_nodes = 0;
+// uint64_t v2_storage_save_pos = 0;
+// uint64_t v2_storage_save_neg = 0;
+// uint64_t single_node_count = 0;
+// uint64_t total_number_nodes = 0;
 
 template<dimension_t DIMENSION>
 class tree_block {
@@ -721,29 +721,47 @@ public:
     uint64_t size() const {
 
         uint64_t total_size = sizeof(level_t) * 1 + sizeof(node_n_t) * 4;
-        total_size += sizeof(preorder_t);
-        if (parent_tree_block_){
-            total_size += sizeof(tree_block *);
+        total_size += sizeof(preorder_t) + sizeof(tree_block *) + sizeof(trie_node<DIMENSION> *);
+        // if (parent_tree_block_){
+        //     total_size += sizeof(tree_block *);
+        // }
+        // if (parent_tree_block_){
+        //     total_size += sizeof(trie_node<DIMENSION> *);
+        // }
+        // uint64_t v2_save_current_pos = 0;
+        // uint64_t v2_save_current_neg = 0;
+
+
+        /**
+            Get the size of primary_key_list
+        */
+
+        total_size += sizeof(primary_key_list);
+        // raise(SIGINT);
+        for (preorder_t i = 0; i < primary_key_list.size(); i++){
+            total_size += sizeof(primary_key_list[i]) + (sizeof(n_leaves_t) * primary_key_list[i].size());
+            // total_size += sizeof(std::vector<n_leaves_t>) + (sizeof(n_leaves_t) * primary_key_list[i].size());
         }
-        if (parent_tree_block_){
-            total_size += sizeof(trie_node<DIMENSION> *);
-        }
-        uint64_t v2_save_current_pos = 0;
-        uint64_t v2_save_current_neg = 0;
-        for (preorder_t i = 0; i < num_nodes_; i++){
-            if (dfuds_->get_n_children(i) == 1){
-                v2_storage_save_pos += num_branches_ - DIMENSION - 1;
-                v2_save_current_pos += num_branches_ - DIMENSION - 1;
-                single_node_count += 1;
-            }
-            else {
-                v2_storage_save_neg += 1;
-                v2_save_current_neg += 1;
-            }
-        }
-        total_number_nodes += num_nodes_;
-        total_size += num_frontiers_ * (sizeof(preorder_t) + sizeof(tree_block *)) + sizeof(frontier_node<DIMENSION> *);
+
+        // for (preorder_t i = 0; i < num_nodes_; i++){
+        //     if (dfuds_->get_n_children(i) == 1){
+        //         v2_storage_save_pos += num_branches_ - DIMENSION - 1;
+        //         v2_save_current_pos += num_branches_ - DIMENSION - 1;
+        //         single_node_count += 1;
+        //     }
+        //     else {
+        //         v2_storage_save_neg += 1;
+        //         v2_save_current_neg += 1;
+        //     }
+        // }
+        // total_number_nodes += num_nodes_;
         total_size += dfuds_->size();
+
+        /**
+            Get the size of primary_key_list
+        */
+        
+        total_size += num_frontiers_ * (sizeof(preorder_t) + sizeof(tree_block *)) + sizeof(frontier_node<DIMENSION> *);
 
         for (uint16_t i = 0; i < num_frontiers_; i++)
             total_size += ((frontier_node<DIMENSION> *) frontiers_)[i].pointer_->size();
@@ -1158,9 +1176,10 @@ public:
         
             // GET which current primary corresponds to which node;
             // Now current_primary points to the leaf marked by tmp_symbol
+            symbol_t parent_symbol = start_range->leaf_to_symbol(max_depth_ - 1, max_depth_);
             symbol_t tmp_symbol = dfuds_->next_symbol(0, prev_node, num_branches_ - 1);
             
-            while (tmp_symbol != parent_symbol){
+            while (tmp_symbol != parent_symbol){    
                 tmp_symbol = dfuds_->next_symbol(tmp_symbol + 1, prev_node, num_branches_ - 1);
                 current_primary ++;
             }
@@ -1172,7 +1191,6 @@ public:
                 leaf->set_parent_treeblock(this);
                 leaf->set_parent_node(prev_node);
                 
-                symbol_t parent_symbol = start_range->leaf_to_symbol(max_depth_ - 1, max_depth_);
                 leaf->set_parent_symbol(parent_symbol);
 
                 leaf->set_primary(primary_key);

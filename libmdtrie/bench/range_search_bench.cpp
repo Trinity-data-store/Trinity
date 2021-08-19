@@ -93,9 +93,9 @@ void insert_for_node_path(point_array<DIMENSION> *found_points, level_t max_dept
         n_points ++;
         // assert(n_points == current_primary_key);
 
-        // if (n_points == 100000){
-        //     break;
-        // }
+        if (n_points == 1000000){
+            break;
+        }
     }
     bar.finish();
     fprintf(stderr, "dimension: %d\n", DIMENSION);

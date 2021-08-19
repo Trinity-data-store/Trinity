@@ -91,6 +91,10 @@ public:
     uint64_t size() const {
         uint64_t total_size = sizeof(uint8_t) + sizeof(symbol_t) + sizeof(trie_node<DIMENSION> *) + sizeof(level_t) * 2 +
                             sizeof(preorder_t) * 2;
+
+        // Include primary key size:
+        total_size += sizeof(p_key_to_treeblock) + (sizeof(n_leaves_t) + sizeof(uint64_t)) * p_key_to_treeblock.size();
+        // total_size += sizeof(std::unordered_map<n_leaves_t, uint64_t>) + (sizeof(n_leaves_t) + sizeof(uint64_t)) * p_key_to_treeblock.size();
         return total_size + root_->size();
     }
 

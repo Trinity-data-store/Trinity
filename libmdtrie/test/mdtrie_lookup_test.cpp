@@ -78,6 +78,9 @@ bool test_lookup(level_t max_depth, level_t trie_depth, preorder_t max_tree_node
     auto *all_points = new std::vector<data_point<DIMENSION>>();
 
     insert_for_node_path(found_points, max_depth, trie_depth, max_tree_node, all_points);
+    if (all_points->size() != 14583357){
+        return false;
+    }
 
     TimeStamp diff = 0;
     TimeStamp start;
