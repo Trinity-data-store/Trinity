@@ -5,7 +5,7 @@
 #include <tqdm.h>
 #include <vector>
 
-const int DIMENSION = 4;
+const int DIMENSION = 2;
 FILE *fptr;
 char file_path[] = "benchmark_range_search_2.csv";
 
@@ -50,6 +50,7 @@ void insert_for_node_path(point_array<DIMENSION> *found_points, level_t max_dept
     // diff = 0;
     tqdm bar;
     TimeStamp start, diff;
+    diff = 0;
 
     while ((read = getline(&line, &len, fp)) != -1)
     {

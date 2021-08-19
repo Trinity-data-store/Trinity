@@ -118,21 +118,21 @@ bool test_lookup(level_t max_depth, level_t trie_depth, preorder_t max_tree_node
         */
 
         preorder_t returned_primary_key = point->read_primary();
-        bool found = false;
+        // bool found = false;
 
         data_point<DIMENSION> current_point = (*all_points)[returned_primary_key];
 
         for (dimension_t j = 0; j < DIMENSION; j++){
             if (returned_coordinates->get_coordinate(j) != current_point.get_coordinate(j)){
-                break;
+                return false;
             }
-            if (j == DIMENSION - 1){
-                found = true;
-            }
+            // if (j == DIMENSION - 1){
+            //     found = true;
+            // }
         }
 
-        if (!found)
-            return false;
+        // if (!found)
+        //     return false;
 
         /**
             Test md-trie lookup given primary key
