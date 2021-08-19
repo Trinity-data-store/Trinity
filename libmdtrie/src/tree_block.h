@@ -1155,18 +1155,7 @@ public:
 
         mutex.lock_shared();
         if (level == max_depth_) {
-            auto *leaf = new data_point<DIMENSION>();
-            leaf->set(start_range->get());
-            leaf->set_parent_treeblock(this);
-            leaf->set_parent_node(prev_node);
-            
-            // if (found_points->size() == 3){
-            //     raise(SIGINT);
-            // }
-
-            symbol_t parent_symbol = start_range->leaf_to_symbol(max_depth_ - 1, max_depth_);
-            leaf->set_parent_symbol(parent_symbol);
-
+        
             // GET which current primary corresponds to which node;
             // Now current_primary points to the leaf marked by tmp_symbol
             symbol_t tmp_symbol = dfuds_->next_symbol(0, prev_node, num_branches_ - 1);
@@ -1174,15 +1163,24 @@ public:
             while (tmp_symbol != parent_symbol){
                 tmp_symbol = dfuds_->next_symbol(tmp_symbol + 1, prev_node, num_branches_ - 1);
                 current_primary ++;
-                // if (tmp_symbol > parent_symbol){
-                //     raise(SIGINT);
-                // }
             }
-            // Todo
-            leaf->set_primary(primary_key_list[current_primary][0]);
 
-            found_points->add_leaf(leaf);
-            mutex.unlock_shared();
+            for (auto primary_key : primary_key_list[current_primary])
+            {
+                auto *leaf = new data_point<DIMENSION>();
+                leaf->set(start_range->get());
+                leaf->set_parent_treeblock(this);
+                leaf->set_parent_node(prev_node);
+                
+                symbol_t parent_symbol = start_range->leaf_to_symbol(max_depth_ - 1, max_depth_);
+                leaf->set_parent_symbol(parent_symbol);
+
+                leaf->set_primary(primary_key);
+                // leaf->set_primary(primary_key_list[current_primary][0]);
+
+                found_points->add_leaf(leaf);
+                mutex.unlock_shared();
+            }
             return;
         }
                                         
@@ -1270,10 +1268,10 @@ public:
         mutex_p_key.lock();
         p_key_to_treeblock[current_primary_key] = (uint64_t)this;
 
-        std::vector<n_leaves_t> new_vect;
+        // std::vector<n_leaves_t> new_vect;
         TimeStamp start = GetTimestamp();
-        new_vect.push_back(current_primary_key);
-        primary_key_list.insert(primary_key_list.begin() + index, new_vect);
+        // new_vect.push_back(current_primary_key);
+        primary_key_list.emplace(primary_key_list.begin() + index, std::vector<n_leaves_t>{current_primary_key});
         vector_time += GetTimestamp() - start;
         // primary_key_count.insert(primary_key_count.begin() + index, 1);
 
@@ -1296,36 +1294,36 @@ public:
     // }
 
 
-    bool test_primary_key_correctness(preorder_t node, preorder_t current_primary)
-    {
-        preorder_t subtree_size = 0;
-        preorder_t selected_node_depth = 0;
-        preorder_t num_primary = 0;
-        preorder_t selected_primary_index = 0;
-        preorder_t index_to_primary[4096] = {0};
-        select_subtree(subtree_size, selected_node_depth, num_primary, selected_primary_index, index_to_primary);
-        preorder_t total_primary_count = 0;
-        for (int i = 0; i < 4096; i++)
-        {
+    // bool test_primary_key_correctness(preorder_t node, preorder_t current_primary)
+    // {
+    //     preorder_t subtree_size = 0;
+    //     preorder_t selected_node_depth = 0;
+    //     preorder_t num_primary = 0;
+    //     preorder_t selected_primary_index = 0;
+    //     preorder_t index_to_primary[4096] = {0};
+    //     select_subtree(subtree_size, selected_node_depth, num_primary, selected_primary_index, index_to_primary);
+    //     preorder_t total_primary_count = 0;
+    //     for (int i = 0; i < 4096; i++)
+    //     {
 
-            total_primary_count += index_to_primary[i];
-        }
-        if (total_primary_count != primary_key_list.size()){
-            return false;
-        }
+    //         total_primary_count += index_to_primary[i];
+    //     }
+    //     if (total_primary_count != primary_key_list.size()){
+    //         return false;
+    //     }
 
-        // This should have tested it. 
-        preorder_t current_primary_correct = 0;
-        for (preorder_t i = 0; i < node; i++){
-            current_primary_correct += index_to_primary[i];
-        }
+    //     // This should have tested it. 
+    //     preorder_t current_primary_correct = 0;
+    //     for (preorder_t i = 0; i < node; i++){
+    //         current_primary_correct += index_to_primary[i];
+    //     }
 
-        if (current_primary_correct != current_primary){
-            return false;
-        }        
+    //     if (current_primary_correct != current_primary){
+    //         return false;
+    //     }        
 
-        return true;
-    }
+    //     return true;
+    // }
 
 
 private:
