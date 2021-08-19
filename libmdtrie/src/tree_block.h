@@ -32,6 +32,11 @@ public:
         if (parent_trie_node){
             parent_trie_node_ = parent_trie_node;
         }
+
+        // if (root_depth_ <=/*=*/ 16) primary_key_list.reserve(64);
+        // else if (root_depth_ <= 24) primary_key_list.reserve(128);
+        // else max_tree_nodes = max_tree_nodes_;
+
     }
 
     inline node_n_t num_frontiers() {
@@ -457,7 +462,7 @@ public:
                 
                 // TimeStamp start = GetTimestamp();
                 
-                new_block->primary_key_list.push_back(primary_key_list[i]);
+                new_block->primary_key_list.emplace_back(primary_key_list[i]);
                 // new_block->primary_key_count.push_back(primary_key_count[i]);
                 for (auto p : primary_key_list[i])
                     p_key_to_treeblock[p] = (uint64_t) new_block;
@@ -1271,9 +1276,11 @@ public:
         mutex_p_key.lock();
         p_key_to_treeblock[current_primary_key] = (uint64_t)this;
 
-        TimeStamp start = GetTimestamp();
-        primary_key_list[index].push_back(current_primary_key);
-        vector_time += GetTimestamp() - start;
+        // TimeStamp start = GetTimestamp();
+        primary_key_list[index].emplace_back(current_primary_key);
+        
+        // vector_time += GetTimestamp() - start;
+        // vect_opt_count++;
         current_primary_key++;
         
         mutex_p_key.unlock();                
@@ -1290,6 +1297,7 @@ public:
         // new_vect.push_back(current_primary_key);
         primary_key_list.emplace(primary_key_list.begin() + index, std::vector<n_leaves_t>{current_primary_key});
         vector_time += GetTimestamp() - start;
+        vect_opt_count++;
         // primary_key_count.insert(primary_key_count.begin() + index, 1);
 
         current_primary_key++;
