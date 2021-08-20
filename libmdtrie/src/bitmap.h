@@ -455,10 +455,22 @@ class Bitmap {
 
   inline void shift_forward(preorder_t from_node, preorder_t to_node)
   {
+
+    if (from_node >= flag_size_){
+      raise(SIGINT);
+    }
     pos_type from_node_pos = get_node_data_pos(from_node);
     pos_type to_node_pos = get_node_data_pos(to_node);
     BulkCopy_forward(from_node_pos, to_node_pos, data_size_ - from_node_pos, true);
     BulkCopy_forward(from_node, to_node, flag_size_ - from_node, false);
+    pos_type shifted_amount = from_node_pos - to_node_pos;
+    ClearWidth(data_size_ - shifted_amount, shifted_amount, true);
+    ClearWidth(flag_size_ - (from_node - to_node), (from_node - to_node), false);
+
+    // ClearWidth(start_node_pos, end_node_pos - start_node_pos, true);
+    // ClearWidth(start_node, end_node + 1 - start_node, false);
+    // preorder_t amount_shifted = from_node - to_node;
+    // bulk_clear_node(flag_size_ - amount_shifted, flag_size_ - 1);
   }
 
   inline bool is_collapse(preorder_t node){
@@ -654,6 +666,10 @@ class Bitmap {
     in_size += (BITS2BLOCKS(data_size_) * sizeof(data_type));
 
     return in_size;
+  }
+
+  size_type get_flag_size(){
+    return flag_size_;
   }
 
  protected:

@@ -54,6 +54,7 @@ void insert_for_node_path(point_array<DIMENSION> *found_points, level_t max_dept
             }
         }
         (*all_points).push_back((*leaf_point));
+        // all_stored_points.push_back((*leaf_point));
 
         mdtrie->insert_trie(leaf_point, max_depth);
         n_points ++;
@@ -61,7 +62,9 @@ void insert_for_node_path(point_array<DIMENSION> *found_points, level_t max_dept
             break;
         }
     }
+
     
+
     auto *start_range = new data_point<DIMENSION>();
     auto *end_range = new data_point<DIMENSION>();
 
@@ -76,9 +79,11 @@ void insert_for_node_path(point_array<DIMENSION> *found_points, level_t max_dept
 bool test_lookup(level_t max_depth, level_t trie_depth, preorder_t max_tree_node){
     auto *found_points = new point_array<DIMENSION>();
     auto *all_points = new std::vector<data_point<DIMENSION>>();
-
+    // 
+    // points = all_points;
     insert_for_node_path(found_points, max_depth, trie_depth, max_tree_node, all_points);
-    if (all_points->size() != 14583357){
+    // raise(SIGINT);
+    if (found_points->size() != 14583357){
         return false;
     }
 

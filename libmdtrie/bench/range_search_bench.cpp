@@ -81,23 +81,45 @@ void insert_for_node_path(point_array<DIMENSION> *found_points, level_t max_dept
                 }
             }
         }
-        (*all_points).push_back((*leaf_point));
-        if (n_points != current_primary_key){
-            raise(SIGINT);
-        }
-        // if (n_points == 86){
-        //     raise(SIGINT);
+        // bool duplicate = false;
+        // for (auto point : all_stored_points){
+        //     duplicate = true;
+        //     for (dimension_t j = 0; j < DIMENSION; j++){
+        //         if (point.get_coordinate(j) != leaf_point->get_coordinate(j)){
+        //             duplicate = false;
+        //             break;
+        //         }
+        //     }
+        //     if (duplicate){
+        //         break;
+        //     }
         // }
+        // if (duplicate){
+        //     continue;
+        // }
+
+        (*all_points).push_back((*leaf_point));
+        // all_stored_points.push_back((*leaf_point));
+
         start = GetTimestamp();
         mdtrie->insert_trie(leaf_point, max_depth);
         diff += GetTimestamp() - start;
         n_points ++;
-        // assert(n_points == current_primary_key);
+        // if (n_points != current_primary_key){
+        //     raise(SIGINT);
+        // }
 
-        if (n_points == 1000000){
-            break;
-        }
+        // if (n_points == 50000){
+        //     break;
+        // }
     }
+
+    // for (n_leaves_t i = 0; i < n_points; i++){
+    //     auto leaf = all_stored_points[i];
+    //     if (!mdtrie->check(&leaf, max_depth)){
+    //         raise(SIGINT);
+    //     }
+    // }
     bar.finish();
     fprintf(stderr, "dimension: %d\n", DIMENSION);
     fprintf(stderr, "md-trie size: %ld\n", mdtrie->size());   
@@ -107,8 +129,9 @@ void insert_for_node_path(point_array<DIMENSION> *found_points, level_t max_dept
     auto *end_range = new data_point<DIMENSION>();
 
     for (dimension_t i = 0; i < DIMENSION; i++){
-        start_range->set_coordinate(i,  min[i]);
-        end_range->set_coordinate(i, max[i]);
+        // start_range->set_coordinate(i,  min[i]);
+        start_range->set_coordinate(i, 0);
+        end_range->set_coordinate(i, max[i] + 5);
     }
     start = GetTimestamp();
     mdtrie->range_search_trie(start_range, end_range, mdtrie->root(), 0, found_points);
@@ -118,8 +141,29 @@ void insert_for_node_path(point_array<DIMENSION> *found_points, level_t max_dept
     // HERE! Total_stored is different!!
     // TODO:
 
-    fprintf(stderr, "total points: %ld\n", total_stored);
-    fprintf(stderr, "max count: %ld\n", max_count);
+    fprintf(stderr, "found points: %ld, n points %ld, current_primary_key: %ld\n", found_points->size(), n_points, current_primary_key);
+
+    // for (uint16_t i = 0; i < all_points->size(); i++){
+    //     bool found = false;
+    //     for (uint16_t j = 0; j < found_points->size(); j++){
+    //         found = true;
+    //         for (dimension_t d = 0; d < DIMENSION; d++){
+    //             if (found_points->at(j)->get_coordinate(d) != (* all_points)[i].get_coordinate(d)){
+    //                 found = false;
+    //                 break;
+    //             }
+    //         }
+    //         if (found){
+    //             break;
+    //         }
+    //     }
+    //     if (!found){
+    //         raise(SIGINT);
+    //         mdtrie->check(&(* all_points)[i], max_depth);
+    //     }
+    // }
+    // fprintf(stderr, "primar")
+    // fprintf(stderr, "max count: %ld\n", max_count);
     // while (found_points->size() == 0){
     //     for (dimension_t i = 0; i < DIMENSION; i++){
     //         start_range->set_coordinate(i,  min[i] + rand() % (max[i] - min[i] + 1));
@@ -151,8 +195,10 @@ void test_node_path_only(level_t max_depth, level_t trie_depth, preorder_t max_t
     TimeStamp start;
     n_leaves_t found_points_size = found_points->size();
     TimeStamp diff_primary = 0;
+
+    tqdm bar;
     for (n_leaves_t i = 0; i < found_points_size; i++){
-        
+        bar.progress(i, found_points_size);
         symbol_t *node_path = (symbol_t *)malloc((max_depth + 1) * sizeof(symbol_t));
         data_point<DIMENSION> *point = found_points->at(i);
         tree_block<DIMENSION> *parent_treeblock = point->get_parent_treeblock();
@@ -221,6 +267,7 @@ void test_node_path_only(level_t max_depth, level_t trie_depth, preorder_t max_t
         free(node_path);    
         free(node_path_from_primary);
     }
+    bar.finish();
 
     fprintf(stderr, "Time per Checking: %f us, out of %ld points\n", (float)diff / found_points->size(), found_points->size());
     fprintf(stderr, "Time per Primary Key lookup: %f us, out of %ld points\n", (float)diff_primary / found_points->size(), found_points->size());

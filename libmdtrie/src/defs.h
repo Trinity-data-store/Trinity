@@ -75,4 +75,9 @@ std::unordered_map<n_leaves_t, uint64_t> p_key_to_treeblock;
 
 uint64_t vector_size = 0;
 
+template<dimension_t DIMENSION>
+class data_point;
+
+// std::vector<data_point<2>> all_stored_points;
+
 #endif //MD_TRIE_DEFS_H
