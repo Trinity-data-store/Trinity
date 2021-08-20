@@ -107,9 +107,9 @@ public:
                 // In the end, only the start_coordinate is kept as the returned point
                 CLRBIT(end_coordinate, offset);            
             }
-            if (GETBIT(start_coordinate, offset) != GETBIT(end_coordinate, offset)){
-                raise(SIGINT);
-            }
+            // if (GETBIT(start_coordinate, offset) != GETBIT(end_coordinate, offset)){
+            //     raise(SIGINT);
+            // }
             coordinates[j] = start_coordinate;
             end_range->coordinates[j] = end_coordinate;
         }

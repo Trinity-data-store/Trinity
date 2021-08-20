@@ -1237,9 +1237,21 @@ public:
                     preorder_t new_current_primary = current_primary + dfuds_->get_n_children_from_node_pos(current_node, node_positions[current_node]);
                     symbol_t tmp_symbol = -1;
                     bool found = false;
+
+                    // TimeStamp start = GetTimestamp(); 
+                    // Outer: 7.3us per lookup
                     for (preorder_t p = current_primary; p < new_current_primary; p ++){
-                        std::vector<n_leaves_t> current_vect = primary_key_list[p];
-                        if (std::find(current_vect.begin(), current_vect.end(), primary_key) != current_vect.end()){
+
+                        // TimeStamp start = GetTimestamp(); 
+                        // Inner first: 1.5us per lookup
+                        std::vector<n_leaves_t> *current_vect = &primary_key_list[p];
+                        if (primary_key_list[p][current_vect->size() - 1] < primary_key || primary_key < primary_key_list[p][0]){
+                            continue;
+                        }
+                        // primary_time += GetTimestamp() - start;
+                        TimeStamp start = GetTimestamp();
+                        // Inner second: 4.8us per lookup
+                        if (std::binary_search(current_vect->begin(), current_vect->end(), primary_key)){
 
                             found = true;
 
@@ -1249,7 +1261,9 @@ public:
                             parent_symbol = tmp_symbol;   
                             break;                     
                         }
+                        primary_time += GetTimestamp() - start;
                     }
+                    // primary_time += GetTimestamp() - start;
 
                     current_primary = new_current_primary;
 
@@ -1338,8 +1352,10 @@ public:
             // if (primary_key_list[current_primary].size() != 1){
             //     raise(SIGINT);
             // }
-            for (auto primary_key : primary_key_list[current_primary])
+            preorder_t list_size = primary_key_list[current_primary].size();
+            for (preorder_t i = 0; i < list_size; i++)
             {
+                auto primary_key = primary_key_list[current_primary][i];
                 // if (found_points->size() == 38){
                 //     raise(SIGINT);
                 // }

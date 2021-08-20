@@ -74,7 +74,7 @@ n_leaves_t current_primary_key = 0;
 std::unordered_map<n_leaves_t, uint64_t> p_key_to_treeblock;
 
 uint64_t vector_size = 0;
-
+TimeStamp primary_time = 0;
 template<dimension_t DIMENSION>
 class data_point;
 
