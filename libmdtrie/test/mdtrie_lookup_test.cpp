@@ -58,7 +58,7 @@ void insert_for_node_path(point_array<DIMENSION> *found_points, level_t max_dept
 
         mdtrie->insert_trie(leaf_point, max_depth);
         n_points ++;
-        if (n_points > n_lines){
+        if (n_points > 1000000){
             break;
         }
     }
@@ -73,6 +73,9 @@ void insert_for_node_path(point_array<DIMENSION> *found_points, level_t max_dept
         end_range->set_coordinate(i, max[i]);
     }
     mdtrie->range_search_trie(start_range, end_range, mdtrie->root(), 0, found_points);
+    if (found_points->size() != n_points){
+        raise(SIGINT);
+    }
     fclose(fp);
 }
 
@@ -83,9 +86,9 @@ bool test_lookup(level_t max_depth, level_t trie_depth, preorder_t max_tree_node
     // points = all_points;
     insert_for_node_path(found_points, max_depth, trie_depth, max_tree_node, all_points);
     // raise(SIGINT);
-    if (found_points->size() != 14583357){
-        return false;
-    }
+    // if (found_points->size() != 14583357){
+    //     return false;
+    // }
 
     TimeStamp diff = 0;
     TimeStamp start;
