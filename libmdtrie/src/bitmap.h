@@ -532,17 +532,14 @@ class Bitmap {
       return __builtin_ctzll(_pdep_u64(1ULL << n, x));
   }
 
-  symbol_t get_k_th_set_bit(preorder_t node, unsigned k /* 0th index */, pos_type node_pos){
+  symbol_t get_k_th_set_bit(preorder_t node, unsigned k /* 0-indexed */, pos_type node_pos){
     // Assume always present
     if (is_collapse(node)){
-      // if (k > 0){
-      //   raise(SIGINT);
-      // }
       return GetValPos(node_pos, dimension_, true);
     }
     symbol_t pos_left = 1 << dimension_;
     symbol_t return_symbol = 0;
-    // raise(SIGINT);
+
     while (pos_left > 64){
       uint64_t next_block = GetValPos(node_pos + return_symbol, 64, true);
       if (next_block){  
