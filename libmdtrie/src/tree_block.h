@@ -1165,6 +1165,24 @@ public:
         
     // }
 
+    bool binary_if_present(std::vector<n_leaves_t> *vect, n_leaves_t primary_key){
+        n_leaves_t low = 0;
+        n_leaves_t high = vect->size() - 1;
+
+        while (low + 1 < high){
+            n_leaves_t mid = (low + high) / 2;
+            if ((*vect)[mid] < primary_key){
+                low = mid;
+            }
+            else {
+                high = mid;
+            }
+        }
+        if ((*vect)[low] == primary_key || (*vect)[high] == primary_key){
+            return true;
+        }
+        return false;
+    }
 
     symbol_t get_node_path_primary_key(n_leaves_t primary_key, symbol_t *node_path) {
         mutex.lock_shared();
@@ -1238,7 +1256,7 @@ public:
                     symbol_t tmp_symbol = -1;
                     bool found = false;
 
-                    // TimeStamp start = GetTimestamp(); 
+                    TimeStamp start = GetTimestamp(); 
                     // Outer: 7.3us per lookup
                     for (preorder_t p = current_primary; p < new_current_primary; p ++){
 
@@ -1249,10 +1267,12 @@ public:
                             continue;
                         }
                         // primary_time += GetTimestamp() - start;
-                        TimeStamp start = GetTimestamp();
+                        // TimeStamp start = GetTimestamp();
                         // Inner second: 4.8us per lookup
-                        if (std::binary_search(current_vect->begin(), current_vect->end(), primary_key)){
-
+                        // if (std::binary_search(current_vect->begin(), current_vect->end(), primary_key))
+                        if (binary_if_present(current_vect, primary_key))
+                        {
+                            // primary_time += GetTimestamp() - start;
                             found = true;
 
                             for (preorder_t j = current_primary; j <= p; j ++){
@@ -1261,9 +1281,12 @@ public:
                             parent_symbol = tmp_symbol;   
                             break;                     
                         }
-                        primary_time += GetTimestamp() - start;
+                        // else {
+                        //     primary_time += GetTimestamp() - start;
+                        // }
+                        
                     }
-                    // primary_time += GetTimestamp() - start;
+                    primary_time += GetTimestamp() - start;
 
                     current_primary = new_current_primary;
 
@@ -1315,6 +1338,8 @@ public:
         }        
         return parent_symbol;
     }
+
+
 
     data_point<DIMENSION> *node_path_to_coordinates(symbol_t *node_path){
         auto coordinates = new data_point<DIMENSION>();
