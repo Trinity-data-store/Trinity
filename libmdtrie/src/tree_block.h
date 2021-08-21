@@ -1213,7 +1213,7 @@ public:
         if (frontiers_ != nullptr && current_frontier < num_frontiers_ && current_node > get_preorder(current_frontier))
             ++current_frontier;
         preorder_t next_frontier_preorder;
-        symbol_t parent_symbol;
+        symbol_t parent_symbol = -1;
         if (num_frontiers_ == 0 || current_frontier >= num_frontiers_)
             next_frontier_preorder = -1;
         else
@@ -1253,38 +1253,23 @@ public:
                     // top_node = path[current_node];
                     
                     preorder_t new_current_primary = current_primary + dfuds_->get_n_children_from_node_pos(current_node, node_positions[current_node]);
-                    symbol_t tmp_symbol = -1;
+                    // symbol_t tmp_symbol = -1;
                     bool found = false;
 
                     TimeStamp start = GetTimestamp(); 
-                    // Outer: 7.3us per lookup
-                    for (preorder_t p = current_primary; p < new_current_primary; p ++){
-
-                        // TimeStamp start = GetTimestamp(); 
-                        // Inner first: 1.5us per lookup
-                        std::vector<n_leaves_t> *current_vect = &primary_key_list[p];
-                        if (primary_key_list[p][current_vect->size() - 1] < primary_key || primary_key < primary_key_list[p][0]){
-                            continue;
-                        }
-                        // primary_time += GetTimestamp() - start;
-                        // TimeStamp start = GetTimestamp();
-                        // Inner second: 4.8us per lookup
-                        // if (std::binary_search(current_vect->begin(), current_vect->end(), primary_key))
-                        if (binary_if_present(current_vect, primary_key))
+                    for (preorder_t p = current_primary; p < new_current_primary; p ++)
+                    {
+                        if (binary_if_present(&primary_key_list[p], primary_key))
                         {
-                            // primary_time += GetTimestamp() - start;
                             found = true;
+                            // This optimization doesn't seem to be faster
+                            parent_symbol = dfuds_->get_k_th_set_bit(current_node, p - current_primary /* 0th index*/, node_positions[current_node]);
 
-                            for (preorder_t j = current_primary; j <= p; j ++){
-                                tmp_symbol = dfuds_->next_symbol_with_node_pos(tmp_symbol + 1, current_node, num_branches_ - 1, node_positions[current_node]);
-                            }    
-                            parent_symbol = tmp_symbol;   
+                            // for (preorder_t j = current_primary; j <= p; j ++){
+                            //     parent_symbol = dfuds_->next_symbol_with_node_pos(parent_symbol + 1, current_node, num_branches_ - 1, node_positions[current_node]);
+                            // }    
                             break;                     
                         }
-                        // else {
-                        //     primary_time += GetTimestamp() - start;
-                        // }
-                        
                     }
                     primary_time += GetTimestamp() - start;
 
