@@ -1263,7 +1263,7 @@ public:
                         {
                             found = true;
                             // This optimization doesn't seem to be faster
-                            parent_symbol = dfuds_->get_k_th_set_bit(current_node, p - current_primary /* 0th index*/, node_positions[current_node]);
+                            parent_symbol = dfuds_->get_k_th_set_bit(current_node, p - current_primary /* 0-indexed*/, node_positions[current_node]);
 
                             // for (preorder_t j = current_primary; j <= p; j ++){
                             //     parent_symbol = dfuds_->next_symbol_with_node_pos(parent_symbol + 1, current_node, num_branches_ - 1, node_positions[current_node]);
