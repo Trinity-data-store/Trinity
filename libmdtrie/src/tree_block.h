@@ -1165,6 +1165,24 @@ public:
         
     // }
 
+    bool binary_if_present(std::vector<n_leaves_t> *vect, n_leaves_t primary_key){
+        n_leaves_t low = 0;
+        n_leaves_t high = vect->size() - 1;
+
+        while (low + 1 < high){
+            n_leaves_t mid = (low + high) / 2;
+            if ((*vect)[mid] < primary_key){
+                low = mid;
+            }
+            else {
+                high = mid;
+            }
+        }
+        if ((*vect)[low] == primary_key || (*vect)[high] == primary_key){
+            return true;
+        }
+        return false;
+    }
 
     symbol_t get_node_path_primary_key(n_leaves_t primary_key, symbol_t *node_path) {
         mutex.lock_shared();
@@ -1195,7 +1213,7 @@ public:
         if (frontiers_ != nullptr && current_frontier < num_frontiers_ && current_node > get_preorder(current_frontier))
             ++current_frontier;
         preorder_t next_frontier_preorder;
-        symbol_t parent_symbol;
+        symbol_t parent_symbol = -1;
         if (num_frontiers_ == 0 || current_frontier >= num_frontiers_)
             next_frontier_preorder = -1;
         else
@@ -1235,21 +1253,25 @@ public:
                     // top_node = path[current_node];
                     
                     preorder_t new_current_primary = current_primary + dfuds_->get_n_children_from_node_pos(current_node, node_positions[current_node]);
-                    symbol_t tmp_symbol = -1;
+                    // symbol_t tmp_symbol = -1;
                     bool found = false;
-                    for (preorder_t p = current_primary; p < new_current_primary; p ++){
-                        std::vector<n_leaves_t> current_vect = primary_key_list[p];
-                        if (std::find(current_vect.begin(), current_vect.end(), primary_key) != current_vect.end()){
 
+                    TimeStamp start = GetTimestamp(); 
+                    for (preorder_t p = current_primary; p < new_current_primary; p ++)
+                    {
+                        if (binary_if_present(&primary_key_list[p], primary_key))
+                        {
                             found = true;
+                            // This optimization doesn't seem to be faster
+                            parent_symbol = dfuds_->get_k_th_set_bit(current_node, p - current_primary /* 0-indexed*/, node_positions[current_node]);
 
-                            for (preorder_t j = current_primary; j <= p; j ++){
-                                tmp_symbol = dfuds_->next_symbol_with_node_pos(tmp_symbol + 1, current_node, num_branches_ - 1, node_positions[current_node]);
-                            }    
-                            parent_symbol = tmp_symbol;   
+                            // for (preorder_t j = current_primary; j <= p; j ++){
+                            //     parent_symbol = dfuds_->next_symbol_with_node_pos(parent_symbol + 1, current_node, num_branches_ - 1, node_positions[current_node]);
+                            // }    
                             break;                     
                         }
                     }
+                    primary_time += GetTimestamp() - start;
 
                     current_primary = new_current_primary;
 
@@ -1302,6 +1324,8 @@ public:
         return parent_symbol;
     }
 
+
+
     data_point<DIMENSION> *node_path_to_coordinates(symbol_t *node_path){
         auto coordinates = new data_point<DIMENSION>();
         for (level_t i = 0; i < max_depth_; i++){
@@ -1338,8 +1362,10 @@ public:
             // if (primary_key_list[current_primary].size() != 1){
             //     raise(SIGINT);
             // }
-            for (auto primary_key : primary_key_list[current_primary])
+            preorder_t list_size = primary_key_list[current_primary].size();
+            for (preorder_t i = 0; i < list_size; i++)
             {
+                auto primary_key = primary_key_list[current_primary][i];
                 // if (found_points->size() == 38){
                 //     raise(SIGINT);
                 // }
