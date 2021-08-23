@@ -10,6 +10,7 @@
 #include <defs.h>
 #include <bitset>
 #include <signal.h>
+#include <x86intrin.h>
 
 namespace bitmap {
 
@@ -524,6 +525,37 @@ class compressed_bitmap {
     else {
       return popcount(node_pos, symbol, true);
     }  
+  }
+
+  unsigned nthset(uint64_t x, unsigned n) {
+      return __builtin_ctzll(_pdep_u64(1ULL << n, x));
+  }
+
+  symbol_t get_k_th_set_bit(preorder_t node, unsigned k /* 0-indexed */, pos_type node_pos){
+    // Assume always present
+    if (is_collapse(node)){
+      return GetValPos(node_pos, dimension_, true);
+    }
+    symbol_t pos_left = 1 << dimension_;
+    symbol_t return_symbol = 0;
+
+    while (pos_left > 64){
+      uint64_t next_block = GetValPos(node_pos + return_symbol, 64, true);
+      if (next_block){  
+        symbol_t set_bit_count = __builtin_popcountll(next_block);
+        if (k >= set_bit_count){
+          k -= set_bit_count;
+        }
+        else if (set_bit_count > 0) {
+          return return_symbol + nthset(next_block, k);
+        }
+      }
+      pos_left -= 64;   
+      return_symbol += 64; 
+    }
+    
+    uint64_t next_block = GetValPos(node_pos + return_symbol, pos_left, true);
+    return return_symbol + nthset(next_block, k);
   }
 
   inline symbol_t next_symbol_with_node_pos(symbol_t symbol, preorder_t node, symbol_t end_symbol_range, pos_type node_pos){
