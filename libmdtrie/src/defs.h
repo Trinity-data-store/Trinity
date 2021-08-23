@@ -4,6 +4,7 @@
 #include <cinttypes>
 #include <vector>
 #include <bimap.h>
+#include <compressed_bitmap.h>
 #include <assert.h> 
 #include <boost/bimap.hpp>
 #include <mutex>

@@ -3,7 +3,7 @@
 
 #include "point_array.h"
 #include "trie_node.h"
-#include "bitmap.h"
+#include "compressed_bitmap.h"
 #include <sys/time.h>
 #include <cmath>
 #include <mutex>
@@ -27,7 +27,7 @@ public:
         max_depth_ = max_depth;
         max_tree_nodes_ = max_tree_nodes;
         num_nodes_ = num_nodes;
-        dfuds_ = new bitmap::Bitmap(tree_capacity_ + 1, DIMENSION);
+        dfuds_ = new bitmap::compressed_bitmap(tree_capacity_ + 1, DIMENSION);
 
         if (parent_trie_node){
             parent_trie_node_ = parent_trie_node;
@@ -404,7 +404,7 @@ public:
             node_t selected_node = select_subtree(subtree_size, selected_node_depth, num_primary, selected_primary_index, index_to_primary);
 
             node_t orig_selected_node = selected_node;
-            auto *new_dfuds = new bitmap::Bitmap(tree_capacity_ + 1, DIMENSION);
+            auto *new_dfuds = new bitmap::compressed_bitmap(tree_capacity_ + 1, DIMENSION);
 
             preorder_t frontier;
             //  Find the first frontier node > selected_node
@@ -1588,7 +1588,7 @@ private:
     node_n_t num_nodes_{};
     node_n_t tree_capacity_{};
     level_t max_depth_;
-    bitmap::Bitmap *dfuds_{};
+    bitmap::compressed_bitmap *dfuds_{};
     frontier_node<DIMENSION> *frontiers_ = nullptr; 
     node_n_t num_frontiers_ = 0;
     tree_block *parent_tree_block_ = NULL;

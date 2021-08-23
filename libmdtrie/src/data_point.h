@@ -4,7 +4,7 @@
 #include "defs.h"
 #include <cstdlib>
 #include <cstring>
-#include "bitmap.h"
+#include "compressed_bitmap.h"
 
 // Struct for each point that we want to insert
 template<dimension_t DIMENSION>

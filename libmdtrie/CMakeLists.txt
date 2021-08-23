@@ -23,10 +23,15 @@ if (BUILD_TESTS)
           test/test_main.cpp
           test/mdtrie_concurrency_test.cpp)
 
+  add_executable(elias_gamma_encoder_tests
+          test/test_main.cpp
+          test/elias_gamma_encoder_test.cpp)
+
   target_link_libraries(mdtrie_tests ${MDTRIE_LIBS})
   target_link_libraries(range_search_tests ${MDTRIE_LIBS})
   target_link_libraries(mdtrie_lookup_tests ${MDTRIE_LIBS})
   target_link_libraries(mdtrie_concurrency_tests ${MDTRIE_LIBS})
+  target_link_libraries(elias_gamma_encoder_tests ${MDTRIE_LIBS})
 
   add_dependencies(mdtrie_tests catch_ep)
   add_dependencies(range_search_tests catch_ep)

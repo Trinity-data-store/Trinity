@@ -9,7 +9,7 @@
 #include <cstdint>
 #include <ctime>
 #include <csignal>
-#include "bitmap.h"
+#include "compressed_bitmap.h"
 #include <sys/stat.h>
 #include <vector>
 #include "defs.h"
