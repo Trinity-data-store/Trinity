@@ -37,8 +37,10 @@ if (BUILD_TESTS)
   add_dependencies(range_search_tests catch_ep)
   add_dependencies(mdtrie_lookup_tests catch_ep)
   add_dependencies(mdtrie_concurrency_tests catch_ep)
+  add_dependencies(elias_gamma_encoder_tests catch_ep)
 
   # Register test
+  add_test(GammaEncoderTest elias_gamma_encoder_tests)
   add_test(MdTrieTest mdtrie_tests)
   add_test(MdTrieLookupTest mdtrie_lookup_tests)
   add_test(RangeSearchTest range_search_tests)

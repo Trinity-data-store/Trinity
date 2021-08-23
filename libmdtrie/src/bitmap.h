@@ -138,6 +138,10 @@ class Bitmap {
     size_ = num_bits;
   }
 
+  void Realloc(size_type num_bits){
+    realloc(data_, BITS2BLOCKS(size_ + num_bits) * sizeof(data_type));
+  }
+
   virtual ~Bitmap() {
     if (data_ != NULL) {
       delete[] data_;

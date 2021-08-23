@@ -444,6 +444,13 @@ class UnsizedBitmapArray : public Bitmap {
     }
   }
 
+  void Push(T element, width_type bit_width){
+    
+    size_type num_elements = this->size_ / bit_width;
+    this->Realloc(bit_width);
+    Set(num_elements, element);
+  }
+
   // Accessors and mutators
   void Set(pos_type i, T value) {
     this->SetValPos(i * this->bit_width_, value, this->bit_width_);

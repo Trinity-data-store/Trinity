@@ -1,4 +1,5 @@
 #include "elias_gamma_encoder.h"
+#include "delta_encoded_array.h"
 #include <signal.h>
 #include "catch.hpp"
 
@@ -21,7 +22,32 @@ bool gamma_encoder_test() {
   return true;
 }
 
-TEST_CASE("Check Correctness", "[gamma encoder]") {
+bool gamma_delta_encoder_test(){
+
+  uint64_t kArraySize = 10000;
+  std::vector<uint64_t> array;
+  // uint64_t *array = new uint64_t[kArraySize];
+  for (uint64_t i = 0; i < kArraySize; i++) {
+    // array[i] = i;
+    array.push_back(i);
+  }
+
+  bitmap::EliasGammaDeltaEncodedArray<uint64_t> enc_array(array, kArraySize);
+
+  for (uint64_t i = 0; i < kArraySize; i++) {
+    if (enc_array[i] != i){
+      return false;
+    }
+  }
+  return true;
+}
+
+TEST_CASE("Check Gamma Encoding Correctness", "[gamma encoder]") {
 
     REQUIRE(gamma_encoder_test());
+}
+
+TEST_CASE("Check Delta Encoding Correctness", "[delta encoder]") {
+
+    REQUIRE(gamma_delta_encoder_test());
 }
