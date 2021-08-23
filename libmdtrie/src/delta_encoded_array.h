@@ -63,6 +63,29 @@ class DeltaEncodedArray {
     return in_size;
   }
 
+  void Push(T element){
+
+      width_type sample_bits = 32;
+      width_type delta_offset_bits = 32;
+
+      if (num_elements_ % sampling_rate == 0){
+        
+          size_type cum_delta_size = deltas_->GetSizeInBits();
+
+          samples_->Push(element, sample_bits);
+          delta_offsets_->Push(cum_delta_size, delta_offset_bits);
+          num_elements_ ++;
+      }
+      else {
+          assert(element > last_val_);
+          T delta = element - last_val_;
+          last_val_ = element;
+
+          deltas_->Realloc(EncodingSize(delta));
+          EncodeLastDelta(delta);        
+      }    
+  }
+
  protected:
   // Get the encoding size for an delta value
   virtual width_type EncodingSize(T delta) = 0;
@@ -70,34 +93,36 @@ class DeltaEncodedArray {
   // Encode the delta values
   virtual void EncodeDeltas(std::vector<T> & deltas, size_type num_deltas) = 0;
 
+  virtual void EncodeLastDelta(T delta) = 0;
+
   // Encode the delta encoded array
   void Encode(std::vector<T> & elements, size_type num_elements) {
     if (num_elements == 0) {
       return;
     }
-
+    num_elements_ = num_elements;
 #ifdef DEBUG
     assert(std::is_sorted(elements, elements + num_elements));
 #endif
 
-    T max_sample = 0;
+    // T max_sample = 0;
     std::vector<T> samples, deltas;
     std::vector<pos_type> delta_offsets;
     T last_val = 0;
     uint64_t tot_delta_count = 0, delta_count = 0;
     uint64_t delta_enc_size = 0;
     size_type cum_delta_size = 0;
-    pos_type max_offset = 0;
+    // pos_type max_offset = 0;
     width_type sample_bits, delta_offset_bits;
 
     for (size_t i = 0; i < num_elements; i++) {
       if (i % sampling_rate == 0) {
         samples.push_back(elements[i]);
-        if (elements[i] > max_sample) {
-          max_sample = elements[i];
-        }
-        if (cum_delta_size > max_offset)
-          max_offset = cum_delta_size;
+        // if (elements[i] > max_sample) {
+        //   max_sample = elements[i];
+        // // }
+        // if (cum_delta_size > max_offset)
+        //   max_offset = cum_delta_size;
         delta_offsets.push_back(cum_delta_size);
         if (i != 0) {
           assert(delta_count == sampling_rate - 1);
@@ -121,8 +146,10 @@ class DeltaEncodedArray {
     assert(samples.size() + deltas.size() == num_elements);
     assert(delta_offsets.size() == samples.size());
 
-    sample_bits = Utils::BitWidth(max_sample);
-    delta_offset_bits = Utils::BitWidth(max_offset);
+    // sample_bits = Utils::BitWidth(max_sample);
+    sample_bits = 32;
+    // delta_offset_bits = Utils::BitWidth(max_offset);
+    delta_offset_bits = 32;
 
     if (samples.size() == 0) {
       samples_ = NULL;
@@ -130,6 +157,7 @@ class DeltaEncodedArray {
       samples_ = new UnsizedBitmapArray<T>(&samples[0], samples.size(),
                                            sample_bits);
     }
+    last_val_ = last_val;
 
     if (cum_delta_size == 0) {
       deltas_ = NULL;
@@ -148,19 +176,13 @@ class DeltaEncodedArray {
     }
   }
 
-  void Push(T element){
-
-
-    // delta_offsets_.push      
-    
-
-      
-
-  }
-
   UnsizedBitmapArray<T>* samples_;
   UnsizedBitmapArray<pos_type>* delta_offsets_;
   Bitmap* deltas_;
+
+//   New variable stored
+  size_type num_elements_;
+  T last_val_;
 
  private:
 };
@@ -218,6 +240,7 @@ class EliasGammaDeltaEncodedArray : public DeltaEncodedArray<T, sampling_rate> {
 
   using DeltaEncodedArray<T>::EncodingSize;
   using DeltaEncodedArray<T>::EncodeDeltas;
+  using DeltaEncodedArray<T>::EncodeLastDelta;
 
   EliasGammaDeltaEncodedArray()
       : DeltaEncodedArray<T>() {
@@ -266,6 +289,16 @@ class EliasGammaDeltaEncodedArray : public DeltaEncodedArray<T, sampling_rate> {
       pos += delta_bits;
     }
   }
+
+  virtual void EncodeLastDelta(T delta) override{
+
+      uint64_t delta_bits = Utils::BitWidth(delta) - 1;
+      uint64_t pos = this->deltas_->GetSizeInBits();
+      this->deltas_->SetBit(pos++);
+      this->deltas_->SetValPos(pos, delta - (1ULL << delta_bits),
+                               delta_bits);            
+  }
+
 
   T PrefixSum(pos_type delta_offset, pos_type until_idx) {
     T delta_sum = 0;

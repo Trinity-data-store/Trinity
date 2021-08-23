@@ -139,7 +139,7 @@ class Bitmap {
   }
 
   void Realloc(size_type num_bits){
-    realloc(data_, BITS2BLOCKS(size_ + num_bits) * sizeof(data_type));
+    data_ = (data_type *)realloc(data_, BITS2BLOCKS(size_ + num_bits) * sizeof(data_type));
   }
 
   virtual ~Bitmap() {
