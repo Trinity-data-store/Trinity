@@ -98,12 +98,12 @@ public:
             
             // Bring the start of the search range to second half
             if (morton_bit && !start_bit) {
-                start_coordinate = start_coordinate & bitmap::low_bits_unset[offset];
+                start_coordinate = start_coordinate & compressed_bitmap::low_bits_unset[offset];
                 SETBIT(start_coordinate, offset);
             } 
             // Bring the end of the search range to first half
             if (!morton_bit && end_bit) {
-                end_coordinate = end_coordinate | bitmap::low_bits_set[offset];
+                end_coordinate = end_coordinate | compressed_bitmap::low_bits_set[offset];
                 // In the end, only the start_coordinate is kept as the returned point
                 CLRBIT(end_coordinate, offset);            
             }

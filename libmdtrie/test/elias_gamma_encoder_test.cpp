@@ -122,11 +122,11 @@ bool gamma_delta_binary_search_test(){
   }
 
   for (uint64_t i = 0; i < kArraySize; i ++) {
-    if (i % 10 == 0 && !enc_array.BinarySearch(i)){
+    if (i % 10 == 0 && !enc_array.Find(i)){
       raise(SIGINT);
       return false;
     }
-    if (i % 10 != 0 && enc_array.BinarySearch(i)){
+    if (i % 10 != 0 && enc_array.Find(i)){
       raise(SIGINT);
       return false;
     }

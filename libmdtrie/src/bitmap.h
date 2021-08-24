@@ -188,6 +188,10 @@ class Bitmap {
     return size_;
   }
 
+  size_type GetSize(){
+    return sizeof(size_t) + sizeof(data_type *) + sizeof(data_type) * BITS2BLOCKS(size_);
+  }
+
   // Bit operations
   void Clear() {
     memset((void *) data_, 0, BITS2BLOCKS(size_) * sizeof(uint64_t));

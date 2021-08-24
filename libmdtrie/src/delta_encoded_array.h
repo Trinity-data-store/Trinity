@@ -104,6 +104,7 @@ class DeltaEncodedArray {
         // if (cum_delta_size > max_offset)
         //   max_offset = cum_delta_size;
         delta_offsets.push_back(cum_delta_size);
+        // num_samples_++;
         // if (i != 0) {
         //   assert(delta_count == sampling_rate - 1);
         // //   tot_delta_count += delta_count;
@@ -162,7 +163,8 @@ class DeltaEncodedArray {
   UnsizedBitmapArray<pos_type>* delta_offsets_;
   Bitmap* deltas_;
 //   New variable stored
-  size_type num_elements_;
+  size_type num_elements_ = 0;
+  // size_type num_samples_ = 0;
   T last_val_;
 
   private:
@@ -258,11 +260,37 @@ class EliasGammaDeltaEncodedArray : public DeltaEncodedArray<T, sampling_rate> {
     return Get(i);
   }
 
+  uint64_t size_overhead(){
+    uint64_t size = 0;
+
+  // UnsizedBitmapArray<T>* samples_;
+  // UnsizedBitmapArray<pos_type>* delta_offsets_;
+  // Bitmap* deltas_;
+  // size_type num_elements_ = 0;
+  // size_type num_samples_ = 0;
+  // T last_val_;
+
+    size += this->samples_->GetSize() + sizeof(width_type);
+    size += this->delta_offsets_->GetSize() + sizeof(width_type);
+    size += this->deltas_->GetSize();
+    size += 2 * sizeof(size_type);
+    size += sizeof(T);
+
+    // Assume two pointers can be merged into one
+    size += 2 * sizeof(Bitmap*);
+    return size;
+
+  }
+
   void Push(T element){
 
       width_type sample_bits = 32;
       width_type delta_offset_bits = 32;
 
+      // if ((this->num_elements_ - 1) / sampling_rate + 1 != this->num_samples_){
+      //   raise(SIGINT);
+      // }
+      
       // if (element == 210){
       //   raise(SIGINT);
       // }
@@ -286,6 +314,7 @@ class EliasGammaDeltaEncodedArray : public DeltaEncodedArray<T, sampling_rate> {
           // }
           // else {
           this->delta_offsets_->Push(cum_delta_size, delta_offset_bits);
+          // this->num_samples_++;
           // }
       }
       else {
@@ -311,19 +340,23 @@ class EliasGammaDeltaEncodedArray : public DeltaEncodedArray<T, sampling_rate> {
       // }
 
       this->num_elements_ ++;
+
+      // if ((this->num_elements_ - 1) / sampling_rate + 1 != this->num_samples_){
+      //   raise(SIGINT);
+      // }
   }
 
   int64_t BinarySearchSample(int64_t val){
 
     UnsizedBitmapArray<T>*arr = this->samples_;
-    int64_t num_samples = this->num_elements_ / sampling_rate + 1;
     int64_t start = 0;
-    int64_t end = num_samples - 1;
+    int64_t end = (this->num_elements_ - 1) / sampling_rate;
+    int64_t mid, mid_val;
 
     while (start <= end){
 
-      int64_t mid = (start + end) / 2;
-      int64_t mid_val = arr->Get(mid);
+      mid = (start + end) / 2;
+      mid_val = arr->Get(mid);
       if (mid_val == val){
         return mid;
       }
@@ -335,9 +368,82 @@ class EliasGammaDeltaEncodedArray : public DeltaEncodedArray<T, sampling_rate> {
       }
     }
 
-    return end;
+    return std::max(end, INT64_C(0));
 
   }
+
+  bool Find(T val) {
+    // pos_type sample_off = this->samples_->LowerBound(val);
+    pos_type sample_off = BinarySearchSample(val);
+    pos_type current_delta_offset = this->delta_offsets_->Get(sample_off);
+    val -= this->samples_->Get(sample_off);
+
+    pos_type delta_idx = 0;
+    T delta_sum = 0;
+    size_type delta_max = this->deltas_->GetSizeInBits();
+
+    while (delta_sum < val && current_delta_offset < delta_max && delta_idx < sampling_rate) {
+      uint16_t block = this->deltas_->GetValPos(current_delta_offset, 16);
+      uint16_t block_cnt = elias_gamma_prefix_table.count(block);
+      uint16_t block_sum = elias_gamma_prefix_table.sum(block);
+
+      if (block_cnt == 0) {
+        // If the prefixsum table for the block returns count == 0
+        // this must mean the value spans more than 16 bits
+        // read this manually
+        uint8_t delta_width = 0;
+        while (!this->deltas_->GetBit(current_delta_offset)) {
+          delta_width++;
+          current_delta_offset++;
+        }
+        auto decoded_value = this->deltas_->GetValPos(current_delta_offset, delta_width) + (1ULL << delta_width);
+        delta_sum += decoded_value;
+        delta_idx += 1;
+
+        // Roll back
+        if (delta_idx == sampling_rate) {
+          delta_idx--;
+          delta_sum -= decoded_value;
+          break;
+        }
+      } else if (delta_sum + block_sum < val) {
+        // If sum can be computed from the prefixsum table
+        delta_sum += block_sum;
+        current_delta_offset += elias_gamma_prefix_table.offset(block);
+        delta_idx += block_cnt;
+      } else {
+        // Last few values, decode them without looking up table
+        T last_decoded_value = 0;
+        while (delta_sum < val && current_delta_offset < delta_max && delta_idx < sampling_rate) {
+          int delta_width = 0;
+          while (!this->deltas_->GetBit(current_delta_offset)) {
+            delta_width++;
+            current_delta_offset++;
+          }
+          current_delta_offset++;
+          last_decoded_value = this->deltas_->GetValPos(current_delta_offset, delta_width) + (1ULL << delta_width);
+
+          delta_sum += last_decoded_value;
+          current_delta_offset += delta_width;
+          delta_idx += 1;
+        }
+
+        // Roll back
+        if (delta_idx == sampling_rate) {
+          delta_idx--;
+          delta_sum -= last_decoded_value;
+          break;
+        }
+      }
+    }
+
+    // if (found_idx) {
+    //   pos_type res = sample_off * sampling_rate + delta_idx;
+    //   *found_idx = (delta_sum <= val) ? res : res - 1;
+    // }
+    return val == delta_sum;
+  }
+
 
   bool BinarySearch(T search_val){
 
@@ -355,17 +461,18 @@ class EliasGammaDeltaEncodedArray : public DeltaEncodedArray<T, sampling_rate> {
       limit = this->num_elements_ - sample_index * sampling_rate;
     }
 
-    T prefix_sum = PrefixSum(delta_offset, 0);
-    if (prefix_sum + current_val > search_val){
-      return false;
-    }
-    if (prefix_sum + current_val == search_val){
-      return true;
-    }    
+    T prefix_sum = 0;
+    // T prefix_sum = PrefixSum(delta_offset, 0);
+    // if (prefix_sum + current_val > search_val){
+    //   return false;
+    // }
+    // if (prefix_sum + current_val == search_val){
+    //   return true;
+    // }    
     
     for (pos_type delta_offsets_idx = 1; delta_offsets_idx < limit; delta_offsets_idx++)
     {
-      
+
       // TODO: cumulative prefixSum
       prefix_sum += PrefixSum_cumulative(delta_offset, delta_offsets_idx, delta_offsets_idx - 1);
       

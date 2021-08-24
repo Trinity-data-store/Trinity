@@ -8,6 +8,8 @@
 #include <cmath>
 #include <mutex>
 #include <shared_mutex>
+#include "delta_encoded_array.h"
+#include "elias_gamma_encoder.h"
 
 uint64_t get_bit_count = 0;
 // uint64_t v2_storage_save_pos = 0;
@@ -27,7 +29,7 @@ public:
         max_depth_ = max_depth;
         max_tree_nodes_ = max_tree_nodes;
         num_nodes_ = num_nodes;
-        dfuds_ = new bitmap::compressed_bitmap(tree_capacity_ + 1, DIMENSION);
+        dfuds_ = new compressed_bitmap::compressed_bitmap(tree_capacity_ + 1, DIMENSION);
 
         if (parent_trie_node){
             parent_trie_node_ = parent_trie_node;
@@ -404,7 +406,7 @@ public:
             node_t selected_node = select_subtree(subtree_size, selected_node_depth, num_primary, selected_primary_index, index_to_primary);
 
             node_t orig_selected_node = selected_node;
-            auto *new_dfuds = new bitmap::compressed_bitmap(tree_capacity_ + 1, DIMENSION);
+            auto *new_dfuds = new compressed_bitmap::compressed_bitmap(tree_capacity_ + 1, DIMENSION);
 
             preorder_t frontier;
             //  Find the first frontier node > selected_node
@@ -1614,7 +1616,7 @@ private:
     node_n_t num_nodes_{};
     node_n_t tree_capacity_{};
     level_t max_depth_;
-    bitmap::compressed_bitmap *dfuds_{};
+    compressed_bitmap::compressed_bitmap *dfuds_{};
     frontier_node<DIMENSION> *frontiers_ = nullptr; 
     node_n_t num_frontiers_ = 0;
     tree_block *parent_tree_block_ = NULL;
@@ -1622,6 +1624,7 @@ private:
     trie_node<DIMENSION> *parent_trie_node_ = NULL;
 
     std::vector<std::vector<n_leaves_t>> primary_key_list;
+    std::vector<bitmap::EliasGammaEncoder<uint64_t>> primary_key_list_test;
     // std::vector<n_leaves_t> primary_key_list;
     // std::vector<n_leaves_t> primary_key_count;
     // Using recursive_mutex is actually faster

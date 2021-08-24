@@ -12,7 +12,7 @@
 #include <signal.h>
 #include <x86intrin.h>
 
-namespace bitmap {
+namespace compressed_bitmap {
 
 #define GETBIT(n, i)    ((n >> i) & 1UL)
 #define SETBIT(n, i)    n = (n | (1UL << i))
@@ -645,7 +645,7 @@ class compressed_bitmap {
 
   }
 
-  inline void copy_node_cod(bitmap::compressed_bitmap *to_dfuds, node_t from, node_t to) {
+  inline void copy_node_cod(compressed_bitmap *to_dfuds, node_t from, node_t to) {
 
       width_type width;
 
