@@ -317,6 +317,8 @@ class EliasGammaDeltaEncodedArray : public DeltaEncodedArray<T, sampling_rate> {
     for (pos_type delta_offsets_idx = 0; delta_offsets_idx < sampling_rate; delta_offsets_idx++)
     {
       // [1, 11, 21, ...]
+      // Tried BinarySearch(242)
+      // current_val = 0
       // 242 = PrefixSum(0, 28) --- Shouldn't return this value, because 242 is not stored!
       // TODO: cumulative prefixSum
       T prefix_sum = PrefixSum(delta_offset, delta_offsets_idx);
