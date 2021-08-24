@@ -355,17 +355,19 @@ class EliasGammaDeltaEncodedArray : public DeltaEncodedArray<T, sampling_rate> {
       limit = this->num_elements_ - sample_index * sampling_rate;
     }
 
-    T prefix_sum = 0;
-    for (pos_type delta_offsets_idx = 0; delta_offsets_idx < limit; delta_offsets_idx++)
+    T prefix_sum = PrefixSum(delta_offset, 0);
+    if (prefix_sum + current_val > search_val){
+      return false;
+    }
+    if (prefix_sum + current_val == search_val){
+      return true;
+    }    
+    
+    for (pos_type delta_offsets_idx = 1; delta_offsets_idx < limit; delta_offsets_idx++)
     {
+      
       // TODO: cumulative prefixSum
-      // prefix_sum += PrefixSum_cumulative
-      if (delta_offsets_idx == 0){
-        prefix_sum = PrefixSum(delta_offset, delta_offsets_idx);
-      }
-      else {
-        prefix_sum += PrefixSum_cumulative(delta_offset, delta_offsets_idx, delta_offsets_idx - 1);
-      }
+      prefix_sum += PrefixSum_cumulative(delta_offset, delta_offsets_idx, delta_offsets_idx - 1);
       
       if (prefix_sum + current_val > search_val){
         return false;
