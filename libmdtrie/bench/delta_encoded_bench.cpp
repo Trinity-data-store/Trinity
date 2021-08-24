@@ -64,7 +64,35 @@ void insert_vector_from_scratch(uint64_t kArraySize){
   std::cout << "Insert Vector Read Latency: " << (float) (GetTimestamp() - start) / kArraySize << "us per point" << std::endl;
 }
 
+void gamma_delta_binary_search(uint64_t kArraySize){
+
+  TimeStamp start = GetTimestamp();
+  std::vector<uint64_t> array = {0};
+  bitmap::EliasGammaDeltaEncodedArray<uint64_t> enc_array(array, 1);
+
+  for (uint64_t i = 1; i < kArraySize; i+= 10){
+    enc_array.Push(i);
+  }
+  
+  std::cout << "Elias Gamma Delta Encoded Array Insert Latency: " << (float) (GetTimestamp() - start) / kArraySize << "us per point" << std::endl;
+
+  for (uint64_t i = 0; i < 200; i++){
+    if (array[i] == 242){
+        std::cerr << "found 242" << std::endl;
+        break;
+    }
+  } 
+
+  if (enc_array.BinarySearch(242)){
+    std::cout << "found" << std::endl;
+  }
+  else 
+    std::cout << "not found" << std::endl;
+  
+}
+
 int main() {
     gamma_delta_push_from_scratch(1000000);
     // insert_vector_from_scratch(1000000);
+    gamma_delta_binary_search(1000000);
 }

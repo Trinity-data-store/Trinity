@@ -282,6 +282,56 @@ class EliasGammaDeltaEncodedArray : public DeltaEncodedArray<T, sampling_rate> {
     return Get(i);
   }
 
+  int64_t BinarySearchSample(int64_t val){
+
+    UnsizedBitmapArray<T>*arr = this->samples_;
+    int64_t num_samples = this->num_elements_ / sampling_rate + 1;
+    int64_t start = 0;
+    int64_t end = num_samples - 1;
+
+    while (start <= end){
+
+      int64_t mid = (start + end) / 2;
+      int64_t mid_val = arr->Get(mid);
+      if (mid_val == val){
+        return mid;
+      }
+      else if (val < mid_val){
+        end = mid - 1;
+      }
+      else {
+        start = mid + 1;
+      }
+    }
+
+    return end;
+
+  }
+
+  bool BinarySearch(T search_val){
+
+    pos_type sample_index = BinarySearchSample(search_val); // Works
+    pos_type delta_offset = this->delta_offsets_->Get(sample_index);
+    T current_val =  this->samples_->Get(sample_index);
+
+    for (pos_type delta_offsets_idx = 0; delta_offsets_idx < sampling_rate; delta_offsets_idx++)
+    {
+      // [1, 11, 21, ...]
+      // 242 = PrefixSum(0, 28) --- Shouldn't return this value, because 242 is not stored!
+      // TODO: cumulative prefixSum
+      T prefix_sum = PrefixSum(delta_offset, delta_offsets_idx);
+      
+      if (prefix_sum + current_val > search_val){
+        return false;
+      }
+      if (prefix_sum + current_val == search_val){
+        return true;
+      }
+    }
+
+    return false;
+  }
+
  private:
   virtual width_type EncodingSize(T delta) override {
     return 2 * (Utils::BitWidth(delta) - 1) + 1;
