@@ -68,26 +68,34 @@ void gamma_delta_binary_search(uint64_t kArraySize){
 
   TimeStamp start = GetTimestamp();
   std::vector<uint64_t> array = {0};
-  bitmap::EliasGammaDeltaEncodedArray<uint64_t> enc_array(array, 1);
 
-  for (uint64_t i = 1; i < kArraySize; i+= 10){
+  bitmap::EliasGammaDeltaEncodedArray<uint64_t> enc_array(array, array.size());
+
+  for (uint64_t i = 10; i < kArraySize; i+= 10){
+    // enc_array.Push(i);
     enc_array.Push(i);
   }
-  
-  std::cout << "Elias Gamma Delta Encoded Array Insert Latency: " << (float) (GetTimestamp() - start) / kArraySize << "us per point" << std::endl;
 
-  for (uint64_t i = 0; i < 200; i++){
-    if (array[i] == 242){
-        std::cerr << "found 242" << std::endl;
-        break;
+  // bitmap::EliasGammaDeltaEncodedArray<uint64_t> enc_array(array, array.size());
+
+  std::cout << "Elias Gamma Delta Encoded Array Insert Latency: " << (float) (GetTimestamp() - start) / (kArraySize / 10) << "us per point" << std::endl;
+
+  // for (uint64_t i = 0; i < 200; i++){
+  //   if (enc_array[i] == 242){
+  //       std::cerr << "found 242" << std::endl;
+  //       break;
+  //   }
+  // } 
+  start = GetTimestamp();
+  for (uint64_t i = 0; i < kArraySize; i+= 10){
+    if (!enc_array.BinarySearch(i)){
+      std::cout << "Not found" << std::endl;
+      raise(SIGINT);
     }
-  } 
-
-  if (enc_array.BinarySearch(242)){
-    std::cout << "found" << std::endl;
   }
-  else 
-    std::cout << "not found" << std::endl;
+
+  std::cout << "Elias Gamma Delta Encoded Array Binary Search Latency: " << (float) (GetTimestamp() - start) / (kArraySize / 10) << "us per point" << std::endl;
+
   
 }
 

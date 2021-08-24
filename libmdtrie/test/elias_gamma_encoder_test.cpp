@@ -88,6 +88,52 @@ bool gamma_delta_push_from_scratch_test(){
   return true;
 }
 
+bool gamma_delta_push_from_scratch_increment_test(){
+
+  uint64_t kArraySize = 100000;
+  std::vector<uint64_t> array = {0};
+
+  bitmap::EliasGammaDeltaEncodedArray<uint64_t> enc_array(array, 1);
+
+  for (uint64_t i = 10; i < kArraySize; i+= 10){
+    // raise(SIGINT);
+    enc_array.Push(i);
+  }
+
+  for (uint64_t i = 0; i < kArraySize; i+= 10) {
+    if (enc_array[i / 10] != i){
+      raise(SIGINT);
+      return false;
+    }
+  }
+  return true;
+}
+
+bool gamma_delta_binary_search_test(){
+
+  uint64_t kArraySize = 100000;
+  std::vector<uint64_t> array = {0};
+
+  bitmap::EliasGammaDeltaEncodedArray<uint64_t> enc_array(array, 1);
+
+  for (uint64_t i = 10; i < kArraySize; i+= 10){
+    // raise(SIGINT);
+    enc_array.Push(i);
+  }
+
+  for (uint64_t i = 0; i < kArraySize; i ++) {
+    if (i % 10 == 0 && !enc_array.BinarySearch(i)){
+      raise(SIGINT);
+      return false;
+    }
+    if (i % 10 != 0 && enc_array.BinarySearch(i)){
+      raise(SIGINT);
+      return false;
+    }
+  }
+  return true;
+}
+
 TEST_CASE("Check Gamma Encoding Correctness", "[gamma encoder]") {
 
     REQUIRE(gamma_encoder_test());
@@ -106,4 +152,10 @@ TEST_CASE("Check Push Correctness", "[delta encoder]") {
 TEST_CASE("Check Push from scratch Correctness", "[delta encoder]") {
 
     REQUIRE(gamma_delta_push_from_scratch_test());
+    REQUIRE(gamma_delta_push_from_scratch_increment_test());
+}
+
+TEST_CASE("Check Binary Search", "[delta encoder]") {
+
+    REQUIRE(gamma_delta_binary_search_test());
 }
