@@ -18,6 +18,7 @@ class DeltaEncodedArray {
   typedef size_t pos_type;
   typedef uint8_t width_type;
 
+
   DeltaEncodedArray() {
     samples_ = NULL;
     delta_offsets_ = NULL;
@@ -67,6 +68,7 @@ class DeltaEncodedArray {
 
       width_type sample_bits = 32;
       width_type delta_offset_bits = 32;
+    //   std::cerr << last_val_ << std::endl;
 
       if (num_elements_ % sampling_rate == 0){
         
@@ -74,16 +76,22 @@ class DeltaEncodedArray {
 
           samples_->Push(element, sample_bits);
           delta_offsets_->Push(cum_delta_size, delta_offset_bits);
-          num_elements_ ++;
       }
       else {
-          assert(element > last_val_);
+        //   assert(element > last_val_);
           T delta = element - last_val_;
-          last_val_ = element;
-
-          deltas_->Realloc(EncodingSize(delta));
-          EncodeLastDelta(delta);        
+          if (!deltas_){
+              deltas_ = new Bitmap(EncodingSize(delta));
+              EncodeLastDelta(delta, 0);  
+          }
+          else{
+            pos_type pos = deltas_->GetSizeInBits();
+            deltas_->Realloc_increase(EncodingSize(delta));
+            EncodeLastDelta(delta, pos);    
+          }
       }    
+      last_val_ = element;
+      num_elements_ ++;
   }
 
  protected:
@@ -93,7 +101,7 @@ class DeltaEncodedArray {
   // Encode the delta values
   virtual void EncodeDeltas(std::vector<T> & deltas, size_type num_deltas) = 0;
 
-  virtual void EncodeLastDelta(T delta) = 0;
+  virtual void EncodeLastDelta(T delta, pos_type pos) = 0;
 
   // Encode the delta encoded array
   void Encode(std::vector<T> & elements, size_type num_elements) {
@@ -101,6 +109,7 @@ class DeltaEncodedArray {
       return;
     }
     num_elements_ = num_elements;
+
 #ifdef DEBUG
     assert(std::is_sorted(elements, elements + num_elements));
 #endif
@@ -109,8 +118,8 @@ class DeltaEncodedArray {
     std::vector<T> samples, deltas;
     std::vector<pos_type> delta_offsets;
     T last_val = 0;
-    uint64_t tot_delta_count = 0, delta_count = 0;
-    uint64_t delta_enc_size = 0;
+    // uint64_t tot_delta_count = 0, delta_count = 0;
+    // uint64_t delta_enc_size = 0;
     size_type cum_delta_size = 0;
     // pos_type max_offset = 0;
     width_type sample_bits, delta_offset_bits;
@@ -124,27 +133,27 @@ class DeltaEncodedArray {
         // if (cum_delta_size > max_offset)
         //   max_offset = cum_delta_size;
         delta_offsets.push_back(cum_delta_size);
-        if (i != 0) {
-          assert(delta_count == sampling_rate - 1);
-          tot_delta_count += delta_count;
-          delta_count = 0;
-        }
+        // if (i != 0) {
+        //   assert(delta_count == sampling_rate - 1);
+        // //   tot_delta_count += delta_count;
+        // //   delta_count = 0;
+        // }
       } else {
-        assert(elements[i] > last_val);
+        // assert(elements[i] > last_val);
         T delta = elements[i] - last_val;
         deltas.push_back(delta);
 
-        delta_enc_size = EncodingSize(delta);
-        cum_delta_size += delta_enc_size;
-        delta_count++;
+        // delta_enc_size = EncodingSize(delta);
+        cum_delta_size += EncodingSize(delta);
+        // delta_count++;
       }
       last_val = elements[i];
     }
-    tot_delta_count += delta_count;
+    // tot_delta_count += delta_count;
 
-    assert(tot_delta_count == deltas.size());
-    assert(samples.size() + deltas.size() == num_elements);
-    assert(delta_offsets.size() == samples.size());
+    // assert(tot_delta_count == deltas.size());
+    // assert(samples.size() + deltas.size() == num_elements);
+    // assert(delta_offsets.size() == samples.size());
 
     // sample_bits = Utils::BitWidth(max_sample);
     sample_bits = 32;
@@ -157,7 +166,9 @@ class DeltaEncodedArray {
       samples_ = new UnsizedBitmapArray<T>(&samples[0], samples.size(),
                                            sample_bits);
     }
+
     last_val_ = last_val;
+    // std::cerr << last_val_ << std::endl;
 
     if (cum_delta_size == 0) {
       deltas_ = NULL;
@@ -179,12 +190,11 @@ class DeltaEncodedArray {
   UnsizedBitmapArray<T>* samples_;
   UnsizedBitmapArray<pos_type>* delta_offsets_;
   Bitmap* deltas_;
-
 //   New variable stored
   size_type num_elements_;
   T last_val_;
 
- private:
+  private:
 };
 
 static struct EliasGammaPrefixSum {
@@ -279,6 +289,7 @@ class EliasGammaDeltaEncodedArray : public DeltaEncodedArray<T, sampling_rate> {
 
   virtual void EncodeDeltas(std::vector<T> & deltas, size_type num_deltas) override {
     uint64_t pos = 0;
+    // raise(SIGINT);
     for (size_t i = 0; i < num_deltas; i++) {
       uint64_t delta_bits = Utils::BitWidth(deltas[i]) - 1;
       pos += delta_bits;
@@ -290,10 +301,11 @@ class EliasGammaDeltaEncodedArray : public DeltaEncodedArray<T, sampling_rate> {
     }
   }
 
-  virtual void EncodeLastDelta(T delta) override{
+  virtual void EncodeLastDelta(T delta, pos_type pos) override{
 
       uint64_t delta_bits = Utils::BitWidth(delta) - 1;
-      uint64_t pos = this->deltas_->GetSizeInBits();
+    //   uint64_t pos = this->deltas_->GetSizeInBits();
+      pos += delta_bits;
       this->deltas_->SetBit(pos++);
       this->deltas_->SetValPos(pos, delta - (1ULL << delta_bits),
                                delta_bits);            

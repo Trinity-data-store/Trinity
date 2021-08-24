@@ -51,10 +51,32 @@ bool gamma_delta_push_test(){
     array.push_back(i);
   }
 
-  bitmap::EliasGammaDeltaEncodedArray<uint64_t> enc_array(array, kArraySize);
+  bitmap::EliasGammaDeltaEncodedArray<uint64_t> enc_array(array, kArraySize / 2);
 
   for (uint64_t i = kArraySize / 2; i < kArraySize; i++){
-    raise(SIGINT);
+    // raise(SIGINT);
+    enc_array.Push(i);
+  }
+
+  for (uint64_t i = 0; i < kArraySize; i++) {
+    if (enc_array[i] != i){
+      raise(SIGINT);
+      std::cout << enc_array[i];
+      return false;
+    }
+  }
+  return true;
+}
+
+bool gamma_delta_push_from_scratch_test(){
+
+  uint64_t kArraySize = 100000;
+  std::vector<uint64_t> array = {0};
+
+  bitmap::EliasGammaDeltaEncodedArray<uint64_t> enc_array(array, 1);
+
+  for (uint64_t i = 1; i < kArraySize; i++){
+    // raise(SIGINT);
     enc_array.Push(i);
   }
 
@@ -79,4 +101,9 @@ TEST_CASE("Check Delta Encoding Correctness", "[delta encoder]") {
 TEST_CASE("Check Push Correctness", "[delta encoder]") {
 
     REQUIRE(gamma_delta_push_test());
+}
+
+TEST_CASE("Check Push from scratch Correctness", "[delta encoder]") {
+
+    REQUIRE(gamma_delta_push_from_scratch_test());
 }

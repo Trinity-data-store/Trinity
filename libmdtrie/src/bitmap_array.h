@@ -445,9 +445,9 @@ class UnsizedBitmapArray : public Bitmap {
   }
 
   void Push(T element, width_type bit_width){
-    
+    // raise(SIGINT);
     size_type num_elements = this->size_ / bit_width;
-    this->Realloc(bit_width);
+    this->Realloc_increase(bit_width);
     Set(num_elements, element);
   }
 

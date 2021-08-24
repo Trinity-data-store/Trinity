@@ -7,6 +7,20 @@
 #include <cstdlib>
 #include <cstring>
 #include <iostream>
+#include <signal.h>
+#include <sys/time.h>
+
+// typedef unsigned long long int TimeStamp;
+
+// static TimeStamp GetTimestamp() {
+//   struct timeval now;
+//   gettimeofday(&now, nullptr);
+
+//   return now.tv_usec + (TimeStamp) now.tv_sec * 1000000;
+// }
+
+// TimeStamp realloc_time = 0;
+
 
 namespace bitmap {
 
@@ -134,17 +148,30 @@ class Bitmap {
   }
 
   Bitmap(size_type num_bits) {
-    data_ = new data_type[BITS2BLOCKS(num_bits)]();
+    // TODO： change it to vector
+    data_ = (data_type *)calloc(BITS2BLOCKS(num_bits), sizeof(data_type));
+    // data_ = new data_type[BITS2BLOCKS(num_bits)]();
     size_ = num_bits;
   }
 
-  void Realloc(size_type num_bits){
-    data_ = (data_type *)realloc(data_, BITS2BLOCKS(size_ + num_bits) * sizeof(data_type));
+  void Realloc_increase(size_type num_bits){
+
+    // TimeStamp start = GetTimestamp();
+    // TODO： here allocate more memory than needed
+    if (BITS2BLOCKS(size_ + num_bits + 1) == BITS2BLOCKS(size_)){
+      size_ += num_bits;
+      return;
+    }
+    data_ = (data_type *)realloc(data_, BITS2BLOCKS(size_ + num_bits + 1) * sizeof(data_type));
+    memset(data_ + BITS2BLOCKS(size_), 0, BITS2BLOCKS(size_ + num_bits + 1) - BITS2BLOCKS(size_));
+    size_ += num_bits;
+
+    // realloc_time += GetTimestamp() - start;
   }
 
   virtual ~Bitmap() {
     if (data_ != NULL) {
-      delete[] data_;
+      free(data_);
       data_ = NULL;
     }
   }
