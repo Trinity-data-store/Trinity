@@ -159,16 +159,18 @@ class Bitmap {
     // TimeStamp start = GetTimestamp();
     // TODO： here allocate more memory than needed
     if (BITS2BLOCKS(size_ + num_bits + 1) == BITS2BLOCKS(size_)){
-      SetValPos(size_, 0, num_bits);
+      
       size_ += num_bits;
+      SetValPos(size_ - num_bits, 0, num_bits);
       return;
     }
 
     data_ = (data_type *)realloc(data_, BITS2BLOCKS(size_ + num_bits + 1) * sizeof(data_type));
     // memset(data_ + BITS2BLOCKS(size_), 0, BITS2BLOCKS(size_ + num_bits + 1) - BITS2BLOCKS(size_));
-    SetValPos(size_, 0, num_bits);
-    size_ += num_bits;
+    data_[BITS2BLOCKS(size_ + num_bits + 1) - 1] = 0;
 
+    size_ += num_bits;
+    SetValPos(size_ - num_bits, 0, num_bits);
     // realloc_time += GetTimestamp() - start;
   }
 

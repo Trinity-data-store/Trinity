@@ -1540,6 +1540,10 @@ public:
         // current_vect.push_back(current_primary_key);
 
         // primary_key_list[index].push_back(current_primary_key);
+        // if (primary_key_list.size() >= 1){
+        //     raise(SIGINT);
+        // }
+        
         primary_key_list[index].Push(current_primary_key);
         // raise(SIGINT);
         // n_leaves_t first_primary_key = primary_key_list[index][primary_key_list[index].size() - 2];
@@ -1570,10 +1574,14 @@ public:
         // std::vector<n_leaves_t> new_vect;
         // TimeStamp start = GetTimestamp();
         // new_vect.push_back(current_primary_key);
-
+        // if (primary_key_list.size() >= 1){
+        //     raise(SIGINT);
+        // }
         std::vector<uint64_t> array = {current_primary_key};
 
-        bitmap::EliasGammaDeltaEncodedArray<uint64_t> enc_array(array, array.size());
+        
+        auto enc_array = bitmap::EliasGammaDeltaEncodedArray<uint64_t>(array, array.size());
+        // bitmap::EliasGammaDeltaEncodedArray<uint64_t> enc_array(array, array.size());
 
         // auto enc_array = new bitmap::EliasGammaDeltaEncodedArray<uint64_t>(std::vector<n_leaves_t>{current_primary_key}, 1);
         
