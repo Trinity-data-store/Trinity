@@ -524,7 +524,7 @@ public:
                 new_block->primary_key_list.push_back(primary_key_list[i]);
                 // new_block->primary_key_list.push_back(primary_key_list[i]);
                 // new_block->primary_key_count.push_back(primary_key_count[i]);
-                uint16_t primary_key_size = primary_key_list[i].size();
+                uint16_t primary_key_size = primary_key_list[i].GetNElements();
                 for (uint16_t j = 0; j < primary_key_size; j++){
                     p_key_to_treeblock[primary_key_list[i][j]] = (uint64_t) new_block;
                 }
@@ -891,8 +891,10 @@ public:
         vector_size += sizeof(primary_key_list);
         // raise(SIGINT);
         for (preorder_t i = 0; i < primary_key_list.size(); i++){
-            total_size += sizeof(primary_key_list[i]) + (sizeof(n_leaves_t) * primary_key_list[i].size());
-            vector_size += sizeof(primary_key_list[i]) + (sizeof(n_leaves_t) * primary_key_list[i].size());
+            // total_size += sizeof(primary_key_list[i]) + (sizeof(n_leaves_t) * primary_key_list[i].size());
+            // vector_size += sizeof(primary_key_list[i]) + (sizeof(n_leaves_t) * primary_key_list[i].size());
+            total_size += primary_key_list[i].size_overhead();
+            vector_size += primary_key_list[i].size_overhead();
             // total_size += sizeof(std::vector<n_leaves_t>) + (sizeof(n_leaves_t) * primary_key_list[i].size());
         }
 
@@ -1261,7 +1263,8 @@ public:
                     TimeStamp start = GetTimestamp(); 
                     for (preorder_t p = current_primary; p < new_current_primary; p ++)
                     {
-                        if (binary_if_present(&primary_key_list[p], primary_key))
+                        if (primary_key_list[p].Find(primary_key))
+                        // if (binary_if_present(&primary_key_list[p], primary_key))
                         {
                             found = true;
                             // This optimization doesn't seem to be faster
@@ -1364,7 +1367,7 @@ public:
             // if (primary_key_list[current_primary].size() != 1){
             //     raise(SIGINT);
             // }
-            preorder_t list_size = primary_key_list[current_primary].size();
+            preorder_t list_size = primary_key_list[current_primary].GetNElements();
             for (preorder_t i = 0; i < list_size; i++)
             {
                 auto primary_key = primary_key_list[current_primary][i];
@@ -1536,7 +1539,8 @@ public:
         // std::vector<n_leaves_t> current_vect = primary_key_list[index];
         // current_vect.push_back(current_primary_key);
 
-        primary_key_list[index].push_back(current_primary_key);
+        // primary_key_list[index].push_back(current_primary_key);
+        primary_key_list[index].Push(current_primary_key);
         // raise(SIGINT);
         // n_leaves_t first_primary_key = primary_key_list[index][primary_key_list[index].size() - 2];
         // n_leaves_t second_primary_key = primary_key_list[index][primary_key_list[index].size() - 1];
@@ -1566,7 +1570,14 @@ public:
         // std::vector<n_leaves_t> new_vect;
         // TimeStamp start = GetTimestamp();
         // new_vect.push_back(current_primary_key);
-        primary_key_list.emplace(primary_key_list.begin() + index, std::vector<n_leaves_t>{current_primary_key});
+
+        std::vector<uint64_t> array = {current_primary_key};
+
+        bitmap::EliasGammaDeltaEncodedArray<uint64_t> enc_array(array, array.size());
+
+        // auto enc_array = new bitmap::EliasGammaDeltaEncodedArray<uint64_t>(std::vector<n_leaves_t>{current_primary_key}, 1);
+        
+        primary_key_list.emplace(primary_key_list.begin() + index, enc_array);
         // vector_time += GetTimestamp() - start;
         // vect_opt_count++;
         // primary_key_count.insert(primary_key_count.begin() + index, 1);
@@ -1623,8 +1634,8 @@ private:
     preorder_t treeblock_frontier_num_ = 0;
     trie_node<DIMENSION> *parent_trie_node_ = NULL;
 
-    std::vector<std::vector<n_leaves_t>> primary_key_list;
-    std::vector<bitmap::EliasGammaEncoder<uint64_t>> primary_key_list_test;
+    // std::vector<std::vector<n_leaves_t>> primary_key_list;
+    std::vector<bitmap::EliasGammaDeltaEncodedArray<uint64_t>> primary_key_list;
     // std::vector<n_leaves_t> primary_key_list;
     // std::vector<n_leaves_t> primary_key_count;
     // Using recursive_mutex is actually faster

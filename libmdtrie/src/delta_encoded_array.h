@@ -25,7 +25,10 @@ class DeltaEncodedArray {
     deltas_ = NULL;
   }
 
+
+
   virtual ~DeltaEncodedArray() {
+    // raise(SIGINT);
     if (samples_) {
       delete samples_;
       samples_ = NULL;
@@ -237,6 +240,10 @@ class EliasGammaDeltaEncodedArray : public DeltaEncodedArray<T, sampling_rate> {
   virtual ~EliasGammaDeltaEncodedArray() {
   }
 
+  size_type GetNElements(){
+    return this->num_elements_;
+  }
+
   T Get(pos_type i) {
     // Get offsets
 
@@ -260,7 +267,7 @@ class EliasGammaDeltaEncodedArray : public DeltaEncodedArray<T, sampling_rate> {
     return Get(i);
   }
 
-  uint64_t size_overhead(){
+  uint64_t size_overhead() const {
     uint64_t size = 0;
 
   // UnsizedBitmapArray<T>* samples_;
