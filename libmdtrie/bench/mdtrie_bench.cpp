@@ -188,7 +188,7 @@ void test_insert_data(level_t max_depth, level_t trie_depth, preorder_t max_tree
     
     n_leaves_t n_points = 0;
     n_leaves_t n_lines = 14583357;
-
+    diff = 0;
     tqdm bar;
     while ((read = getline(&line, &len, fp)) != -1)
     {

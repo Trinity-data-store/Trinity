@@ -255,21 +255,18 @@ class EliasGammaDeltaEncodedArray : public DeltaEncodedArray<T, sampling_rate> {
   uint64_t size_overhead() {
     uint64_t size = 0;
 
-  // UnsizedBitmapArray<T>* samples_;
-  // UnsizedBitmapArray<pos_type>* delta_offsets_;
-  // Bitmap* deltas_;
-  // size_type num_elements_ = 0;
-  // size_type num_samples_ = 0;
-  // T last_val_;
+//   UnsizedBitmapArray<T> samples_;
+//   UnsizedBitmapArray<pos_type> delta_offsets_;
+//   Bitmap deltas_;
+//   size_type num_elements_ = 0;
+//   T last_val_;
 
-    size += this->samples_.GetSize() + sizeof(width_type);
-    size += this->delta_offsets_.GetSize() + sizeof(width_type);
+    size += this->samples_.GetSize() /*bitmap size*/ + sizeof(width_type);
+    size += this->delta_offsets_.GetSize() /*bitmap size*/ + sizeof(width_type);
     size += this->deltas_.GetSize();
-    size += 2 * sizeof(size_type);
+    size += sizeof(size_type);
     size += sizeof(T);
 
-    // Assume two pointers can be merged into one
-    size += 2 * sizeof(Bitmap*);
     return size;
 
   }
