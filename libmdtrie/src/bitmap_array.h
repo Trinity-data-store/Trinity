@@ -369,35 +369,35 @@ class BitmapArray : public Bitmap {
   }
 
   // Serialization and De-serialization
-  virtual size_type Serialize(std::ostream& out) override {
-    size_t out_size = 0;
+  // virtual size_type Serialize(std::ostream& out) override {
+  //   size_t out_size = 0;
 
-    out.write(reinterpret_cast<const char *>(&this->num_elements_),
-              sizeof(size_type));
-    out_size += sizeof(size_type);
+  //   out.write(reinterpret_cast<const char *>(&this->num_elements_),
+  //             sizeof(size_type));
+  //   out_size += sizeof(size_type);
 
-    out.write(reinterpret_cast<const char *>(&this->bit_width_),
-              sizeof(width_type));
-    out_size += sizeof(width_type);
+  //   out.write(reinterpret_cast<const char *>(&this->bit_width_),
+  //             sizeof(width_type));
+  //   out_size += sizeof(width_type);
 
-    out_size += Bitmap::Serialize(out);
+  //   out_size += Bitmap::Serialize(out);
 
-    return out_size;
-  }
+  //   return out_size;
+  // }
 
-  virtual size_type Deserialize(std::istream& in) override {
-    size_t in_size = 0;
+  // virtual size_type Deserialize(std::istream& in) override {
+  //   size_t in_size = 0;
 
-    in.read(reinterpret_cast<char *>(&this->num_elements_), sizeof(size_type));
-    in_size += sizeof(size_type);
+  //   in.read(reinterpret_cast<char *>(&this->num_elements_), sizeof(size_type));
+  //   in_size += sizeof(size_type);
 
-    in.read(reinterpret_cast<char *>(&this->bit_width_), sizeof(width_type));
-    in_size += sizeof(width_type);
+  //   in.read(reinterpret_cast<char *>(&this->bit_width_), sizeof(width_type));
+  //   in_size += sizeof(width_type);
 
-    in_size += Bitmap::Deserialize(in);
+  //   in_size += Bitmap::Deserialize(in);
 
-    return in_size;
-  }
+  //   return in_size;
+  // }
 
  protected:
   // Data members
@@ -425,11 +425,11 @@ class UnsizedBitmapArray : public Bitmap {
     bit_width_ = 0;
   }
 
-  UnsizedBitmapArray(const UnsizedBitmapArray& array) {
-    data_ = array.data_;
-    size_ = array.size_;
-    bit_width_ = array.bit_width_;
-  }
+  // UnsizedBitmapArray(const UnsizedBitmapArray& array) {
+  //   data_ = array.data_;
+  //   size_ = array.size_;
+  //   bit_width_ = array.bit_width_;
+  // }
 
   UnsizedBitmapArray(size_type num_elements, width_type bit_width)
       : Bitmap(num_elements * bit_width) {
@@ -442,6 +442,17 @@ class UnsizedBitmapArray : public Bitmap {
     for (uint64_t i = 0; i < num_elements; i++) {
       Set(i, elements[i]);
     }
+  }
+
+  void Init(T *elements, size_type num_elements, width_type bit_width){
+    // BitmapInit
+
+    Bitmap_Init(num_elements * bit_width);
+    bit_width_ = bit_width;
+    for (uint64_t i = 0; i < num_elements; i++) {
+      Set(i, elements[i]);
+    }
+    
   }
 
   void Push(T element, width_type bit_width){
@@ -470,28 +481,28 @@ class UnsizedBitmapArray : public Bitmap {
   }
 
   // Serialization and De-serialization
-  virtual size_type Serialize(std::ostream& out) override {
-    size_t out_size = 0;
+  // virtual size_type Serialize(std::ostream& out) override {
+  //   size_t out_size = 0;
 
-    out.write(reinterpret_cast<const char *>(&this->bit_width_),
-              sizeof(width_type));
-    out_size += sizeof(width_type);
+  //   out.write(reinterpret_cast<const char *>(&this->bit_width_),
+  //             sizeof(width_type));
+  //   out_size += sizeof(width_type);
 
-    out_size += Bitmap::Serialize(out);
+  //   out_size += Bitmap::Serialize(out);
 
-    return out_size;
-  }
+  //   return out_size;
+  // }
 
-  virtual size_type Deserialize(std::istream& in) override {
-    size_t in_size = 0;
+  // virtual size_type Deserialize(std::istream& in) override {
+  //   size_t in_size = 0;
 
-    in.read(reinterpret_cast<char *>(&this->bit_width_), sizeof(width_type));
-    in_size += sizeof(width_type);
+  //   in.read(reinterpret_cast<char *>(&this->bit_width_), sizeof(width_type));
+  //   in_size += sizeof(width_type);
 
-    in_size += Bitmap::Deserialize(in);
+  //   in_size += Bitmap::Deserialize(in);
 
-    return in_size;
-  }
+  //   return in_size;
+  // }
  private:
   // Data members
   width_type bit_width_;

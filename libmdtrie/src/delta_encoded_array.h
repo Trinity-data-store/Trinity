@@ -19,53 +19,30 @@ class DeltaEncodedArray {
   typedef uint8_t width_type;
 
 
-  DeltaEncodedArray() {
-    samples_ = NULL;
-    delta_offsets_ = NULL;
-    deltas_ = NULL;
-  }
+  DeltaEncodedArray() = default;
 
-
-
-  virtual ~DeltaEncodedArray() {
-    // raise(SIGINT);
-    if (samples_) {
-      delete samples_;
-      samples_ = NULL;
-    }
-    if (delta_offsets_) {
-      delete delta_offsets_;
-      delta_offsets_ = NULL;
-    }
-    if (deltas_) {
-      delete deltas_;
-      deltas_ = NULL;
-    }
-  }
+  virtual ~DeltaEncodedArray() = default;
 
   // Serialization and De-serialization
-  virtual size_type Serialize(std::ostream& out) {
-    size_type out_size = 0;
+  // virtual size_type Serialize(std::ostream& out) {
+  //   size_type out_size = 0;
 
-    out_size += samples_->Serialize(out);
-    out_size += delta_offsets_->Serialize(out);
-    out_size += deltas_->Serialize(out);
+  //   out_size += samples_.Serialize(out);
+  //   out_size += delta_offsets_.Serialize(out);
+  //   out_size += deltas_.Serialize(out);
 
-    return out_size;
-  }
+  //   return out_size;
+  // }
 
-  virtual size_type Deserialize(std::istream& in) {
-    size_type in_size = 0;
+  // virtual size_type Deserialize(std::istream& in) {
+  //   size_type in_size = 0;
 
-    samples_ = new UnsizedBitmapArray<T>();
-    in_size += samples_->Deserialize(in);
-    delta_offsets_ = new UnsizedBitmapArray<pos_type>();
-    in_size += delta_offsets_->Deserialize(in);
-    deltas_ = new Bitmap();
-    in_size += deltas_->Deserialize(in);
+  //   in_size += samples_.Deserialize(in);
+  //   in_size += delta_offsets_.Deserialize(in);
+  //   in_size += deltas_.Deserialize(in);
 
-    return in_size;
-  }
+  //   return in_size;
+  // }
 
 
  protected:
@@ -135,36 +112,44 @@ class DeltaEncodedArray {
     // delta_offset_bits = Utils::BitWidth(max_offset);
     delta_offset_bits = 32;
 
-    if (samples.size() == 0) {
-      samples_ = NULL;
-    } else {
-      samples_ = new UnsizedBitmapArray<T>(&samples[0], samples.size(),
-                                           sample_bits);
+    if (samples.size() != 0) {
+    //   samples_ = NULL;
+    // } else {
+      // samples_ = new UnsizedBitmapArray<T>(&samples[0], samples.size(),
+                                          //  sample_bits);
+      samples_.Init(&samples[0], samples.size(), sample_bits);
     }
 
     last_val_ = last_val;
     // std::cerr << last_val_ << std::endl;
 
-    if (cum_delta_size == 0) {
-      deltas_ = NULL;
-    } else {
-      deltas_ = new Bitmap(cum_delta_size);
+    // if (cum_delta_size == 0) {
+    //   deltas_ = NULL;
+    // } else {
+    
+    if (cum_delta_size != 0){
+
+      deltas_.Bitmap_Init(cum_delta_size);
+      // deltas_ = new Bitmap(cum_delta_size);
       EncodeDeltas(deltas, deltas.size());
     // EncodeDeltas(&deltas[0], deltas.size());
     }
 
-    if (delta_offsets.size() == 0) {
-      delta_offsets_ = NULL;
-    } else {
-      delta_offsets_ = new UnsizedBitmapArray<pos_type>(&delta_offsets[0],
-                                                        delta_offsets.size(),
-                                                        delta_offset_bits);
+    // if (delta_offsets.size() == 0) {
+    //   delta_offsets_ = NULL;
+    // } else {
+    if (delta_offsets.size() != 0){
+
+      delta_offsets_.Init(&delta_offsets[0],delta_offsets.size(),delta_offset_bits);
+      // delta_offsets_ = new UnsizedBitmapArray<pos_type>(&delta_offsets[0],
+      //                                                   delta_offsets.size(),
+      //                                                   delta_offset_bits);
     }
   }
 
-  UnsizedBitmapArray<T>* samples_;
-  UnsizedBitmapArray<pos_type>* delta_offsets_;
-  Bitmap* deltas_;
+  UnsizedBitmapArray<T> samples_;
+  UnsizedBitmapArray<pos_type> delta_offsets_;
+  Bitmap deltas_;
 //   New variable stored
   size_type num_elements_ = 0;
   // size_type num_samples_ = 0;
@@ -253,12 +238,12 @@ class EliasGammaDeltaEncodedArray : public DeltaEncodedArray<T, sampling_rate> {
     
     pos_type samples_idx = i / sampling_rate;
     pos_type delta_offsets_idx = i % sampling_rate;
-    T val = this->samples_->Get(samples_idx);
+    T val = this->samples_.Get(samples_idx);
 
     if (delta_offsets_idx == 0)
       return val;
 
-    pos_type delta_offset = this->delta_offsets_->Get(samples_idx);
+    pos_type delta_offset = this->delta_offsets_.Get(samples_idx);
     val += PrefixSum(delta_offset, delta_offsets_idx);
     return val;
   }
@@ -267,7 +252,7 @@ class EliasGammaDeltaEncodedArray : public DeltaEncodedArray<T, sampling_rate> {
     return Get(i);
   }
 
-  uint64_t size_overhead() const {
+  uint64_t size_overhead() {
     uint64_t size = 0;
 
   // UnsizedBitmapArray<T>* samples_;
@@ -277,9 +262,9 @@ class EliasGammaDeltaEncodedArray : public DeltaEncodedArray<T, sampling_rate> {
   // size_type num_samples_ = 0;
   // T last_val_;
 
-    size += this->samples_->GetSize() + sizeof(width_type);
-    size += this->delta_offsets_->GetSize() + sizeof(width_type);
-    size += this->deltas_->GetSize();
+    size += this->samples_.GetSize() + sizeof(width_type);
+    size += this->delta_offsets_.GetSize() + sizeof(width_type);
+    size += this->deltas_.GetSize();
     size += 2 * sizeof(size_type);
     size += sizeof(T);
 
@@ -304,7 +289,7 @@ class EliasGammaDeltaEncodedArray : public DeltaEncodedArray<T, sampling_rate> {
 
       if (this->num_elements_ % sampling_rate == 0){
         
-          size_type cum_delta_size = this->deltas_->GetSizeInBits();
+          size_type cum_delta_size = this->deltas_.GetSizeInBits();
 
           // TODO: comment these out
           // if (!this->samples_){
@@ -312,7 +297,7 @@ class EliasGammaDeltaEncodedArray : public DeltaEncodedArray<T, sampling_rate> {
           //   this->samples_ = new UnsizedBitmapArray<T>(&element, 1, sample_bits);
           // }
           // else {
-          this->samples_->Push(element, sample_bits);
+          this->samples_.Push(element, sample_bits);
           // }
 
           // if (!this->delta_offsets_){
@@ -320,23 +305,21 @@ class EliasGammaDeltaEncodedArray : public DeltaEncodedArray<T, sampling_rate> {
           //   this->delta_offsets_ = new UnsizedBitmapArray<pos_type>(&cum_delta_size, 1, delta_offset_bits);
           // }
           // else {
-          this->delta_offsets_->Push(cum_delta_size, delta_offset_bits);
+          this->delta_offsets_.Push(cum_delta_size, delta_offset_bits);
           // this->num_samples_++;
           // }
       }
       else {
 
           T delta = element - this->last_val_;
-          if (!this->deltas_){
-              this->deltas_ = new Bitmap(EncodingSize(delta));
+          if (this->num_elements_ == 1){
+              this->deltas_.Bitmap_Init(EncodingSize(delta));
               EncodeLastDelta(delta, 0);  
           }
           else{
-            pos_type pos = this->deltas_->GetSizeInBits();
-            this->deltas_->Realloc_increase(EncodingSize(delta));
-            // if (element == 200){
-            //   raise(SIGINT);
-            // }
+
+            pos_type pos = this->deltas_.GetSizeInBits();
+            this->deltas_.Realloc_increase(EncodingSize(delta));
             EncodeLastDelta(delta, pos);    
           }
       }    
@@ -355,7 +338,6 @@ class EliasGammaDeltaEncodedArray : public DeltaEncodedArray<T, sampling_rate> {
 
   int64_t BinarySearchSample(int64_t val){
 
-    UnsizedBitmapArray<T>*arr = this->samples_;
     int64_t start = 0;
     int64_t end = (this->num_elements_ - 1) / sampling_rate;
     int64_t mid, mid_val;
@@ -363,7 +345,7 @@ class EliasGammaDeltaEncodedArray : public DeltaEncodedArray<T, sampling_rate> {
     while (start <= end){
 
       mid = (start + end) / 2;
-      mid_val = arr->Get(mid);
+      mid_val = this->samples_.Get(mid);
       if (mid_val == val){
         return mid;
       }
@@ -382,15 +364,15 @@ class EliasGammaDeltaEncodedArray : public DeltaEncodedArray<T, sampling_rate> {
   bool Find(T val) {
     // pos_type sample_off = this->samples_->LowerBound(val);
     pos_type sample_off = BinarySearchSample(val);
-    pos_type current_delta_offset = this->delta_offsets_->Get(sample_off);
-    val -= this->samples_->Get(sample_off);
+    pos_type current_delta_offset = this->delta_offsets_.Get(sample_off);
+    val -= this->samples_.Get(sample_off);
 
     pos_type delta_idx = 0;
     T delta_sum = 0;
-    size_type delta_max = this->deltas_->GetSizeInBits();
+    size_type delta_max = this->deltas_.GetSizeInBits();
 
     while (delta_sum < val && current_delta_offset < delta_max && delta_idx < sampling_rate) {
-      uint16_t block = this->deltas_->GetValPos(current_delta_offset, 16);
+      uint16_t block = this->deltas_.GetValPos(current_delta_offset, 16);
       uint16_t block_cnt = elias_gamma_prefix_table.count(block);
       uint16_t block_sum = elias_gamma_prefix_table.sum(block);
 
@@ -399,11 +381,11 @@ class EliasGammaDeltaEncodedArray : public DeltaEncodedArray<T, sampling_rate> {
         // this must mean the value spans more than 16 bits
         // read this manually
         uint8_t delta_width = 0;
-        while (!this->deltas_->GetBit(current_delta_offset)) {
+        while (!this->deltas_.GetBit(current_delta_offset)) {
           delta_width++;
           current_delta_offset++;
         }
-        auto decoded_value = this->deltas_->GetValPos(current_delta_offset, delta_width) + (1ULL << delta_width);
+        auto decoded_value = this->deltas_.GetValPos(current_delta_offset, delta_width) + (1ULL << delta_width);
         delta_sum += decoded_value;
         delta_idx += 1;
 
@@ -423,12 +405,12 @@ class EliasGammaDeltaEncodedArray : public DeltaEncodedArray<T, sampling_rate> {
         T last_decoded_value = 0;
         while (delta_sum < val && current_delta_offset < delta_max && delta_idx < sampling_rate) {
           int delta_width = 0;
-          while (!this->deltas_->GetBit(current_delta_offset)) {
+          while (!this->deltas_.GetBit(current_delta_offset)) {
             delta_width++;
             current_delta_offset++;
           }
           current_delta_offset++;
-          last_decoded_value = this->deltas_->GetValPos(current_delta_offset, delta_width) + (1ULL << delta_width);
+          last_decoded_value = this->deltas_.GetValPos(current_delta_offset, delta_width) + (1ULL << delta_width);
 
           delta_sum += last_decoded_value;
           current_delta_offset += delta_width;
@@ -455,8 +437,8 @@ class EliasGammaDeltaEncodedArray : public DeltaEncodedArray<T, sampling_rate> {
   bool BinarySearch(T search_val){
 
     pos_type sample_index = BinarySearchSample(search_val); // Works
-    pos_type delta_offset = this->delta_offsets_->Get(sample_index);
-    T current_val =  this->samples_->Get(sample_index);
+    pos_type delta_offset = this->delta_offsets_.Get(sample_index);
+    T current_val =  this->samples_.Get(sample_index);
 
     if (current_val == search_val){
       return true;
@@ -499,19 +481,19 @@ class EliasGammaDeltaEncodedArray : public DeltaEncodedArray<T, sampling_rate> {
     // pos_type delta_idx = 0;
     pos_type current_delta_offset = delta_offset;
     while (delta_idx != until_idx) {
-      uint16_t block = this->deltas_->GetValPos(current_delta_offset, 16);
+      uint16_t block = this->deltas_.GetValPos(current_delta_offset, 16);
       uint16_t cnt = elias_gamma_prefix_table.count(block);
       if (cnt == 0) {
         // If the prefixsum table for the block returns count == 0
         // this must mean the value spans more than 16 bits
         // read this manually
         width_type delta_width = 0;
-        while (!this->deltas_->GetBit(current_delta_offset)) {
+        while (!this->deltas_.GetBit(current_delta_offset)) {
           delta_width++;
           current_delta_offset++;
         }
         current_delta_offset++;
-        delta_sum += this->deltas_->GetValPos(current_delta_offset, delta_width)
+        delta_sum += this->deltas_.GetValPos(current_delta_offset, delta_width)
             + (1ULL << delta_width);
         current_delta_offset += delta_width;
         delta_idx += 1;
@@ -524,12 +506,12 @@ class EliasGammaDeltaEncodedArray : public DeltaEncodedArray<T, sampling_rate> {
         // Last few values, decode them without looking up table
         while (delta_idx != until_idx) {
           width_type delta_width = 0;
-          while (!this->deltas_->GetBit(current_delta_offset)) {
+          while (!this->deltas_.GetBit(current_delta_offset)) {
             delta_width++;
             current_delta_offset++;
           }
           current_delta_offset++;
-          delta_sum += this->deltas_->GetValPos(current_delta_offset,
+          delta_sum += this->deltas_.GetValPos(current_delta_offset,
                                                 delta_width)
               + (1ULL << delta_width);
           current_delta_offset += delta_width;
@@ -552,8 +534,8 @@ class EliasGammaDeltaEncodedArray : public DeltaEncodedArray<T, sampling_rate> {
       uint64_t delta_bits = Utils::BitWidth(deltas[i]) - 1;
       pos += delta_bits;
       assert((1ULL << delta_bits) <= deltas[i]);
-      this->deltas_->SetBit(pos++);
-      this->deltas_->SetValPos(pos, deltas[i] - (1ULL << delta_bits),
+      this->deltas_.SetBit(pos++);
+      this->deltas_.SetValPos(pos, deltas[i] - (1ULL << delta_bits),
                                delta_bits);
       pos += delta_bits;
     }
@@ -567,11 +549,11 @@ class EliasGammaDeltaEncodedArray : public DeltaEncodedArray<T, sampling_rate> {
       uint64_t delta_bits = Utils::BitWidth(delta) - 1;
     //   uint64_t pos = this->deltas_->GetSizeInBits();
       pos += delta_bits;
-      this->deltas_->SetBit(pos++);
-      this->deltas_->SetValPos(pos, delta - (1ULL << delta_bits),
+      this->deltas_.SetBit(pos++);
+      this->deltas_.SetValPos(pos, delta - (1ULL << delta_bits),
                                delta_bits);
 
-      if (this->deltas_->GetSizeInBits() != pos + delta_bits){
+      if (this->deltas_.GetSizeInBits() != pos + delta_bits){
         raise(SIGINT);
       }            
   }
@@ -582,19 +564,19 @@ class EliasGammaDeltaEncodedArray : public DeltaEncodedArray<T, sampling_rate> {
     pos_type delta_idx = 0;
     pos_type current_delta_offset = delta_offset;
     while (delta_idx != until_idx) {
-      uint16_t block = this->deltas_->GetValPos(current_delta_offset, 16);
+      uint16_t block = this->deltas_.GetValPos(current_delta_offset, 16);
       uint16_t cnt = elias_gamma_prefix_table.count(block);
       if (cnt == 0) {
         // If the prefixsum table for the block returns count == 0
         // this must mean the value spans more than 16 bits
         // read this manually
         width_type delta_width = 0;
-        while (!this->deltas_->GetBit(current_delta_offset)) {
+        while (!this->deltas_.GetBit(current_delta_offset)) {
           delta_width++;
           current_delta_offset++;
         }
         current_delta_offset++;
-        delta_sum += this->deltas_->GetValPos(current_delta_offset, delta_width)
+        delta_sum += this->deltas_.GetValPos(current_delta_offset, delta_width)
             + (1ULL << delta_width);
         current_delta_offset += delta_width;
         delta_idx += 1;
@@ -607,12 +589,12 @@ class EliasGammaDeltaEncodedArray : public DeltaEncodedArray<T, sampling_rate> {
         // Last few values, decode them without looking up table
         while (delta_idx != until_idx) {
           width_type delta_width = 0;
-          while (!this->deltas_->GetBit(current_delta_offset)) {
+          while (!this->deltas_.GetBit(current_delta_offset)) {
             delta_width++;
             current_delta_offset++;
           }
           current_delta_offset++;
-          delta_sum += this->deltas_->GetValPos(current_delta_offset,
+          delta_sum += this->deltas_.GetValPos(current_delta_offset,
                                                 delta_width)
               + (1ULL << delta_width);
           current_delta_offset += delta_width;

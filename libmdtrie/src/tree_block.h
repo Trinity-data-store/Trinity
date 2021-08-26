@@ -869,7 +869,7 @@ public:
     }
 
 
-    uint64_t size() const {
+    uint64_t size() {
 
         uint64_t total_size = sizeof(level_t) * 1 + sizeof(node_n_t) * 4;
         total_size += sizeof(preorder_t) + sizeof(tree_block *) + sizeof(trie_node<DIMENSION> *);

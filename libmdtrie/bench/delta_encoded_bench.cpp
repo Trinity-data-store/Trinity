@@ -157,15 +157,15 @@ void gamma_delta_binary_search(uint64_t kArraySize){
 void test_vector_insertion(){
 
   std::vector<bitmap::EliasGammaDeltaEncodedArray<uint64_t>> primary_key_list;
-  
+
   std::vector<uint64_t> array = {5};
   auto enc_array = bitmap::EliasGammaDeltaEncodedArray<uint64_t>(array, array.size());
-  primary_key_list.emplace(primary_key_list.begin(), enc_array);
+  primary_key_list.emplace(primary_key_list.begin(), array, array.size());
 
 
   std::vector<uint64_t> array1 = {12};
   auto enc_array1 = bitmap::EliasGammaDeltaEncodedArray<uint64_t>(array1, array1.size());
-  primary_key_list.emplace(primary_key_list.begin(), enc_array1);
+  primary_key_list.emplace(primary_key_list.begin(), array1, array1.size());
 }
 
 int main() {

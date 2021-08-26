@@ -54,7 +54,11 @@ bool gamma_delta_push_test(){
   bitmap::EliasGammaDeltaEncodedArray<uint64_t> enc_array(array, kArraySize / 2);
 
   for (uint64_t i = kArraySize / 2; i < kArraySize; i++){
-    // raise(SIGINT);
+    // if (i == 5031){
+    //   raise(SIGINT);
+    // }
+    
+
     enc_array.Push(i);
   }
 
