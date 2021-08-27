@@ -73,7 +73,10 @@ TimeStamp vector_time = 0;
 uint64_t vect_opt_count = 0;
 std::shared_mutex mutex_p_key;
 n_leaves_t current_primary_key = 0;
-std::unordered_map<n_leaves_t, uint64_t> p_key_to_treeblock;
+
+n_leaves_t total_points_count = 14583357;
+std::vector<uint64_t> p_key_to_treeblock(total_points_count, 0);
+// std::unordered_map<n_leaves_t, uint64_t> p_key_to_treeblock;
 
 uint64_t vector_size = 0;
 TimeStamp primary_time = 0;

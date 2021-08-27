@@ -93,8 +93,8 @@ public:
                             sizeof(preorder_t) * 2;
 
         // Include primary key size:
-        total_size += sizeof(p_key_to_treeblock) + (sizeof(uint32_t) + sizeof(uint64_t)) * p_key_to_treeblock.size();
-        vector_size += sizeof(p_key_to_treeblock) + (sizeof(uint32_t) + sizeof(uint64_t)) * p_key_to_treeblock.size();
+        total_size += sizeof(p_key_to_treeblock) + sizeof(uint32_t) * p_key_to_treeblock.size();
+        vector_size += sizeof(p_key_to_treeblock) + sizeof(uint32_t) * p_key_to_treeblock.size();
         // total_size += sizeof(std::unordered_map<n_leaves_t, uint64_t>) + (sizeof(n_leaves_t) + sizeof(uint64_t)) * p_key_to_treeblock.size();
         return total_size + root_->size();
     }
