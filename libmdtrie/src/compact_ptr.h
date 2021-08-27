@@ -14,15 +14,17 @@ namespace bits {
 class compact_ptr {
  public:
 
-  compact_ptr(void *ptr, size_t size) : ptr_(((uintptr_t) ptr) >> 4ULL), size_(size) {
-    // raise(SIGINT);
-    size_ = 1;
-  }
+  // compact_ptr(void *ptr, size_t size) : ptr_(((uintptr_t) ptr) >> 4ULL), size_(size) {
+  //   // raise(SIGINT);
+  //   // size_ = 1;
+  //   flag_ = 0;
+  // }
 
   compact_ptr(uint64_t primary_key){
 
     ptr_ = (uintptr_t) primary_key;
-    size_ = 1;
+    // size_ = 1;
+    flag_ = 0;
     // if ((uint64_t)ptr_ != primary_key){
     //   raise(SIGINT);
     // }
@@ -57,36 +59,38 @@ class compact_ptr {
 
   uint64_t size_overhead(){
 
-    if (size_ == 1){
-      return 8 /*8 bytes used to store compact ptr*/;
+    if (flag_ == 0){
+      return 6 /*8 bytes used to store compact ptr*/;
     }
-    if (check_is_vector()){
+    if (flag_ == 1){
       std::vector<uint64_t> *vect_ptr = get_vector_pointer();
-      return sizeof(*vect_ptr) + (sizeof(uint64_t) * vect_ptr->size()) + 8 /*8 bytes used to store compact ptr*/;
+      return sizeof(*vect_ptr) + sizeof(uint32_t) * vect_ptr->size() + 6 /*8 bytes used to store compact ptr*/;
     }
     else {
-      return get_delta_encoded_array_pointer()->size_overhead() + 8 /*8 bytes used to store compact ptr*/;
+      return get_delta_encoded_array_pointer()->size_overhead() + 6 /*8 bytes used to store compact ptr*/;
     }
   }
 
   void push(uint64_t primary_key){
-    size_ ++;
-    if (size_ == 2){
+    // size_ ++;
+    if (flag_ == 0){
         auto array = new std::vector<uint64_t>;
         array->push_back((uint64_t) ptr_);
         array->push_back(primary_key);
         ptr_ = ((uintptr_t) array) >> 4ULL;
+        flag_ = 1;
         return;      
     }
-    else if (size_ == compact_pointer_vector_size_limit + 1){
+    else if (size() == compact_pointer_vector_size_limit + 1){
       // raise(SIGINT);
       std::vector<uint64_t> *vect_ptr = get_vector_pointer();
 
       auto enc_array = new bitmap::EliasGammaDeltaEncodedArray<uint64_t>(*vect_ptr, vect_ptr->size());
       delete vect_ptr;
       ptr_ = ((uintptr_t) enc_array) >> 4ULL;
+      flag_ = 2;
     }
-    if (check_is_vector()){
+    if (flag_ == 1){
       get_vector_pointer()->push_back(primary_key);
     }
     else {
@@ -99,10 +103,10 @@ class compact_ptr {
   }
 
   uint64_t get(uint32_t index){
-    if (size_ == 1){
+    if (flag_ == 0){
       return (uint64_t)ptr_;
     }
-    if (check_is_vector()){
+    if (flag_ == 1){
       // if (index >= get_vector_pointer()->size()){
       //   raise(SIGINT);
       // }
@@ -116,10 +120,10 @@ class compact_ptr {
 
   bool check_if_present(uint64_t primary_key){
 
-    if (size_ == 1){
+    if (flag_ == 0){
       return primary_key == (uint64_t)ptr_;
     }
-    if (check_is_vector()){
+    if (flag_ == 1){
       return binary_if_present(get_vector_pointer(), primary_key);
     }
     else {
@@ -148,18 +152,26 @@ class compact_ptr {
 
   }
 
-  bool check_is_vector(){
+  // bool check_is_vector(){
 
-    return size_ <= compact_pointer_vector_size_limit /*&& size_ != 1*/;
-  }
+  //   return 
+  //   // return size() <= compact_pointer_vector_size_limit /*&& size_ != 1*/;
+  // }
 
-  size_t size() const {
-    return size_;
+  size_t size() {
+    if (flag_ == 0){
+      return 1;
+    }
+    if (flag_ == 1){
+      return get_vector_pointer()->size();
+    }
+    return get_delta_encoded_array_pointer()->get_num_elements();
   }
 
  private:
   uintptr_t ptr_: 44;
-  size_t size_ : 20;
+  // size_t size_ : 20;
+  size_t flag_ : 2;
 };
 
 }

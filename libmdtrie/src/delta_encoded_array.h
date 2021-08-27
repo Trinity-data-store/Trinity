@@ -270,8 +270,8 @@ class EliasGammaDeltaEncodedArray : public DeltaEncodedArray<T, sampling_rate> {
 //   size_type num_elements_ = 0;
 //   T last_val_;
 
-    size += this->samples_.GetSize() /*bitmap size*/ + sizeof(width_type);
-    size += this->delta_offsets_.GetSize() /*bitmap size*/ + sizeof(width_type);
+    size += this->samples_.GetSize() /*bitmap size*/ /* + sizeof(width_type)*/;
+    size += this->delta_offsets_.GetSize() /*bitmap size*/ /* + sizeof(width_type)*/;
     size += this->deltas_.GetSize();
     // size += sizeof(size_type);
     size += sizeof(T);
@@ -514,6 +514,9 @@ class EliasGammaDeltaEncodedArray : public DeltaEncodedArray<T, sampling_rate> {
     return false;
   }
 
+  size_type get_num_elements(){
+    return this->num_elements_;
+  }
   T PrefixSum_cumulative(pos_type delta_offset, pos_type until_idx, pos_type delta_idx) {
     T delta_sum = 0;
     // pos_type delta_idx = 0;
