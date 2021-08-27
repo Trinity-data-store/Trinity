@@ -80,6 +80,7 @@ TimeStamp primary_time = 0;
 template<dimension_t DIMENSION>
 class data_point;
 
+std::map<uint64_t, uint64_t> primary_key_count_to_occurrences;
 // std::vector<data_point<2>> all_stored_points;
 
 #endif //MD_TRIE_DEFS_H

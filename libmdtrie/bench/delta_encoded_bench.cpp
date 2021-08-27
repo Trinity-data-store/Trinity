@@ -173,5 +173,5 @@ int main() {
     // test_vector_insertion();
     // gamma_delta_push_from_scratch(10);
     // insert_vector_from_scratch(1000000);
-    gamma_delta_binary_search(100);
+    gamma_delta_binary_search(1000);
 }

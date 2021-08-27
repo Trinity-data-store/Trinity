@@ -894,6 +894,13 @@ public:
         for (preorder_t i = 0; i < primary_key_list.size(); i++){
             // total_size += sizeof(primary_key_list[i]) + (sizeof(n_leaves_t) * primary_key_list[i].size());
             // vector_size += sizeof(primary_key_list[i]) + (sizeof(n_leaves_t) * primary_key_list[i].size());
+            
+            if (primary_key_count_to_occurrences.find(primary_key_list[i].size()) != primary_key_count_to_occurrences.end()){
+                primary_key_count_to_occurrences[primary_key_list[i].size()] += 1;
+            }
+            else {
+                primary_key_count_to_occurrences[primary_key_list[i].size()] = 1;
+            }
             total_size += primary_key_list[i].size_overhead();
             vector_size += primary_key_list[i].size_overhead();
             // total_size += sizeof(std::vector<n_leaves_t>) + (sizeof(n_leaves_t) * primary_key_list[i].size());
@@ -1579,10 +1586,11 @@ public:
         //     raise(SIGINT);
         // }
         // raise(SIGINT);
-        auto array = new std::vector<uint64_t>;
-        array->push_back(current_primary_key);
+        // auto array = new std::vector<uint64_t>;
+        // array->push_back(current_primary_key);
         // std::vector<uint64_t> array = {current_primary_key};
-        bits::compact_ptr vect_compact_ptr(array, array->size());
+        bits::compact_ptr vect_compact_ptr(current_primary_key);
+        // bits::compact_ptr vect_compact_ptr(array, array->size());
 
         
         // auto enc_array = bitmap::EliasGammaDeltaEncodedArray<uint64_t>(array, array.size());

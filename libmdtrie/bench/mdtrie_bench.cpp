@@ -8,6 +8,7 @@
 #include <iostream>
 #include <thread>
 #include <mutex>
+#include <fstream>
 
 std::mutex mutex_out;
 
@@ -161,6 +162,7 @@ void test_real_data(level_t max_depth, level_t trie_depth, preorder_t max_tree_n
     fprintf(stderr, "Average time to query points that are in the trie: %f microseconds per query\n", (float)diff / n_points);
 }
 
+
 void test_insert_data(level_t max_depth, level_t trie_depth, preorder_t max_tree_node){
 
     auto *mdtrie = new md_trie<DIMENSION>(max_depth, trie_depth, max_tree_node);
@@ -221,6 +223,27 @@ void test_insert_data(level_t max_depth, level_t trie_depth, preorder_t max_tree
     std::cerr << "Storage: " << mdtrie->size() << " bytes\n";
     std::cerr << "vector storage: " << vector_size << " bytes\n";
     fprintf(stderr, "Total primary key: %ld, out of %ld\n", current_primary_key, n_lines);
+
+    std::ofstream myfile;
+    // myfile.open("primary_key_count.csv");
+    // for (auto const &pair: primary_key_count_to_occurrences) {
+    //     uint64_t count = pair.second;
+    //     while(count--){
+    //         myfile << pair.first << std::endl;
+    //     }
+    //     // std::cout << "{" << pair.first << ": " << pair.second << "}\n";
+    // }
+
+    myfile.open("primary_key_count.txt");
+    for (auto const &pair: primary_key_count_to_occurrences) {
+        // uint64_t count = pair.second;
+        // while(count--){
+        // myfile << pair.first << std::endl;
+        // }
+        myfile << "{" << pair.first << ": " << pair.second << "}\n";
+    }    
+    myfile.close();
+
     // fprintf(stderr, "Average vector insertion time: %f, out of %ld times\n", (float)vector_time / vect_opt_count, vect_opt_count);
     // fprintf(stderr, "Total bimap insertion time: %lld, total bimap count: %ld\n", total_bimap, bimap_insertion_count);
     return;
