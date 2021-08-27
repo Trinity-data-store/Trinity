@@ -408,7 +408,7 @@ class BitmapArray : public Bitmap {
 // Unsigned bitmap array that does not store number of elements in order to
 // save space; does not provide iterators as a consequence. Access/Modify with
 // care, internal bound checks may not be possible
-template<typename T>
+template<typename T, uint8_t bit_width_ = 32>
 class UnsizedBitmapArray : public Bitmap {
  public:
   // Type definitions
@@ -422,7 +422,7 @@ class UnsizedBitmapArray : public Bitmap {
   // Constructors and destructors
   UnsizedBitmapArray()
       : Bitmap() {
-    bit_width_ = 0;
+    // bit_width_ = 0;
   }
 
   // UnsizedBitmapArray(const UnsizedBitmapArray& array) {
@@ -431,44 +431,44 @@ class UnsizedBitmapArray : public Bitmap {
   //   bit_width_ = array.bit_width_;
   // }
 
-  UnsizedBitmapArray(size_type num_elements, width_type bit_width)
-      : Bitmap(num_elements * bit_width) {
-    bit_width_ = bit_width;
+  UnsizedBitmapArray(size_type num_elements)
+      : Bitmap(num_elements * bit_width_) {
+    // bit_width_ = bit_width;
   }
 
-  UnsizedBitmapArray(T *elements, size_type num_elements, width_type bit_width)
-      : UnsizedBitmapArray(num_elements, bit_width) {
+  UnsizedBitmapArray(T *elements, size_type num_elements)
+      : UnsizedBitmapArray(num_elements) {
 
     for (uint64_t i = 0; i < num_elements; i++) {
       Set(i, elements[i]);
     }
   }
 
-  void Init(T *elements, size_type num_elements, width_type bit_width){
+  void Init(T *elements, size_type num_elements){
     // BitmapInit
 
-    Bitmap_Init(num_elements * bit_width);
-    bit_width_ = bit_width;
+    Bitmap_Init(num_elements * bit_width_);
+    // bit_width_ = bit_width;
     for (uint64_t i = 0; i < num_elements; i++) {
       Set(i, elements[i]);
     }
     
   }
 
-  void Push(T element, width_type bit_width){
+  void Push(T element){
     // raise(SIGINT);
-    size_type num_elements = this->size_ / bit_width;
-    this->Realloc_increase(bit_width);
+    size_type num_elements = this->size_ / bit_width_;
+    this->Realloc_increase(bit_width_);
     Set(num_elements, element);
   }
 
   // Accessors and mutators
   void Set(pos_type i, T value) {
-    this->SetValPos(i * this->bit_width_, value, this->bit_width_);
+    this->SetValPos(i * bit_width_, value, bit_width_);
   }
 
   T Get(pos_type i) const {
-    return (T) this->GetValPos(i * this->bit_width_, this->bit_width_);
+    return (T) this->GetValPos(i * bit_width_, bit_width_);
   }
 
   // Operators, iterators
@@ -505,7 +505,7 @@ class UnsizedBitmapArray : public Bitmap {
   // }
  private:
   // Data members
-  width_type bit_width_;
+  // width_type bit_width_;
 };
 
 template<typename T>
