@@ -26,6 +26,7 @@ typedef std::vector<uint64_t> density_array;
 
 extern uint64_t dfuds_size;
 const preorder_t null_node = -1;
+
 extern uint64_t get_bit_count;
 extern uint64_t v2_storage_save_pos;
 extern uint64_t v2_storage_save_neg;

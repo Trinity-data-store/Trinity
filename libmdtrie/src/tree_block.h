@@ -10,6 +10,7 @@
 #include <shared_mutex>
 #include "delta_encoded_array.h"
 #include "elias_gamma_encoder.h"
+#include "compact_ptr.h"
 
 uint64_t get_bit_count = 0;
 // uint64_t v2_storage_save_pos = 0;
@@ -524,9 +525,9 @@ public:
                 new_block->primary_key_list.push_back(primary_key_list[i]);
                 // new_block->primary_key_list.push_back(primary_key_list[i]);
                 // new_block->primary_key_count.push_back(primary_key_count[i]);
-                uint16_t primary_key_size = primary_key_list[i].GetNElements();
+                uint16_t primary_key_size = primary_key_list[i].size();
                 for (uint16_t j = 0; j < primary_key_size; j++){
-                    p_key_to_treeblock[primary_key_list[i][j]] = (uint64_t) new_block;
+                    p_key_to_treeblock[primary_key_list[i].get(j)] = (uint64_t) new_block;
                 }
                 // for (auto p : primary_key_list[i])
                 //     p_key_to_treeblock[p] = (uint64_t) new_block;
@@ -1169,24 +1170,24 @@ public:
         
     // }
 
-    bool binary_if_present(std::vector<n_leaves_t> *vect, n_leaves_t primary_key){
-        n_leaves_t low = 0;
-        n_leaves_t high = vect->size() - 1;
+    // bool binary_if_present(std::vector<n_leaves_t> *vect, n_leaves_t primary_key){
+    //     n_leaves_t low = 0;
+    //     n_leaves_t high = vect->size() - 1;
 
-        while (low + 1 < high){
-            n_leaves_t mid = (low + high) / 2;
-            if ((*vect)[mid] < primary_key){
-                low = mid;
-            }
-            else {
-                high = mid;
-            }
-        }
-        if ((*vect)[low] == primary_key || (*vect)[high] == primary_key){
-            return true;
-        }
-        return false;
-    }
+    //     while (low + 1 < high){
+    //         n_leaves_t mid = (low + high) / 2;
+    //         if ((*vect)[mid] < primary_key){
+    //             low = mid;
+    //         }
+    //         else {
+    //             high = mid;
+    //         }
+    //     }
+    //     if ((*vect)[low] == primary_key || (*vect)[high] == primary_key){
+    //         return true;
+    //     }
+    //     return false;
+    // }
 
     symbol_t get_node_path_primary_key(n_leaves_t primary_key, symbol_t *node_path) {
         mutex.lock_shared();
@@ -1263,7 +1264,7 @@ public:
                     TimeStamp start = GetTimestamp(); 
                     for (preorder_t p = current_primary; p < new_current_primary; p ++)
                     {
-                        if (primary_key_list[p].Find(primary_key))
+                        if (primary_key_list[p].check_if_present(primary_key))
                         // if (binary_if_present(&primary_key_list[p], primary_key))
                         {
                             found = true;
@@ -1367,10 +1368,10 @@ public:
             // if (primary_key_list[current_primary].size() != 1){
             //     raise(SIGINT);
             // }
-            preorder_t list_size = primary_key_list[current_primary].GetNElements();
+            preorder_t list_size = primary_key_list[current_primary].size();
             for (preorder_t i = 0; i < list_size; i++)
             {
-                auto primary_key = primary_key_list[current_primary][i];
+                auto primary_key = primary_key_list[current_primary].get(i);
                 // if (found_points->size() == 38){
                 //     raise(SIGINT);
                 // }
@@ -1544,7 +1545,7 @@ public:
         //     raise(SIGINT);
         // }
         
-        primary_key_list[index].Push(current_primary_key);
+        primary_key_list[index].push(current_primary_key);
         // raise(SIGINT);
         // n_leaves_t first_primary_key = primary_key_list[index][primary_key_list[index].size() - 2];
         // n_leaves_t second_primary_key = primary_key_list[index][primary_key_list[index].size() - 1];
@@ -1577,15 +1578,19 @@ public:
         // if (primary_key_list.size() >= 1){
         //     raise(SIGINT);
         // }
-        std::vector<uint64_t> array = {current_primary_key};
+        // raise(SIGINT);
+        auto array = new std::vector<uint64_t>;
+        array->push_back(current_primary_key);
+        // std::vector<uint64_t> array = {current_primary_key};
+        bits::compact_ptr vect_compact_ptr(array, array->size());
 
         
-        auto enc_array = bitmap::EliasGammaDeltaEncodedArray<uint64_t>(array, array.size());
+        // auto enc_array = bitmap::EliasGammaDeltaEncodedArray<uint64_t>(array, array.size());
         // bitmap::EliasGammaDeltaEncodedArray<uint64_t> enc_array(array, array.size());
 
         // auto enc_array = new bitmap::EliasGammaDeltaEncodedArray<uint64_t>(std::vector<n_leaves_t>{current_primary_key}, 1);
         
-        primary_key_list.emplace(primary_key_list.begin() + index, enc_array);
+        primary_key_list.emplace(primary_key_list.begin() + index, vect_compact_ptr);
         // vector_time += GetTimestamp() - start;
         // vect_opt_count++;
         // primary_key_count.insert(primary_key_count.begin() + index, 1);
@@ -1643,7 +1648,8 @@ private:
     trie_node<DIMENSION> *parent_trie_node_ = NULL;
 
     // std::vector<std::vector<n_leaves_t>> primary_key_list;
-    std::vector<bitmap::EliasGammaDeltaEncodedArray<uint64_t>> primary_key_list;
+    std::vector<bits::compact_ptr> primary_key_list;
+    // std::vector<bitmap::EliasGammaDeltaEncodedArray<uint64_t>> primary_key_list;
     // std::vector<n_leaves_t> primary_key_list;
     // std::vector<n_leaves_t> primary_key_count;
     // Using recursive_mutex is actually faster
