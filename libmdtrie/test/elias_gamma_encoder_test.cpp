@@ -139,32 +139,32 @@ bool gamma_delta_binary_search_test(){
   return true;
 }
 
-bool compact_pointer_test(){
+// bool compact_pointer_test(){
 
 
-  std::vector<bits::compact_ptr> primary_key_list;
-  std::vector<uint64_t> test_vect = {0, 1, 2, 3};
-  bits::compact_ptr vect_compact_ptr(&test_vect, test_vect.size());
-  std::vector<uint64_t> *test_vect_ptr = vect_compact_ptr.get_vector_pointer();
-  test_vect_ptr->push_back(5);
+//   std::vector<bits::compact_ptr> primary_key_list;
+//   std::vector<uint64_t> test_vect = {0, 1, 2, 3};
+//   bits::compact_ptr vect_compact_ptr(&test_vect, test_vect.size());
+//   std::vector<uint64_t> *test_vect_ptr = vect_compact_ptr.get_vector_pointer();
+//   test_vect_ptr->push_back(5);
 
-  if (!vect_compact_ptr.check_is_vector() || test_vect.size() != 5){
-    return false;
-  }
+//   if (!vect_compact_ptr.check_is_vector() || test_vect.size() != 5){
+//     return false;
+//   }
 
-  bitmap::EliasGammaDeltaEncodedArray<uint64_t> enc_array(test_vect, test_vect.size());
-  bits::compact_ptr array_compact_ptr(&enc_array, test_vect.size());
+//   bitmap::EliasGammaDeltaEncodedArray<uint64_t> enc_array(test_vect, test_vect.size());
+//   bits::compact_ptr array_compact_ptr(&enc_array, test_vect.size());
 
-  bitmap::EliasGammaDeltaEncodedArray<uint64_t> *enc_array_ptr = array_compact_ptr.get_delta_encoded_array_pointer();
-  enc_array_ptr->Push(5);
-  if (enc_array[4] != 5){
-    return false;
-  }
+//   bitmap::EliasGammaDeltaEncodedArray<uint64_t> *enc_array_ptr = array_compact_ptr.get_delta_encoded_array_pointer();
+//   enc_array_ptr->Push(5);
+//   if (enc_array[4] != 5){
+//     return false;
+//   }
 
-  primary_key_list.push_back(vect_compact_ptr);
-  primary_key_list.push_back(array_compact_ptr);
-  return true;
-}
+//   primary_key_list.push_back(vect_compact_ptr);
+//   primary_key_list.push_back(array_compact_ptr);
+//   return true;
+// }
 
 
 TEST_CASE("Check Gamma Encoding Correctness", "[gamma encoder]") {
@@ -193,7 +193,7 @@ TEST_CASE("Check Binary Search", "[delta encoder]") {
     REQUIRE(gamma_delta_binary_search_test());
 }
 
-TEST_CASE("Check Compact Pointer Test", "[Compact Pointer]") {
+// TEST_CASE("Check Compact Pointer Test", "[Compact Pointer]") {
 
-    REQUIRE(compact_pointer_test());
-}
+//     REQUIRE(compact_pointer_test());
+// }

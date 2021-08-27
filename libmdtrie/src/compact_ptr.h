@@ -7,7 +7,7 @@
 #include "delta_encoded_array.h"
 // #include "defs.h"
 
-const uint32_t compact_pointer_vector_size_limit = 1000;
+const uint64_t compact_pointer_vector_size_limit = 1000;
 
 namespace bits {
 
@@ -15,6 +15,7 @@ class compact_ptr {
  public:
 
   compact_ptr(void *ptr, size_t size) : ptr_(((uintptr_t) ptr) >> 4ULL), size_(size) {
+    // raise(SIGINT);
     size_ = 1;
   }
 
@@ -22,7 +23,9 @@ class compact_ptr {
 
     ptr_ = (uintptr_t) primary_key;
     size_ = 1;
-
+    // if ((uint64_t)ptr_ != primary_key){
+    //   raise(SIGINT);
+    // }
   }
 
   std::vector<uint64_t> *get_vector_pointer(){
@@ -71,11 +74,12 @@ class compact_ptr {
     if (size_ == 2){
         auto array = new std::vector<uint64_t>;
         array->push_back((uint64_t) ptr_);
+        array->push_back(primary_key);
         ptr_ = ((uintptr_t) array) >> 4ULL;
         return;      
     }
     else if (size_ == compact_pointer_vector_size_limit + 1){
-
+      // raise(SIGINT);
       std::vector<uint64_t> *vect_ptr = get_vector_pointer();
 
       auto enc_array = new bitmap::EliasGammaDeltaEncodedArray<uint64_t>(*vect_ptr, vect_ptr->size());
@@ -86,7 +90,11 @@ class compact_ptr {
       get_vector_pointer()->push_back(primary_key);
     }
     else {
+      // raise(SIGINT);
       get_delta_encoded_array_pointer()->Push(primary_key);
+      // if (get(size_ - 1) != primary_key){
+      //   raise(SIGINT);
+      // }
     }    
   }
 
@@ -95,14 +103,19 @@ class compact_ptr {
       return (uint64_t)ptr_;
     }
     if (check_is_vector()){
+      // if (index >= get_vector_pointer()->size()){
+      //   raise(SIGINT);
+      // }
       return (*get_vector_pointer())[index];
     }
     else {
+      // raise(SIGINT);
       return (*get_delta_encoded_array_pointer())[index];
     }       
   }
 
   bool check_if_present(uint64_t primary_key){
+
     if (size_ == 1){
       return primary_key == (uint64_t)ptr_;
     }
@@ -110,14 +123,34 @@ class compact_ptr {
       return binary_if_present(get_vector_pointer(), primary_key);
     }
     else {
+      // raise(SIGINT);
+      // return get_delta_encoded_array_pointer()->BinarySearch(primary_key);
+      
+      // size_t found_index = 0;
       return get_delta_encoded_array_pointer()->Find(primary_key);
+      // if (found && (* get_delta_encoded_array_pointer())[found_index] != primary_key){
+      //   raise(SIGINT);
+      //   found = get_delta_encoded_array_pointer()->Find(primary_key, &found_index);
+      // }
+
+      // for (size_t i = 0; i < size_; i++){
+      //   if ((* get_delta_encoded_array_pointer())[i] == primary_key){
+      //     if (!found){
+      //       raise(SIGINT);
+      //       found = get_delta_encoded_array_pointer()->Find(primary_key);
+      //     }
+      //     return true;
+      //   }
+      // }
+      // return false;
+      // return found;
     } 
 
   }
 
   bool check_is_vector(){
-    // defined in defs.h
-    return size_ <= compact_pointer_vector_size_limit && size_ != 1;
+
+    return size_ <= compact_pointer_vector_size_limit /*&& size_ != 1*/;
   }
 
   size_t size() const {

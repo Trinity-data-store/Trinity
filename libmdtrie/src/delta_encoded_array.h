@@ -333,7 +333,7 @@ class EliasGammaDeltaEncodedArray : public DeltaEncodedArray<T, sampling_rate> {
       // }
   }
 
-  int64_t BinarySearchSample(int64_t val){
+  pos_type  BinarySearchSample(int64_t val){
 
     int64_t start = 0;
     int64_t end = (this->num_elements_ - 1) / sampling_rate;
@@ -354,15 +354,41 @@ class EliasGammaDeltaEncodedArray : public DeltaEncodedArray<T, sampling_rate> {
       }
     }
 
-    return std::max(end, INT64_C(0));
+
+    return static_cast<pos_type>(std::max(end, INT64_C(0)));
 
   }
 
-  bool Find(T val) {
+  pos_type LinearSearchSample(uint64_t val){
+
+    int64_t start = 0;
+    int64_t end = (this->num_elements_ - 1) / sampling_rate;
+    pos_type lower_bound = start;
+
+    while (start <= end){
+
+      if (this->samples_.Get(start) <= val){
+        lower_bound = start;
+      }
+      else {
+        return lower_bound;
+      }
+      start ++;
+    }
+    return lower_bound;
+
+  }
+
+  bool Find(T val, pos_type *found_idx = nullptr) {
     // pos_type sample_off = this->samples_->LowerBound(val);
     pos_type sample_off = BinarySearchSample(val);
+    // pos_type sample_off = LinearSearchSample(val);
     pos_type current_delta_offset = this->delta_offsets_.Get(sample_off);
     val -= this->samples_.Get(sample_off);
+    
+    if (val < 0){
+      return false;
+    }
 
     pos_type delta_idx = 0;
     T delta_sum = 0;
@@ -382,8 +408,10 @@ class EliasGammaDeltaEncodedArray : public DeltaEncodedArray<T, sampling_rate> {
           delta_width++;
           current_delta_offset++;
         }
+        current_delta_offset++;
         auto decoded_value = this->deltas_.GetValPos(current_delta_offset, delta_width) + (1ULL << delta_width);
         delta_sum += decoded_value;
+        current_delta_offset += delta_width;
         delta_idx += 1;
 
         // Roll back
@@ -423,9 +451,13 @@ class EliasGammaDeltaEncodedArray : public DeltaEncodedArray<T, sampling_rate> {
       }
     }
 
-    // if (found_idx) {
-    //   pos_type res = sample_off * sampling_rate + delta_idx;
-    //   *found_idx = (delta_sum <= val) ? res : res - 1;
+    if (found_idx) {
+      pos_type res = sample_off * sampling_rate + delta_idx;
+      *found_idx = (delta_sum <= val) ? res : res - 1;
+    }
+
+    // if (val == delta_sum && Get(*found_idx) != val){
+    //   raise(SIGINT);
     // }
     return val == delta_sum;
   }
@@ -550,9 +582,9 @@ class EliasGammaDeltaEncodedArray : public DeltaEncodedArray<T, sampling_rate> {
       this->deltas_.SetValPos(pos, delta - (1ULL << delta_bits),
                                delta_bits);
 
-      if (this->deltas_.GetSizeInBits() != pos + delta_bits){
-        raise(SIGINT);
-      }            
+      // if (this->deltas_.GetSizeInBits() != pos + delta_bits){
+      //   raise(SIGINT);
+      // }            
   }
 
 

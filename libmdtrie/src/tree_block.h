@@ -36,10 +36,6 @@ public:
             parent_trie_node_ = parent_trie_node;
         }
 
-        // if (root_depth_ <=/*=*/ 16) primary_key_list.reserve(64);
-        // else if (root_depth_ <= 24) primary_key_list.reserve(128);
-        // else max_tree_nodes = max_tree_nodes_;
-
     }
 
     inline node_n_t num_frontiers() {
@@ -230,14 +226,11 @@ public:
     void insert(node_t node, data_point<DIMENSION> *leaf_point, level_t level, level_t length,
                             preorder_t current_frontier, preorder_t current_primary) {
 
-        // for (preorder_t i = num_nodes_; i < dfuds_->get_flag_size(); i++){
-        //     if (!dfuds_->is_collapse(i)){
-        //         raise(SIGINT);
-        //     }
-        // }
+
+        mutex.lock();
 
         if (level == length) {
-            // raise(SIGINT);
+
             symbol_t parent_symbol = leaf_point->leaf_to_symbol(max_depth_ - 1, max_depth_);
             symbol_t tmp_symbol = dfuds_->next_symbol(0, node, num_branches_ - 1);
             
@@ -246,21 +239,13 @@ public:
                 current_primary ++;
             }
 
-            // for (dimension_t j = 0; j < DIMENSION; j++){
-            //     if (all_stored_points[primary_key_list[current_primary][0]].get_coordinate(j) != leaf_point->get_coordinate(j)){
-            //         raise(SIGINT);
-            //     }
-            // }            
-
             insert_primary_key_at_present_index(current_primary);
-            // mutex_p_key.lock();
-            // current_primary_key++;
-            // primary_key_count[current_primary] ++;
-            // mutex_p_key.unlock();
+            mutex.unlock();
+
             return;
         }
 
-        mutex.lock();
+        
 
         node_t original_node = node;
         uint64_t max_tree_nodes;
@@ -380,12 +365,7 @@ public:
 
 
             insert_primary_key_at_index(current_primary);
-
-            // for (dimension_t j = 0; j < DIMENSION; j++){
-            //     if (all_stored_points[primary_key_list[current_primary][0]].get_coordinate(j) != leaf_point->get_coordinate(j)){
-            //         raise(SIGINT);
-            //     }
-            // }            
+    
             mutex.unlock();
 
         } else if (num_nodes_ + (length - level) - 1 <= max_tree_nodes) {
@@ -523,23 +503,17 @@ public:
                 // TimeStamp start = GetTimestamp();
                 
                 new_block->primary_key_list.push_back(primary_key_list[i]);
-                // new_block->primary_key_list.push_back(primary_key_list[i]);
-                // new_block->primary_key_count.push_back(primary_key_count[i]);
+
                 uint16_t primary_key_size = primary_key_list[i].size();
                 for (uint16_t j = 0; j < primary_key_size; j++){
                     p_key_to_treeblock[primary_key_list[i].get(j)] = (uint64_t) new_block;
                 }
-                // for (auto p : primary_key_list[i])
-                //     p_key_to_treeblock[p] = (uint64_t) new_block;
-
-                // vector_time += GetTimestamp() - start;
             }
 
-            // new_block->primary_key_list.assign(std::next(primary_key_list.begin(), selected_primary_index), std::next(primary_key_list.begin(), selected_primary_index + num_primary));
+
 
             // Erase copied primary keys            
             primary_key_list.erase(std::next(primary_key_list.begin(), selected_primary_index), std::next(primary_key_list.begin(), selected_primary_index + num_primary));
-            // primary_key_count.erase(std::next(primary_key_count.begin(), selected_primary_index), std::next(primary_key_count.begin(), selected_primary_index + num_primary));
 
             // Now, delete the subtree copied to the new block
 
@@ -723,9 +697,6 @@ public:
 
                     current_primary += dfuds_->get_n_children(current_node);
 
-                    // if (current_primary > primary_key_list.size()){
-                    //     raise(SIGINT);
-                    // }
                 }
             }
 
@@ -892,9 +863,7 @@ public:
         vector_size += sizeof(primary_key_list);
         // raise(SIGINT);
         for (preorder_t i = 0; i < primary_key_list.size(); i++){
-            // total_size += sizeof(primary_key_list[i]) + (sizeof(n_leaves_t) * primary_key_list[i].size());
-            // vector_size += sizeof(primary_key_list[i]) + (sizeof(n_leaves_t) * primary_key_list[i].size());
-            
+
             if (primary_key_count_to_occurrences.find(primary_key_list[i].size()) != primary_key_count_to_occurrences.end()){
                 primary_key_count_to_occurrences[primary_key_list[i].size()] += 1;
             }
@@ -903,7 +872,6 @@ public:
             }
             total_size += primary_key_list[i].size_overhead();
             vector_size += primary_key_list[i].size_overhead();
-            // total_size += sizeof(std::vector<n_leaves_t>) + (sizeof(n_leaves_t) * primary_key_list[i].size());
         }
 
         // for (preorder_t i = 0; i < num_nodes_; i++){
@@ -1272,7 +1240,6 @@ public:
                     for (preorder_t p = current_primary; p < new_current_primary; p ++)
                     {
                         if (primary_key_list[p].check_if_present(primary_key))
-                        // if (binary_if_present(&primary_key_list[p], primary_key))
                         {
                             found = true;
                             // This optimization doesn't seem to be faster
@@ -1372,9 +1339,6 @@ public:
                 tmp_symbol = dfuds_->next_symbol(tmp_symbol + 1, prev_node, num_branches_ - 1);
                 current_primary ++;
             }
-            // if (primary_key_list[current_primary].size() != 1){
-            //     raise(SIGINT);
-            // }
             preorder_t list_size = primary_key_list[current_primary].size();
             for (preorder_t i = 0; i < list_size; i++)
             {
@@ -1539,35 +1503,11 @@ public:
     void insert_primary_key_at_present_index(n_leaves_t index){
 
         mutex_p_key.lock();
-        // raise(SIGINT);
+
         p_key_to_treeblock[current_primary_key] = (uint64_t)this;
 
-        // TimeStamp start = GetTimestamp();
-        // raise(SIGINT);
-        // std::vector<n_leaves_t> current_vect = primary_key_list[index];
-        // current_vect.push_back(current_primary_key);
-
-        // primary_key_list[index].push_back(current_primary_key);
-        // if (primary_key_list.size() >= 1){
-        //     raise(SIGINT);
-        // }
-        
         primary_key_list[index].push(current_primary_key);
-        // raise(SIGINT);
-        // n_leaves_t first_primary_key = primary_key_list[index][primary_key_list[index].size() - 2];
-        // n_leaves_t second_primary_key = primary_key_list[index][primary_key_list[index].size() - 1];
-        
-        // std::vector<data_point<DIMENSION>> p = (* (std::vector<data_point<DIMENSION>> *)points);
 
-        
-        // for (dimension_t j = 0; j < DIMENSION; j++){
-        //     if (all_stored_points[first_primary_key].get_coordinate(j) != all_stored_points[second_primary_key].get_coordinate(j)){
-        //         raise(SIGINT);
-        //     }
-        // }
-
-        // vector_time += GetTimestamp() - start;
-        // vect_opt_count++;
         current_primary_key++;
         
         mutex_p_key.unlock();                
@@ -1578,67 +1518,14 @@ public:
 
         mutex_p_key.lock();
         p_key_to_treeblock[current_primary_key] = (uint64_t)this;
-
-        // std::vector<n_leaves_t> new_vect;
-        // TimeStamp start = GetTimestamp();
-        // new_vect.push_back(current_primary_key);
-        // if (primary_key_list.size() >= 1){
-        //     raise(SIGINT);
-        // }
-        // raise(SIGINT);
-        // auto array = new std::vector<uint64_t>;
-        // array->push_back(current_primary_key);
-        // std::vector<uint64_t> array = {current_primary_key};
-        bits::compact_ptr vect_compact_ptr(current_primary_key);
-        // bits::compact_ptr vect_compact_ptr(array, array->size());
-
         
-        // auto enc_array = bitmap::EliasGammaDeltaEncodedArray<uint64_t>(array, array.size());
-        // bitmap::EliasGammaDeltaEncodedArray<uint64_t> enc_array(array, array.size());
-
-        // auto enc_array = new bitmap::EliasGammaDeltaEncodedArray<uint64_t>(std::vector<n_leaves_t>{current_primary_key}, 1);
-        
-        primary_key_list.emplace(primary_key_list.begin() + index, vect_compact_ptr);
-        // vector_time += GetTimestamp() - start;
-        // vect_opt_count++;
-        // primary_key_count.insert(primary_key_count.begin() + index, 1);
+        primary_key_list.emplace(primary_key_list.begin() + index, bits::compact_ptr(current_primary_key));
 
         current_primary_key++;
         total_stored ++;
         mutex_p_key.unlock();
     }
 
-
-    // bool test_primary_key_correctness(preorder_t node, preorder_t current_primary)
-    // {
-    //     preorder_t subtree_size = 0;
-    //     preorder_t selected_node_depth = 0;
-    //     preorder_t num_primary = 0;
-    //     preorder_t selected_primary_index = 0;
-    //     preorder_t index_to_primary[4096] = {0};
-    //     select_subtree(subtree_size, selected_node_depth, num_primary, selected_primary_index, index_to_primary);
-    //     preorder_t total_primary_count = 0;
-    //     for (int i = 0; i < 4096; i++)
-    //     {
-
-    //         total_primary_count += index_to_primary[i];
-    //     }
-    //     if (total_primary_count != primary_key_list.size()){
-    //         return false;
-    //     }
-
-    //     // This should have tested it. 
-    //     preorder_t current_primary_correct = 0;
-    //     for (preorder_t i = 0; i < node; i++){
-    //         current_primary_correct += index_to_primary[i];
-    //     }
-
-    //     if (current_primary_correct != current_primary){
-    //         return false;
-    //     }        
-
-    //     return true;
-    // }
 
 
 private:
@@ -1655,15 +1542,8 @@ private:
     preorder_t treeblock_frontier_num_ = 0;
     trie_node<DIMENSION> *parent_trie_node_ = NULL;
 
-    // std::vector<std::vector<n_leaves_t>> primary_key_list;
     std::vector<bits::compact_ptr> primary_key_list;
-    // std::vector<bitmap::EliasGammaDeltaEncodedArray<uint64_t>> primary_key_list;
-    // std::vector<n_leaves_t> primary_key_list;
-    // std::vector<n_leaves_t> primary_key_count;
-    // Using recursive_mutex is actually faster
-    // std::mutex mutex;
-    // std::recursive_mutex mutex;  
-    // std::mutex mutex;
+
     std::shared_mutex mutex;
 };
 
