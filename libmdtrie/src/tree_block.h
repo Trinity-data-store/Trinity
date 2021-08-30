@@ -506,7 +506,7 @@ public:
 
                 uint16_t primary_key_size = primary_key_list[i].size();
                 for (uint16_t j = 0; j < primary_key_size; j++){
-                    p_key_to_treeblock[primary_key_list[i].get(j)] = (uint64_t) new_block;
+                    p_key_to_treeblock_compact.Set(primary_key_list[i].get(j), new_block);
                 }
             }
 
@@ -1468,7 +1468,7 @@ public:
 
         mutex_p_key.lock();
 
-        p_key_to_treeblock[current_primary_key] = (uint64_t)this;
+        p_key_to_treeblock_compact.Set(current_primary_key, this);
 
         primary_key_list[index].push(current_primary_key);
 
@@ -1482,7 +1482,7 @@ public:
 
         mutex_p_key.lock();
 
-        p_key_to_treeblock[current_primary_key] = (uint64_t)this;
+        p_key_to_treeblock_compact.Set(current_primary_key, this);
         
         primary_key_list.emplace(primary_key_list.begin() + index, bits::compact_ptr(current_primary_key));
 

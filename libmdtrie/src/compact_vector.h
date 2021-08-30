@@ -1,5 +1,5 @@
-#ifndef BITMAP_BITMAP_ARRAY_H_
-#define BITMAP_BITMAP_ARRAY_H_
+#ifndef BITMAP_COMPACT_VECTOR_H_
+#define BITMAP_COMPACT_VECTOR_H_
 
 #include "bit_vector.h"
 
@@ -9,13 +9,13 @@ namespace bitmap {
 
 // Reference to a value
 template<typename VectorImpl>
-class value_reference {
+class value_reference_vector {
  public:
   typedef typename VectorImpl::pos_type pos_type;
   typedef typename VectorImpl::value_type value_type;
   typedef typename VectorImpl::reference reference;
 
-  value_reference(VectorImpl *array, pos_type pos)
+  value_reference_vector(VectorImpl *array, pos_type pos)
       : array_(array),
         pos_(pos) {
   }
@@ -25,7 +25,7 @@ class value_reference {
     return *this;
   }
 
-  reference &operator=(const value_reference &ref) {
+  reference &operator=(const value_reference_vector &ref) {
     return (*this) = value_type(ref);
   }
 
@@ -45,7 +45,7 @@ class value_reference {
     return val;
   }
 
-  value_reference &operator--() {
+  value_reference_vector &operator--() {
     value_type val = array_->Get(pos_);
     array_->Set(pos_, val - 1);
     return *this;
@@ -69,37 +69,37 @@ class value_reference {
     return *this;
   }
 
-  bool operator==(const value_reference &x) const {
+  bool operator==(const value_reference_vector &x) const {
     return value_type(*this) == value_type(x);
   }
 
-  bool operator<(const value_reference &x) const {
+  bool operator<(const value_reference_vector &x) const {
     return value_type(*this) < value_type(x);
   }
 
-  friend void swap(reference &lhs, reference &rhs) {
-    value_type temp = value_type(lhs);
-    lhs = rhs;
-    rhs = temp;
-  }
+  // friend void swap(reference &lhs, reference &rhs) {
+  //   value_type temp = value_type(lhs);
+  //   lhs = rhs;
+  //   rhs = temp;
+  // }
 
-  friend void swap(reference lhs, reference rhs) {
-    value_type temp = value_type(lhs);
-    lhs = rhs;
-    rhs = temp;
-  }
+  // friend void swap(reference lhs, reference rhs) {
+  //   value_type temp = value_type(lhs);
+  //   lhs = rhs;
+  //   rhs = temp;
+  // }
 
-  friend void swap(reference lhs, value_type rhs) {
-    value_type temp = value_type(lhs);
-    lhs = rhs;
-    rhs = temp;
-  }
+  // friend void swap(reference lhs, value_type rhs) {
+  //   value_type temp = value_type(lhs);
+  //   lhs = rhs;
+  //   rhs = temp;
+  // }
 
-  friend void swap(value_type lhs, reference rhs) {
-    value_type temp = value_type(rhs);
-    rhs = lhs;
-    lhs = temp;
-  }
+  // friend void swap(value_type lhs, reference rhs) {
+  //   value_type temp = value_type(rhs);
+  //   rhs = lhs;
+  //   lhs = temp;
+  // }
 
  private:
   VectorImpl *const array_;
@@ -331,7 +331,7 @@ class CompactVector : public BitVector {
   typedef typename BitVector::pos_type pos_type;
   typedef int64_t tmp_pos_type;
 
-  typedef value_reference<CompactVector<T, W>> reference;
+  typedef value_reference_vector<CompactVector<T, W>> reference;
   typedef T value_type;
   typedef ptrdiff_t difference_type;
   typedef T *pointer;
@@ -438,11 +438,11 @@ class CompactVector : public BitVector {
     return const_iterator(this, this->num_elements_);
   }
 
-  void swap(const CompactVector<T, W> &other) {
-    using std::swap;
-    swap(this->data_, other.data_);
-    swap(this->size_, other.size_);
-  }
+  // void swap(const CompactVector<T, W> &other) {
+  //   using std::swap;
+  //   swap(this->data_, other.data_);
+  //   swap(this->size_, other.size_);
+  // }
 
   // Serialization and De-serialization
   size_type Serialize(std::ostream &out) override {
@@ -464,10 +464,16 @@ class CompactPtrVector : CompactVector<uint64_t, 44> {
   typedef int64_t tmp_pos_type;
 
   CompactPtrVector() : CompactVector<uint64_t, 44>() {}
+  CompactPtrVector(size_type num_elements) : CompactVector<uint64_t, 44>(num_elements) {}
 
   // Accessors, Mutators
   void *At(pos_type idx) {
     return reinterpret_cast<void *>(CompactVector<uint64_t, 44>::Get(idx) << 4ULL);
+  }
+
+  // Operators, iterators
+  void Set(pos_type idx, void *val) {
+    CompactVector<uint64_t, 44>::Set(idx, reinterpret_cast<uint64_t>(val) >> 4ULL);
   }
 
   void PushBack(void *val) {

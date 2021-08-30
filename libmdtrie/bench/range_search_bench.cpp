@@ -213,7 +213,7 @@ void test_node_path_only(level_t max_depth, level_t trie_depth, preorder_t max_t
         symbol_t *node_path_from_primary = (symbol_t *)malloc((max_depth + 1) * sizeof(symbol_t));
 
         
-        tree_block<DIMENSION, NUM_BRANCHES> *t_ptr = (tree_block<DIMENSION, NUM_BRANCHES> *)p_key_to_treeblock[returned_primary_key];
+        tree_block<DIMENSION, NUM_BRANCHES> *t_ptr = (tree_block<DIMENSION, NUM_BRANCHES> *) (p_key_to_treeblock_compact.At(returned_primary_key));
         
         start = GetTimestamp();
         symbol_t parent_symbol_from_primary = t_ptr->get_node_path_primary_key(returned_primary_key, node_path_from_primary);

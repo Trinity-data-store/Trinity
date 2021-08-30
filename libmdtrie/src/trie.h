@@ -98,8 +98,8 @@ public:
 
         // Include primary key size:
 
-        vector_size += sizeof(p_key_to_treeblock) + (44 * p_key_to_treeblock.size() / 64 + 1) * 8;
-        total_size += sizeof(p_key_to_treeblock) + (44 * p_key_to_treeblock.size() / 64 + 1) * 8;
+        vector_size += sizeof(p_key_to_treeblock_compact) + (44 * total_points_count / 64 + 1) * 8;
+        total_size += sizeof(p_key_to_treeblock_compact) + (44 * total_points_count / 64 + 1) * 8;
 
         // vector_size += sizeof(p_key_to_treeblock) + sizeof(uint64_t) * p_key_to_treeblock.size();
         // total_size += sizeof(p_key_to_treeblock) + sizeof(uint64_t) * p_key_to_treeblock.size();
