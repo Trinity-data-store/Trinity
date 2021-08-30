@@ -471,7 +471,6 @@ class CompactPtrVector : CompactVector<uint64_t, 44> {
     return reinterpret_cast<void *>(CompactVector<uint64_t, 44>::Get(idx) << 4ULL);
   }
 
-  // Operators, iterators
   void Set(pos_type idx, void *val) {
     CompactVector<uint64_t, 44>::Set(idx, reinterpret_cast<uint64_t>(val) >> 4ULL);
   }
