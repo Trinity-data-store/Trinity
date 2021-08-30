@@ -60,14 +60,14 @@ class compact_ptr {
   uint64_t size_overhead(){
 
     if (flag_ == 0){
-      return 6 /*8 bytes used to store compact ptr*/;
+      return sizeof(compact_ptr);
     }
     if (flag_ == 1){
       std::vector<uint64_t> *vect_ptr = get_vector_pointer();
-      return sizeof(*vect_ptr) + sizeof(uint32_t) * vect_ptr->size() + 6 /*8 bytes used to store compact ptr*/;
+      return /*sizeof(*vect_ptr) + */ sizeof(uint32_t) /*primary key size*/ * vect_ptr->size() + sizeof(compact_ptr);
     }
     else {
-      return get_delta_encoded_array_pointer()->size_overhead() + 6 /*8 bytes used to store compact ptr*/;
+      return get_delta_encoded_array_pointer()->size_overhead() + sizeof(compact_ptr);
     }
   }
 

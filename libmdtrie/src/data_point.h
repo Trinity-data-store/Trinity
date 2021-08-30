@@ -10,11 +10,11 @@
 template<dimension_t DIMENSION>
 class data_point {
 private:
-    tree_block<DIMENSION> *parent_treeblock = NULL;
+    tree_block<DIMENSION, (symbol_t)pow(2, (double)DIMENSION)> *parent_treeblock = NULL;
     symbol_t parent_symbol;
     node_t parent_node;
     point_t coordinates[DIMENSION] = {};
-    preorder_t primary_key = 0;
+    n_leaves_t primary_key = 0;
 public:
 
     explicit data_point(){
@@ -37,11 +37,11 @@ public:
         coordinates[index] = value;
     }
 
-    inline void set_primary(preorder_t value){
+    inline void set_primary(n_leaves_t value){
         primary_key = value;
     }
 
-    inline preorder_t read_primary(){
+    inline n_leaves_t read_primary(){
         return primary_key;
     }
 
@@ -53,7 +53,7 @@ public:
         return parent_node;
     }
 
-    inline tree_block<DIMENSION> *get_parent_treeblock(){
+    inline tree_block<DIMENSION, (symbol_t)pow(2, (double)DIMENSION)> *get_parent_treeblock(){
         return parent_treeblock;
     }
 
@@ -66,7 +66,7 @@ public:
     }
 
 
-    inline void set_parent_treeblock(tree_block<DIMENSION> *treeblock){
+    inline void set_parent_treeblock(tree_block<DIMENSION, (symbol_t)pow(2, (double)DIMENSION)> *treeblock){
         parent_treeblock = treeblock;
     }
 

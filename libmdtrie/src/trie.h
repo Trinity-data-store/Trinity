@@ -20,20 +20,20 @@
 // #include <mutex>
 // std::mutex mutex;
 
-template<dimension_t DIMENSION>
+template<dimension_t DIMENSION, symbol_t NUM_BRANCHES>
 class md_trie {
 public:
     explicit md_trie(level_t max_depth, level_t trie_depth,
                      preorder_t max_tree_nodes, uint8_t initial_capacity_nodes = 8) {
-        n_branches_ = (symbol_t) pow(2, DIMENSION);
+        // n_branches_ = (symbol_t) pow(2, DIMENSION);
         initial_tree_capacity_ = initial_capacity_nodes;
         max_depth_ = max_depth;
         trie_depth_ = trie_depth;
         max_tree_nodes_ = max_tree_nodes;
-        root_ = new trie_node<DIMENSION>(n_branches_);
+        root_ = new trie_node<DIMENSION, NUM_BRANCHES>(false);
     }
 
-    inline trie_node<DIMENSION> *root() {
+    inline trie_node<DIMENSION, NUM_BRANCHES> *root() {
         return root_;
     }
 
@@ -41,25 +41,29 @@ public:
 
     // This function goes down the trie
     // Return the treeblock at the leaf of the trie
-    tree_block<DIMENSION> *walk_trie(trie_node<DIMENSION> *current_trie_node, data_point<DIMENSION> *leaf_point, level_t &level) const {
+    tree_block<DIMENSION, NUM_BRANCHES> *walk_trie(trie_node<DIMENSION, NUM_BRANCHES> *current_trie_node, data_point<DIMENSION> *leaf_point, level_t &level) const {
         symbol_t current_symbol;
-        while (current_trie_node->get_child(leaf_point->leaf_to_symbol(level, max_depth_)))
+        while (level < trie_depth_ && current_trie_node->get_child(leaf_point->leaf_to_symbol(level, max_depth_)))
             current_trie_node = current_trie_node->get_child(leaf_point->leaf_to_symbol(level++, max_depth_));
         while (level < trie_depth_) {
             current_symbol = leaf_point->leaf_to_symbol(level, max_depth_);
-            current_trie_node->set_child(current_symbol, new trie_node<DIMENSION>(n_branches_));
+            if (level == trie_depth_ - 1){
+                current_trie_node->set_child(current_symbol, new trie_node<DIMENSION, NUM_BRANCHES>(true));
+            }
+            else
+                current_trie_node->set_child(current_symbol, new trie_node<DIMENSION, NUM_BRANCHES>(false));
             current_trie_node->get_child(current_symbol)->parent_trie_node = current_trie_node;
             current_trie_node->get_child(current_symbol)->parent_symbol = current_symbol;
             current_trie_node = current_trie_node->get_child(current_symbol);
             level++;
         }
-        tree_block<DIMENSION> *current_treeblock = nullptr;
+        tree_block<DIMENSION, NUM_BRANCHES> *current_treeblock = nullptr;
         if (current_trie_node->block() == nullptr) {
-            current_treeblock = new tree_block<DIMENSION>(trie_depth_, initial_tree_capacity_, 1, max_depth_, max_tree_nodes_, current_trie_node);
+            current_treeblock = new tree_block<DIMENSION, NUM_BRANCHES>(trie_depth_, initial_tree_capacity_, 1, max_depth_, max_tree_nodes_, current_trie_node);
             current_trie_node->block(current_treeblock);
             // current_treeblock->set_parent_trie_node(current_trie_node);
         } else
-            current_treeblock = (tree_block<DIMENSION> *) current_trie_node->block();
+            current_treeblock = (tree_block<DIMENSION, NUM_BRANCHES> *) current_trie_node->block();
         return current_treeblock;
     }
 
@@ -67,13 +71,13 @@ public:
     // The first part it traverses is the trie, followed by traversing the treeblock
     void insert_trie(data_point<DIMENSION> *leaf_point, level_t length) {
 
-        
-        if (root_ == nullptr) {
-            root_ = new trie_node<DIMENSION>(n_branches_);
-        }
+        // raise(SIGINT);
+        // if (root_ == nullptr) {
+        //     root_ = new trie_node<DIMENSION, NUM_BRANCHES>(false);
+        // }
         level_t level = 0;
-        trie_node<DIMENSION> *current_trie_node = root_;
-        tree_block<DIMENSION> *current_treeblock = walk_trie(current_trie_node, leaf_point, level);
+        trie_node<DIMENSION, NUM_BRANCHES> *current_trie_node = root_;
+        tree_block<DIMENSION, NUM_BRANCHES> *current_treeblock = walk_trie(current_trie_node, leaf_point, level);
 
         // return;
         current_treeblock->insert_remaining(leaf_point, length, level);
@@ -83,19 +87,23 @@ public:
     // Used for Test script to check whether a leaf_point is present
     bool check(data_point<DIMENSION> *leaf_point, level_t strlen) const {
         level_t level = 0;
-        trie_node<DIMENSION> *current_trie_node = root_;
-        tree_block<DIMENSION> *current_treeblock = walk_trie(current_trie_node, leaf_point, level);
+        trie_node<DIMENSION, NUM_BRANCHES> *current_trie_node = root_;
+        tree_block<DIMENSION, NUM_BRANCHES> *current_treeblock = walk_trie(current_trie_node, leaf_point, level);
         return current_treeblock->walk_tree_block(leaf_point, strlen, level);
     }
 
     uint64_t size() const {
-        uint64_t total_size = sizeof(uint8_t) + sizeof(symbol_t) + sizeof(trie_node<DIMENSION> *) + sizeof(level_t) * 2 +
-                            sizeof(preorder_t) * 2;
+
+        uint64_t total_size = sizeof(trie_node<DIMENSION, NUM_BRANCHES> *) /*root_*/ + sizeof(level_t) * 2 +  sizeof(preorder_t) + sizeof(node_n_t);
 
         // Include primary key size:
-        total_size += sizeof(p_key_to_treeblock) + sizeof(uint32_t) * p_key_to_treeblock.size();
-        vector_size += sizeof(p_key_to_treeblock) + sizeof(uint32_t) * p_key_to_treeblock.size();
-        // total_size += sizeof(std::unordered_map<n_leaves_t, uint64_t>) + (sizeof(n_leaves_t) + sizeof(uint64_t)) * p_key_to_treeblock.size();
+
+        vector_size += sizeof(p_key_to_treeblock) + (44 * p_key_to_treeblock.size() / 64 + 1) * 8;
+        total_size += sizeof(p_key_to_treeblock) + (44 * p_key_to_treeblock.size() / 64 + 1) * 8;
+
+        // vector_size += sizeof(p_key_to_treeblock) + sizeof(uint64_t) * p_key_to_treeblock.size();
+        // total_size += sizeof(p_key_to_treeblock) + sizeof(uint64_t) * p_key_to_treeblock.size();
+
         return total_size + root_->size();
     }
 
@@ -103,11 +111,11 @@ public:
         root_->density(array);
     }
 
-    void range_search_trie(data_point<DIMENSION> *start_range, data_point<DIMENSION> *end_range, trie_node<DIMENSION> *current_trie_node,
+    void range_search_trie(data_point<DIMENSION> *start_range, data_point<DIMENSION> *end_range, trie_node<DIMENSION, NUM_BRANCHES> *current_trie_node,
                                     level_t level, point_array<DIMENSION> *found_points) {
         // If we reach the bottom of the top-level trie
         if (level == trie_depth_) {
-            auto *current_treeblock = (tree_block<DIMENSION> *) current_trie_node->block();
+            auto *current_treeblock = (tree_block<DIMENSION, NUM_BRANCHES> *) current_trie_node->block();
             current_treeblock->range_search_treeblock(start_range, end_range, current_treeblock, level, 0, 0, 0, 0, found_points);
             return;
         }
@@ -157,8 +165,8 @@ public:
     
 
 private:
-    symbol_t n_branches_;
-    trie_node<DIMENSION> *root_ = nullptr;
+    // symbol_t n_branches_;
+    trie_node<DIMENSION, NUM_BRANCHES> *root_ = nullptr;
     level_t max_depth_;
     level_t trie_depth_;
     node_n_t initial_tree_capacity_;

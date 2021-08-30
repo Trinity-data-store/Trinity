@@ -9,15 +9,17 @@
 #include <boost/bimap.hpp>
 #include <mutex>
 #include <shared_mutex>
+#include "compact_vector.h"
 
 // Maximum number of bits for node configuration
-typedef uint64_t node_t;
+typedef uint16_t node_t;
 // Maximum number of nodes/preorder numbers
-typedef uint64_t preorder_t;
+typedef uint16_t preorder_t;
+
 typedef uint64_t n_leaves_t;
 typedef uint16_t node_n_t;
-typedef uint64_t level_t;
-typedef uint64_t symbol_t;
+typedef uint16_t level_t;
+typedef uint16_t symbol_t;
 typedef uint8_t dimension_t;
 typedef uint64_t point_t;
 typedef uint16_t representation_t;
@@ -33,7 +35,7 @@ extern uint64_t v2_storage_save_neg;
 extern uint64_t single_node_count;
 extern uint64_t total_number_nodes; 
 
-template<dimension_t DIMENSION>
+template<dimension_t DIMENSION, symbol_t NUM_BRANCHES>
 class tree_block;
 
 // node_info and subtree info are used to obtain subtree size when splitting the treeblock
@@ -50,7 +52,7 @@ struct subtree_info {
 template<dimension_t DIMENSION>
 struct frontier_node {
     preorder_t preorder_;
-    tree_block<DIMENSION> *pointer_;
+    tree_block<DIMENSION, (symbol_t)pow(2, (double)DIMENSION)> *pointer_;
 };
 
 typedef unsigned long long int TimeStamp;
@@ -64,7 +66,7 @@ static TimeStamp GetTimestamp() {
 
 
 n_leaves_t current_leaves_inserted = 0;
-n_leaves_t total_stored = 0;
+// n_leaves_t total_stored = 0;
 // std::vector<uint64_t> p_key_to_treeblock;
 // std::unordered_map<n_leaves_t, uint64_t> p_key_to_count;
 uint64_t max_count = 0;
@@ -75,15 +77,19 @@ std::shared_mutex mutex_p_key;
 n_leaves_t current_primary_key = 0;
 
 n_leaves_t total_points_count = 14583357;
+
+// bits::CompactVector<uint64_t, 44> p_key_to_treeblock_compact(total_points_count);
+
 std::vector<uint64_t> p_key_to_treeblock(total_points_count, 0);
 // std::unordered_map<n_leaves_t, uint64_t> p_key_to_treeblock;
 
+uint64_t trie_size = 0;
 uint64_t vector_size = 0;
 TimeStamp primary_time = 0;
 template<dimension_t DIMENSION>
 class data_point;
 
-std::map<uint64_t, uint64_t> primary_key_count_to_occurrences;
+// std::map<uint64_t, uint64_t> primary_key_count_to_occurrences;
 // std::vector<data_point<2>> all_stored_points;
 
 #endif //MD_TRIE_DEFS_H

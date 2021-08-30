@@ -5,6 +5,7 @@
 #include <rand_utils.h>
 
 const int DIMENSION = 2;
+const symbol_t NUM_BRANCHES = pow(2, DIMENSION);
 
 level_t max_depth = 32;
 level_t trie_depth = 10;
@@ -13,7 +14,7 @@ n_leaves_t n_points = 500000;
 uint8_t max_num_threads = 18;
 const uint32_t read_number_count = 10000000;
 
-void test_random_insert(md_trie<DIMENSION> *mdtrie){
+void test_random_insert(md_trie<DIMENSION, NUM_BRANCHES> *mdtrie){
 
     auto *leaf_point = new data_point<DIMENSION>();
     symbol_t range = pow(2, max_depth);
@@ -31,7 +32,7 @@ void test_random_insert(md_trie<DIMENSION> *mdtrie){
     return;    
 }
 
-void test_random_read(md_trie<DIMENSION> *mdtrie){
+void test_random_read(md_trie<DIMENSION, NUM_BRANCHES> *mdtrie){
 
     auto *leaf_point = new data_point<DIMENSION>();
     symbol_t range = pow(2, max_depth);
@@ -56,7 +57,7 @@ TEST_CASE("Test random insert and reads", "[trie]") {
         See if there is error or deadlocks
     */
 
-    auto *mdtrie = new md_trie<DIMENSION>(max_depth, trie_depth, max_tree_node);
+    auto *mdtrie = new md_trie<DIMENSION, NUM_BRANCHES>(max_depth, trie_depth, max_tree_node);
 
     unsigned int max_num_threads = std::thread::hardware_concurrency();
 

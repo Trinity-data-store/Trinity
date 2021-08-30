@@ -5,6 +5,7 @@
 #include <tqdm.h>
 
 const int DIMENSION = 2;
+const symbol_t NUM_BRANCHES = pow(2, DIMENSION);
 
 // typedef unsigned long long int TimeStamp;
 // static TimeStamp GetTimestamp() {
@@ -19,7 +20,7 @@ void test_real_data(level_t max_depth, level_t trie_depth, preorder_t max_tree_n
     // to-do
     // Bimap primary_key_tuple;
     
-    auto *mdtrie = new md_trie<DIMENSION>(max_depth, trie_depth, max_tree_node);
+    auto *mdtrie = new md_trie<DIMENSION, NUM_BRANCHES>(max_depth, trie_depth, max_tree_node);
     auto *leaf_point = new data_point<DIMENSION>();
 
     char *line = nullptr;

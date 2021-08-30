@@ -1,9 +1,12 @@
 #include "catch.hpp"
 #include "trie.h"
 
-const int DIMENSION_RANDOM = 8;
-const int DIMENSION_NONEXISTENT = 10;
-const int DIMENSION_CONTIGUOUS = 10;
+// const int DIMENSION_RANDOM = 8;
+const int DIMENSION = 10;
+const symbol_t NUM_BRANCHES = pow(2, DIMENSION);
+
+// const int DIMENSION_NONEXISTENT = 10;
+// const int DIMENSION_CONTIGUOUS = 10;
 
 bool test_random_data(n_leaves_t n_points, level_t max_depth, level_t trie_depth,
                       preorder_t max_tree_nodes) {
@@ -13,12 +16,12 @@ bool test_random_data(n_leaves_t n_points, level_t max_depth, level_t trie_depth
         Check whether the inserted points exist
     */     
 
-    auto range = (symbol_t) pow(2, max_depth);
-    auto *mdtrie = new md_trie<DIMENSION_RANDOM>(max_depth, trie_depth, max_tree_nodes);
-    auto *leaf_point = new data_point<DIMENSION_RANDOM>();
+    auto range = (n_leaves_t) pow(2, max_depth);
+    auto *mdtrie = new md_trie<DIMENSION, NUM_BRANCHES>(max_depth, trie_depth, max_tree_nodes);
+    auto *leaf_point = new data_point<DIMENSION>();
 
     for (n_leaves_t itr = 1; itr <= n_points; itr++) {
-        for (dimension_t i = 0; i < DIMENSION_RANDOM; i++) {
+        for (dimension_t i = 0; i < DIMENSION; i++) {
             leaf_point->set_coordinate(i, (point_t) rand() % range);
         }
         mdtrie->insert_trie(leaf_point, max_depth);
@@ -38,18 +41,18 @@ bool test_contiguous_data(n_leaves_t n_points, level_t max_depth, level_t trie_d
         Check whether the inserted points exist
     */ 
 
-    auto range = (symbol_t) pow(2, max_depth);
-    auto *mdtrie = new md_trie<DIMENSION_CONTIGUOUS>(max_depth, trie_depth, max_tree_node);
-    auto *leaf_point = new data_point<DIMENSION_CONTIGUOUS>();
+    auto range = (n_leaves_t) pow(2, max_depth);
+    auto *mdtrie = new md_trie<DIMENSION, NUM_BRANCHES>(max_depth, trie_depth, max_tree_node);
+    auto *leaf_point = new data_point<DIMENSION>();
 
     for (n_leaves_t itr = 1; itr <= n_points; itr++) {
 
         auto first_half_value = (symbol_t) rand() % range;
-        for (dimension_t i = 0; i < DIMENSION_CONTIGUOUS / 2; i++) {
+        for (dimension_t i = 0; i < DIMENSION / 2; i++) {
             leaf_point->set_coordinate(i, first_half_value);
         }
         auto second_half_value = (symbol_t) rand() % range;
-        for (dimension_t i = DIMENSION_CONTIGUOUS / 2; i < DIMENSION_CONTIGUOUS; i++) {
+        for (dimension_t i = DIMENSION / 2; i < DIMENSION; i++) {
             leaf_point->set_coordinate(i, second_half_value);
         }
         mdtrie->insert_trie(leaf_point, max_depth);
@@ -70,18 +73,18 @@ bool test_nonexistent_data(n_leaves_t n_points, level_t max_depth, level_t trie_
         Pass the test if none of those points can be found
     */ 
 
-    auto range = (symbol_t) pow(2, max_depth);
-    auto *mdtrie = new md_trie<DIMENSION_NONEXISTENT>(max_depth, trie_depth, max_tree_node);
-    auto *leaf_point = new data_point<DIMENSION_NONEXISTENT>();
+    auto range = (n_leaves_t) pow(2, max_depth);
+    auto *mdtrie = new md_trie<DIMENSION, NUM_BRANCHES>(max_depth, trie_depth, max_tree_node);
+    auto *leaf_point = new data_point<DIMENSION>();
 
     for (n_leaves_t itr = 1; itr <= n_points; itr++) {
-        for (dimension_t i = 0; i < DIMENSION_NONEXISTENT; i++) {
+        for (dimension_t i = 0; i < DIMENSION; i++) {
             leaf_point->set_coordinate(i, rand() % (range / 2));
         }
         mdtrie->insert_trie(leaf_point, max_depth);
     }
     for (n_leaves_t itr = 1; itr <= n_points; itr++) {
-        for (dimension_t i = 0; i < DIMENSION_NONEXISTENT; i++) {
+        for (dimension_t i = 0; i < DIMENSION; i++) {
             leaf_point->set_coordinate(i, rand() % (range / 2) + range / 2);
         }
         if (mdtrie->check(leaf_point, max_depth)) {

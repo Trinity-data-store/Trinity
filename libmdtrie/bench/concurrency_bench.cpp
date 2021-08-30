@@ -11,6 +11,8 @@
 #include <rand_utils.h>
 
 const int DIMENSION = 3;
+const symbol_t NUM_BRANCHES = pow(2, DIMENSION);
+
 level_t max_depth = 32;
 level_t trie_depth = 10;
 preorder_t max_tree_node = 1024;
@@ -27,7 +29,7 @@ const uint32_t read_number_count = 1000000;
 //   return now.tv_usec + (TimeStamp) now.tv_sec * 1000000;
 // }
 
-void test_random_insert(md_trie<DIMENSION> *mdtrie){
+void test_random_insert(md_trie<DIMENSION, NUM_BRANCHES> *mdtrie){
 
     auto *leaf_point = new data_point<DIMENSION>();
     // TODO: bug, smaller range raise an error
@@ -46,7 +48,7 @@ void test_random_insert(md_trie<DIMENSION> *mdtrie){
     return;    
 }
 
-void test_random_read(md_trie<DIMENSION> *mdtrie){
+void test_random_read(md_trie<DIMENSION, NUM_BRANCHES> *mdtrie){
 
     auto *leaf_point = new data_point<DIMENSION>();
     symbol_t range = pow(2, max_depth);
@@ -84,7 +86,7 @@ void vector_insertion(){
 
 void test_insert_concurrency(){
     
-    auto *mdtrie = new md_trie<DIMENSION>(max_depth, trie_depth, max_tree_node);
+    auto *mdtrie = new md_trie<DIMENSION, NUM_BRANCHES>(max_depth, trie_depth, max_tree_node);
 
     fprintf(stderr, "Dimension: %d\n", DIMENSION);
     srand(static_cast<unsigned int>(time(0)));
@@ -155,7 +157,7 @@ std::vector<data_point<DIMENSION> *>get_dataset_vector()
 }
 
 
-void insert_mdtrie_from_vector(md_trie<DIMENSION> *mdtrie, uint8_t thread_num, uint8_t total_thread_num, std::vector<data_point<DIMENSION> *> vect){
+void insert_mdtrie_from_vector(md_trie<DIMENSION, NUM_BRANCHES> *mdtrie, uint8_t thread_num, uint8_t total_thread_num, std::vector<data_point<DIMENSION> *> vect){
 
     // md_trie<DIMENSION> *mdtrie2 = new md_trie<DIMENSION>(max_depth, trie_depth, max_tree_node);
     n_leaves_t n_lines = 14583357;
@@ -173,7 +175,7 @@ void insert_mdtrie_from_vector(md_trie<DIMENSION> *mdtrie, uint8_t thread_num, u
 
 void test_insert_concurrency_real_dataset(){
     
-    auto *mdtrie = new md_trie<DIMENSION>(max_depth, trie_depth, max_tree_node);
+    auto *mdtrie = new md_trie<DIMENSION, NUM_BRANCHES>(max_depth, trie_depth, max_tree_node);
     std::vector<data_point<DIMENSION> *> vect = get_dataset_vector();
     fprintf(stderr, "Dimension: %d\n", DIMENSION);
     srand(static_cast<unsigned int>(time(0)));
@@ -258,7 +260,7 @@ void test_insert_concurrency_real_dataset(){
 //     return;
 // }
 
-void random_read_mdtrie_inserted_from_vector(md_trie<DIMENSION> *mdtrie, uint8_t total_thread_num, std::vector<data_point<DIMENSION> *> *vect){
+void random_read_mdtrie_inserted_from_vector(md_trie<DIMENSION, NUM_BRANCHES> *mdtrie, uint8_t total_thread_num, std::vector<data_point<DIMENSION> *> *vect){
 
     n_leaves_t n_lines = 14583357;
     uint64_t total_iter = n_lines / total_thread_num;
@@ -279,7 +281,7 @@ void random_read_mdtrie_inserted_from_vector(md_trie<DIMENSION> *mdtrie, uint8_t
 }
 
 
-void read_mdtrie_inserted_from_vector(md_trie<DIMENSION> *mdtrie, uint8_t thread_num, uint8_t total_thread_num, std::vector<data_point<DIMENSION> *> *vect){
+void read_mdtrie_inserted_from_vector(md_trie<DIMENSION, NUM_BRANCHES> *mdtrie, uint8_t thread_num, uint8_t total_thread_num, std::vector<data_point<DIMENSION> *> *vect){
 
     n_leaves_t n_lines = 14583357;
     for (uint64_t count = thread_num; count < n_lines; count += total_thread_num){
@@ -297,7 +299,7 @@ void read_mdtrie_inserted_from_vector(md_trie<DIMENSION> *mdtrie, uint8_t thread
 
 void test_read_concurrency(){
 
-    auto *mdtrie = new md_trie<DIMENSION>(max_depth, trie_depth, max_tree_node);
+    auto *mdtrie = new md_trie<DIMENSION, NUM_BRANCHES>(max_depth, trie_depth, max_tree_node);
     
     char *line = nullptr;
     size_t len = 0;
@@ -384,7 +386,7 @@ void test_read_concurrency(){
 const int n_itr = 100;
 uint64_t total_found_points = 0;
 TimeStamp total_range_search_latency = 0;
-void range_search_mdtrie(md_trie<DIMENSION> *mdtrie, uint64_t max[], uint64_t min[]){
+void range_search_mdtrie(md_trie<DIMENSION, NUM_BRANCHES> *mdtrie, uint64_t max[], uint64_t min[]){
 
     auto *start_range = new data_point<DIMENSION>();
     auto *end_range = new data_point<DIMENSION>();
@@ -410,7 +412,7 @@ void range_search_mdtrie(md_trie<DIMENSION> *mdtrie, uint64_t max[], uint64_t mi
 
 void test_range_search(){
 
-    auto *mdtrie = new md_trie<DIMENSION>(max_depth, trie_depth, max_tree_node);
+    auto *mdtrie = new md_trie<DIMENSION, NUM_BRANCHES>(max_depth, trie_depth, max_tree_node);
     auto *leaf_point = new data_point<DIMENSION>();
 
     char *line = nullptr;
@@ -483,7 +485,7 @@ void test_range_search(){
     }
 }
 
-void random_range_search_mdtrie(md_trie<DIMENSION> *mdtrie){
+void random_range_search_mdtrie(md_trie<DIMENSION, NUM_BRANCHES> *mdtrie){
 
     auto *start_range = new data_point<DIMENSION>();
     auto *end_range = new data_point<DIMENSION>();
@@ -513,7 +515,7 @@ void random_range_search_mdtrie(md_trie<DIMENSION> *mdtrie){
 
 void test_read_insert_random(){
 
-    auto *mdtrie = new md_trie<DIMENSION>(max_depth, trie_depth, max_tree_node);
+    auto *mdtrie = new md_trie<DIMENSION, NUM_BRANCHES>(max_depth, trie_depth, max_tree_node);
 
     fprintf(stderr, "Dimension: %d\n", DIMENSION);
     srand(static_cast<unsigned int>(time(0)));
