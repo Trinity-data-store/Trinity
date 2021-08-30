@@ -506,7 +506,8 @@ public:
 
                 uint16_t primary_key_size = primary_key_list[i].size();
                 for (uint16_t j = 0; j < primary_key_size; j++){
-                    p_key_to_treeblock_compact.Set(primary_key_list[i].get(j), new_block);
+                    // p_key_to_treeblock_compact.Set(primary_key_list[i].get(j), new_block);
+                    p_key_to_treeblock[primary_key_list[i].get(j)] = (uint64_t)new_block;
                 }
             }
 
@@ -839,7 +840,7 @@ public:
 
 
     uint64_t size() {
-
+        
         uint64_t total_size = sizeof(level_t) * 1 /*root depth, max_depth can be hard coded*/+ sizeof(node_n_t) * 3 /*max tree nodes (can be hard coded), num nodes, tree capacity, num frontiers*/;
 
         // Using compact representation, I just need to store one pointer
@@ -1296,6 +1297,9 @@ public:
         
             // GET which current primary corresponds to which node;
             // Now current_primary points to the leaf marked by tmp_symbol
+
+            // raise(SIGINT);
+
             symbol_t parent_symbol = start_range->leaf_to_symbol(max_depth_ - 1, max_depth_);
             symbol_t tmp_symbol = dfuds_->next_symbol(0, prev_node, NUM_BRANCHES - 1);
             
@@ -1468,7 +1472,8 @@ public:
 
         mutex_p_key.lock();
 
-        p_key_to_treeblock_compact.Set(current_primary_key, this);
+        // p_key_to_treeblock_compact.Set(current_primary_key, this);
+        p_key_to_treeblock[current_primary_key] = (uint64_t) this;
 
         primary_key_list[index].push(current_primary_key);
 
@@ -1482,7 +1487,8 @@ public:
 
         mutex_p_key.lock();
 
-        p_key_to_treeblock_compact.Set(current_primary_key, this);
+        // p_key_to_treeblock_compact.Set(current_primary_key, this);
+        p_key_to_treeblock[current_primary_key] = (uint64_t) this;
         
         primary_key_list.emplace(primary_key_list.begin() + index, bits::compact_ptr(current_primary_key));
 

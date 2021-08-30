@@ -73,6 +73,7 @@ void insert_for_node_path(point_array<DIMENSION> *found_points, level_t max_dept
         start_range->set_coordinate(i,  min[i]);
         end_range->set_coordinate(i, max[i]);
     }
+    // raise(SIGINT);
     mdtrie->range_search_trie(start_range, end_range, mdtrie->root(), 0, found_points);
     if (found_points->size() != n_points){
         raise(SIGINT);
@@ -97,7 +98,7 @@ bool test_lookup(level_t max_depth, level_t trie_depth, preorder_t max_tree_node
     TimeStamp diff_primary = 0;
 
     for (n_leaves_t i = 0; i < found_points_size; i++){
-        
+        // raise(SIGINT);
         symbol_t *node_path = (symbol_t *)malloc((max_depth + 1) * sizeof(symbol_t));
         data_point<DIMENSION> *point = found_points->at(i);
 
@@ -133,6 +134,7 @@ bool test_lookup(level_t max_depth, level_t trie_depth, preorder_t max_tree_node
 
         for (dimension_t j = 0; j < DIMENSION; j++){
             if (returned_coordinates->get_coordinate(j) != current_point.get_coordinate(j)){
+                raise(SIGINT);
                 return false;
             }
             // if (j == DIMENSION - 1){
@@ -152,7 +154,8 @@ bool test_lookup(level_t max_depth, level_t trie_depth, preorder_t max_tree_node
 
         symbol_t *node_path_from_primary = (symbol_t *)malloc((max_depth + 1) * sizeof(symbol_t));
 
-        tree_block<DIMENSION, NUM_BRANCHES> *t_ptr = (tree_block<DIMENSION, NUM_BRANCHES> *) (p_key_to_treeblock_compact.At(returned_primary_key));
+        tree_block<DIMENSION, NUM_BRANCHES> *t_ptr = (tree_block<DIMENSION, NUM_BRANCHES> *) p_key_to_treeblock[returned_primary_key];
+        // tree_block<DIMENSION, NUM_BRANCHES> *t_ptr = (tree_block<DIMENSION, NUM_BRANCHES> *) (p_key_to_treeblock_compact.At(returned_primary_key));
         
         symbol_t parent_symbol_from_primary = t_ptr->get_node_path_primary_key(returned_primary_key, node_path_from_primary);
         node_path_from_primary[max_depth - 1] = parent_symbol_from_primary;
@@ -161,6 +164,7 @@ bool test_lookup(level_t max_depth, level_t trie_depth, preorder_t max_tree_node
 
         for (dimension_t j = 0; j < DIMENSION; j++){
             if (returned_coordinates->get_coordinate(j) != point->get_coordinate(j)){
+                raise(SIGINT);
                 return false;
             }
         }    

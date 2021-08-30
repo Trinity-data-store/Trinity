@@ -80,7 +80,7 @@ n_leaves_t total_points_count = 14583357;
 
 bitmap::CompactPtrVector p_key_to_treeblock_compact(total_points_count);
 
-// std::vector<uint64_t> p_key_to_treeblock(total_points_count, 0);
+std::vector<uint64_t> p_key_to_treeblock(total_points_count, 0);
 // std::unordered_map<n_leaves_t, uint64_t> p_key_to_treeblock;
 
 uint64_t trie_size = 0;

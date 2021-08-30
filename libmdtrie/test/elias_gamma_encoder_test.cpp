@@ -3,6 +3,7 @@
 #include <signal.h>
 #include "catch.hpp"
 #include "compact_ptr.h"
+#include "trie.h"
 
 bool gamma_encoder_test() {
 
@@ -166,6 +167,18 @@ bool gamma_delta_binary_search_test(){
 //   return true;
 // }
 
+bool compact_vector_test(){
+
+  bitmap::CompactPtrVector test_compact_vector(4);
+  auto ptr = (uint64_t *)malloc(sizeof(uint64_t) * 10);
+
+  test_compact_vector.Set(0, ptr);
+  if (test_compact_vector.At(0) != ptr){
+    raise(SIGINT);
+    return false;
+  }
+  return true;
+}
 
 TEST_CASE("Check Gamma Encoding Correctness", "[gamma encoder]") {
 
@@ -197,3 +210,8 @@ TEST_CASE("Check Binary Search", "[delta encoder]") {
 
 //     REQUIRE(compact_pointer_test());
 // }
+
+TEST_CASE("Check compact vector", "[compact vector]") {
+
+    REQUIRE(compact_vector_test());
+}
