@@ -5,11 +5,8 @@
 #include <tqdm.h>
 #include <vector>
 
-const int DIMENSION = 9;
+const int DIMENSION = 9; // <= 10
 const symbol_t NUM_BRANCHES = pow(2, DIMENSION);
-FILE *fptr;
-char file_path[] = "benchmark_range_search_2.csv";
-
 
 void insert_for_node_path(point_array<DIMENSION> *found_points, level_t max_depth, level_t trie_depth, preorder_t max_tree_node, std::vector<data_point<DIMENSION>> *all_points){
     // to-do
@@ -20,7 +17,7 @@ void insert_for_node_path(point_array<DIMENSION> *found_points, level_t max_dept
     char *line = nullptr;
     size_t len = 0;
     ssize_t read;
-    FILE *fp = fopen("../libmdtrie/bench/data/sample_shuf.txt", "r");
+    FILE *fp = fopen("../libmdtrie/bench/data/osm.txt", "r");
 
     // If the file cannot be open
     if (fp == nullptr)
@@ -39,7 +36,7 @@ void insert_for_node_path(point_array<DIMENSION> *found_points, level_t max_dept
     n_leaves_t n_points = 0;
     uint64_t max[DIMENSION];
     uint64_t min[DIMENSION];
-    n_leaves_t n_lines = 14583357;
+    n_leaves_t n_lines = 330981;
     // diff = 0;
     tqdm bar;
     TimeStamp start, diff;
@@ -48,19 +45,11 @@ void insert_for_node_path(point_array<DIMENSION> *found_points, level_t max_dept
     while ((read = getline(&line, &len, fp)) != -1)
     {
         bar.progress(n_points, n_lines);
-        char *token = strtok(line, " ");
+        char *token = strtok(line, ",");
         char *ptr;
 
-        
-        token = strtok(nullptr, " ");
-        leaf_point->set_coordinate(0, strtoul(token, &ptr, 10));
-
-        for (uint8_t i = 1; i < 2; i ++){
-            token = strtok(nullptr, " ");
-        }
-
         for (dimension_t i = 0; i < DIMENSION; i++){
-            token = strtok(nullptr, " ");
+            token = strtok(nullptr, ",");
             leaf_point->set_coordinate(i, strtoul(token, &ptr, 10));
         }
 
