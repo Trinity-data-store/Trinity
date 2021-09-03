@@ -5,8 +5,8 @@
 #include <sys/time.h>
 #include <unordered_map>
 
-typedef uint16_t preorder_t;
-typedef uint16_t symbol_t;
+typedef uint64_t preorder_t;
+typedef uint64_t symbol_t;
 typedef uint8_t dimension_t;
 
 struct node_config {

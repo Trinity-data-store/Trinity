@@ -5,7 +5,7 @@
 #include <tqdm.h>
 #include <vector>
 
-const int DIMENSION = 2;
+const int DIMENSION = 9;
 const symbol_t NUM_BRANCHES = pow(2, DIMENSION);
 FILE *fptr;
 char file_path[] = "benchmark_range_search_2.csv";
@@ -118,7 +118,7 @@ void insert_for_node_path(point_array<DIMENSION> *found_points, level_t max_dept
     bar.finish();
     fprintf(stderr, "dimension: %d\n", DIMENSION);
     fprintf(stderr, "md-trie size: %ld\n", mdtrie->size());   
-    fprintf(stderr, "trie size: %ld, primary key size: %ld\n", trie_size, vector_size);   
+    fprintf(stderr, "top level trie size: %ld, primary key vector size: %ld, treeblock ptr size: %ld\n", trie_size, vector_size, treeblock_ptr_size);   
     fprintf(stderr, "Average time to insert one point: %f microseconds per insertion\n", (float) diff / n_points);
     
     auto *start_range = new data_point<DIMENSION>();
@@ -235,7 +235,7 @@ void test_node_path_only(level_t max_depth, level_t trie_depth, preorder_t max_t
     }
     bar.finish();
 
-    fprintf(stderr, "Time per Checking: %f us, out of %ld points\n", (float)diff / checked_points_size, found_points->size());
+    // fprintf(stderr, "Time per Checking: %f us, out of %ld points\n", (float)diff / checked_points_size, found_points->size());
     fprintf(stderr, "Time per Primary Key lookup: %f us, out of %ld points\n", (float)diff_primary / checked_points_size, found_points->size());
     fprintf(stderr, "Time spent on primary key: %f\n", (float)primary_time / checked_points_size);
      
@@ -650,6 +650,6 @@ int main() {
     // test_search_one_dimension(32, 10, 1024, 100);
     // test_range_only(32, 10, 1024, 50);
     // test_real_data(32, 10, 1024, 50);
-    test_node_path_only(32, 10, 1024);
+    test_node_path_only(32, 10, 512);
 
 }

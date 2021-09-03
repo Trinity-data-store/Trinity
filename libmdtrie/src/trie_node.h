@@ -53,8 +53,8 @@ public:
         uint64_t total_size = NUM_BRANCHES * sizeof(trie_node *) + sizeof(trie_or_treeblock_ptr_) /*+ sizeof(is_leaf_)*/; 
 
         // parent trie node + parent trie symbol
-        trie_size += sizeof(trie_node *) + sizeof(symbol_t); 
-        total_size += sizeof(trie_node *) + sizeof(symbol_t); 
+        trie_size += sizeof(trie_node *) + sizeof(uint16_t) /*symbol_t*/; 
+        total_size += sizeof(trie_node *) + sizeof(uint16_t) /*symbol_t*/; 
 
         // Treeblock pointer for bottom level trie
         // total_size += sizeof(tree_block<DIMENSION, NUM_BRANCHES> *); 

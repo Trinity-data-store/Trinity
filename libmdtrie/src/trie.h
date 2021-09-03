@@ -94,11 +94,11 @@ public:
 
     uint64_t size() const {
 
-        uint64_t total_size = sizeof(trie_node<DIMENSION, NUM_BRANCHES> *) /*root_*/ + sizeof(level_t) * 2 +  sizeof(preorder_t) + sizeof(node_n_t);
+        uint64_t total_size = sizeof(trie_node<DIMENSION, NUM_BRANCHES> *) /*root_*/ + sizeof(uint8_t) * 2 /* level_t*/+  sizeof(uint16_t) /* preorder_t*/+ sizeof(uint16_t) /*node_n_t*/;
 
         // Include primary key size:
 
-        vector_size += sizeof(p_key_to_treeblock_compact) + (44 * total_points_count / 64 + 1) * 8;
+        treeblock_ptr_size += sizeof(p_key_to_treeblock_compact) + (44 * total_points_count / 64 + 1) * 8;
         total_size += sizeof(p_key_to_treeblock_compact) + (44 * total_points_count / 64 + 1) * 8;
 
         // vector_size += sizeof(p_key_to_treeblock) + sizeof(uint64_t) * p_key_to_treeblock.size();

@@ -506,8 +506,8 @@ public:
 
                 uint16_t primary_key_size = primary_key_list[i].size();
                 for (uint16_t j = 0; j < primary_key_size; j++){
-                    // p_key_to_treeblock_compact.Set(primary_key_list[i].get(j), new_block);
-                    p_key_to_treeblock[primary_key_list[i].get(j)] = (uint64_t)new_block;
+                    p_key_to_treeblock_compact.Set(primary_key_list[i].get(j), new_block);
+                    // p_key_to_treeblock[primary_key_list[i].get(j)] = (uint64_t)new_block;
                 }
             }
 
@@ -841,23 +841,23 @@ public:
 
     uint64_t size() {
         
-        uint64_t total_size = sizeof(level_t) * 1 /*root depth, max_depth can be hard coded*/+ sizeof(node_n_t) * 3 /*max tree nodes (can be hard coded), num nodes, tree capacity, num frontiers*/;
+        uint64_t total_size = sizeof(uint8_t) * 1 /*root depth, max_depth can be hard coded*/+ sizeof(uint16_t) * 3 /*max tree nodes (can be hard coded), num nodes, tree capacity, num frontiers*/;
 
         // Using compact representation, I just need to store one pointer
-        total_size += sizeof(preorder_t) + sizeof(tree_block *) /*+ sizeof(trie_node<DIMENSION> *)*/;
+        total_size += sizeof(uint16_t) /*preorder_t*/ + sizeof(tree_block *) /*+ sizeof(trie_node<DIMENSION> *)*/;
 
         total_size += sizeof(primary_key_list);
 
         for (preorder_t i = 0; i < primary_key_list.size(); i++)
         {
-            // vector_size += primary_key_list[i].size_overhead();
+            vector_size += primary_key_list[i].size_overhead();
             total_size += primary_key_list[i].size_overhead();
         }
 
         // TODO: not store pointer
         total_size += dfuds_->size() /*+ sizeof(dfuds_)*/;
 
-        total_size += num_frontiers_ * (sizeof(preorder_t) + sizeof(tree_block *)) + sizeof(frontiers_);
+        total_size += num_frontiers_ * (sizeof(uint16_t) /*preorder_t*/ + sizeof(tree_block *)) + sizeof(frontiers_);
 
         for (uint16_t i = 0; i < num_frontiers_; i++)
             total_size += ((frontier_node<DIMENSION> *) frontiers_)[i].pointer_->size();
@@ -1307,8 +1307,8 @@ public:
                 tmp_symbol = dfuds_->next_symbol(tmp_symbol + 1, prev_node, NUM_BRANCHES - 1);
                 current_primary ++;
             }
-            preorder_t list_size = primary_key_list[current_primary].size();
-            for (preorder_t i = 0; i < list_size; i++)
+            n_leaves_t list_size = primary_key_list[current_primary].size();
+            for (n_leaves_t i = 0; i < list_size; i++)
             {
                 auto primary_key = primary_key_list[current_primary].get(i);
                 // if (found_points->size() == 38){
@@ -1356,7 +1356,7 @@ public:
         struct data_point<DIMENSION> original_end_range = (*end_range); 
         preorder_t new_current_node;
         tree_block *new_current_block;
-        node_t new_current_frontier;
+        preorder_t new_current_frontier;
         preorder_t new_current_primary;
 
         // symbol_t start_symbol_overlap = start_range_symbol & neg_representation;
@@ -1472,8 +1472,8 @@ public:
 
         mutex_p_key.lock();
 
-        // p_key_to_treeblock_compact.Set(current_primary_key, this);
-        p_key_to_treeblock[current_primary_key] = (uint64_t) this;
+        p_key_to_treeblock_compact.Set(current_primary_key, this);
+        // p_key_to_treeblock[current_primary_key] = (uint64_t) this;
 
         primary_key_list[index].push(current_primary_key);
 
@@ -1487,8 +1487,8 @@ public:
 
         mutex_p_key.lock();
 
-        // p_key_to_treeblock_compact.Set(current_primary_key, this);
-        p_key_to_treeblock[current_primary_key] = (uint64_t) this;
+        p_key_to_treeblock_compact.Set(current_primary_key, this);
+        // p_key_to_treeblock[current_primary_key] = (uint64_t) this;
         
         primary_key_list.emplace(primary_key_list.begin() + index, bits::compact_ptr(current_primary_key));
 

@@ -73,8 +73,16 @@ add_executable(self_index_bench
 add_executable(delta_encoded_bench
         bench/delta_encoded_bench.cpp)
 
+add_executable(sample_dataset_bench
+        bench/sample_dataset_bench.cpp)
+
+add_executable(osm_dataset_bench
+        bench/osm_dataset_bench.cpp)
+
 target_link_libraries(mdtrie_bench ${MDTRIE_LIBS})
 target_link_libraries(range_search_bench ${MDTRIE_LIBS})
 target_link_libraries(concurrency_bench ${MDTRIE_LIBS})
 target_link_libraries(self_index_bench ${MDTRIE_LIBS})
 target_link_libraries(delta_encoded_bench ${MDTRIE_LIBS})
+target_link_libraries(sample_dataset_bench ${MDTRIE_LIBS})
+target_link_libraries(osm_dataset_bench ${MDTRIE_LIBS})

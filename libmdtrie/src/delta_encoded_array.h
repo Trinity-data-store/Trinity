@@ -11,7 +11,7 @@
 
 namespace bitmap {
 
-template<typename T, uint32_t sampling_rate = 128>
+template<typename T, uint32_t sampling_rate = 32>
 class DeltaEncodedArray {
  public:
   typedef size_t size_type;
@@ -202,7 +202,7 @@ static struct EliasGammaPrefixSum {
   uint32_t prefixsum_[65536];
 } elias_gamma_prefix_table;
 
-template<typename T, uint32_t sampling_rate = 128>
+template<typename T, uint32_t sampling_rate = 32>
 class EliasGammaDeltaEncodedArray : public DeltaEncodedArray<T, sampling_rate> {
  public:
   typedef typename DeltaEncodedArray<T>::size_type size_type;
