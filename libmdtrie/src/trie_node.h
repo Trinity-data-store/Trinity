@@ -5,65 +5,85 @@
 #include <cstdlib>
 #include "tree_block.h"
 
-template<dimension_t DIMENSION>
+template<dimension_t DIMENSION, symbol_t NUM_BRANCHES>
 class trie_node {
 public:
 
-    trie_node *parent_trie_node = NULL;
-    symbol_t parent_symbol = 0;
+    trie_node *parent_trie_node = NULL; // Most cases set
+    symbol_t parent_symbol = 0; // Most cases set
 
-    explicit trie_node(symbol_t num_branches) : block_(nullptr) {
-        children_ = (trie_node<DIMENSION> **)calloc(num_branches, sizeof(trie_node<DIMENSION> *));
-        size_ = num_branches;
+    explicit trie_node(bool is_leaf) {
+        
+        is_leaf_ = is_leaf;
+        if (!is_leaf){
+            // trie_node<DIMENSION, NUM_BRANCHES> *children[NUM_BRANCHES] = {};
+            // raise(SIGINT);
+            trie_or_treeblock_ptr_ = (trie_node<DIMENSION, NUM_BRANCHES> **)calloc(sizeof(trie_node<DIMENSION, NUM_BRANCHES> *), NUM_BRANCHES);
+        }
+        // children_ = std::array(trie_node<DIMENSION> *, num_branches) = {0};
+        // children_ = (trie_node<DIMENSION> **)calloc(num_branches, sizeof(trie_node<DIMENSION> *));
+        // size_ = num_branches;
     }
 
-    inline trie_node<DIMENSION> *get_child(symbol_t symbol) {
-        return children_[symbol];
+    inline trie_node<DIMENSION, NUM_BRANCHES> *get_child(symbol_t symbol) {
+        // if (is_leaf_)
+            // return NULL;
+        return ((trie_node<DIMENSION, NUM_BRANCHES> **)trie_or_treeblock_ptr_)[symbol];
     }
 
     inline void set_child(symbol_t symbol, trie_node *node) {
-        children_[symbol] = node;
+        ((trie_node<DIMENSION, NUM_BRANCHES> **)trie_or_treeblock_ptr_)[symbol] = node;
     }
 
-    inline tree_block<DIMENSION> *block() const {
-        return block_;
+    inline tree_block<DIMENSION, NUM_BRANCHES> *block() const {
+        // if (!is_leaf_)
+            // return NULL;
+        return (tree_block<DIMENSION, NUM_BRANCHES> *)trie_or_treeblock_ptr_;
     }
 
-    inline void block(tree_block<DIMENSION> *blk) {
-        block_ = blk;
+    inline void block(tree_block<DIMENSION, NUM_BRANCHES> *blk) {
+        trie_or_treeblock_ptr_ = blk;
     }
 
     uint64_t size() const {
-        uint64_t total_size = size_ * sizeof(trie_node *) + sizeof(trie_node *);
-        if (parent_trie_node){
-            total_size += sizeof(trie_node *);
-        }
+        
+        // raise(SIGINT);
+        // Array of Trie node pointers
+        trie_size += NUM_BRANCHES * sizeof(trie_node *) + sizeof(trie_or_treeblock_ptr_) /*+ sizeof(is_leaf_)*/; 
+        uint64_t total_size = NUM_BRANCHES * sizeof(trie_node *) + sizeof(trie_or_treeblock_ptr_) /*+ sizeof(is_leaf_)*/; 
 
-        if (!block_) {
-            for (symbol_t i = 0; i < size_; i++)
+        // parent trie node + parent trie symbol
+        trie_size += sizeof(trie_node *) + sizeof(uint16_t) /*symbol_t*/; 
+        total_size += sizeof(trie_node *) + sizeof(uint16_t) /*symbol_t*/; 
+
+        // Treeblock pointer for bottom level trie
+        // total_size += sizeof(tree_block<DIMENSION, NUM_BRANCHES> *); 
+
+        if (!is_leaf_) {
+            for (symbol_t i = 0; i < NUM_BRANCHES; i++)
             {
-                if (children_[i]) {
-                    total_size += children_[i]->size();
+                if (((trie_node<DIMENSION, NUM_BRANCHES> **)trie_or_treeblock_ptr_)[i]) {
+                    total_size += ((trie_node<DIMENSION, NUM_BRANCHES> **)trie_or_treeblock_ptr_)[i]->size();
                 }
             }
         } else {
-            total_size += ((tree_block<DIMENSION> *) block_)->size();
+            total_size += ((tree_block<DIMENSION, NUM_BRANCHES> *) trie_or_treeblock_ptr_)->size();
         }
         return total_size;
     }
 
     void density(density_array *array) {
         uint8_t current_node = 0;
-        if (!block_) {
-            for (symbol_t i = 0; i < size_; i++)
+        if (!is_leaf_) {
+            for (symbol_t i = 0; i < NUM_BRANCHES; i++)
             {
-                if (children_[i]) {
+                if (((trie_node<DIMENSION, NUM_BRANCHES> **)trie_or_treeblock_ptr_)[i]) {
                     current_node += 1;
-                    children_[i]->density(array);
+                    ((trie_node<DIMENSION, NUM_BRANCHES> **)trie_or_treeblock_ptr_)[i]->density(array);
                 }
             }
         } else {
-            ((tree_block<DIMENSION> *) block_)->density(array);
+            ((tree_block<DIMENSION, NUM_BRANCHES> *) trie_or_treeblock_ptr_)->density(array);
             return;
         }
         (*array)[current_node] = (*array)[current_node] + 1;
@@ -83,9 +103,12 @@ public:
     }
 
 private:
-    trie_node<DIMENSION> **children_;
-    symbol_t size_;
-    tree_block<DIMENSION> *block_;
+
+    bool is_leaf_ = false;
+    void *trie_or_treeblock_ptr_ = NULL;
+    // std::array<trie_node<DIMENSION, NUM_BRANCHES> *, NUM_BRANCHES> children_ = {0};
+
+    // tree_block<DIMENSION, NUM_BRANCHES> *block_; //Most cases not set
 };
 
 

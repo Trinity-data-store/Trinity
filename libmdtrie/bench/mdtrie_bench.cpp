@@ -8,6 +8,7 @@
 #include <iostream>
 #include <thread>
 #include <mutex>
+#include <fstream>
 
 std::mutex mutex_out;
 
@@ -16,13 +17,14 @@ char file_path[] = "benchmark_output_vector.txt";
 char file_path_csv[] = "cdf_8.txt";
 
 
-const int DIMENSION = 4;
+const int DIMENSION = 6;
+const symbol_t NUM_BRANCHES = pow(2, DIMENSION);
 
 
 void test_random_data(n_leaves_t n_points, level_t max_depth, level_t trie_depth, preorder_t max_tree_node)
 {
     auto range = (symbol_t)pow(2, max_depth);
-    auto *mdtrie = new md_trie<DIMENSION>(max_depth, trie_depth, max_tree_node);
+    auto *mdtrie = new md_trie<DIMENSION, NUM_BRANCHES>(max_depth, trie_depth, max_tree_node);
 
     auto *leaf_point = new data_point<DIMENSION>();
 
@@ -49,7 +51,7 @@ void test_real_data(level_t max_depth, level_t trie_depth, preorder_t max_tree_n
 
     // fptr = fopen(file_path, "a");
     // fprintf(fptr, "dimensions: %d, trie_depth: %ld, max_tree_node: %ld\n", DIMENSION, trie_depth, max_tree_node);
-    auto *mdtrie = new md_trie<DIMENSION>(max_depth, trie_depth, max_tree_node);
+    auto *mdtrie = new md_trie<DIMENSION, NUM_BRANCHES>(max_depth, trie_depth, max_tree_node);
     auto *leaf_point = new data_point<DIMENSION>();
 
     char *line = nullptr;
@@ -75,6 +77,7 @@ void test_real_data(level_t max_depth, level_t trie_depth, preorder_t max_tree_n
     n_leaves_t n_points = 0;
 
     n_leaves_t n_lines = 14583357;
+
     diff = 0;
     tqdm bar1;
     while ((read = getline(&line, &len, fp)) != -1)
@@ -161,9 +164,10 @@ void test_real_data(level_t max_depth, level_t trie_depth, preorder_t max_tree_n
     fprintf(stderr, "Average time to query points that are in the trie: %f microseconds per query\n", (float)diff / n_points);
 }
 
+
 void test_insert_data(level_t max_depth, level_t trie_depth, preorder_t max_tree_node){
 
-    auto *mdtrie = new md_trie<DIMENSION>(max_depth, trie_depth, max_tree_node);
+    auto *mdtrie = new md_trie<DIMENSION, NUM_BRANCHES>(max_depth, trie_depth, max_tree_node);
     auto *leaf_point = new data_point<DIMENSION>();
 
     char *line = nullptr;
@@ -188,7 +192,7 @@ void test_insert_data(level_t max_depth, level_t trie_depth, preorder_t max_tree
     
     n_leaves_t n_points = 0;
     n_leaves_t n_lines = 14583357;
-
+    diff = 0;
     tqdm bar;
     while ((read = getline(&line, &len, fp)) != -1)
     {
@@ -219,7 +223,30 @@ void test_insert_data(level_t max_depth, level_t trie_depth, preorder_t max_tree
     fprintf(stderr, "Dimension: %d\n", DIMENSION);
     fprintf(stderr, "Average time to insert one point: %f microseconds\n", (float)diff / n_points);
     std::cerr << "Storage: " << mdtrie->size() << " bytes\n";
+    // std::cerr << "vector storage: " << vector_size << " bytes\n";
     fprintf(stderr, "Total primary key: %ld, out of %ld\n", current_primary_key, n_lines);
+
+    // std::ofstream myfile;
+    // myfile.open("primary_key_count.csv");
+    // for (auto const &pair: primary_key_count_to_occurrences) {
+    //     uint64_t count = pair.second;
+    //     while(count--){
+    //         myfile << pair.first << std::endl;
+    //     }
+    //     // std::cout << "{" << pair.first << ": " << pair.second << "}\n";
+    // }
+
+    // myfile.open("primary_key_count.txt");
+    // for (auto const &pair: primary_key_count_to_occurrences) {
+    //     // uint64_t count = pair.second;
+    //     // while(count--){
+    //     // myfile << pair.first << std::endl;
+    //     // }
+    //     myfile << "{" << pair.first << ": " << pair.second << "}\n";
+    // }    
+    // myfile.close();
+
+    // fprintf(stderr, "Average vector insertion time: %f, out of %ld times\n", (float)vector_time / vect_opt_count, vect_opt_count);
     // fprintf(stderr, "Total bimap insertion time: %lld, total bimap count: %ld\n", total_bimap, bimap_insertion_count);
     return;
     
@@ -227,7 +254,7 @@ void test_insert_data(level_t max_depth, level_t trie_depth, preorder_t max_tree
 
 void test_density(level_t max_depth, level_t trie_depth, preorder_t max_tree_node){
 
-    auto *mdtrie = new md_trie<DIMENSION>(max_depth, trie_depth, max_tree_node);
+    auto *mdtrie = new md_trie<DIMENSION, NUM_BRANCHES>(max_depth, trie_depth, max_tree_node);
     auto *leaf_point = new data_point<DIMENSION>();
 
     char *line = nullptr;
@@ -297,7 +324,7 @@ void test_density(level_t max_depth, level_t trie_depth, preorder_t max_tree_nod
 
 void test_mdtrie_size(level_t max_depth, level_t trie_depth, preorder_t max_tree_node){
     
-    auto *mdtrie = new md_trie<DIMENSION>(max_depth, trie_depth, max_tree_node);
+    auto *mdtrie = new md_trie<DIMENSION, NUM_BRANCHES>(max_depth, trie_depth, max_tree_node);
     auto *leaf_point = new data_point<DIMENSION>();
 
     char *line = nullptr;
@@ -354,7 +381,7 @@ void cdf_insert(level_t max_depth, level_t trie_depth, preorder_t max_tree_node)
     fptr = fopen(file_path_csv, "w");
     n_leaves_t n_lines = 14583357;
     // fprintf(fptr, "num_points, Latency\n");
-    auto *mdtrie = new md_trie<DIMENSION>(max_depth, trie_depth, max_tree_node);
+    auto *mdtrie = new md_trie<DIMENSION, NUM_BRANCHES>(max_depth, trie_depth, max_tree_node);
     auto *leaf_point = new data_point<DIMENSION>();
 
     char *line = nullptr;

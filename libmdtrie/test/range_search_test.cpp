@@ -2,7 +2,9 @@
 #include "trie.h"
 
 const int DIMENSION_EXACT = 3;
+const symbol_t NUM_BRANCHES_EXACT = pow(2, DIMENSION_EXACT);
 const int DIMENSION_RANGE = 8;
+const symbol_t NUM_BRANCHES_RANGE = pow(2, DIMENSION_RANGE);
 
 bool test_range_search(n_leaves_t n_points, level_t max_depth, level_t trie_depth,
                        preorder_t max_tree_nodes, uint32_t n_itr,
@@ -16,7 +18,7 @@ bool test_range_search(n_leaves_t n_points, level_t max_depth, level_t trie_dept
     */     
 
     auto range = (symbol_t) pow(2, max_depth);
-    auto *mdtrie = new md_trie<DIMENSION_RANGE>(max_depth, trie_depth, max_tree_nodes);
+    auto *mdtrie = new md_trie<DIMENSION_RANGE, NUM_BRANCHES_RANGE>(max_depth, trie_depth, max_tree_nodes);
     auto *leaf_point = new data_point<DIMENSION_RANGE>();
     uint64_t max[DIMENSION_RANGE];
     uint64_t min[DIMENSION_RANGE];
@@ -107,7 +109,7 @@ bool test_range_search_exact(n_leaves_t n_points, level_t max_depth, level_t tri
     */   
 
     auto range = (symbol_t) pow(2, max_depth);
-    auto *mdtrie = new md_trie<DIMENSION_EXACT>(max_depth, trie_depth, max_tree_nodes);
+    auto *mdtrie = new md_trie<DIMENSION_EXACT, NUM_BRANCHES_EXACT>(max_depth, trie_depth, max_tree_nodes);
     auto *leaf_point = new data_point<DIMENSION_EXACT>();
     uint64_t max[DIMENSION_EXACT];
     uint64_t min[DIMENSION_EXACT];
