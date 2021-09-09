@@ -147,6 +147,7 @@ class compressed_bitmap {
   {
     // flag_size_ can be obtained from num_nodes, not included 
     return (data_size_ + flag_size_) / 8 + sizeof(size_type) /* size_ number */ + 2 * sizeof(data_type *) /* two arrays */;
+    // return BITS2BLOCKS(data_size_) * sizeof(data_type) + BITS2BLOCKS(flag_size_) * sizeof(data_type);
   }
 
   inline void increase_bits(width_type increase_width, bool is_on_data){

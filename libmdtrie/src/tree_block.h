@@ -140,8 +140,12 @@ public:
                 
             while (node_stack_top > 0 && index_to_node[node_stack_top - 1].n_children_ == 0) {
                 index_to_subtree[subtree_stack_top].preorder_ = index_to_node[node_stack_top - 1].preorder_;
+
                 index_to_subtree[subtree_stack_top++].subtree_size_ = i - index_to_node[node_stack_top - 1].preorder_ + 1;
 
+                // if (index_to_subtree[subtree_stack_top - 1].preorder_ == 0 && index_to_subtree[subtree_stack_top - 1].subtree_size_ != num_nodes_){
+                //     raise(SIGINT);
+                // }
                 --node_stack_top;
                 index_to_depth[depth_stack_top++] = --depth;
                 if (node_stack_top == 0)
@@ -160,21 +164,23 @@ public:
 
         for (preorder_t i = 0; i < subtree_stack_top; ++i) {
             auto subtree_size_at_i = (preorder_t) index_to_subtree[i].subtree_size_;
-            if (num_nodes_ <= subtree_size_at_i * 4 && subtree_size_at_i * 4 <= 3 * num_nodes_ &&
+            if (index_to_subtree[i].preorder_ != 0 && num_nodes_ <= subtree_size_at_i * 4 && subtree_size_at_i * 4 <= 3 * num_nodes_ &&
                 index_to_subtree[i].preorder_ < leftmost) {
+
+                // TODO: root node's subtree size doesn't match num_nodes_
                 leftmost = min_node = index_to_subtree[i].preorder_;
                 min_index = i;
             }
         }
 
         if (leftmost == (preorder_t) -1) {
-            min_node = index_to_subtree[0].preorder_;
-            if (num_nodes_ > 2 * index_to_subtree[0].subtree_size_) {
-                min = num_nodes_ - 2 * index_to_subtree[0].subtree_size_;
+            min_node = index_to_subtree[1].preorder_;
+            if (num_nodes_ > 2 * index_to_subtree[1].subtree_size_) {
+                min = num_nodes_ - 2 * index_to_subtree[1].subtree_size_;
             } else {
-                min = 2 * index_to_subtree[0].subtree_size_ - num_nodes_;
+                min = 2 * index_to_subtree[1].subtree_size_ - num_nodes_;
             }
-            min_index = 0;
+            min_index = 1;
 
             for (preorder_t i = 1; i < subtree_stack_top; ++i) {
                 if (num_nodes_ > 2 * index_to_subtree[i].subtree_size_) {
@@ -216,6 +222,9 @@ public:
             num_primary += index_to_primary[i];
         }
 
+        if (min_node == 0){
+            raise(SIGINT);
+        }
         // exit(0);
         // fprintf(stderr, "\n");
         // mutex.unlock();
@@ -249,9 +258,14 @@ public:
 
         node_t original_node = node;
         node_n_t max_tree_nodes;
+
         if (root_depth_ <=/*=*/ 16) max_tree_nodes = 64;
         else if (root_depth_ <= 24) max_tree_nodes = 128;
         else max_tree_nodes = max_tree_nodes_;
+
+        if (is_osm)
+            max_tree_nodes = max_tree_nodes_;
+        // max_tree_nodes = max_tree_nodes_;
         //  node is a frontier node
         if (frontiers_ != nullptr && current_frontier < num_frontiers_ && node == get_preorder(current_frontier)) {
             
@@ -451,9 +465,9 @@ public:
             //     raise(SIGINT);
             // }
 
-            bool insertion_before_selected_tree = true;
-            if (!insertion_in_new_block && frontier <= current_frontier)
-                insertion_before_selected_tree = false;
+            // bool insertion_before_selected_tree = true;
+            // if (!insertion_in_new_block && frontier <= current_frontier)
+            //     insertion_before_selected_tree = false;
             auto new_block = new tree_block(selected_node_depth, subtree_size, subtree_size, max_depth_, max_tree_nodes_);
             new_block->dfuds_ = new_dfuds;
 
@@ -532,8 +546,16 @@ public:
             // }    
             
             // It seems that this optimization is not faster.
+
+            // if (leaf_point->get_coordinate(6) == 94195255 && leaf_point->get_coordinate(7) == 511512152 && leaf_point->get_coordinate(2) == 18)
+            // {
+            //     raise(SIGINT);
+            // }
+
+
             if (selected_node < num_nodes_) {
-                if (selected_node <= node && node < num_nodes_) {
+                // Fixed a bug here: was node < num_nodes_
+                if (selected_node <= node /* && node <= num_nodes_ */) {
                     insertion_node = node - selected_node + orig_selected_node;
                 }
 
@@ -581,8 +603,10 @@ public:
             //     }
             // }    
 
-            if (!insertion_before_selected_tree){
-                current_frontier -= copied_frontier;
+            if (insertion_node > orig_selected_node - 1 /*it was ++*/ && !insertion_in_new_block){
+            // if (!insertion_before_selected_tree){
+                // raise(SIGINT);
+                current_frontier -= copied_frontier - 1;
                 // current_primary -= num_primary;
             }
                 
@@ -715,6 +739,10 @@ public:
     // This function differs from skip_children_subtree as it checks if that child node is present
     node_t child(tree_block *&p, node_t node, symbol_t symbol, level_t &current_level,
                             preorder_t &current_frontier, preorder_t &current_primary) {
+
+        if (node >= num_nodes_)
+            return null_node;
+
         get_bit_count ++;
         auto has_child = dfuds_->has_symbol(node, symbol);
         if (!has_child)
@@ -763,8 +791,21 @@ public:
         preorder_t current_primary = 0;
 
         node_t temp_node = 0;
+        // if (leaf_point->get_coordinate(0) == 4 && leaf_point->get_coordinate(1) == 21 && leaf_point->get_coordinate(2) == 18 && leaf_point->get_coordinate(3) == 31 && leaf_point->get_coordinate(4) == 8 && leaf_point->get_coordinate(5) == 2020 && leaf_point->get_coordinate(6) == 247106389 && leaf_point->get_coordinate(7) == 603125402 && primary_key_list.size() == 0){
+        //     raise(SIGINT);
+        // }
+
         while (level < length) {
             tree_block *current_treeblock = this;
+
+            // if (current_node >= num_nodes_){
+            //     raise(SIGINT);
+            // }
+
+            // if (leaf_point->get_coordinate(0) == 1 && leaf_point->get_coordinate(1) == 52 && leaf_point->get_coordinate(2) == 18 && leaf_point->get_coordinate(3) == 25 && leaf_point->get_coordinate(4) == 7 && leaf_point->get_coordinate(5) == 2018 && leaf_point->get_coordinate(6) == 94195255 && leaf_point->get_coordinate(7) == 511512152 && current_node == 61){
+            //     raise(SIGINT);
+            // }
+
             temp_node = child(current_treeblock, current_node,
                                             leaf_point->leaf_to_symbol(level, max_depth_), level,
                                             current_frontier, current_primary);
@@ -774,12 +815,23 @@ public:
             // if (level == length - 1 && current_node != temp_node){
             //     raise(SIGINT);
             // }
+
+            if (temp_node > num_nodes_){
+                raise(SIGINT);
+            }
+
             current_node = temp_node;
+
+            if (current_node == num_nodes_){
+                // raise(SIGINT);
+                break;
+            }
             /**
                 TODO: consider the scenario where we go through the frontier node
                 But at node 0, symbol is not found;
                 Have to update the symbol at the previous treeblock as well.
-            */                 
+            */               
+
             if (num_frontiers() > 0 && current_frontier < num_frontiers() &&
                 current_node == get_preorder(current_frontier)) {
                 
@@ -841,12 +893,12 @@ public:
 
     uint64_t size() {
         
-        uint64_t total_size = sizeof(uint8_t) * 1 /*root depth, max_depth can be hard coded*/+ sizeof(uint16_t) * 3 /*max tree nodes (can be hard coded), num nodes, tree capacity, num frontiers*/;
+        uint64_t total_size = sizeof(uint8_t) * 1 /*root depth, max_depth can be hard coded*/+ sizeof(uint16_t) * 2 /*max tree nodes (can be hard coded), num nodes & tree capacity can be potentially merged, num frontiers*/;
 
         // Using compact representation, I just need to store one pointer
-        total_size += sizeof(uint16_t) /*preorder_t*/ + sizeof(tree_block *) /*+ sizeof(trie_node<DIMENSION> *)*/;
+        total_size += sizeof(tree_block *) /*+ sizeof(trie_node<DIMENSION> *) and preorder number*/;
 
-        total_size += sizeof(primary_key_list);
+        total_size += sizeof(primary_key_list) + ((primary_key_list.size() * 46) / 64 + 1) * 8;
 
         for (preorder_t i = 0; i < primary_key_list.size(); i++)
         {
@@ -854,10 +906,19 @@ public:
             total_size += primary_key_list[i].size_overhead();
         }
 
-        // TODO: not store pointer
+        for (preorder_t i = 0; i < num_nodes_; i++){
+            
+            preorder_t num_children = dfuds_->get_n_children(i);
+            if (node_children_to_occurrences.find(num_children) == node_children_to_occurrences.end())
+                node_children_to_occurrences[num_children] = 1;
+            else
+                node_children_to_occurrences[num_children] += 1;
+        }
+
+        treeblock_nodes_size += dfuds_->size(); // TODO: not store pointer at dfuds
         total_size += dfuds_->size() /*+ sizeof(dfuds_)*/;
 
-        total_size += num_frontiers_ * (sizeof(uint16_t) /*preorder_t*/ + sizeof(tree_block *)) + sizeof(frontiers_);
+        total_size += num_frontiers_ * sizeof(tree_block *) /*Use compact pointer representation*/ + sizeof(frontiers_) /*pointer*/;
 
         for (uint16_t i = 0; i < num_frontiers_; i++)
             total_size += ((frontier_node<DIMENSION> *) frontiers_)[i].pointer_->size();

@@ -39,8 +39,7 @@ if (Boost_BUILD)
     list(APPEND Boost_COMPONENT_FLAGS --with-${component})
   endforeach ()
   ExternalProject_Add(boost_ep
-  
-          URL http://sourceforge.net/projects/boost/files/boost/${BOOST_VERSION}/boost_${BOOST_VERSION_STR}.tar.bz2
+          URL https://boostorg.jfrog.io/artifactory/main/release/${BOOST_VERSION}/source/boost_${BOOST_VERSION_STR}.tar.gz
           UPDATE_COMMAND ""
           CONFIGURE_COMMAND ./bootstrap.sh --prefix=${Boost_PREFIX}
           BUILD_COMMAND ./b2 link=static variant=release cxxflags=-fPIC cflags=-fPIC --prefix=${Boost_PREFIX} ${Boost_COMPONENT_FLAGS} install

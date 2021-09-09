@@ -85,10 +85,13 @@ bitmap::CompactPtrVector p_key_to_treeblock_compact(total_points_count);
 uint64_t trie_size = 0;
 uint64_t vector_size = 0;
 uint64_t treeblock_ptr_size = 0;
+uint64_t treeblock_nodes_size = 0;
 TimeStamp primary_time = 0;
 template<dimension_t DIMENSION>
 class data_point;
 
+std::map<uint64_t, uint64_t> node_children_to_occurrences;
+bool is_osm = false;
 // std::map<uint64_t, uint64_t> primary_key_count_to_occurrences;
 // std::vector<data_point<2>> all_stored_points;
 

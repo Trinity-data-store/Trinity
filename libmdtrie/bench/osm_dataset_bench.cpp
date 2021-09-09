@@ -5,7 +5,8 @@
 #include <tqdm.h>
 #include <vector>
 
-const int DIMENSION = 9; // <= 10
+// Remove ID
+const int DIMENSION = 2; // <= 8
 const symbol_t NUM_BRANCHES = pow(2, DIMENSION);
 
 void insert_for_node_path(point_array<DIMENSION> *found_points, level_t max_depth, level_t trie_depth, preorder_t max_tree_node, std::vector<data_point<DIMENSION>> *all_points){
@@ -17,7 +18,7 @@ void insert_for_node_path(point_array<DIMENSION> *found_points, level_t max_dept
     char *line = nullptr;
     size_t len = 0;
     ssize_t read;
-    FILE *fp = fopen("../libmdtrie/bench/data/osm.txt", "r");
+    FILE *fp = fopen("../libmdtrie/bench/data/osm_combined.csv", "r");
 
     // If the file cannot be open
     if (fp == nullptr)
@@ -36,7 +37,8 @@ void insert_for_node_path(point_array<DIMENSION> *found_points, level_t max_dept
     n_leaves_t n_points = 0;
     uint64_t max[DIMENSION];
     uint64_t min[DIMENSION];
-    n_leaves_t n_lines = 330981;
+    n_leaves_t n_lines = 14252681;
+    total_points_count = n_lines;
     // diff = 0;
     tqdm bar;
     TimeStamp start, diff;
@@ -47,10 +49,31 @@ void insert_for_node_path(point_array<DIMENSION> *found_points, level_t max_dept
         bar.progress(n_points, n_lines);
         char *token = strtok(line, ",");
         char *ptr;
+        
+        for (dimension_t i = 0; i < 8; i++){
 
-        for (dimension_t i = 0; i < DIMENSION; i++){
+            if (i == 1){
+                token = strtok(nullptr, ",");
+                token = strtok(nullptr, ",");
+                // Remove 2 all-zero column 
+            }
+
             token = strtok(nullptr, ",");
-            leaf_point->set_coordinate(i, strtoul(token, &ptr, 10));
+            // if (i == 6 || i == 7){
+                // leaf_point->set_coordinate(i, strtoul(token, &ptr, 10) / 10);
+            // }
+            // else {
+            if (i < 8 - DIMENSION)
+                continue;
+            
+            // if (i == 6 || i == 7){
+            //     leaf_point->set_coordinate(i - (8 - DIMENSION), strtoul(token, &ptr, 10) % 100);
+            // }
+            // else {
+            leaf_point->set_coordinate(i - (8 - DIMENSION), strtoul(token, &ptr, 10));
+            // }
+
+            // }
         }
 
         for (dimension_t i = 0; i < DIMENSION; i++){
@@ -67,21 +90,51 @@ void insert_for_node_path(point_array<DIMENSION> *found_points, level_t max_dept
                 }
             }            
         }
-
+        // raise(SIGINT);
         (*all_points).push_back((*leaf_point));
 
         start = GetTimestamp();
+        // if (leaf_point->get_coordinate(0) == 2 && leaf_point->get_coordinate(1) == 22 && leaf_point->get_coordinate(2) == 13 && leaf_point->get_coordinate(3) == 25 && leaf_point->get_coordinate(4) == 5 && leaf_point->get_coordinate(5) == 2021 && leaf_point->get_coordinate(6) == 247084021 && leaf_point->get_coordinate(7) == 603852889)
+        //     raise(SIGINT);
+
+        // if (n_points == 1050914)
+        //     raise(SIGINT);
+
         mdtrie->insert_trie(leaf_point, max_depth);
         diff += GetTimestamp() - start;
+
+        // if (!mdtrie->check(leaf_point, max_depth))
+        //     raise(SIGINT);
+        
         n_points ++;
+    }
+
+    for (dimension_t i = 0; i < DIMENSION; i++){
+        if (max[i] == min[i]){
+            raise(SIGINT);
+        }
     }
 
     bar.finish();
     fprintf(stderr, "dimension: %d\n", DIMENSION);
     fprintf(stderr, "md-trie size: %ld\n", mdtrie->size());   
-    fprintf(stderr, "top level trie size: %ld, primary key vector size: %ld, treeblock ptr size: %ld\n", trie_size, vector_size, treeblock_ptr_size);   
+    fprintf(stderr, "top level trie size: %ld, primary key vector size: %ld, treeblock ptr size: %ld, treeblock_nodes_size: %ld\n", trie_size, vector_size, treeblock_ptr_size, treeblock_nodes_size);   
     fprintf(stderr, "Average time to insert one point: %f microseconds per insertion\n", (float) diff / n_points);
     
+    for (auto const &pair: node_children_to_occurrences) {
+        std::cout << "{" << pair.first << ": " << pair.second << "}\n";
+    }
+
+    // tqdm bar2;
+    // for (uint64_t i = 0; i < n_lines; i++){
+    //     bar2.progress(i, n_lines);
+    //     auto check_point = (*all_points)[i];
+    //     if (!mdtrie->check(&check_point, max_depth))
+    //         raise(SIGINT);
+    // }
+    // bar2.finish();
+
+
     auto *start_range = new data_point<DIMENSION>();
     auto *end_range = new data_point<DIMENSION>();
 
@@ -200,6 +253,6 @@ void test_node_path_only(level_t max_depth, level_t trie_depth, preorder_t max_t
 }
 
 int main() {
-
+    is_osm = true;
     test_node_path_only(32, 10, 512);
 }
