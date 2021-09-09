@@ -2,10 +2,11 @@
 #include "trie.h"
 
 const int DIMENSION = 2;
+const symbol_t NUM_BRANCHES = pow(2, DIMENSION);
 
 void insert_for_node_path(point_array<DIMENSION> *found_points, level_t max_depth, level_t trie_depth, preorder_t max_tree_node, std::vector<data_point<DIMENSION>> *all_points){
     
-    auto *mdtrie = new md_trie<DIMENSION>(max_depth, trie_depth, max_tree_node);
+    auto *mdtrie = new md_trie<DIMENSION, NUM_BRANCHES>(max_depth, trie_depth, max_tree_node);
     auto *leaf_point = new data_point<DIMENSION>();
 
     char *line = nullptr;
@@ -54,14 +55,17 @@ void insert_for_node_path(point_array<DIMENSION> *found_points, level_t max_dept
             }
         }
         (*all_points).push_back((*leaf_point));
+        // all_stored_points.push_back((*leaf_point));
 
         mdtrie->insert_trie(leaf_point, max_depth);
         n_points ++;
-        if (n_points > n_lines){
+        if (n_points > 1000000){
             break;
         }
     }
+
     
+
     auto *start_range = new data_point<DIMENSION>();
     auto *end_range = new data_point<DIMENSION>();
 
@@ -69,15 +73,24 @@ void insert_for_node_path(point_array<DIMENSION> *found_points, level_t max_dept
         start_range->set_coordinate(i,  min[i]);
         end_range->set_coordinate(i, max[i]);
     }
+    // raise(SIGINT);
     mdtrie->range_search_trie(start_range, end_range, mdtrie->root(), 0, found_points);
+    if (found_points->size() != n_points){
+        raise(SIGINT);
+    }
     fclose(fp);
 }
 
 bool test_lookup(level_t max_depth, level_t trie_depth, preorder_t max_tree_node){
     auto *found_points = new point_array<DIMENSION>();
     auto *all_points = new std::vector<data_point<DIMENSION>>();
-
+    // 
+    // points = all_points;
     insert_for_node_path(found_points, max_depth, trie_depth, max_tree_node, all_points);
+    // raise(SIGINT);
+    // if (found_points->size() != 14583357){
+    //     return false;
+    // }
 
     TimeStamp diff = 0;
     TimeStamp start;
@@ -85,7 +98,7 @@ bool test_lookup(level_t max_depth, level_t trie_depth, preorder_t max_tree_node
     TimeStamp diff_primary = 0;
 
     for (n_leaves_t i = 0; i < found_points_size; i++){
-        
+        // raise(SIGINT);
         symbol_t *node_path = (symbol_t *)malloc((max_depth + 1) * sizeof(symbol_t));
         data_point<DIMENSION> *point = found_points->at(i);
 
@@ -94,7 +107,7 @@ bool test_lookup(level_t max_depth, level_t trie_depth, preorder_t max_tree_node
             return if coordinates match
         */
 
-        tree_block<DIMENSION> *parent_treeblock = point->get_parent_treeblock();
+        tree_block<DIMENSION, NUM_BRANCHES> *parent_treeblock = point->get_parent_treeblock();
         symbol_t parent_symbol = point->get_parent_symbol();
         node_t parent_node = point->get_parent_node();
 
@@ -115,21 +128,22 @@ bool test_lookup(level_t max_depth, level_t trie_depth, preorder_t max_tree_node
         */
 
         preorder_t returned_primary_key = point->read_primary();
-        bool found = false;
+        // bool found = false;
 
         data_point<DIMENSION> current_point = (*all_points)[returned_primary_key];
 
         for (dimension_t j = 0; j < DIMENSION; j++){
             if (returned_coordinates->get_coordinate(j) != current_point.get_coordinate(j)){
-                break;
+                raise(SIGINT);
+                return false;
             }
-            if (j == DIMENSION - 1){
-                found = true;
-            }
+            // if (j == DIMENSION - 1){
+            //     found = true;
+            // }
         }
 
-        if (!found)
-            return false;
+        // if (!found)
+        //     return false;
 
         /**
             Test md-trie lookup given primary key
@@ -140,7 +154,8 @@ bool test_lookup(level_t max_depth, level_t trie_depth, preorder_t max_tree_node
 
         symbol_t *node_path_from_primary = (symbol_t *)malloc((max_depth + 1) * sizeof(symbol_t));
 
-        tree_block<DIMENSION> *t_ptr = (tree_block<DIMENSION> *)p_key_to_treeblock[returned_primary_key];
+        // tree_block<DIMENSION, NUM_BRANCHES> *t_ptr = (tree_block<DIMENSION, NUM_BRANCHES> *) p_key_to_treeblock[returned_primary_key];
+        tree_block<DIMENSION, NUM_BRANCHES> *t_ptr = (tree_block<DIMENSION, NUM_BRANCHES> *) (p_key_to_treeblock_compact.At(returned_primary_key));
         
         symbol_t parent_symbol_from_primary = t_ptr->get_node_path_primary_key(returned_primary_key, node_path_from_primary);
         node_path_from_primary[max_depth - 1] = parent_symbol_from_primary;
@@ -149,6 +164,7 @@ bool test_lookup(level_t max_depth, level_t trie_depth, preorder_t max_tree_node
 
         for (dimension_t j = 0; j < DIMENSION; j++){
             if (returned_coordinates->get_coordinate(j) != point->get_coordinate(j)){
+                raise(SIGINT);
                 return false;
             }
         }    

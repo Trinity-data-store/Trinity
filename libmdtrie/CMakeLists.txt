@@ -23,17 +23,24 @@ if (BUILD_TESTS)
           test/test_main.cpp
           test/mdtrie_concurrency_test.cpp)
 
+  add_executable(elias_gamma_encoder_tests
+          test/test_main.cpp
+          test/elias_gamma_encoder_test.cpp)
+
   target_link_libraries(mdtrie_tests ${MDTRIE_LIBS})
   target_link_libraries(range_search_tests ${MDTRIE_LIBS})
   target_link_libraries(mdtrie_lookup_tests ${MDTRIE_LIBS})
   target_link_libraries(mdtrie_concurrency_tests ${MDTRIE_LIBS})
+  target_link_libraries(elias_gamma_encoder_tests ${MDTRIE_LIBS})
 
   add_dependencies(mdtrie_tests catch_ep)
   add_dependencies(range_search_tests catch_ep)
   add_dependencies(mdtrie_lookup_tests catch_ep)
   add_dependencies(mdtrie_concurrency_tests catch_ep)
+  add_dependencies(elias_gamma_encoder_tests catch_ep)
 
   # Register test
+  add_test(GammaEncoderTest elias_gamma_encoder_tests)
   add_test(MdTrieTest mdtrie_tests)
   add_test(MdTrieLookupTest mdtrie_lookup_tests)
   add_test(RangeSearchTest range_search_tests)
@@ -54,16 +61,28 @@ add_executable(orig_bench_no_table
 add_executable(range_search_bench
         bench/range_search_bench.cpp)
 
-#add_executable(concurrency_bench
-#        bench/concurrency_bench.cpp)
+add_executable(concurrency_bench
+        bench/concurrency_bench.cpp)
 
-#add_executable(trie_one_dimension_bench
-#        bench/trie_one_dimension_bench.cpp)
+add_executable(trie_one_dimension_bench
+        bench/trie_one_dimension_bench.cpp)
 
 add_executable(self_index_bench
         bench/self_index_bench.cpp)
 
+add_executable(delta_encoded_bench
+        bench/delta_encoded_bench.cpp)
+
+add_executable(sample_dataset_bench
+        bench/sample_dataset_bench.cpp)
+
+add_executable(osm_dataset_bench
+        bench/osm_dataset_bench.cpp)
+
 target_link_libraries(mdtrie_bench ${MDTRIE_LIBS})
 target_link_libraries(range_search_bench ${MDTRIE_LIBS})
-#target_link_libraries(concurrency_bench ${MDTRIE_LIBS})
+target_link_libraries(concurrency_bench ${MDTRIE_LIBS})
 target_link_libraries(self_index_bench ${MDTRIE_LIBS})
+target_link_libraries(delta_encoded_bench ${MDTRIE_LIBS})
+target_link_libraries(sample_dataset_bench ${MDTRIE_LIBS})
+target_link_libraries(osm_dataset_bench ${MDTRIE_LIBS})

@@ -4,17 +4,17 @@
 #include "defs.h"
 #include <cstdlib>
 #include <cstring>
-#include "bitmap.h"
+#include "compressed_bitmap.h"
 
 // Struct for each point that we want to insert
 template<dimension_t DIMENSION>
 class data_point {
 private:
-    tree_block<DIMENSION> *parent_treeblock = NULL;
+    tree_block<DIMENSION, (symbol_t)pow(2, (double)DIMENSION)> *parent_treeblock = NULL;
     symbol_t parent_symbol;
     node_t parent_node;
     point_t coordinates[DIMENSION] = {};
-    preorder_t primary_key = 0;
+    n_leaves_t primary_key = 0;
 public:
 
     explicit data_point(){
@@ -37,11 +37,11 @@ public:
         coordinates[index] = value;
     }
 
-    inline void set_primary(preorder_t value){
+    inline void set_primary(n_leaves_t value){
         primary_key = value;
     }
 
-    inline preorder_t read_primary(){
+    inline n_leaves_t read_primary(){
         return primary_key;
     }
 
@@ -53,7 +53,7 @@ public:
         return parent_node;
     }
 
-    inline tree_block<DIMENSION> *get_parent_treeblock(){
+    inline tree_block<DIMENSION, (symbol_t)pow(2, (double)DIMENSION)> *get_parent_treeblock(){
         return parent_treeblock;
     }
 
@@ -66,7 +66,7 @@ public:
     }
 
 
-    inline void set_parent_treeblock(tree_block<DIMENSION> *treeblock){
+    inline void set_parent_treeblock(tree_block<DIMENSION, (symbol_t)pow(2, (double)DIMENSION)> *treeblock){
         parent_treeblock = treeblock;
     }
 
@@ -98,18 +98,18 @@ public:
             
             // Bring the start of the search range to second half
             if (morton_bit && !start_bit) {
-                start_coordinate = start_coordinate & bitmap::low_bits_unset[offset];
+                start_coordinate = start_coordinate & compressed_bitmap::low_bits_unset[offset];
                 SETBIT(start_coordinate, offset);
             } 
             // Bring the end of the search range to first half
             if (!morton_bit && end_bit) {
-                end_coordinate = end_coordinate | bitmap::low_bits_set[offset];
+                end_coordinate = end_coordinate | compressed_bitmap::low_bits_set[offset];
                 // In the end, only the start_coordinate is kept as the returned point
                 CLRBIT(end_coordinate, offset);            
             }
-            if (GETBIT(start_coordinate, offset) != GETBIT(end_coordinate, offset)){
-                raise(SIGINT);
-            }
+            // if (GETBIT(start_coordinate, offset) != GETBIT(end_coordinate, offset)){
+            //     raise(SIGINT);
+            // }
             coordinates[j] = start_coordinate;
             end_range->coordinates[j] = end_coordinate;
         }
