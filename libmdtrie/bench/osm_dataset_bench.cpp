@@ -6,7 +6,7 @@
 #include <vector>
 
 // Remove ID
-const int DIMENSION = 2; // <= 8
+const int DIMENSION = 6; // <= 8
 const symbol_t NUM_BRANCHES = pow(2, DIMENSION);
 
 void insert_for_node_path(point_array<DIMENSION> *found_points, level_t max_depth, level_t trie_depth, preorder_t max_tree_node, std::vector<data_point<DIMENSION>> *all_points){
@@ -18,7 +18,7 @@ void insert_for_node_path(point_array<DIMENSION> *found_points, level_t max_dept
     char *line = nullptr;
     size_t len = 0;
     ssize_t read;
-    FILE *fp = fopen("../libmdtrie/bench/data/osm_combined.csv", "r");
+    FILE *fp = fopen("../libmdtrie/bench/data/osm_combined_updated.csv", "r");
 
     // If the file cannot be open
     if (fp == nullptr)
