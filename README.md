@@ -21,3 +21,9 @@ Put the dataset under /libmdtrie/bench/data
 ```bash
 ./build/libmdtrie/mdtrie_bench
 ```
+
+### Thrift
+
+```cd build
+cmake -DGENERATE_THRIFT=on ..
+```
