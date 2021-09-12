@@ -10,19 +10,35 @@
 
 
 
-MDTrieShard_get_args::~MDTrieShard_get_args() noexcept {
+MDTrieShard_ping_args::~MDTrieShard_ping_args() noexcept {
 }
 
 
-MDTrieShard_get_pargs::~MDTrieShard_get_pargs() noexcept {
+MDTrieShard_ping_pargs::~MDTrieShard_ping_pargs() noexcept {
 }
 
 
-MDTrieShard_get_result::~MDTrieShard_get_result() noexcept {
+MDTrieShard_ping_result::~MDTrieShard_ping_result() noexcept {
 }
 
 
-MDTrieShard_get_presult::~MDTrieShard_get_presult() noexcept {
+MDTrieShard_ping_presult::~MDTrieShard_ping_presult() noexcept {
+}
+
+
+MDTrieShard_add_args::~MDTrieShard_add_args() noexcept {
+}
+
+
+MDTrieShard_add_pargs::~MDTrieShard_add_pargs() noexcept {
+}
+
+
+MDTrieShard_add_result::~MDTrieShard_add_result() noexcept {
+}
+
+
+MDTrieShard_add_presult::~MDTrieShard_add_presult() noexcept {
 }
 
 

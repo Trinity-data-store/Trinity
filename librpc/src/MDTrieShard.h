@@ -22,7 +22,15 @@
 class MDTrieShardIf {
  public:
   virtual ~MDTrieShardIf() {}
-  virtual void get(std::string& _return, const int64_t key) = 0;
+
+  /**
+   * A method definition looks like C code. It has a return type, arguments,
+   * and optionally a list of exceptions that it may throw. Note that argument
+   * lists and exception lists are specified using the exact same syntax as
+   * field lists in struct or exception definitions.
+   */
+  virtual void ping() = 0;
+  virtual int32_t add(const int32_t num1, const int32_t num2) = 0;
 };
 
 class MDTrieShardIfFactory {
@@ -52,42 +60,35 @@ class MDTrieShardIfSingletonFactory : virtual public MDTrieShardIfFactory {
 class MDTrieShardNull : virtual public MDTrieShardIf {
  public:
   virtual ~MDTrieShardNull() {}
-  void get(std::string& /* _return */, const int64_t /* key */) {
+  void ping() {
     return;
+  }
+  int32_t add(const int32_t /* num1 */, const int32_t /* num2 */) {
+    int32_t _return = 0;
+    return _return;
   }
 };
 
-typedef struct _MDTrieShard_get_args__isset {
-  _MDTrieShard_get_args__isset() : key(false) {}
-  bool key :1;
-} _MDTrieShard_get_args__isset;
 
-class MDTrieShard_get_args {
+class MDTrieShard_ping_args {
  public:
 
-  MDTrieShard_get_args(const MDTrieShard_get_args&);
-  MDTrieShard_get_args& operator=(const MDTrieShard_get_args&);
-  MDTrieShard_get_args() : key(0) {
+  MDTrieShard_ping_args(const MDTrieShard_ping_args&);
+  MDTrieShard_ping_args& operator=(const MDTrieShard_ping_args&);
+  MDTrieShard_ping_args() {
   }
 
-  virtual ~MDTrieShard_get_args() noexcept;
-  int64_t key;
+  virtual ~MDTrieShard_ping_args() noexcept;
 
-  _MDTrieShard_get_args__isset __isset;
-
-  void __set_key(const int64_t val);
-
-  bool operator == (const MDTrieShard_get_args & rhs) const
+  bool operator == (const MDTrieShard_ping_args & /* rhs */) const
   {
-    if (!(key == rhs.key))
-      return false;
     return true;
   }
-  bool operator != (const MDTrieShard_get_args &rhs) const {
+  bool operator != (const MDTrieShard_ping_args &rhs) const {
     return !(*this == rhs);
   }
 
-  bool operator < (const MDTrieShard_get_args & ) const;
+  bool operator < (const MDTrieShard_ping_args & ) const;
 
   template <class Protocol_>
   uint32_t read(Protocol_* iprot);
@@ -97,49 +98,147 @@ class MDTrieShard_get_args {
 };
 
 
-class MDTrieShard_get_pargs {
+class MDTrieShard_ping_pargs {
  public:
 
 
-  virtual ~MDTrieShard_get_pargs() noexcept;
-  const int64_t* key;
+  virtual ~MDTrieShard_ping_pargs() noexcept;
 
   template <class Protocol_>
   uint32_t write(Protocol_* oprot) const;
 
 };
 
-typedef struct _MDTrieShard_get_result__isset {
-  _MDTrieShard_get_result__isset() : success(false) {}
-  bool success :1;
-} _MDTrieShard_get_result__isset;
 
-class MDTrieShard_get_result {
+class MDTrieShard_ping_result {
  public:
 
-  MDTrieShard_get_result(const MDTrieShard_get_result&);
-  MDTrieShard_get_result& operator=(const MDTrieShard_get_result&);
-  MDTrieShard_get_result() : success() {
+  MDTrieShard_ping_result(const MDTrieShard_ping_result&);
+  MDTrieShard_ping_result& operator=(const MDTrieShard_ping_result&);
+  MDTrieShard_ping_result() {
   }
 
-  virtual ~MDTrieShard_get_result() noexcept;
-  std::string success;
+  virtual ~MDTrieShard_ping_result() noexcept;
 
-  _MDTrieShard_get_result__isset __isset;
+  bool operator == (const MDTrieShard_ping_result & /* rhs */) const
+  {
+    return true;
+  }
+  bool operator != (const MDTrieShard_ping_result &rhs) const {
+    return !(*this == rhs);
+  }
 
-  void __set_success(const std::string& val);
+  bool operator < (const MDTrieShard_ping_result & ) const;
 
-  bool operator == (const MDTrieShard_get_result & rhs) const
+  template <class Protocol_>
+  uint32_t read(Protocol_* iprot);
+  template <class Protocol_>
+  uint32_t write(Protocol_* oprot) const;
+
+};
+
+
+class MDTrieShard_ping_presult {
+ public:
+
+
+  virtual ~MDTrieShard_ping_presult() noexcept;
+
+  template <class Protocol_>
+  uint32_t read(Protocol_* iprot);
+
+};
+
+typedef struct _MDTrieShard_add_args__isset {
+  _MDTrieShard_add_args__isset() : num1(false), num2(false) {}
+  bool num1 :1;
+  bool num2 :1;
+} _MDTrieShard_add_args__isset;
+
+class MDTrieShard_add_args {
+ public:
+
+  MDTrieShard_add_args(const MDTrieShard_add_args&);
+  MDTrieShard_add_args& operator=(const MDTrieShard_add_args&);
+  MDTrieShard_add_args() : num1(0), num2(0) {
+  }
+
+  virtual ~MDTrieShard_add_args() noexcept;
+  int32_t num1;
+  int32_t num2;
+
+  _MDTrieShard_add_args__isset __isset;
+
+  void __set_num1(const int32_t val);
+
+  void __set_num2(const int32_t val);
+
+  bool operator == (const MDTrieShard_add_args & rhs) const
+  {
+    if (!(num1 == rhs.num1))
+      return false;
+    if (!(num2 == rhs.num2))
+      return false;
+    return true;
+  }
+  bool operator != (const MDTrieShard_add_args &rhs) const {
+    return !(*this == rhs);
+  }
+
+  bool operator < (const MDTrieShard_add_args & ) const;
+
+  template <class Protocol_>
+  uint32_t read(Protocol_* iprot);
+  template <class Protocol_>
+  uint32_t write(Protocol_* oprot) const;
+
+};
+
+
+class MDTrieShard_add_pargs {
+ public:
+
+
+  virtual ~MDTrieShard_add_pargs() noexcept;
+  const int32_t* num1;
+  const int32_t* num2;
+
+  template <class Protocol_>
+  uint32_t write(Protocol_* oprot) const;
+
+};
+
+typedef struct _MDTrieShard_add_result__isset {
+  _MDTrieShard_add_result__isset() : success(false) {}
+  bool success :1;
+} _MDTrieShard_add_result__isset;
+
+class MDTrieShard_add_result {
+ public:
+
+  MDTrieShard_add_result(const MDTrieShard_add_result&);
+  MDTrieShard_add_result& operator=(const MDTrieShard_add_result&);
+  MDTrieShard_add_result() : success(0) {
+  }
+
+  virtual ~MDTrieShard_add_result() noexcept;
+  int32_t success;
+
+  _MDTrieShard_add_result__isset __isset;
+
+  void __set_success(const int32_t val);
+
+  bool operator == (const MDTrieShard_add_result & rhs) const
   {
     if (!(success == rhs.success))
       return false;
     return true;
   }
-  bool operator != (const MDTrieShard_get_result &rhs) const {
+  bool operator != (const MDTrieShard_add_result &rhs) const {
     return !(*this == rhs);
   }
 
-  bool operator < (const MDTrieShard_get_result & ) const;
+  bool operator < (const MDTrieShard_add_result & ) const;
 
   template <class Protocol_>
   uint32_t read(Protocol_* iprot);
@@ -148,19 +247,19 @@ class MDTrieShard_get_result {
 
 };
 
-typedef struct _MDTrieShard_get_presult__isset {
-  _MDTrieShard_get_presult__isset() : success(false) {}
+typedef struct _MDTrieShard_add_presult__isset {
+  _MDTrieShard_add_presult__isset() : success(false) {}
   bool success :1;
-} _MDTrieShard_get_presult__isset;
+} _MDTrieShard_add_presult__isset;
 
-class MDTrieShard_get_presult {
+class MDTrieShard_add_presult {
  public:
 
 
-  virtual ~MDTrieShard_get_presult() noexcept;
-  std::string* success;
+  virtual ~MDTrieShard_add_presult() noexcept;
+  int32_t* success;
 
-  _MDTrieShard_get_presult__isset __isset;
+  _MDTrieShard_add_presult__isset __isset;
 
   template <class Protocol_>
   uint32_t read(Protocol_* iprot);
@@ -193,9 +292,18 @@ class MDTrieShardClientT : virtual public MDTrieShardIf {
   std::shared_ptr< ::apache::thrift::protocol::TProtocol> getOutputProtocol() {
     return this->poprot_;
   }
-  void get(std::string& _return, const int64_t key);
-  void send_get(const int64_t key);
-  void recv_get(std::string& _return);
+  /**
+   * A method definition looks like C code. It has a return type, arguments,
+   * and optionally a list of exceptions that it may throw. Note that argument
+   * lists and exception lists are specified using the exact same syntax as
+   * field lists in struct or exception definitions.
+   */
+  void ping();
+  void send_ping();
+  void recv_ping();
+  int32_t add(const int32_t num1, const int32_t num2);
+  void send_add(const int32_t num1, const int32_t num2);
+  int32_t recv_add();
  protected:
   std::shared_ptr< Protocol_> piprot_;
   std::shared_ptr< Protocol_> poprot_;
@@ -224,14 +332,19 @@ class MDTrieShardProcessorT : public ::apache::thrift::TDispatchProcessorT<Proto
   };
   typedef std::map<std::string, ProcessFunctions> ProcessMap;
   ProcessMap processMap_;
-  void process_get(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
-  void process_get(int32_t seqid, Protocol_* iprot, Protocol_* oprot, void* callContext);
+  void process_ping(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
+  void process_ping(int32_t seqid, Protocol_* iprot, Protocol_* oprot, void* callContext);
+  void process_add(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
+  void process_add(int32_t seqid, Protocol_* iprot, Protocol_* oprot, void* callContext);
  public:
   MDTrieShardProcessorT(::std::shared_ptr<MDTrieShardIf> iface) :
     iface_(iface) {
-    processMap_["get"] = ProcessFunctions(
-      &MDTrieShardProcessorT::process_get,
-      &MDTrieShardProcessorT::process_get);
+    processMap_["ping"] = ProcessFunctions(
+      &MDTrieShardProcessorT::process_ping,
+      &MDTrieShardProcessorT::process_ping);
+    processMap_["add"] = ProcessFunctions(
+      &MDTrieShardProcessorT::process_add,
+      &MDTrieShardProcessorT::process_add);
   }
 
   virtual ~MDTrieShardProcessorT() {}
@@ -265,14 +378,28 @@ class MDTrieShardMultiface : virtual public MDTrieShardIf {
     ifaces_.push_back(iface);
   }
  public:
-  void get(std::string& _return, const int64_t key) {
+  /**
+   * A method definition looks like C code. It has a return type, arguments,
+   * and optionally a list of exceptions that it may throw. Note that argument
+   * lists and exception lists are specified using the exact same syntax as
+   * field lists in struct or exception definitions.
+   */
+  void ping() {
     size_t sz = ifaces_.size();
     size_t i = 0;
     for (; i < (sz - 1); ++i) {
-      ifaces_[i]->get(_return, key);
+      ifaces_[i]->ping();
     }
-    ifaces_[i]->get(_return, key);
-    return;
+    ifaces_[i]->ping();
+  }
+
+  int32_t add(const int32_t num1, const int32_t num2) {
+    size_t sz = ifaces_.size();
+    size_t i = 0;
+    for (; i < (sz - 1); ++i) {
+      ifaces_[i]->add(num1, num2);
+    }
+    return ifaces_[i]->add(num1, num2);
   }
 
 };
@@ -308,9 +435,18 @@ class MDTrieShardConcurrentClientT : virtual public MDTrieShardIf {
   std::shared_ptr< ::apache::thrift::protocol::TProtocol> getOutputProtocol() {
     return this->poprot_;
   }
-  void get(std::string& _return, const int64_t key);
-  int32_t send_get(const int64_t key);
-  void recv_get(std::string& _return, const int32_t seqid);
+  /**
+   * A method definition looks like C code. It has a return type, arguments,
+   * and optionally a list of exceptions that it may throw. Note that argument
+   * lists and exception lists are specified using the exact same syntax as
+   * field lists in struct or exception definitions.
+   */
+  void ping();
+  int32_t send_ping();
+  void recv_ping(const int32_t seqid);
+  int32_t add(const int32_t num1, const int32_t num2);
+  int32_t send_add(const int32_t num1, const int32_t num2);
+  int32_t recv_add(const int32_t seqid);
  protected:
   std::shared_ptr< Protocol_> piprot_;
   std::shared_ptr< Protocol_> poprot_;
