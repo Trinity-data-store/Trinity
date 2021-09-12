@@ -11,6 +11,7 @@
 #include <thrift/async/TConcurrentClientSyncInfo.h>
 #include <memory>
 #include "rpc_types.h"
+#include "SharedService.h"
 
 
 
@@ -19,28 +20,21 @@
   #pragma warning (disable : 4250 ) //inheriting methods via dominance 
 #endif
 
-class MDTrieShardIf {
+class MDTrieShardIf : virtual public  ::SharedServiceIf {
  public:
   virtual ~MDTrieShardIf() {}
-
-  /**
-   * A method definition looks like C code. It has a return type, arguments,
-   * and optionally a list of exceptions that it may throw. Note that argument
-   * lists and exception lists are specified using the exact same syntax as
-   * field lists in struct or exception definitions.
-   */
   virtual void ping() = 0;
   virtual int32_t add(const int32_t num1, const int32_t num2) = 0;
 };
 
-class MDTrieShardIfFactory {
+class MDTrieShardIfFactory : virtual public  ::SharedServiceIfFactory {
  public:
   typedef MDTrieShardIf Handler;
 
   virtual ~MDTrieShardIfFactory() {}
 
   virtual MDTrieShardIf* getHandler(const ::apache::thrift::TConnectionInfo& connInfo) = 0;
-  virtual void releaseHandler(MDTrieShardIf* /* handler */) = 0;
+  virtual void releaseHandler( ::SharedServiceIf* /* handler */) = 0;
 };
 
 class MDTrieShardIfSingletonFactory : virtual public MDTrieShardIfFactory {
@@ -51,13 +45,13 @@ class MDTrieShardIfSingletonFactory : virtual public MDTrieShardIfFactory {
   virtual MDTrieShardIf* getHandler(const ::apache::thrift::TConnectionInfo&) {
     return iface_.get();
   }
-  virtual void releaseHandler(MDTrieShardIf* /* handler */) {}
+  virtual void releaseHandler( ::SharedServiceIf* /* handler */) {}
 
  protected:
   ::std::shared_ptr<MDTrieShardIf> iface_;
 };
 
-class MDTrieShardNull : virtual public MDTrieShardIf {
+class MDTrieShardNull : virtual public MDTrieShardIf , virtual public  ::SharedServiceNull {
  public:
   virtual ~MDTrieShardNull() {}
   void ping() {
@@ -267,54 +261,29 @@ class MDTrieShard_add_presult {
 };
 
 template <class Protocol_>
-class MDTrieShardClientT : virtual public MDTrieShardIf {
+class MDTrieShardClientT : virtual public MDTrieShardIf, public  ::SharedServiceClientT<Protocol_> {
  public:
-  MDTrieShardClientT(std::shared_ptr< Protocol_> prot) {
-    setProtocolT(prot);
-  }
-  MDTrieShardClientT(std::shared_ptr< Protocol_> iprot, std::shared_ptr< Protocol_> oprot) {
-    setProtocolT(iprot,oprot);
-  }
- private:
-  void setProtocolT(std::shared_ptr< Protocol_> prot) {
-  setProtocolT(prot,prot);
-  }
-  void setProtocolT(std::shared_ptr< Protocol_> iprot, std::shared_ptr< Protocol_> oprot) {
-    piprot_=iprot;
-    poprot_=oprot;
-    iprot_ = iprot.get();
-    oprot_ = oprot.get();
-  }
- public:
+  MDTrieShardClientT(std::shared_ptr< Protocol_> prot) :
+     ::SharedServiceClientT<Protocol_>(prot, prot) {}
+  MDTrieShardClientT(std::shared_ptr< Protocol_> iprot, std::shared_ptr< Protocol_> oprot) :     ::SharedServiceClientT<Protocol_>(iprot, oprot) {}
   std::shared_ptr< ::apache::thrift::protocol::TProtocol> getInputProtocol() {
     return this->piprot_;
   }
   std::shared_ptr< ::apache::thrift::protocol::TProtocol> getOutputProtocol() {
     return this->poprot_;
   }
-  /**
-   * A method definition looks like C code. It has a return type, arguments,
-   * and optionally a list of exceptions that it may throw. Note that argument
-   * lists and exception lists are specified using the exact same syntax as
-   * field lists in struct or exception definitions.
-   */
   void ping();
   void send_ping();
   void recv_ping();
   int32_t add(const int32_t num1, const int32_t num2);
   void send_add(const int32_t num1, const int32_t num2);
   int32_t recv_add();
- protected:
-  std::shared_ptr< Protocol_> piprot_;
-  std::shared_ptr< Protocol_> poprot_;
-  Protocol_* iprot_;
-  Protocol_* oprot_;
 };
 
 typedef MDTrieShardClientT< ::apache::thrift::protocol::TProtocol> MDTrieShardClient;
 
 template <class Protocol_>
-class MDTrieShardProcessorT : public ::apache::thrift::TDispatchProcessorT<Protocol_> {
+class MDTrieShardProcessorT : public  ::SharedServiceProcessorT<Protocol_> {
  protected:
   ::std::shared_ptr<MDTrieShardIf> iface_;
   virtual bool dispatchCall(::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, const std::string& fname, int32_t seqid, void* callContext);
@@ -338,6 +307,7 @@ class MDTrieShardProcessorT : public ::apache::thrift::TDispatchProcessorT<Proto
   void process_add(int32_t seqid, Protocol_* iprot, Protocol_* oprot, void* callContext);
  public:
   MDTrieShardProcessorT(::std::shared_ptr<MDTrieShardIf> iface) :
+     ::SharedServiceProcessorT<Protocol_>(iface),
     iface_(iface) {
     processMap_["ping"] = ProcessFunctions(
       &MDTrieShardProcessorT::process_ping,
@@ -366,24 +336,23 @@ class MDTrieShardProcessorFactoryT : public ::apache::thrift::TProcessorFactory 
 
 typedef MDTrieShardProcessorFactoryT< ::apache::thrift::protocol::TDummyProtocol > MDTrieShardProcessorFactory;
 
-class MDTrieShardMultiface : virtual public MDTrieShardIf {
+class MDTrieShardMultiface : virtual public MDTrieShardIf, public  ::SharedServiceMultiface {
  public:
   MDTrieShardMultiface(std::vector<std::shared_ptr<MDTrieShardIf> >& ifaces) : ifaces_(ifaces) {
+    std::vector<std::shared_ptr<MDTrieShardIf> >::iterator iter;
+    for (iter = ifaces.begin(); iter != ifaces.end(); ++iter) {
+       ::SharedServiceMultiface::add(*iter);
+    }
   }
   virtual ~MDTrieShardMultiface() {}
  protected:
   std::vector<std::shared_ptr<MDTrieShardIf> > ifaces_;
   MDTrieShardMultiface() {}
   void add(::std::shared_ptr<MDTrieShardIf> iface) {
+     ::SharedServiceMultiface::add(iface);
     ifaces_.push_back(iface);
   }
  public:
-  /**
-   * A method definition looks like C code. It has a return type, arguments,
-   * and optionally a list of exceptions that it may throw. Note that argument
-   * lists and exception lists are specified using the exact same syntax as
-   * field lists in struct or exception definitions.
-   */
   void ping() {
     size_t sz = ifaces_.size();
     size_t i = 0;
@@ -408,51 +377,23 @@ class MDTrieShardMultiface : virtual public MDTrieShardIf {
 // out of order responses.  It is slower than the regular client, so should
 // only be used when you need to share a connection among multiple threads
 template <class Protocol_>
-class MDTrieShardConcurrentClientT : virtual public MDTrieShardIf {
+class MDTrieShardConcurrentClientT : virtual public MDTrieShardIf, public  ::SharedServiceConcurrentClientT<Protocol_> {
  public:
-  MDTrieShardConcurrentClientT(std::shared_ptr< Protocol_> prot, std::shared_ptr<::apache::thrift::async::TConcurrentClientSyncInfo> sync) : sync_(sync)
-{
-    setProtocolT(prot);
-  }
-  MDTrieShardConcurrentClientT(std::shared_ptr< Protocol_> iprot, std::shared_ptr< Protocol_> oprot, std::shared_ptr<::apache::thrift::async::TConcurrentClientSyncInfo> sync) : sync_(sync)
-{
-    setProtocolT(iprot,oprot);
-  }
- private:
-  void setProtocolT(std::shared_ptr< Protocol_> prot) {
-  setProtocolT(prot,prot);
-  }
-  void setProtocolT(std::shared_ptr< Protocol_> iprot, std::shared_ptr< Protocol_> oprot) {
-    piprot_=iprot;
-    poprot_=oprot;
-    iprot_ = iprot.get();
-    oprot_ = oprot.get();
-  }
- public:
+  MDTrieShardConcurrentClientT(std::shared_ptr< Protocol_> prot, std::shared_ptr<::apache::thrift::async::TConcurrentClientSyncInfo> sync) :
+     ::SharedServiceConcurrentClientT<Protocol_>(prot, prot, sync) {}
+  MDTrieShardConcurrentClientT(std::shared_ptr< Protocol_> iprot, std::shared_ptr< Protocol_> oprot, std::shared_ptr<::apache::thrift::async::TConcurrentClientSyncInfo> sync) :     ::SharedServiceConcurrentClientT<Protocol_>(iprot, oprot, sync) {}
   std::shared_ptr< ::apache::thrift::protocol::TProtocol> getInputProtocol() {
     return this->piprot_;
   }
   std::shared_ptr< ::apache::thrift::protocol::TProtocol> getOutputProtocol() {
     return this->poprot_;
   }
-  /**
-   * A method definition looks like C code. It has a return type, arguments,
-   * and optionally a list of exceptions that it may throw. Note that argument
-   * lists and exception lists are specified using the exact same syntax as
-   * field lists in struct or exception definitions.
-   */
   void ping();
   int32_t send_ping();
   void recv_ping(const int32_t seqid);
   int32_t add(const int32_t num1, const int32_t num2);
   int32_t send_add(const int32_t num1, const int32_t num2);
   int32_t recv_add(const int32_t seqid);
- protected:
-  std::shared_ptr< Protocol_> piprot_;
-  std::shared_ptr< Protocol_> poprot_;
-  Protocol_* iprot_;
-  Protocol_* oprot_;
-  std::shared_ptr<::apache::thrift::async::TConcurrentClientSyncInfo> sync_;
 };
 
 typedef MDTrieShardConcurrentClientT< ::apache::thrift::protocol::TProtocol> MDTrieShardConcurrentClient;

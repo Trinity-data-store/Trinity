@@ -21,3 +21,4 @@ set(THRIFT_GEN_JAVA "java:fullcamel,reuse-objects,generated_annotations=undated,
 
 # Generate cpp sources
 thrift_gen(${THRIFT_GEN_CXX} src/rpc.thrift ../librpc/src/)
+thrift_gen(${THRIFT_GEN_CXX} src/shared.thrift ../librpc/src/)

@@ -68,7 +68,7 @@ class MDTrieCloneFactory : virtual public MDTrieShardIfFactory {
     cout << "\tPeerPort: "    << sock->getPeerPort() << "\n";
     return new MDTrieHandler;
   }
-  void releaseHandler( ::shared::SharedServiceIf* handler) {
+  void releaseHandler( SharedServiceIf* handler) {
     delete handler;
   }
 };

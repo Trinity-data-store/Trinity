@@ -30,8 +30,8 @@ using namespace apache::thrift;
 using namespace apache::thrift::protocol;
 using namespace apache::thrift::transport;
 
-using namespace tutorial;
-using namespace shared;
+// using namespace tutorial;
+// using namespace shared;
 
 int main() {
   std::shared_ptr<TTransport> socket(new TSocket("localhost", 9090));

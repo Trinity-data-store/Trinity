@@ -451,16 +451,7 @@ bool MDTrieShardProcessorT<Protocol_>::dispatchCall(::apache::thrift::protocol::
   typename ProcessMap::iterator pfn;
   pfn = processMap_.find(fname);
   if (pfn == processMap_.end()) {
-    iprot->skip(::apache::thrift::protocol::T_STRUCT);
-    iprot->readMessageEnd();
-    iprot->getTransport()->readEnd();
-    ::apache::thrift::TApplicationException x(::apache::thrift::TApplicationException::UNKNOWN_METHOD, "Invalid method name: '"+fname+"'");
-    oprot->writeMessageBegin(fname, ::apache::thrift::protocol::T_EXCEPTION, seqid);
-    x.write(oprot);
-    oprot->writeMessageEnd();
-    oprot->getTransport()->writeEnd();
-    oprot->getTransport()->flush();
-    return true;
+    return  ::SharedServiceProcessorT<Protocol_>::dispatchCall(iprot, oprot, fname, seqid, callContext);
   }
   (this->*(pfn->second.generic))(seqid, iprot, oprot, callContext);
   return true;
@@ -471,16 +462,7 @@ bool MDTrieShardProcessorT<Protocol_>::dispatchCallTemplated(Protocol_* iprot, P
   typename ProcessMap::iterator pfn;
   pfn = processMap_.find(fname);
   if (pfn == processMap_.end()) {
-    iprot->skip(::apache::thrift::protocol::T_STRUCT);
-    iprot->readMessageEnd();
-    iprot->getTransport()->readEnd();
-    ::apache::thrift::TApplicationException x(::apache::thrift::TApplicationException::UNKNOWN_METHOD, "Invalid method name: '"+fname+"'");
-    oprot->writeMessageBegin(fname, ::apache::thrift::protocol::T_EXCEPTION, seqid);
-    x.write(oprot);
-    oprot->writeMessageEnd();
-    oprot->getTransport()->writeEnd();
-    oprot->getTransport()->flush();
-    return true;
+    return  ::SharedServiceProcessorT<Protocol_>::dispatchCall(iprot, oprot, fname, seqid, callContext);
   }
   (this->*(pfn->second.specialized))(seqid, iprot, oprot, callContext);
   return true;
