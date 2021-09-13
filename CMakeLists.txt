@@ -30,11 +30,13 @@ if (GENERATE_THRIFT)
   add_subdirectory(thrift)
 endif ()
 
-add_subdirectory(librpc)
-
 if (BUILD_TESTS)
   include(CTest)
   enable_testing(true)
 endif ()
 
 add_subdirectory(libmdtrie)
+
+add_subdirectory(librpc)
+
+

@@ -33,6 +33,7 @@
 #include <sstream>
 
 #include "MDTrieShard.h"
+#include "trie.h"
 
 using namespace std;
 using namespace apache::thrift;
@@ -52,6 +53,11 @@ public:
     return n1 + n2;
   }
 
+  void insert_trie(const std::vector<int32_t> & point, const int32_t length){
+    
+  }
+
+
 protected:
 };
 
@@ -68,7 +74,7 @@ class MDTrieCloneFactory : virtual public MDTrieShardIfFactory {
     cout << "\tPeerPort: "    << sock->getPeerPort() << "\n";
     return new MDTrieHandler;
   }
-  void releaseHandler( SharedServiceIf* handler) {
+  void releaseHandler( MDTrieShardIf* handler) {
     delete handler;
   }
 };

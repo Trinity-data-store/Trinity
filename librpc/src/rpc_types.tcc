@@ -7,7 +7,6 @@
 #ifndef rpc_TYPES_TCC
 #define rpc_TYPES_TCC
 
-#include "shared_types.tcc"
 #include "rpc_types.h"
 
 

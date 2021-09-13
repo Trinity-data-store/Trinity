@@ -11,7 +11,6 @@
 #include <thrift/async/TConcurrentClientSyncInfo.h>
 #include <memory>
 #include "rpc_types.h"
-#include "SharedService.h"
 
 
 
@@ -20,21 +19,22 @@
   #pragma warning (disable : 4250 ) //inheriting methods via dominance 
 #endif
 
-class MDTrieShardIf : virtual public  ::SharedServiceIf {
+class MDTrieShardIf {
  public:
   virtual ~MDTrieShardIf() {}
   virtual void ping() = 0;
   virtual int32_t add(const int32_t num1, const int32_t num2) = 0;
+  virtual void insert_trie(const std::vector<int32_t> & point, const int32_t length) = 0;
 };
 
-class MDTrieShardIfFactory : virtual public  ::SharedServiceIfFactory {
+class MDTrieShardIfFactory {
  public:
   typedef MDTrieShardIf Handler;
 
   virtual ~MDTrieShardIfFactory() {}
 
   virtual MDTrieShardIf* getHandler(const ::apache::thrift::TConnectionInfo& connInfo) = 0;
-  virtual void releaseHandler( ::SharedServiceIf* /* handler */) = 0;
+  virtual void releaseHandler(MDTrieShardIf* /* handler */) = 0;
 };
 
 class MDTrieShardIfSingletonFactory : virtual public MDTrieShardIfFactory {
@@ -45,13 +45,13 @@ class MDTrieShardIfSingletonFactory : virtual public MDTrieShardIfFactory {
   virtual MDTrieShardIf* getHandler(const ::apache::thrift::TConnectionInfo&) {
     return iface_.get();
   }
-  virtual void releaseHandler( ::SharedServiceIf* /* handler */) {}
+  virtual void releaseHandler(MDTrieShardIf* /* handler */) {}
 
  protected:
   ::std::shared_ptr<MDTrieShardIf> iface_;
 };
 
-class MDTrieShardNull : virtual public MDTrieShardIf , virtual public  ::SharedServiceNull {
+class MDTrieShardNull : virtual public MDTrieShardIf {
  public:
   virtual ~MDTrieShardNull() {}
   void ping() {
@@ -60,6 +60,9 @@ class MDTrieShardNull : virtual public MDTrieShardIf , virtual public  ::SharedS
   int32_t add(const int32_t /* num1 */, const int32_t /* num2 */) {
     int32_t _return = 0;
     return _return;
+  }
+  void insert_trie(const std::vector<int32_t> & /* point */, const int32_t /* length */) {
+    return;
   }
 };
 
@@ -260,12 +263,125 @@ class MDTrieShard_add_presult {
 
 };
 
-template <class Protocol_>
-class MDTrieShardClientT : virtual public MDTrieShardIf, public  ::SharedServiceClientT<Protocol_> {
+typedef struct _MDTrieShard_insert_trie_args__isset {
+  _MDTrieShard_insert_trie_args__isset() : point(false), length(false) {}
+  bool point :1;
+  bool length :1;
+} _MDTrieShard_insert_trie_args__isset;
+
+class MDTrieShard_insert_trie_args {
  public:
-  MDTrieShardClientT(std::shared_ptr< Protocol_> prot) :
-     ::SharedServiceClientT<Protocol_>(prot, prot) {}
-  MDTrieShardClientT(std::shared_ptr< Protocol_> iprot, std::shared_ptr< Protocol_> oprot) :     ::SharedServiceClientT<Protocol_>(iprot, oprot) {}
+
+  MDTrieShard_insert_trie_args(const MDTrieShard_insert_trie_args&);
+  MDTrieShard_insert_trie_args& operator=(const MDTrieShard_insert_trie_args&);
+  MDTrieShard_insert_trie_args() : length(0) {
+  }
+
+  virtual ~MDTrieShard_insert_trie_args() noexcept;
+  std::vector<int32_t>  point;
+  int32_t length;
+
+  _MDTrieShard_insert_trie_args__isset __isset;
+
+  void __set_point(const std::vector<int32_t> & val);
+
+  void __set_length(const int32_t val);
+
+  bool operator == (const MDTrieShard_insert_trie_args & rhs) const
+  {
+    if (!(point == rhs.point))
+      return false;
+    if (!(length == rhs.length))
+      return false;
+    return true;
+  }
+  bool operator != (const MDTrieShard_insert_trie_args &rhs) const {
+    return !(*this == rhs);
+  }
+
+  bool operator < (const MDTrieShard_insert_trie_args & ) const;
+
+  template <class Protocol_>
+  uint32_t read(Protocol_* iprot);
+  template <class Protocol_>
+  uint32_t write(Protocol_* oprot) const;
+
+};
+
+
+class MDTrieShard_insert_trie_pargs {
+ public:
+
+
+  virtual ~MDTrieShard_insert_trie_pargs() noexcept;
+  const std::vector<int32_t> * point;
+  const int32_t* length;
+
+  template <class Protocol_>
+  uint32_t write(Protocol_* oprot) const;
+
+};
+
+
+class MDTrieShard_insert_trie_result {
+ public:
+
+  MDTrieShard_insert_trie_result(const MDTrieShard_insert_trie_result&);
+  MDTrieShard_insert_trie_result& operator=(const MDTrieShard_insert_trie_result&);
+  MDTrieShard_insert_trie_result() {
+  }
+
+  virtual ~MDTrieShard_insert_trie_result() noexcept;
+
+  bool operator == (const MDTrieShard_insert_trie_result & /* rhs */) const
+  {
+    return true;
+  }
+  bool operator != (const MDTrieShard_insert_trie_result &rhs) const {
+    return !(*this == rhs);
+  }
+
+  bool operator < (const MDTrieShard_insert_trie_result & ) const;
+
+  template <class Protocol_>
+  uint32_t read(Protocol_* iprot);
+  template <class Protocol_>
+  uint32_t write(Protocol_* oprot) const;
+
+};
+
+
+class MDTrieShard_insert_trie_presult {
+ public:
+
+
+  virtual ~MDTrieShard_insert_trie_presult() noexcept;
+
+  template <class Protocol_>
+  uint32_t read(Protocol_* iprot);
+
+};
+
+template <class Protocol_>
+class MDTrieShardClientT : virtual public MDTrieShardIf {
+ public:
+  MDTrieShardClientT(std::shared_ptr< Protocol_> prot) {
+    setProtocolT(prot);
+  }
+  MDTrieShardClientT(std::shared_ptr< Protocol_> iprot, std::shared_ptr< Protocol_> oprot) {
+    setProtocolT(iprot,oprot);
+  }
+ private:
+  void setProtocolT(std::shared_ptr< Protocol_> prot) {
+  setProtocolT(prot,prot);
+  }
+  void setProtocolT(std::shared_ptr< Protocol_> iprot, std::shared_ptr< Protocol_> oprot) {
+    piprot_=iprot;
+    poprot_=oprot;
+    iprot_ = iprot.get();
+    oprot_ = oprot.get();
+  }
+ public:
   std::shared_ptr< ::apache::thrift::protocol::TProtocol> getInputProtocol() {
     return this->piprot_;
   }
@@ -278,12 +394,20 @@ class MDTrieShardClientT : virtual public MDTrieShardIf, public  ::SharedService
   int32_t add(const int32_t num1, const int32_t num2);
   void send_add(const int32_t num1, const int32_t num2);
   int32_t recv_add();
+  void insert_trie(const std::vector<int32_t> & point, const int32_t length);
+  void send_insert_trie(const std::vector<int32_t> & point, const int32_t length);
+  void recv_insert_trie();
+ protected:
+  std::shared_ptr< Protocol_> piprot_;
+  std::shared_ptr< Protocol_> poprot_;
+  Protocol_* iprot_;
+  Protocol_* oprot_;
 };
 
 typedef MDTrieShardClientT< ::apache::thrift::protocol::TProtocol> MDTrieShardClient;
 
 template <class Protocol_>
-class MDTrieShardProcessorT : public  ::SharedServiceProcessorT<Protocol_> {
+class MDTrieShardProcessorT : public ::apache::thrift::TDispatchProcessorT<Protocol_> {
  protected:
   ::std::shared_ptr<MDTrieShardIf> iface_;
   virtual bool dispatchCall(::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, const std::string& fname, int32_t seqid, void* callContext);
@@ -305,9 +429,10 @@ class MDTrieShardProcessorT : public  ::SharedServiceProcessorT<Protocol_> {
   void process_ping(int32_t seqid, Protocol_* iprot, Protocol_* oprot, void* callContext);
   void process_add(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
   void process_add(int32_t seqid, Protocol_* iprot, Protocol_* oprot, void* callContext);
+  void process_insert_trie(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
+  void process_insert_trie(int32_t seqid, Protocol_* iprot, Protocol_* oprot, void* callContext);
  public:
   MDTrieShardProcessorT(::std::shared_ptr<MDTrieShardIf> iface) :
-     ::SharedServiceProcessorT<Protocol_>(iface),
     iface_(iface) {
     processMap_["ping"] = ProcessFunctions(
       &MDTrieShardProcessorT::process_ping,
@@ -315,6 +440,9 @@ class MDTrieShardProcessorT : public  ::SharedServiceProcessorT<Protocol_> {
     processMap_["add"] = ProcessFunctions(
       &MDTrieShardProcessorT::process_add,
       &MDTrieShardProcessorT::process_add);
+    processMap_["insert_trie"] = ProcessFunctions(
+      &MDTrieShardProcessorT::process_insert_trie,
+      &MDTrieShardProcessorT::process_insert_trie);
   }
 
   virtual ~MDTrieShardProcessorT() {}
@@ -336,20 +464,15 @@ class MDTrieShardProcessorFactoryT : public ::apache::thrift::TProcessorFactory 
 
 typedef MDTrieShardProcessorFactoryT< ::apache::thrift::protocol::TDummyProtocol > MDTrieShardProcessorFactory;
 
-class MDTrieShardMultiface : virtual public MDTrieShardIf, public  ::SharedServiceMultiface {
+class MDTrieShardMultiface : virtual public MDTrieShardIf {
  public:
   MDTrieShardMultiface(std::vector<std::shared_ptr<MDTrieShardIf> >& ifaces) : ifaces_(ifaces) {
-    std::vector<std::shared_ptr<MDTrieShardIf> >::iterator iter;
-    for (iter = ifaces.begin(); iter != ifaces.end(); ++iter) {
-       ::SharedServiceMultiface::add(*iter);
-    }
   }
   virtual ~MDTrieShardMultiface() {}
  protected:
   std::vector<std::shared_ptr<MDTrieShardIf> > ifaces_;
   MDTrieShardMultiface() {}
   void add(::std::shared_ptr<MDTrieShardIf> iface) {
-     ::SharedServiceMultiface::add(iface);
     ifaces_.push_back(iface);
   }
  public:
@@ -371,17 +494,42 @@ class MDTrieShardMultiface : virtual public MDTrieShardIf, public  ::SharedServi
     return ifaces_[i]->add(num1, num2);
   }
 
+  void insert_trie(const std::vector<int32_t> & point, const int32_t length) {
+    size_t sz = ifaces_.size();
+    size_t i = 0;
+    for (; i < (sz - 1); ++i) {
+      ifaces_[i]->insert_trie(point, length);
+    }
+    ifaces_[i]->insert_trie(point, length);
+  }
+
 };
 
 // The 'concurrent' client is a thread safe client that correctly handles
 // out of order responses.  It is slower than the regular client, so should
 // only be used when you need to share a connection among multiple threads
 template <class Protocol_>
-class MDTrieShardConcurrentClientT : virtual public MDTrieShardIf, public  ::SharedServiceConcurrentClientT<Protocol_> {
+class MDTrieShardConcurrentClientT : virtual public MDTrieShardIf {
  public:
-  MDTrieShardConcurrentClientT(std::shared_ptr< Protocol_> prot, std::shared_ptr<::apache::thrift::async::TConcurrentClientSyncInfo> sync) :
-     ::SharedServiceConcurrentClientT<Protocol_>(prot, prot, sync) {}
-  MDTrieShardConcurrentClientT(std::shared_ptr< Protocol_> iprot, std::shared_ptr< Protocol_> oprot, std::shared_ptr<::apache::thrift::async::TConcurrentClientSyncInfo> sync) :     ::SharedServiceConcurrentClientT<Protocol_>(iprot, oprot, sync) {}
+  MDTrieShardConcurrentClientT(std::shared_ptr< Protocol_> prot, std::shared_ptr<::apache::thrift::async::TConcurrentClientSyncInfo> sync) : sync_(sync)
+{
+    setProtocolT(prot);
+  }
+  MDTrieShardConcurrentClientT(std::shared_ptr< Protocol_> iprot, std::shared_ptr< Protocol_> oprot, std::shared_ptr<::apache::thrift::async::TConcurrentClientSyncInfo> sync) : sync_(sync)
+{
+    setProtocolT(iprot,oprot);
+  }
+ private:
+  void setProtocolT(std::shared_ptr< Protocol_> prot) {
+  setProtocolT(prot,prot);
+  }
+  void setProtocolT(std::shared_ptr< Protocol_> iprot, std::shared_ptr< Protocol_> oprot) {
+    piprot_=iprot;
+    poprot_=oprot;
+    iprot_ = iprot.get();
+    oprot_ = oprot.get();
+  }
+ public:
   std::shared_ptr< ::apache::thrift::protocol::TProtocol> getInputProtocol() {
     return this->piprot_;
   }
@@ -394,6 +542,15 @@ class MDTrieShardConcurrentClientT : virtual public MDTrieShardIf, public  ::Sha
   int32_t add(const int32_t num1, const int32_t num2);
   int32_t send_add(const int32_t num1, const int32_t num2);
   int32_t recv_add(const int32_t seqid);
+  void insert_trie(const std::vector<int32_t> & point, const int32_t length);
+  int32_t send_insert_trie(const std::vector<int32_t> & point, const int32_t length);
+  void recv_insert_trie(const int32_t seqid);
+ protected:
+  std::shared_ptr< Protocol_> piprot_;
+  std::shared_ptr< Protocol_> poprot_;
+  Protocol_* iprot_;
+  Protocol_* oprot_;
+  std::shared_ptr<::apache::thrift::async::TConcurrentClientSyncInfo> sync_;
 };
 
 typedef MDTrieShardConcurrentClientT< ::apache::thrift::protocol::TProtocol> MDTrieShardConcurrentClient;

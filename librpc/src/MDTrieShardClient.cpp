@@ -37,7 +37,7 @@ int main() {
   std::shared_ptr<TTransport> socket(new TSocket("localhost", 9090));
   std::shared_ptr<TTransport> transport(new TBufferedTransport(socket));
   std::shared_ptr<TProtocol> protocol(new TBinaryProtocol(transport));
-  MDTrieClient client(protocol);
+  MDTrieShardClient client(protocol);
 
   try {
 
@@ -49,5 +49,6 @@ int main() {
 
     cout << "1 + 1 = " << client.add(1, 1) << endl;
   }
+  catch (std::exception& e){}
 
 }

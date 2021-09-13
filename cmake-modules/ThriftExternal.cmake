@@ -94,9 +94,12 @@ if (THRIFT_BUILD)
 endif ()
 
 include_directories(SYSTEM ${THRIFT_INCLUDE_DIR})
+set(RPC_LIBS ${THRIFT_LIBRARY}
+            ${THRIFTNB_LIBRARY})
 message(STATUS "Thrift include dir: ${THRIFT_INCLUDE_DIR}")
 message(STATUS "Thrift static library: ${THRIFT_LIBRARY}")
 message(STATUS "Thrift static nb library: ${THRIFTNB_LIBRARY}")
+message(STATUS "Thrift RPC Libs: ${RPC_LIBS}")
 
 if (GENERATE_THRIFT)
   message(STATUS "Thrift compiler: ${THRIFT_COMPILER}")

@@ -17,7 +17,6 @@
 
 #include <functional>
 #include <memory>
-#include "shared_types.h"
 
 
 

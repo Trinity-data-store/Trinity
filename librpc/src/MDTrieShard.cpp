@@ -42,4 +42,20 @@ MDTrieShard_add_presult::~MDTrieShard_add_presult() noexcept {
 }
 
 
+MDTrieShard_insert_trie_args::~MDTrieShard_insert_trie_args() noexcept {
+}
+
+
+MDTrieShard_insert_trie_pargs::~MDTrieShard_insert_trie_pargs() noexcept {
+}
+
+
+MDTrieShard_insert_trie_result::~MDTrieShard_insert_trie_result() noexcept {
+}
+
+
+MDTrieShard_insert_trie_presult::~MDTrieShard_insert_trie_presult() noexcept {
+}
+
+
 
