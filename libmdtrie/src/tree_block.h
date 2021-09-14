@@ -1369,6 +1369,8 @@ public:
                 current_primary ++;
             }
             n_leaves_t list_size = primary_key_list[current_primary].size();
+
+            total_leaf_number ++;
             for (n_leaves_t i = 0; i < list_size; i++)
             {
                 auto primary_key = primary_key_list[current_primary].get(i);

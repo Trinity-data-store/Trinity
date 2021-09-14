@@ -148,6 +148,7 @@ void insert_for_node_path(point_array<DIMENSION> *found_points, level_t max_dept
 
     fprintf(stderr, "Average time to range query one point: %f microseconds\n", (float) diff / found_points->size());
     fprintf(stderr, "found points: %ld, n points %ld, current_primary_key: %ld\n", found_points->size(), n_points, current_primary_key);
+    fprintf(stderr, "total time / total leaf nodes = %f\n", (float) diff / total_leaf_number);
 
 }
 
