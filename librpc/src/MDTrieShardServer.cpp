@@ -194,8 +194,6 @@ public:
 
 private:
 
-    // int port_num_; 
-
 };
 
 
