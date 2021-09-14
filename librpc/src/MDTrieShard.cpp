@@ -58,4 +58,52 @@ MDTrieShard_insert_trie_presult::~MDTrieShard_insert_trie_presult() noexcept {
 }
 
 
+MDTrieShard_check_args::~MDTrieShard_check_args() noexcept {
+}
+
+
+MDTrieShard_check_pargs::~MDTrieShard_check_pargs() noexcept {
+}
+
+
+MDTrieShard_check_result::~MDTrieShard_check_result() noexcept {
+}
+
+
+MDTrieShard_check_presult::~MDTrieShard_check_presult() noexcept {
+}
+
+
+MDTrieShard_range_search_trie_args::~MDTrieShard_range_search_trie_args() noexcept {
+}
+
+
+MDTrieShard_range_search_trie_pargs::~MDTrieShard_range_search_trie_pargs() noexcept {
+}
+
+
+MDTrieShard_range_search_trie_result::~MDTrieShard_range_search_trie_result() noexcept {
+}
+
+
+MDTrieShard_range_search_trie_presult::~MDTrieShard_range_search_trie_presult() noexcept {
+}
+
+
+MDTrieShard_primary_key_lookup_args::~MDTrieShard_primary_key_lookup_args() noexcept {
+}
+
+
+MDTrieShard_primary_key_lookup_pargs::~MDTrieShard_primary_key_lookup_pargs() noexcept {
+}
+
+
+MDTrieShard_primary_key_lookup_result::~MDTrieShard_primary_key_lookup_result() noexcept {
+}
+
+
+MDTrieShard_primary_key_lookup_presult::~MDTrieShard_primary_key_lookup_presult() noexcept {
+}
+
+
 

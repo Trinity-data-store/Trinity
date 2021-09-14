@@ -5,5 +5,12 @@ service MDTrieShard {
 
     i32 add(1:i32 num1, 2:i32 num2),
 
-    void insert_trie(1:list<i32> point, 2:i32 length),
+    i32 insert_trie(1:list<i32> point),
+
+    bool check(1:list<i32> point),
+
+    list<list<i32>> range_search_trie(1:list<i32> start_range, 2:list<i32> end_range),
+
+    list<i32> primary_key_lookup(1:i32 primary_key),
+
 }

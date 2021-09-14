@@ -372,14 +372,6 @@ uint32_t MDTrieShard_insert_trie_args::read(Protocol_* iprot) {
           xfer += iprot->skip(ftype);
         }
         break;
-      case 2:
-        if (ftype == ::apache::thrift::protocol::T_I32) {
-          xfer += iprot->readI32(this->length);
-          this->__isset.length = true;
-        } else {
-          xfer += iprot->skip(ftype);
-        }
-        break;
       default:
         xfer += iprot->skip(ftype);
         break;
@@ -410,10 +402,6 @@ uint32_t MDTrieShard_insert_trie_args::write(Protocol_* oprot) const {
   }
   xfer += oprot->writeFieldEnd();
 
-  xfer += oprot->writeFieldBegin("length", ::apache::thrift::protocol::T_I32, 2);
-  xfer += oprot->writeI32(this->length);
-  xfer += oprot->writeFieldEnd();
-
   xfer += oprot->writeFieldStop();
   xfer += oprot->writeStructEnd();
   return xfer;
@@ -436,10 +424,6 @@ uint32_t MDTrieShard_insert_trie_pargs::write(Protocol_* oprot) const {
     }
     xfer += oprot->writeListEnd();
   }
-  xfer += oprot->writeFieldEnd();
-
-  xfer += oprot->writeFieldBegin("length", ::apache::thrift::protocol::T_I32, 2);
-  xfer += oprot->writeI32((*(this->length)));
   xfer += oprot->writeFieldEnd();
 
   xfer += oprot->writeFieldStop();
@@ -468,7 +452,20 @@ uint32_t MDTrieShard_insert_trie_result::read(Protocol_* iprot) {
     if (ftype == ::apache::thrift::protocol::T_STOP) {
       break;
     }
-    xfer += iprot->skip(ftype);
+    switch (fid)
+    {
+      case 0:
+        if (ftype == ::apache::thrift::protocol::T_I32) {
+          xfer += iprot->readI32(this->success);
+          this->__isset.success = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      default:
+        xfer += iprot->skip(ftype);
+        break;
+    }
     xfer += iprot->readFieldEnd();
   }
 
@@ -484,6 +481,11 @@ uint32_t MDTrieShard_insert_trie_result::write(Protocol_* oprot) const {
 
   xfer += oprot->writeStructBegin("MDTrieShard_insert_trie_result");
 
+  if (this->__isset.success) {
+    xfer += oprot->writeFieldBegin("success", ::apache::thrift::protocol::T_I32, 0);
+    xfer += oprot->writeI32(this->success);
+    xfer += oprot->writeFieldEnd();
+  }
   xfer += oprot->writeFieldStop();
   xfer += oprot->writeStructEnd();
   return xfer;
@@ -510,7 +512,747 @@ uint32_t MDTrieShard_insert_trie_presult::read(Protocol_* iprot) {
     if (ftype == ::apache::thrift::protocol::T_STOP) {
       break;
     }
-    xfer += iprot->skip(ftype);
+    switch (fid)
+    {
+      case 0:
+        if (ftype == ::apache::thrift::protocol::T_I32) {
+          xfer += iprot->readI32((*(this->success)));
+          this->__isset.success = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      default:
+        xfer += iprot->skip(ftype);
+        break;
+    }
+    xfer += iprot->readFieldEnd();
+  }
+
+  xfer += iprot->readStructEnd();
+
+  return xfer;
+}
+
+
+template <class Protocol_>
+uint32_t MDTrieShard_check_args::read(Protocol_* iprot) {
+
+  ::apache::thrift::protocol::TInputRecursionTracker tracker(*iprot);
+  uint32_t xfer = 0;
+  std::string fname;
+  ::apache::thrift::protocol::TType ftype;
+  int16_t fid;
+
+  xfer += iprot->readStructBegin(fname);
+
+  using ::apache::thrift::protocol::TProtocolException;
+
+
+  while (true)
+  {
+    xfer += iprot->readFieldBegin(fname, ftype, fid);
+    if (ftype == ::apache::thrift::protocol::T_STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 1:
+        if (ftype == ::apache::thrift::protocol::T_LIST) {
+          {
+            this->point.clear();
+            uint32_t _size7;
+            ::apache::thrift::protocol::TType _etype10;
+            xfer += iprot->readListBegin(_etype10, _size7);
+            this->point.resize(_size7);
+            uint32_t _i11;
+            for (_i11 = 0; _i11 < _size7; ++_i11)
+            {
+              xfer += iprot->readI32(this->point[_i11]);
+            }
+            xfer += iprot->readListEnd();
+          }
+          this->__isset.point = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      default:
+        xfer += iprot->skip(ftype);
+        break;
+    }
+    xfer += iprot->readFieldEnd();
+  }
+
+  xfer += iprot->readStructEnd();
+
+  return xfer;
+}
+
+template <class Protocol_>
+uint32_t MDTrieShard_check_args::write(Protocol_* oprot) const {
+  uint32_t xfer = 0;
+  ::apache::thrift::protocol::TOutputRecursionTracker tracker(*oprot);
+  xfer += oprot->writeStructBegin("MDTrieShard_check_args");
+
+  xfer += oprot->writeFieldBegin("point", ::apache::thrift::protocol::T_LIST, 1);
+  {
+    xfer += oprot->writeListBegin(::apache::thrift::protocol::T_I32, static_cast<uint32_t>(this->point.size()));
+    std::vector<int32_t> ::const_iterator _iter12;
+    for (_iter12 = this->point.begin(); _iter12 != this->point.end(); ++_iter12)
+    {
+      xfer += oprot->writeI32((*_iter12));
+    }
+    xfer += oprot->writeListEnd();
+  }
+  xfer += oprot->writeFieldEnd();
+
+  xfer += oprot->writeFieldStop();
+  xfer += oprot->writeStructEnd();
+  return xfer;
+}
+
+
+template <class Protocol_>
+uint32_t MDTrieShard_check_pargs::write(Protocol_* oprot) const {
+  uint32_t xfer = 0;
+  ::apache::thrift::protocol::TOutputRecursionTracker tracker(*oprot);
+  xfer += oprot->writeStructBegin("MDTrieShard_check_pargs");
+
+  xfer += oprot->writeFieldBegin("point", ::apache::thrift::protocol::T_LIST, 1);
+  {
+    xfer += oprot->writeListBegin(::apache::thrift::protocol::T_I32, static_cast<uint32_t>((*(this->point)).size()));
+    std::vector<int32_t> ::const_iterator _iter13;
+    for (_iter13 = (*(this->point)).begin(); _iter13 != (*(this->point)).end(); ++_iter13)
+    {
+      xfer += oprot->writeI32((*_iter13));
+    }
+    xfer += oprot->writeListEnd();
+  }
+  xfer += oprot->writeFieldEnd();
+
+  xfer += oprot->writeFieldStop();
+  xfer += oprot->writeStructEnd();
+  return xfer;
+}
+
+
+template <class Protocol_>
+uint32_t MDTrieShard_check_result::read(Protocol_* iprot) {
+
+  ::apache::thrift::protocol::TInputRecursionTracker tracker(*iprot);
+  uint32_t xfer = 0;
+  std::string fname;
+  ::apache::thrift::protocol::TType ftype;
+  int16_t fid;
+
+  xfer += iprot->readStructBegin(fname);
+
+  using ::apache::thrift::protocol::TProtocolException;
+
+
+  while (true)
+  {
+    xfer += iprot->readFieldBegin(fname, ftype, fid);
+    if (ftype == ::apache::thrift::protocol::T_STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 0:
+        if (ftype == ::apache::thrift::protocol::T_BOOL) {
+          xfer += iprot->readBool(this->success);
+          this->__isset.success = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      default:
+        xfer += iprot->skip(ftype);
+        break;
+    }
+    xfer += iprot->readFieldEnd();
+  }
+
+  xfer += iprot->readStructEnd();
+
+  return xfer;
+}
+
+template <class Protocol_>
+uint32_t MDTrieShard_check_result::write(Protocol_* oprot) const {
+
+  uint32_t xfer = 0;
+
+  xfer += oprot->writeStructBegin("MDTrieShard_check_result");
+
+  if (this->__isset.success) {
+    xfer += oprot->writeFieldBegin("success", ::apache::thrift::protocol::T_BOOL, 0);
+    xfer += oprot->writeBool(this->success);
+    xfer += oprot->writeFieldEnd();
+  }
+  xfer += oprot->writeFieldStop();
+  xfer += oprot->writeStructEnd();
+  return xfer;
+}
+
+
+template <class Protocol_>
+uint32_t MDTrieShard_check_presult::read(Protocol_* iprot) {
+
+  ::apache::thrift::protocol::TInputRecursionTracker tracker(*iprot);
+  uint32_t xfer = 0;
+  std::string fname;
+  ::apache::thrift::protocol::TType ftype;
+  int16_t fid;
+
+  xfer += iprot->readStructBegin(fname);
+
+  using ::apache::thrift::protocol::TProtocolException;
+
+
+  while (true)
+  {
+    xfer += iprot->readFieldBegin(fname, ftype, fid);
+    if (ftype == ::apache::thrift::protocol::T_STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 0:
+        if (ftype == ::apache::thrift::protocol::T_BOOL) {
+          xfer += iprot->readBool((*(this->success)));
+          this->__isset.success = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      default:
+        xfer += iprot->skip(ftype);
+        break;
+    }
+    xfer += iprot->readFieldEnd();
+  }
+
+  xfer += iprot->readStructEnd();
+
+  return xfer;
+}
+
+
+template <class Protocol_>
+uint32_t MDTrieShard_range_search_trie_args::read(Protocol_* iprot) {
+
+  ::apache::thrift::protocol::TInputRecursionTracker tracker(*iprot);
+  uint32_t xfer = 0;
+  std::string fname;
+  ::apache::thrift::protocol::TType ftype;
+  int16_t fid;
+
+  xfer += iprot->readStructBegin(fname);
+
+  using ::apache::thrift::protocol::TProtocolException;
+
+
+  while (true)
+  {
+    xfer += iprot->readFieldBegin(fname, ftype, fid);
+    if (ftype == ::apache::thrift::protocol::T_STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 1:
+        if (ftype == ::apache::thrift::protocol::T_LIST) {
+          {
+            this->start_range.clear();
+            uint32_t _size14;
+            ::apache::thrift::protocol::TType _etype17;
+            xfer += iprot->readListBegin(_etype17, _size14);
+            this->start_range.resize(_size14);
+            uint32_t _i18;
+            for (_i18 = 0; _i18 < _size14; ++_i18)
+            {
+              xfer += iprot->readI32(this->start_range[_i18]);
+            }
+            xfer += iprot->readListEnd();
+          }
+          this->__isset.start_range = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      case 2:
+        if (ftype == ::apache::thrift::protocol::T_LIST) {
+          {
+            this->end_range.clear();
+            uint32_t _size19;
+            ::apache::thrift::protocol::TType _etype22;
+            xfer += iprot->readListBegin(_etype22, _size19);
+            this->end_range.resize(_size19);
+            uint32_t _i23;
+            for (_i23 = 0; _i23 < _size19; ++_i23)
+            {
+              xfer += iprot->readI32(this->end_range[_i23]);
+            }
+            xfer += iprot->readListEnd();
+          }
+          this->__isset.end_range = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      default:
+        xfer += iprot->skip(ftype);
+        break;
+    }
+    xfer += iprot->readFieldEnd();
+  }
+
+  xfer += iprot->readStructEnd();
+
+  return xfer;
+}
+
+template <class Protocol_>
+uint32_t MDTrieShard_range_search_trie_args::write(Protocol_* oprot) const {
+  uint32_t xfer = 0;
+  ::apache::thrift::protocol::TOutputRecursionTracker tracker(*oprot);
+  xfer += oprot->writeStructBegin("MDTrieShard_range_search_trie_args");
+
+  xfer += oprot->writeFieldBegin("start_range", ::apache::thrift::protocol::T_LIST, 1);
+  {
+    xfer += oprot->writeListBegin(::apache::thrift::protocol::T_I32, static_cast<uint32_t>(this->start_range.size()));
+    std::vector<int32_t> ::const_iterator _iter24;
+    for (_iter24 = this->start_range.begin(); _iter24 != this->start_range.end(); ++_iter24)
+    {
+      xfer += oprot->writeI32((*_iter24));
+    }
+    xfer += oprot->writeListEnd();
+  }
+  xfer += oprot->writeFieldEnd();
+
+  xfer += oprot->writeFieldBegin("end_range", ::apache::thrift::protocol::T_LIST, 2);
+  {
+    xfer += oprot->writeListBegin(::apache::thrift::protocol::T_I32, static_cast<uint32_t>(this->end_range.size()));
+    std::vector<int32_t> ::const_iterator _iter25;
+    for (_iter25 = this->end_range.begin(); _iter25 != this->end_range.end(); ++_iter25)
+    {
+      xfer += oprot->writeI32((*_iter25));
+    }
+    xfer += oprot->writeListEnd();
+  }
+  xfer += oprot->writeFieldEnd();
+
+  xfer += oprot->writeFieldStop();
+  xfer += oprot->writeStructEnd();
+  return xfer;
+}
+
+
+template <class Protocol_>
+uint32_t MDTrieShard_range_search_trie_pargs::write(Protocol_* oprot) const {
+  uint32_t xfer = 0;
+  ::apache::thrift::protocol::TOutputRecursionTracker tracker(*oprot);
+  xfer += oprot->writeStructBegin("MDTrieShard_range_search_trie_pargs");
+
+  xfer += oprot->writeFieldBegin("start_range", ::apache::thrift::protocol::T_LIST, 1);
+  {
+    xfer += oprot->writeListBegin(::apache::thrift::protocol::T_I32, static_cast<uint32_t>((*(this->start_range)).size()));
+    std::vector<int32_t> ::const_iterator _iter26;
+    for (_iter26 = (*(this->start_range)).begin(); _iter26 != (*(this->start_range)).end(); ++_iter26)
+    {
+      xfer += oprot->writeI32((*_iter26));
+    }
+    xfer += oprot->writeListEnd();
+  }
+  xfer += oprot->writeFieldEnd();
+
+  xfer += oprot->writeFieldBegin("end_range", ::apache::thrift::protocol::T_LIST, 2);
+  {
+    xfer += oprot->writeListBegin(::apache::thrift::protocol::T_I32, static_cast<uint32_t>((*(this->end_range)).size()));
+    std::vector<int32_t> ::const_iterator _iter27;
+    for (_iter27 = (*(this->end_range)).begin(); _iter27 != (*(this->end_range)).end(); ++_iter27)
+    {
+      xfer += oprot->writeI32((*_iter27));
+    }
+    xfer += oprot->writeListEnd();
+  }
+  xfer += oprot->writeFieldEnd();
+
+  xfer += oprot->writeFieldStop();
+  xfer += oprot->writeStructEnd();
+  return xfer;
+}
+
+
+template <class Protocol_>
+uint32_t MDTrieShard_range_search_trie_result::read(Protocol_* iprot) {
+
+  ::apache::thrift::protocol::TInputRecursionTracker tracker(*iprot);
+  uint32_t xfer = 0;
+  std::string fname;
+  ::apache::thrift::protocol::TType ftype;
+  int16_t fid;
+
+  xfer += iprot->readStructBegin(fname);
+
+  using ::apache::thrift::protocol::TProtocolException;
+
+
+  while (true)
+  {
+    xfer += iprot->readFieldBegin(fname, ftype, fid);
+    if (ftype == ::apache::thrift::protocol::T_STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 0:
+        if (ftype == ::apache::thrift::protocol::T_LIST) {
+          {
+            this->success.clear();
+            uint32_t _size28;
+            ::apache::thrift::protocol::TType _etype31;
+            xfer += iprot->readListBegin(_etype31, _size28);
+            this->success.resize(_size28);
+            uint32_t _i32;
+            for (_i32 = 0; _i32 < _size28; ++_i32)
+            {
+              {
+                this->success[_i32].clear();
+                uint32_t _size33;
+                ::apache::thrift::protocol::TType _etype36;
+                xfer += iprot->readListBegin(_etype36, _size33);
+                this->success[_i32].resize(_size33);
+                uint32_t _i37;
+                for (_i37 = 0; _i37 < _size33; ++_i37)
+                {
+                  xfer += iprot->readI32(this->success[_i32][_i37]);
+                }
+                xfer += iprot->readListEnd();
+              }
+            }
+            xfer += iprot->readListEnd();
+          }
+          this->__isset.success = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      default:
+        xfer += iprot->skip(ftype);
+        break;
+    }
+    xfer += iprot->readFieldEnd();
+  }
+
+  xfer += iprot->readStructEnd();
+
+  return xfer;
+}
+
+template <class Protocol_>
+uint32_t MDTrieShard_range_search_trie_result::write(Protocol_* oprot) const {
+
+  uint32_t xfer = 0;
+
+  xfer += oprot->writeStructBegin("MDTrieShard_range_search_trie_result");
+
+  if (this->__isset.success) {
+    xfer += oprot->writeFieldBegin("success", ::apache::thrift::protocol::T_LIST, 0);
+    {
+      xfer += oprot->writeListBegin(::apache::thrift::protocol::T_LIST, static_cast<uint32_t>(this->success.size()));
+      std::vector<std::vector<int32_t> > ::const_iterator _iter38;
+      for (_iter38 = this->success.begin(); _iter38 != this->success.end(); ++_iter38)
+      {
+        {
+          xfer += oprot->writeListBegin(::apache::thrift::protocol::T_I32, static_cast<uint32_t>((*_iter38).size()));
+          std::vector<int32_t> ::const_iterator _iter39;
+          for (_iter39 = (*_iter38).begin(); _iter39 != (*_iter38).end(); ++_iter39)
+          {
+            xfer += oprot->writeI32((*_iter39));
+          }
+          xfer += oprot->writeListEnd();
+        }
+      }
+      xfer += oprot->writeListEnd();
+    }
+    xfer += oprot->writeFieldEnd();
+  }
+  xfer += oprot->writeFieldStop();
+  xfer += oprot->writeStructEnd();
+  return xfer;
+}
+
+
+template <class Protocol_>
+uint32_t MDTrieShard_range_search_trie_presult::read(Protocol_* iprot) {
+
+  ::apache::thrift::protocol::TInputRecursionTracker tracker(*iprot);
+  uint32_t xfer = 0;
+  std::string fname;
+  ::apache::thrift::protocol::TType ftype;
+  int16_t fid;
+
+  xfer += iprot->readStructBegin(fname);
+
+  using ::apache::thrift::protocol::TProtocolException;
+
+
+  while (true)
+  {
+    xfer += iprot->readFieldBegin(fname, ftype, fid);
+    if (ftype == ::apache::thrift::protocol::T_STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 0:
+        if (ftype == ::apache::thrift::protocol::T_LIST) {
+          {
+            (*(this->success)).clear();
+            uint32_t _size40;
+            ::apache::thrift::protocol::TType _etype43;
+            xfer += iprot->readListBegin(_etype43, _size40);
+            (*(this->success)).resize(_size40);
+            uint32_t _i44;
+            for (_i44 = 0; _i44 < _size40; ++_i44)
+            {
+              {
+                (*(this->success))[_i44].clear();
+                uint32_t _size45;
+                ::apache::thrift::protocol::TType _etype48;
+                xfer += iprot->readListBegin(_etype48, _size45);
+                (*(this->success))[_i44].resize(_size45);
+                uint32_t _i49;
+                for (_i49 = 0; _i49 < _size45; ++_i49)
+                {
+                  xfer += iprot->readI32((*(this->success))[_i44][_i49]);
+                }
+                xfer += iprot->readListEnd();
+              }
+            }
+            xfer += iprot->readListEnd();
+          }
+          this->__isset.success = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      default:
+        xfer += iprot->skip(ftype);
+        break;
+    }
+    xfer += iprot->readFieldEnd();
+  }
+
+  xfer += iprot->readStructEnd();
+
+  return xfer;
+}
+
+
+template <class Protocol_>
+uint32_t MDTrieShard_primary_key_lookup_args::read(Protocol_* iprot) {
+
+  ::apache::thrift::protocol::TInputRecursionTracker tracker(*iprot);
+  uint32_t xfer = 0;
+  std::string fname;
+  ::apache::thrift::protocol::TType ftype;
+  int16_t fid;
+
+  xfer += iprot->readStructBegin(fname);
+
+  using ::apache::thrift::protocol::TProtocolException;
+
+
+  while (true)
+  {
+    xfer += iprot->readFieldBegin(fname, ftype, fid);
+    if (ftype == ::apache::thrift::protocol::T_STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 1:
+        if (ftype == ::apache::thrift::protocol::T_I32) {
+          xfer += iprot->readI32(this->primary_key);
+          this->__isset.primary_key = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      default:
+        xfer += iprot->skip(ftype);
+        break;
+    }
+    xfer += iprot->readFieldEnd();
+  }
+
+  xfer += iprot->readStructEnd();
+
+  return xfer;
+}
+
+template <class Protocol_>
+uint32_t MDTrieShard_primary_key_lookup_args::write(Protocol_* oprot) const {
+  uint32_t xfer = 0;
+  ::apache::thrift::protocol::TOutputRecursionTracker tracker(*oprot);
+  xfer += oprot->writeStructBegin("MDTrieShard_primary_key_lookup_args");
+
+  xfer += oprot->writeFieldBegin("primary_key", ::apache::thrift::protocol::T_I32, 1);
+  xfer += oprot->writeI32(this->primary_key);
+  xfer += oprot->writeFieldEnd();
+
+  xfer += oprot->writeFieldStop();
+  xfer += oprot->writeStructEnd();
+  return xfer;
+}
+
+
+template <class Protocol_>
+uint32_t MDTrieShard_primary_key_lookup_pargs::write(Protocol_* oprot) const {
+  uint32_t xfer = 0;
+  ::apache::thrift::protocol::TOutputRecursionTracker tracker(*oprot);
+  xfer += oprot->writeStructBegin("MDTrieShard_primary_key_lookup_pargs");
+
+  xfer += oprot->writeFieldBegin("primary_key", ::apache::thrift::protocol::T_I32, 1);
+  xfer += oprot->writeI32((*(this->primary_key)));
+  xfer += oprot->writeFieldEnd();
+
+  xfer += oprot->writeFieldStop();
+  xfer += oprot->writeStructEnd();
+  return xfer;
+}
+
+
+template <class Protocol_>
+uint32_t MDTrieShard_primary_key_lookup_result::read(Protocol_* iprot) {
+
+  ::apache::thrift::protocol::TInputRecursionTracker tracker(*iprot);
+  uint32_t xfer = 0;
+  std::string fname;
+  ::apache::thrift::protocol::TType ftype;
+  int16_t fid;
+
+  xfer += iprot->readStructBegin(fname);
+
+  using ::apache::thrift::protocol::TProtocolException;
+
+
+  while (true)
+  {
+    xfer += iprot->readFieldBegin(fname, ftype, fid);
+    if (ftype == ::apache::thrift::protocol::T_STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 0:
+        if (ftype == ::apache::thrift::protocol::T_LIST) {
+          {
+            this->success.clear();
+            uint32_t _size50;
+            ::apache::thrift::protocol::TType _etype53;
+            xfer += iprot->readListBegin(_etype53, _size50);
+            this->success.resize(_size50);
+            uint32_t _i54;
+            for (_i54 = 0; _i54 < _size50; ++_i54)
+            {
+              xfer += iprot->readI32(this->success[_i54]);
+            }
+            xfer += iprot->readListEnd();
+          }
+          this->__isset.success = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      default:
+        xfer += iprot->skip(ftype);
+        break;
+    }
+    xfer += iprot->readFieldEnd();
+  }
+
+  xfer += iprot->readStructEnd();
+
+  return xfer;
+}
+
+template <class Protocol_>
+uint32_t MDTrieShard_primary_key_lookup_result::write(Protocol_* oprot) const {
+
+  uint32_t xfer = 0;
+
+  xfer += oprot->writeStructBegin("MDTrieShard_primary_key_lookup_result");
+
+  if (this->__isset.success) {
+    xfer += oprot->writeFieldBegin("success", ::apache::thrift::protocol::T_LIST, 0);
+    {
+      xfer += oprot->writeListBegin(::apache::thrift::protocol::T_I32, static_cast<uint32_t>(this->success.size()));
+      std::vector<int32_t> ::const_iterator _iter55;
+      for (_iter55 = this->success.begin(); _iter55 != this->success.end(); ++_iter55)
+      {
+        xfer += oprot->writeI32((*_iter55));
+      }
+      xfer += oprot->writeListEnd();
+    }
+    xfer += oprot->writeFieldEnd();
+  }
+  xfer += oprot->writeFieldStop();
+  xfer += oprot->writeStructEnd();
+  return xfer;
+}
+
+
+template <class Protocol_>
+uint32_t MDTrieShard_primary_key_lookup_presult::read(Protocol_* iprot) {
+
+  ::apache::thrift::protocol::TInputRecursionTracker tracker(*iprot);
+  uint32_t xfer = 0;
+  std::string fname;
+  ::apache::thrift::protocol::TType ftype;
+  int16_t fid;
+
+  xfer += iprot->readStructBegin(fname);
+
+  using ::apache::thrift::protocol::TProtocolException;
+
+
+  while (true)
+  {
+    xfer += iprot->readFieldBegin(fname, ftype, fid);
+    if (ftype == ::apache::thrift::protocol::T_STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 0:
+        if (ftype == ::apache::thrift::protocol::T_LIST) {
+          {
+            (*(this->success)).clear();
+            uint32_t _size56;
+            ::apache::thrift::protocol::TType _etype59;
+            xfer += iprot->readListBegin(_etype59, _size56);
+            (*(this->success)).resize(_size56);
+            uint32_t _i60;
+            for (_i60 = 0; _i60 < _size56; ++_i60)
+            {
+              xfer += iprot->readI32((*(this->success))[_i60]);
+            }
+            xfer += iprot->readListEnd();
+          }
+          this->__isset.success = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      default:
+        xfer += iprot->skip(ftype);
+        break;
+    }
     xfer += iprot->readFieldEnd();
   }
 
@@ -637,21 +1379,20 @@ int32_t MDTrieShardClientT<Protocol_>::recv_add()
 }
 
 template <class Protocol_>
-void MDTrieShardClientT<Protocol_>::insert_trie(const std::vector<int32_t> & point, const int32_t length)
+int32_t MDTrieShardClientT<Protocol_>::insert_trie(const std::vector<int32_t> & point)
 {
-  send_insert_trie(point, length);
-  recv_insert_trie();
+  send_insert_trie(point);
+  return recv_insert_trie();
 }
 
 template <class Protocol_>
-void MDTrieShardClientT<Protocol_>::send_insert_trie(const std::vector<int32_t> & point, const int32_t length)
+void MDTrieShardClientT<Protocol_>::send_insert_trie(const std::vector<int32_t> & point)
 {
   int32_t cseqid = 0;
   this->oprot_->writeMessageBegin("insert_trie", ::apache::thrift::protocol::T_CALL, cseqid);
 
   MDTrieShard_insert_trie_pargs args;
   args.point = &point;
-  args.length = &length;
   args.write(this->oprot_);
 
   this->oprot_->writeMessageEnd();
@@ -660,7 +1401,7 @@ void MDTrieShardClientT<Protocol_>::send_insert_trie(const std::vector<int32_t> 
 }
 
 template <class Protocol_>
-void MDTrieShardClientT<Protocol_>::recv_insert_trie()
+int32_t MDTrieShardClientT<Protocol_>::recv_insert_trie()
 {
 
   int32_t rseqid = 0;
@@ -685,12 +1426,201 @@ void MDTrieShardClientT<Protocol_>::recv_insert_trie()
     this->iprot_->readMessageEnd();
     this->iprot_->getTransport()->readEnd();
   }
+  int32_t _return;
   MDTrieShard_insert_trie_presult result;
+  result.success = &_return;
   result.read(this->iprot_);
   this->iprot_->readMessageEnd();
   this->iprot_->getTransport()->readEnd();
 
-  return;
+  if (result.__isset.success) {
+    return _return;
+  }
+  throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "insert_trie failed: unknown result");
+}
+
+template <class Protocol_>
+bool MDTrieShardClientT<Protocol_>::check(const std::vector<int32_t> & point)
+{
+  send_check(point);
+  return recv_check();
+}
+
+template <class Protocol_>
+void MDTrieShardClientT<Protocol_>::send_check(const std::vector<int32_t> & point)
+{
+  int32_t cseqid = 0;
+  this->oprot_->writeMessageBegin("check", ::apache::thrift::protocol::T_CALL, cseqid);
+
+  MDTrieShard_check_pargs args;
+  args.point = &point;
+  args.write(this->oprot_);
+
+  this->oprot_->writeMessageEnd();
+  this->oprot_->getTransport()->writeEnd();
+  this->oprot_->getTransport()->flush();
+}
+
+template <class Protocol_>
+bool MDTrieShardClientT<Protocol_>::recv_check()
+{
+
+  int32_t rseqid = 0;
+  std::string fname;
+  ::apache::thrift::protocol::TMessageType mtype;
+
+  this->iprot_->readMessageBegin(fname, mtype, rseqid);
+  if (mtype == ::apache::thrift::protocol::T_EXCEPTION) {
+    ::apache::thrift::TApplicationException x;
+    x.read(this->iprot_);
+    this->iprot_->readMessageEnd();
+    this->iprot_->getTransport()->readEnd();
+    throw x;
+  }
+  if (mtype != ::apache::thrift::protocol::T_REPLY) {
+    this->iprot_->skip(::apache::thrift::protocol::T_STRUCT);
+    this->iprot_->readMessageEnd();
+    this->iprot_->getTransport()->readEnd();
+  }
+  if (fname.compare("check") != 0) {
+    this->iprot_->skip(::apache::thrift::protocol::T_STRUCT);
+    this->iprot_->readMessageEnd();
+    this->iprot_->getTransport()->readEnd();
+  }
+  bool _return;
+  MDTrieShard_check_presult result;
+  result.success = &_return;
+  result.read(this->iprot_);
+  this->iprot_->readMessageEnd();
+  this->iprot_->getTransport()->readEnd();
+
+  if (result.__isset.success) {
+    return _return;
+  }
+  throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "check failed: unknown result");
+}
+
+template <class Protocol_>
+void MDTrieShardClientT<Protocol_>::range_search_trie(std::vector<std::vector<int32_t> > & _return, const std::vector<int32_t> & start_range, const std::vector<int32_t> & end_range)
+{
+  send_range_search_trie(start_range, end_range);
+  recv_range_search_trie(_return);
+}
+
+template <class Protocol_>
+void MDTrieShardClientT<Protocol_>::send_range_search_trie(const std::vector<int32_t> & start_range, const std::vector<int32_t> & end_range)
+{
+  int32_t cseqid = 0;
+  this->oprot_->writeMessageBegin("range_search_trie", ::apache::thrift::protocol::T_CALL, cseqid);
+
+  MDTrieShard_range_search_trie_pargs args;
+  args.start_range = &start_range;
+  args.end_range = &end_range;
+  args.write(this->oprot_);
+
+  this->oprot_->writeMessageEnd();
+  this->oprot_->getTransport()->writeEnd();
+  this->oprot_->getTransport()->flush();
+}
+
+template <class Protocol_>
+void MDTrieShardClientT<Protocol_>::recv_range_search_trie(std::vector<std::vector<int32_t> > & _return)
+{
+
+  int32_t rseqid = 0;
+  std::string fname;
+  ::apache::thrift::protocol::TMessageType mtype;
+
+  this->iprot_->readMessageBegin(fname, mtype, rseqid);
+  if (mtype == ::apache::thrift::protocol::T_EXCEPTION) {
+    ::apache::thrift::TApplicationException x;
+    x.read(this->iprot_);
+    this->iprot_->readMessageEnd();
+    this->iprot_->getTransport()->readEnd();
+    throw x;
+  }
+  if (mtype != ::apache::thrift::protocol::T_REPLY) {
+    this->iprot_->skip(::apache::thrift::protocol::T_STRUCT);
+    this->iprot_->readMessageEnd();
+    this->iprot_->getTransport()->readEnd();
+  }
+  if (fname.compare("range_search_trie") != 0) {
+    this->iprot_->skip(::apache::thrift::protocol::T_STRUCT);
+    this->iprot_->readMessageEnd();
+    this->iprot_->getTransport()->readEnd();
+  }
+  MDTrieShard_range_search_trie_presult result;
+  result.success = &_return;
+  result.read(this->iprot_);
+  this->iprot_->readMessageEnd();
+  this->iprot_->getTransport()->readEnd();
+
+  if (result.__isset.success) {
+    // _return pointer has now been filled
+    return;
+  }
+  throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "range_search_trie failed: unknown result");
+}
+
+template <class Protocol_>
+void MDTrieShardClientT<Protocol_>::primary_key_lookup(std::vector<int32_t> & _return, const int32_t primary_key)
+{
+  send_primary_key_lookup(primary_key);
+  recv_primary_key_lookup(_return);
+}
+
+template <class Protocol_>
+void MDTrieShardClientT<Protocol_>::send_primary_key_lookup(const int32_t primary_key)
+{
+  int32_t cseqid = 0;
+  this->oprot_->writeMessageBegin("primary_key_lookup", ::apache::thrift::protocol::T_CALL, cseqid);
+
+  MDTrieShard_primary_key_lookup_pargs args;
+  args.primary_key = &primary_key;
+  args.write(this->oprot_);
+
+  this->oprot_->writeMessageEnd();
+  this->oprot_->getTransport()->writeEnd();
+  this->oprot_->getTransport()->flush();
+}
+
+template <class Protocol_>
+void MDTrieShardClientT<Protocol_>::recv_primary_key_lookup(std::vector<int32_t> & _return)
+{
+
+  int32_t rseqid = 0;
+  std::string fname;
+  ::apache::thrift::protocol::TMessageType mtype;
+
+  this->iprot_->readMessageBegin(fname, mtype, rseqid);
+  if (mtype == ::apache::thrift::protocol::T_EXCEPTION) {
+    ::apache::thrift::TApplicationException x;
+    x.read(this->iprot_);
+    this->iprot_->readMessageEnd();
+    this->iprot_->getTransport()->readEnd();
+    throw x;
+  }
+  if (mtype != ::apache::thrift::protocol::T_REPLY) {
+    this->iprot_->skip(::apache::thrift::protocol::T_STRUCT);
+    this->iprot_->readMessageEnd();
+    this->iprot_->getTransport()->readEnd();
+  }
+  if (fname.compare("primary_key_lookup") != 0) {
+    this->iprot_->skip(::apache::thrift::protocol::T_STRUCT);
+    this->iprot_->readMessageEnd();
+    this->iprot_->getTransport()->readEnd();
+  }
+  MDTrieShard_primary_key_lookup_presult result;
+  result.success = &_return;
+  result.read(this->iprot_);
+  this->iprot_->readMessageEnd();
+  this->iprot_->getTransport()->readEnd();
+
+  if (result.__isset.success) {
+    // _return pointer has now been filled
+    return;
+  }
+  throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "primary_key_lookup failed: unknown result");
 }
 
 template <class Protocol_>
@@ -975,7 +1905,8 @@ void MDTrieShardProcessorT<Protocol_>::process_insert_trie(int32_t seqid, ::apac
 
   MDTrieShard_insert_trie_result result;
   try {
-    iface_->insert_trie(args.point, args.length);
+    result.success = iface_->insert_trie(args.point);
+    result.__isset.success = true;
   } catch (const std::exception& e) {
     if (this->eventHandler_.get() != nullptr) {
       this->eventHandler_->handlerError(ctx, "MDTrieShard.insert_trie");
@@ -1029,7 +1960,8 @@ void MDTrieShardProcessorT<Protocol_>::process_insert_trie(int32_t seqid, Protoc
 
   MDTrieShard_insert_trie_result result;
   try {
-    iface_->insert_trie(args.point, args.length);
+    result.success = iface_->insert_trie(args.point);
+    result.__isset.success = true;
   } catch (const std::exception& e) {
     if (this->eventHandler_.get() != nullptr) {
       this->eventHandler_->handlerError(ctx, "MDTrieShard.insert_trie");
@@ -1056,6 +1988,336 @@ void MDTrieShardProcessorT<Protocol_>::process_insert_trie(int32_t seqid, Protoc
 
   if (this->eventHandler_.get() != nullptr) {
     this->eventHandler_->postWrite(ctx, "MDTrieShard.insert_trie", bytes);
+  }
+}
+
+template <class Protocol_>
+void MDTrieShardProcessorT<Protocol_>::process_check(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext)
+{
+  void* ctx = nullptr;
+  if (this->eventHandler_.get() != nullptr) {
+    ctx = this->eventHandler_->getContext("MDTrieShard.check", callContext);
+  }
+  ::apache::thrift::TProcessorContextFreer freer(this->eventHandler_.get(), ctx, "MDTrieShard.check");
+
+  if (this->eventHandler_.get() != nullptr) {
+    this->eventHandler_->preRead(ctx, "MDTrieShard.check");
+  }
+
+  MDTrieShard_check_args args;
+  args.read(iprot);
+  iprot->readMessageEnd();
+  uint32_t bytes = iprot->getTransport()->readEnd();
+
+  if (this->eventHandler_.get() != nullptr) {
+    this->eventHandler_->postRead(ctx, "MDTrieShard.check", bytes);
+  }
+
+  MDTrieShard_check_result result;
+  try {
+    result.success = iface_->check(args.point);
+    result.__isset.success = true;
+  } catch (const std::exception& e) {
+    if (this->eventHandler_.get() != nullptr) {
+      this->eventHandler_->handlerError(ctx, "MDTrieShard.check");
+    }
+
+    ::apache::thrift::TApplicationException x(e.what());
+    oprot->writeMessageBegin("check", ::apache::thrift::protocol::T_EXCEPTION, seqid);
+    x.write(oprot);
+    oprot->writeMessageEnd();
+    oprot->getTransport()->writeEnd();
+    oprot->getTransport()->flush();
+    return;
+  }
+
+  if (this->eventHandler_.get() != nullptr) {
+    this->eventHandler_->preWrite(ctx, "MDTrieShard.check");
+  }
+
+  oprot->writeMessageBegin("check", ::apache::thrift::protocol::T_REPLY, seqid);
+  result.write(oprot);
+  oprot->writeMessageEnd();
+  bytes = oprot->getTransport()->writeEnd();
+  oprot->getTransport()->flush();
+
+  if (this->eventHandler_.get() != nullptr) {
+    this->eventHandler_->postWrite(ctx, "MDTrieShard.check", bytes);
+  }
+}
+
+template <class Protocol_>
+void MDTrieShardProcessorT<Protocol_>::process_check(int32_t seqid, Protocol_* iprot, Protocol_* oprot, void* callContext)
+{
+  void* ctx = nullptr;
+  if (this->eventHandler_.get() != nullptr) {
+    ctx = this->eventHandler_->getContext("MDTrieShard.check", callContext);
+  }
+  ::apache::thrift::TProcessorContextFreer freer(this->eventHandler_.get(), ctx, "MDTrieShard.check");
+
+  if (this->eventHandler_.get() != nullptr) {
+    this->eventHandler_->preRead(ctx, "MDTrieShard.check");
+  }
+
+  MDTrieShard_check_args args;
+  args.read(iprot);
+  iprot->readMessageEnd();
+  uint32_t bytes = iprot->getTransport()->readEnd();
+
+  if (this->eventHandler_.get() != nullptr) {
+    this->eventHandler_->postRead(ctx, "MDTrieShard.check", bytes);
+  }
+
+  MDTrieShard_check_result result;
+  try {
+    result.success = iface_->check(args.point);
+    result.__isset.success = true;
+  } catch (const std::exception& e) {
+    if (this->eventHandler_.get() != nullptr) {
+      this->eventHandler_->handlerError(ctx, "MDTrieShard.check");
+    }
+
+    ::apache::thrift::TApplicationException x(e.what());
+    oprot->writeMessageBegin("check", ::apache::thrift::protocol::T_EXCEPTION, seqid);
+    x.write(oprot);
+    oprot->writeMessageEnd();
+    oprot->getTransport()->writeEnd();
+    oprot->getTransport()->flush();
+    return;
+  }
+
+  if (this->eventHandler_.get() != nullptr) {
+    this->eventHandler_->preWrite(ctx, "MDTrieShard.check");
+  }
+
+  oprot->writeMessageBegin("check", ::apache::thrift::protocol::T_REPLY, seqid);
+  result.write(oprot);
+  oprot->writeMessageEnd();
+  bytes = oprot->getTransport()->writeEnd();
+  oprot->getTransport()->flush();
+
+  if (this->eventHandler_.get() != nullptr) {
+    this->eventHandler_->postWrite(ctx, "MDTrieShard.check", bytes);
+  }
+}
+
+template <class Protocol_>
+void MDTrieShardProcessorT<Protocol_>::process_range_search_trie(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext)
+{
+  void* ctx = nullptr;
+  if (this->eventHandler_.get() != nullptr) {
+    ctx = this->eventHandler_->getContext("MDTrieShard.range_search_trie", callContext);
+  }
+  ::apache::thrift::TProcessorContextFreer freer(this->eventHandler_.get(), ctx, "MDTrieShard.range_search_trie");
+
+  if (this->eventHandler_.get() != nullptr) {
+    this->eventHandler_->preRead(ctx, "MDTrieShard.range_search_trie");
+  }
+
+  MDTrieShard_range_search_trie_args args;
+  args.read(iprot);
+  iprot->readMessageEnd();
+  uint32_t bytes = iprot->getTransport()->readEnd();
+
+  if (this->eventHandler_.get() != nullptr) {
+    this->eventHandler_->postRead(ctx, "MDTrieShard.range_search_trie", bytes);
+  }
+
+  MDTrieShard_range_search_trie_result result;
+  try {
+    iface_->range_search_trie(result.success, args.start_range, args.end_range);
+    result.__isset.success = true;
+  } catch (const std::exception& e) {
+    if (this->eventHandler_.get() != nullptr) {
+      this->eventHandler_->handlerError(ctx, "MDTrieShard.range_search_trie");
+    }
+
+    ::apache::thrift::TApplicationException x(e.what());
+    oprot->writeMessageBegin("range_search_trie", ::apache::thrift::protocol::T_EXCEPTION, seqid);
+    x.write(oprot);
+    oprot->writeMessageEnd();
+    oprot->getTransport()->writeEnd();
+    oprot->getTransport()->flush();
+    return;
+  }
+
+  if (this->eventHandler_.get() != nullptr) {
+    this->eventHandler_->preWrite(ctx, "MDTrieShard.range_search_trie");
+  }
+
+  oprot->writeMessageBegin("range_search_trie", ::apache::thrift::protocol::T_REPLY, seqid);
+  result.write(oprot);
+  oprot->writeMessageEnd();
+  bytes = oprot->getTransport()->writeEnd();
+  oprot->getTransport()->flush();
+
+  if (this->eventHandler_.get() != nullptr) {
+    this->eventHandler_->postWrite(ctx, "MDTrieShard.range_search_trie", bytes);
+  }
+}
+
+template <class Protocol_>
+void MDTrieShardProcessorT<Protocol_>::process_range_search_trie(int32_t seqid, Protocol_* iprot, Protocol_* oprot, void* callContext)
+{
+  void* ctx = nullptr;
+  if (this->eventHandler_.get() != nullptr) {
+    ctx = this->eventHandler_->getContext("MDTrieShard.range_search_trie", callContext);
+  }
+  ::apache::thrift::TProcessorContextFreer freer(this->eventHandler_.get(), ctx, "MDTrieShard.range_search_trie");
+
+  if (this->eventHandler_.get() != nullptr) {
+    this->eventHandler_->preRead(ctx, "MDTrieShard.range_search_trie");
+  }
+
+  MDTrieShard_range_search_trie_args args;
+  args.read(iprot);
+  iprot->readMessageEnd();
+  uint32_t bytes = iprot->getTransport()->readEnd();
+
+  if (this->eventHandler_.get() != nullptr) {
+    this->eventHandler_->postRead(ctx, "MDTrieShard.range_search_trie", bytes);
+  }
+
+  MDTrieShard_range_search_trie_result result;
+  try {
+    iface_->range_search_trie(result.success, args.start_range, args.end_range);
+    result.__isset.success = true;
+  } catch (const std::exception& e) {
+    if (this->eventHandler_.get() != nullptr) {
+      this->eventHandler_->handlerError(ctx, "MDTrieShard.range_search_trie");
+    }
+
+    ::apache::thrift::TApplicationException x(e.what());
+    oprot->writeMessageBegin("range_search_trie", ::apache::thrift::protocol::T_EXCEPTION, seqid);
+    x.write(oprot);
+    oprot->writeMessageEnd();
+    oprot->getTransport()->writeEnd();
+    oprot->getTransport()->flush();
+    return;
+  }
+
+  if (this->eventHandler_.get() != nullptr) {
+    this->eventHandler_->preWrite(ctx, "MDTrieShard.range_search_trie");
+  }
+
+  oprot->writeMessageBegin("range_search_trie", ::apache::thrift::protocol::T_REPLY, seqid);
+  result.write(oprot);
+  oprot->writeMessageEnd();
+  bytes = oprot->getTransport()->writeEnd();
+  oprot->getTransport()->flush();
+
+  if (this->eventHandler_.get() != nullptr) {
+    this->eventHandler_->postWrite(ctx, "MDTrieShard.range_search_trie", bytes);
+  }
+}
+
+template <class Protocol_>
+void MDTrieShardProcessorT<Protocol_>::process_primary_key_lookup(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext)
+{
+  void* ctx = nullptr;
+  if (this->eventHandler_.get() != nullptr) {
+    ctx = this->eventHandler_->getContext("MDTrieShard.primary_key_lookup", callContext);
+  }
+  ::apache::thrift::TProcessorContextFreer freer(this->eventHandler_.get(), ctx, "MDTrieShard.primary_key_lookup");
+
+  if (this->eventHandler_.get() != nullptr) {
+    this->eventHandler_->preRead(ctx, "MDTrieShard.primary_key_lookup");
+  }
+
+  MDTrieShard_primary_key_lookup_args args;
+  args.read(iprot);
+  iprot->readMessageEnd();
+  uint32_t bytes = iprot->getTransport()->readEnd();
+
+  if (this->eventHandler_.get() != nullptr) {
+    this->eventHandler_->postRead(ctx, "MDTrieShard.primary_key_lookup", bytes);
+  }
+
+  MDTrieShard_primary_key_lookup_result result;
+  try {
+    iface_->primary_key_lookup(result.success, args.primary_key);
+    result.__isset.success = true;
+  } catch (const std::exception& e) {
+    if (this->eventHandler_.get() != nullptr) {
+      this->eventHandler_->handlerError(ctx, "MDTrieShard.primary_key_lookup");
+    }
+
+    ::apache::thrift::TApplicationException x(e.what());
+    oprot->writeMessageBegin("primary_key_lookup", ::apache::thrift::protocol::T_EXCEPTION, seqid);
+    x.write(oprot);
+    oprot->writeMessageEnd();
+    oprot->getTransport()->writeEnd();
+    oprot->getTransport()->flush();
+    return;
+  }
+
+  if (this->eventHandler_.get() != nullptr) {
+    this->eventHandler_->preWrite(ctx, "MDTrieShard.primary_key_lookup");
+  }
+
+  oprot->writeMessageBegin("primary_key_lookup", ::apache::thrift::protocol::T_REPLY, seqid);
+  result.write(oprot);
+  oprot->writeMessageEnd();
+  bytes = oprot->getTransport()->writeEnd();
+  oprot->getTransport()->flush();
+
+  if (this->eventHandler_.get() != nullptr) {
+    this->eventHandler_->postWrite(ctx, "MDTrieShard.primary_key_lookup", bytes);
+  }
+}
+
+template <class Protocol_>
+void MDTrieShardProcessorT<Protocol_>::process_primary_key_lookup(int32_t seqid, Protocol_* iprot, Protocol_* oprot, void* callContext)
+{
+  void* ctx = nullptr;
+  if (this->eventHandler_.get() != nullptr) {
+    ctx = this->eventHandler_->getContext("MDTrieShard.primary_key_lookup", callContext);
+  }
+  ::apache::thrift::TProcessorContextFreer freer(this->eventHandler_.get(), ctx, "MDTrieShard.primary_key_lookup");
+
+  if (this->eventHandler_.get() != nullptr) {
+    this->eventHandler_->preRead(ctx, "MDTrieShard.primary_key_lookup");
+  }
+
+  MDTrieShard_primary_key_lookup_args args;
+  args.read(iprot);
+  iprot->readMessageEnd();
+  uint32_t bytes = iprot->getTransport()->readEnd();
+
+  if (this->eventHandler_.get() != nullptr) {
+    this->eventHandler_->postRead(ctx, "MDTrieShard.primary_key_lookup", bytes);
+  }
+
+  MDTrieShard_primary_key_lookup_result result;
+  try {
+    iface_->primary_key_lookup(result.success, args.primary_key);
+    result.__isset.success = true;
+  } catch (const std::exception& e) {
+    if (this->eventHandler_.get() != nullptr) {
+      this->eventHandler_->handlerError(ctx, "MDTrieShard.primary_key_lookup");
+    }
+
+    ::apache::thrift::TApplicationException x(e.what());
+    oprot->writeMessageBegin("primary_key_lookup", ::apache::thrift::protocol::T_EXCEPTION, seqid);
+    x.write(oprot);
+    oprot->writeMessageEnd();
+    oprot->getTransport()->writeEnd();
+    oprot->getTransport()->flush();
+    return;
+  }
+
+  if (this->eventHandler_.get() != nullptr) {
+    this->eventHandler_->preWrite(ctx, "MDTrieShard.primary_key_lookup");
+  }
+
+  oprot->writeMessageBegin("primary_key_lookup", ::apache::thrift::protocol::T_REPLY, seqid);
+  result.write(oprot);
+  oprot->writeMessageEnd();
+  bytes = oprot->getTransport()->writeEnd();
+  oprot->getTransport()->flush();
+
+  if (this->eventHandler_.get() != nullptr) {
+    this->eventHandler_->postWrite(ctx, "MDTrieShard.primary_key_lookup", bytes);
   }
 }
 
@@ -1236,14 +2498,14 @@ int32_t MDTrieShardConcurrentClientT<Protocol_>::recv_add(const int32_t seqid)
 }
 
 template <class Protocol_>
-void MDTrieShardConcurrentClientT<Protocol_>::insert_trie(const std::vector<int32_t> & point, const int32_t length)
+int32_t MDTrieShardConcurrentClientT<Protocol_>::insert_trie(const std::vector<int32_t> & point)
 {
-  int32_t seqid = send_insert_trie(point, length);
-  recv_insert_trie(seqid);
+  int32_t seqid = send_insert_trie(point);
+  return recv_insert_trie(seqid);
 }
 
 template <class Protocol_>
-int32_t MDTrieShardConcurrentClientT<Protocol_>::send_insert_trie(const std::vector<int32_t> & point, const int32_t length)
+int32_t MDTrieShardConcurrentClientT<Protocol_>::send_insert_trie(const std::vector<int32_t> & point)
 {
   int32_t cseqid = this->sync_->generateSeqId();
   ::apache::thrift::async::TConcurrentSendSentry sentry(this->sync_.get());
@@ -1251,7 +2513,6 @@ int32_t MDTrieShardConcurrentClientT<Protocol_>::send_insert_trie(const std::vec
 
   MDTrieShard_insert_trie_pargs args;
   args.point = &point;
-  args.length = &length;
   args.write(this->oprot_);
 
   this->oprot_->writeMessageEnd();
@@ -1263,7 +2524,7 @@ int32_t MDTrieShardConcurrentClientT<Protocol_>::send_insert_trie(const std::vec
 }
 
 template <class Protocol_>
-void MDTrieShardConcurrentClientT<Protocol_>::recv_insert_trie(const int32_t seqid)
+int32_t MDTrieShardConcurrentClientT<Protocol_>::recv_insert_trie(const int32_t seqid)
 {
 
   int32_t rseqid = 0;
@@ -1301,13 +2562,281 @@ void MDTrieShardConcurrentClientT<Protocol_>::recv_insert_trie(const int32_t seq
         using ::apache::thrift::protocol::TProtocolException;
         throw TProtocolException(TProtocolException::INVALID_DATA);
       }
+      int32_t _return;
       MDTrieShard_insert_trie_presult result;
+      result.success = &_return;
       result.read(this->iprot_);
       this->iprot_->readMessageEnd();
       this->iprot_->getTransport()->readEnd();
 
-      sentry.commit();
-      return;
+      if (result.__isset.success) {
+        sentry.commit();
+        return _return;
+      }
+      // in a bad state, don't commit
+      throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "insert_trie failed: unknown result");
+    }
+    // seqid != rseqid
+    this->sync_->updatePending(fname, mtype, rseqid);
+
+    // this will temporarily unlock the readMutex, and let other clients get work done
+    this->sync_->waitForWork(seqid);
+  } // end while(true)
+}
+
+template <class Protocol_>
+bool MDTrieShardConcurrentClientT<Protocol_>::check(const std::vector<int32_t> & point)
+{
+  int32_t seqid = send_check(point);
+  return recv_check(seqid);
+}
+
+template <class Protocol_>
+int32_t MDTrieShardConcurrentClientT<Protocol_>::send_check(const std::vector<int32_t> & point)
+{
+  int32_t cseqid = this->sync_->generateSeqId();
+  ::apache::thrift::async::TConcurrentSendSentry sentry(this->sync_.get());
+  this->oprot_->writeMessageBegin("check", ::apache::thrift::protocol::T_CALL, cseqid);
+
+  MDTrieShard_check_pargs args;
+  args.point = &point;
+  args.write(this->oprot_);
+
+  this->oprot_->writeMessageEnd();
+  this->oprot_->getTransport()->writeEnd();
+  this->oprot_->getTransport()->flush();
+
+  sentry.commit();
+  return cseqid;
+}
+
+template <class Protocol_>
+bool MDTrieShardConcurrentClientT<Protocol_>::recv_check(const int32_t seqid)
+{
+
+  int32_t rseqid = 0;
+  std::string fname;
+  ::apache::thrift::protocol::TMessageType mtype;
+
+  // the read mutex gets dropped and reacquired as part of waitForWork()
+  // The destructor of this sentry wakes up other clients
+  ::apache::thrift::async::TConcurrentRecvSentry sentry(this->sync_.get(), seqid);
+
+  while(true) {
+    if(!this->sync_->getPending(fname, mtype, rseqid)) {
+      this->iprot_->readMessageBegin(fname, mtype, rseqid);
+    }
+    if(seqid == rseqid) {
+      if (mtype == ::apache::thrift::protocol::T_EXCEPTION) {
+        ::apache::thrift::TApplicationException x;
+        x.read(this->iprot_);
+        this->iprot_->readMessageEnd();
+        this->iprot_->getTransport()->readEnd();
+        sentry.commit();
+        throw x;
+      }
+      if (mtype != ::apache::thrift::protocol::T_REPLY) {
+        this->iprot_->skip(::apache::thrift::protocol::T_STRUCT);
+        this->iprot_->readMessageEnd();
+        this->iprot_->getTransport()->readEnd();
+      }
+      if (fname.compare("check") != 0) {
+        this->iprot_->skip(::apache::thrift::protocol::T_STRUCT);
+        this->iprot_->readMessageEnd();
+        this->iprot_->getTransport()->readEnd();
+
+        // in a bad state, don't commit
+        using ::apache::thrift::protocol::TProtocolException;
+        throw TProtocolException(TProtocolException::INVALID_DATA);
+      }
+      bool _return;
+      MDTrieShard_check_presult result;
+      result.success = &_return;
+      result.read(this->iprot_);
+      this->iprot_->readMessageEnd();
+      this->iprot_->getTransport()->readEnd();
+
+      if (result.__isset.success) {
+        sentry.commit();
+        return _return;
+      }
+      // in a bad state, don't commit
+      throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "check failed: unknown result");
+    }
+    // seqid != rseqid
+    this->sync_->updatePending(fname, mtype, rseqid);
+
+    // this will temporarily unlock the readMutex, and let other clients get work done
+    this->sync_->waitForWork(seqid);
+  } // end while(true)
+}
+
+template <class Protocol_>
+void MDTrieShardConcurrentClientT<Protocol_>::range_search_trie(std::vector<std::vector<int32_t> > & _return, const std::vector<int32_t> & start_range, const std::vector<int32_t> & end_range)
+{
+  int32_t seqid = send_range_search_trie(start_range, end_range);
+  recv_range_search_trie(_return, seqid);
+}
+
+template <class Protocol_>
+int32_t MDTrieShardConcurrentClientT<Protocol_>::send_range_search_trie(const std::vector<int32_t> & start_range, const std::vector<int32_t> & end_range)
+{
+  int32_t cseqid = this->sync_->generateSeqId();
+  ::apache::thrift::async::TConcurrentSendSentry sentry(this->sync_.get());
+  this->oprot_->writeMessageBegin("range_search_trie", ::apache::thrift::protocol::T_CALL, cseqid);
+
+  MDTrieShard_range_search_trie_pargs args;
+  args.start_range = &start_range;
+  args.end_range = &end_range;
+  args.write(this->oprot_);
+
+  this->oprot_->writeMessageEnd();
+  this->oprot_->getTransport()->writeEnd();
+  this->oprot_->getTransport()->flush();
+
+  sentry.commit();
+  return cseqid;
+}
+
+template <class Protocol_>
+void MDTrieShardConcurrentClientT<Protocol_>::recv_range_search_trie(std::vector<std::vector<int32_t> > & _return, const int32_t seqid)
+{
+
+  int32_t rseqid = 0;
+  std::string fname;
+  ::apache::thrift::protocol::TMessageType mtype;
+
+  // the read mutex gets dropped and reacquired as part of waitForWork()
+  // The destructor of this sentry wakes up other clients
+  ::apache::thrift::async::TConcurrentRecvSentry sentry(this->sync_.get(), seqid);
+
+  while(true) {
+    if(!this->sync_->getPending(fname, mtype, rseqid)) {
+      this->iprot_->readMessageBegin(fname, mtype, rseqid);
+    }
+    if(seqid == rseqid) {
+      if (mtype == ::apache::thrift::protocol::T_EXCEPTION) {
+        ::apache::thrift::TApplicationException x;
+        x.read(this->iprot_);
+        this->iprot_->readMessageEnd();
+        this->iprot_->getTransport()->readEnd();
+        sentry.commit();
+        throw x;
+      }
+      if (mtype != ::apache::thrift::protocol::T_REPLY) {
+        this->iprot_->skip(::apache::thrift::protocol::T_STRUCT);
+        this->iprot_->readMessageEnd();
+        this->iprot_->getTransport()->readEnd();
+      }
+      if (fname.compare("range_search_trie") != 0) {
+        this->iprot_->skip(::apache::thrift::protocol::T_STRUCT);
+        this->iprot_->readMessageEnd();
+        this->iprot_->getTransport()->readEnd();
+
+        // in a bad state, don't commit
+        using ::apache::thrift::protocol::TProtocolException;
+        throw TProtocolException(TProtocolException::INVALID_DATA);
+      }
+      MDTrieShard_range_search_trie_presult result;
+      result.success = &_return;
+      result.read(this->iprot_);
+      this->iprot_->readMessageEnd();
+      this->iprot_->getTransport()->readEnd();
+
+      if (result.__isset.success) {
+        // _return pointer has now been filled
+        sentry.commit();
+        return;
+      }
+      // in a bad state, don't commit
+      throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "range_search_trie failed: unknown result");
+    }
+    // seqid != rseqid
+    this->sync_->updatePending(fname, mtype, rseqid);
+
+    // this will temporarily unlock the readMutex, and let other clients get work done
+    this->sync_->waitForWork(seqid);
+  } // end while(true)
+}
+
+template <class Protocol_>
+void MDTrieShardConcurrentClientT<Protocol_>::primary_key_lookup(std::vector<int32_t> & _return, const int32_t primary_key)
+{
+  int32_t seqid = send_primary_key_lookup(primary_key);
+  recv_primary_key_lookup(_return, seqid);
+}
+
+template <class Protocol_>
+int32_t MDTrieShardConcurrentClientT<Protocol_>::send_primary_key_lookup(const int32_t primary_key)
+{
+  int32_t cseqid = this->sync_->generateSeqId();
+  ::apache::thrift::async::TConcurrentSendSentry sentry(this->sync_.get());
+  this->oprot_->writeMessageBegin("primary_key_lookup", ::apache::thrift::protocol::T_CALL, cseqid);
+
+  MDTrieShard_primary_key_lookup_pargs args;
+  args.primary_key = &primary_key;
+  args.write(this->oprot_);
+
+  this->oprot_->writeMessageEnd();
+  this->oprot_->getTransport()->writeEnd();
+  this->oprot_->getTransport()->flush();
+
+  sentry.commit();
+  return cseqid;
+}
+
+template <class Protocol_>
+void MDTrieShardConcurrentClientT<Protocol_>::recv_primary_key_lookup(std::vector<int32_t> & _return, const int32_t seqid)
+{
+
+  int32_t rseqid = 0;
+  std::string fname;
+  ::apache::thrift::protocol::TMessageType mtype;
+
+  // the read mutex gets dropped and reacquired as part of waitForWork()
+  // The destructor of this sentry wakes up other clients
+  ::apache::thrift::async::TConcurrentRecvSentry sentry(this->sync_.get(), seqid);
+
+  while(true) {
+    if(!this->sync_->getPending(fname, mtype, rseqid)) {
+      this->iprot_->readMessageBegin(fname, mtype, rseqid);
+    }
+    if(seqid == rseqid) {
+      if (mtype == ::apache::thrift::protocol::T_EXCEPTION) {
+        ::apache::thrift::TApplicationException x;
+        x.read(this->iprot_);
+        this->iprot_->readMessageEnd();
+        this->iprot_->getTransport()->readEnd();
+        sentry.commit();
+        throw x;
+      }
+      if (mtype != ::apache::thrift::protocol::T_REPLY) {
+        this->iprot_->skip(::apache::thrift::protocol::T_STRUCT);
+        this->iprot_->readMessageEnd();
+        this->iprot_->getTransport()->readEnd();
+      }
+      if (fname.compare("primary_key_lookup") != 0) {
+        this->iprot_->skip(::apache::thrift::protocol::T_STRUCT);
+        this->iprot_->readMessageEnd();
+        this->iprot_->getTransport()->readEnd();
+
+        // in a bad state, don't commit
+        using ::apache::thrift::protocol::TProtocolException;
+        throw TProtocolException(TProtocolException::INVALID_DATA);
+      }
+      MDTrieShard_primary_key_lookup_presult result;
+      result.success = &_return;
+      result.read(this->iprot_);
+      this->iprot_->readMessageEnd();
+      this->iprot_->getTransport()->readEnd();
+
+      if (result.__isset.success) {
+        // _return pointer has now been filled
+        sentry.commit();
+        return;
+      }
+      // in a bad state, don't commit
+      throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "primary_key_lookup failed: unknown result");
     }
     // seqid != rseqid
     this->sync_->updatePending(fname, mtype, rseqid);
