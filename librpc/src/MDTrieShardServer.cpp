@@ -162,11 +162,11 @@ class MDTrieCloneFactory : virtual public MDTrieShardIfFactory {
 };
 
 
-class MDTrieClient {
+class MDTrieServerCoordinator {
 
 public:
 
-    MDTrieClient(int port_num, int server_count) {
+    MDTrieServerCoordinator(int port_num, int server_count) {
 
         std::vector<std::future<void>> futures;
 
@@ -197,40 +197,9 @@ private:
 };
 
 
-// int main(int argc, char *argv[]) {
 int main(){
 
-  MDTrieClient(9090, 10);
-
+  MDTrieServerCoordinator(9090, 10);
   return 0;
-
-  // if (argc == 1){
-  //   TThreadedServer server(
-  //     std::make_shared<MDTrieShardProcessorFactory>(std::make_shared<MDTrieCloneFactory>()),
-  //     std::make_shared<TServerSocket>(9091), //port
-  //     std::make_shared<TBufferedTransportFactory>(),
-  //     std::make_shared<TBinaryProtocolFactory>());
-
-  //   cout << "Starting the server..." << endl;
-  //   server.serve();
-  //   cout << "Done." << endl;
-  //   return 0;
-  // }
-
-  // else if (argc == 2){
-  //   int port_number = stoi(argv[1]);
-  //   TThreadedServer server(
-  //     std::make_shared<MDTrieShardProcessorFactory>(std::make_shared<MDTrieCloneFactory>()),
-  //     std::make_shared<TServerSocket>(port_number), //port
-  //     std::make_shared<TBufferedTransportFactory>(),
-  //     std::make_shared<TBinaryProtocolFactory>());
-
-  //   cout << "Starting the server..." << endl;
-  //   server.serve();
-  //   cout << "Done." << endl;
-  //   return 0;
-    
-  // }
-
-
+  
 }
