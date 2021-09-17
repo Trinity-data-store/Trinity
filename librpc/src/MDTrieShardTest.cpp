@@ -84,12 +84,17 @@ int main(int argc, char *argv[]){
   vector<vector <int32_t>> *data_vector = get_data_vector();
 
   tqdm bar;
+  TimeStamp diff = 0;
+  TimeStamp start;
   for (uint32_t i = 0; i < n_lines; i ++){
     bar.progress(i, n_lines);
     vector <int32_t> point = (* data_vector)[i];
+
+    start = GetTimestamp();
     client.insert(point, i);
-    if (!client.check(point, i))
-      cout << "not found" << endl;
+    diff += GetTimestamp() - start;
   }
+
+  cout << "Insertion latency per point: " << (float) diff / n_lines << " us/point" << endl;
   bar.finish();
 }

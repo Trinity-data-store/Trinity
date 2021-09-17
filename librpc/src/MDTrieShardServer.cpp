@@ -71,7 +71,7 @@ public:
       leaf_point->set_coordinate(i, point[i]);
     
     mdtrie_->insert_trie(leaf_point, max_depth);
-    // TODO: return primary key (insert_trie function should return primary key)
+
     return current_primary_key - 1;
   }
 

@@ -74,21 +74,18 @@ public:
 
   void insert(vector<int32_t> point, int32_t p_key){
 
-    int client_count = shard_vector_.size();
-    int shard_index = p_key_hash_(p_key) % client_count;
+    int shard_index = p_key % shard_vector_.size();
     shard_vector_[shard_index].send_insert_trie(point);
     shard_vector_[shard_index].recv_insert_trie();
   }
 
   bool check(vector<int32_t> point, int32_t p_key){
 
-    int client_count = shard_vector_.size();
-    int shard_index = p_key_hash_(p_key) % client_count;
+    int shard_index = p_key % shard_vector_.size();
     shard_vector_[shard_index].send_check(point);
     return shard_vector_[shard_index].recv_check();
   }
 
 private:
-  std::hash<uint32_t> p_key_hash_;
   std::vector<MDTrieShardClient> shard_vector_; 
 };
