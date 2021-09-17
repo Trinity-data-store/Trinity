@@ -31,20 +31,19 @@ using namespace apache::thrift;
 using namespace apache::thrift::protocol;
 using namespace apache::thrift::transport;
 
+
 class MDTrieClient {
 
 public:
+
   MDTrieClient(int port_num, int client_count) {
 
     std::vector<std::future<void>> futures;
+    shard_vector_.reserve(client_count);
 
-    for(int i = 0; i < client_count; ++i) {
-      futures.push_back(std::async(launch_port, port_num + i));
+    for (int i = 0; i < client_count; ++i) {
+      shard_vector_.push_back(launch_port(port_num + i));
     }
-
-    for(auto &e : futures) {
-      e.get();
-    }    
   }
 
   static MDTrieShardClient connect(const std::string &host, int port) {
@@ -60,53 +59,36 @@ public:
   }
 
 
-  static void launch_port(int port_num) {
-
-    MDTrieShardClient client = connect("localhost", port_num);
-
-    try {
-
-      client.ping();
-
-      cout << "ping()" << endl;
-
-      cout << "1 + 1 = " << client.add(1, 1) << endl;
-
-      vector<int32_t> point{ 10, 20, 30, 40, 50, 60 };
-      
-      cout << "primary key: " << client.insert_trie(point) << endl;
-
-      if (!client.check(point)){
-        cout << "not found!" << endl;
-      } else {
-        cout << "found!" << endl;
-      }
-
-      vector<int32_t> start_point{ 0, 0, 0, 0, 0, 0 };
-      vector<int32_t> end_point{100, 100, 100, 100, 100, 100};
-      vector<vector<int32_t>> range_search_return;
-
-      client.range_search_trie(range_search_return, start_point, end_point);
-      cout << "Range Search found " << range_search_return.size() << " points" << endl;
-
-      vector<int32_t> lookup_return;
-      client.primary_key_lookup(lookup_return, 0);
-      
-      for (uint8_t i = 0; i < lookup_return.size(); i++){
-        if (point[i] != lookup_return[i]){
-          cout << "point differ!" << endl;
-        }
-      }
-
-      cout << "the same point" << endl;
-    }
+  static MDTrieShardClient launch_port(int port_num) {
     
-    catch (std::exception& exc){
-      cerr << exc.what();
-    }
+    return connect("localhost", port_num);
+  
+  }
 
+  void ping(){
+
+    int client_count = shard_vector_.size();
+    for (uint8_t i = 0; i < client_count; i++)
+      shard_vector_[i].ping();
+  }
+
+  void insert(vector<int32_t> point, int32_t p_key){
+
+    int client_count = shard_vector_.size();
+    int shard_index = p_key_hash_(p_key) % client_count;
+    shard_vector_[shard_index].send_insert_trie(point);
+    shard_vector_[shard_index].recv_insert_trie();
+  }
+
+  bool check(vector<int32_t> point, int32_t p_key){
+
+    int client_count = shard_vector_.size();
+    int shard_index = p_key_hash_(p_key) % client_count;
+    shard_vector_[shard_index].send_check(point);
+    return shard_vector_[shard_index].recv_check();
   }
 
 private:
-
+  std::hash<uint32_t> p_key_hash_;
+  std::vector<MDTrieShardClient> shard_vector_; 
 };
