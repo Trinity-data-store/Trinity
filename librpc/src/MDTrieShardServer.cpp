@@ -166,6 +166,11 @@ class MDTrieServerCoordinator {
 
 public:
 
+    MDTrieServerCoordinator(int port_num) {
+
+      start_server(port_num);
+    }
+
     MDTrieServerCoordinator(int port_num, int server_count) {
 
         std::vector<std::future<void>> futures;
@@ -197,7 +202,12 @@ private:
 };
 
 
-int main(){
+int main(int argc, char *argv[]){
+
+  if (argc == 2){
+    MDTrieServerCoordinator(atoi(argv[1]));
+    return 0;
+  }
 
   MDTrieServerCoordinator(9090, 10);
   return 0;
