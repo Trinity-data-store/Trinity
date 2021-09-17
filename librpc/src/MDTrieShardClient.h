@@ -31,10 +31,10 @@ using namespace apache::thrift;
 using namespace apache::thrift::protocol;
 using namespace apache::thrift::transport;
 
-class MDTrieClientCoordinator {
+class MDTrieClient {
 
 public:
-  MDTrieClientCoordinator(int port_num, int client_count) {
+  MDTrieClient(int port_num, int client_count) {
 
     std::vector<std::future<void>> futures;
 
@@ -110,10 +110,3 @@ public:
 private:
 
 };
-
-int main(){
-
-  MDTrieClientCoordinator(9090, 10);
-  return 0;
-
-}

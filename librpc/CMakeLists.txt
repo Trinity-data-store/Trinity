@@ -1,8 +1,9 @@
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../libmdtrie/src)
 
-add_executable(MDTrieShardClient
-        src/MDTrieShardClient.cpp
+add_executable(MDTrieShardTest
+        src/MDTrieShardTest.cpp
+        src/MDTrieShardClient.h
         src/MDTrieShard.h
         src/MDTrieShard.cpp)
 
@@ -11,8 +12,8 @@ add_executable(MDTrieShardServer
         src/MDTrieShard.h
         src/MDTrieShard.cpp)
 
-target_link_libraries(MDTrieShardClient ${MDTRIE_LIBS} ${RPC_LIBS})
-add_dependencies(MDTrieShardClient thrift_ep)
+target_link_libraries(MDTrieShardTest ${MDTRIE_LIBS} ${RPC_LIBS})
+add_dependencies(MDTrieShardTest thrift_ep)
 
 target_link_libraries(MDTrieShardServer ${MDTRIE_LIBS} ${RPC_LIBS})
 add_dependencies(MDTrieShardServer thrift_ep)
