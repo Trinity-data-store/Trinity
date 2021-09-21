@@ -24,7 +24,7 @@ class MDTrieShardIf {
   virtual ~MDTrieShardIf() {}
   virtual void ping() = 0;
   virtual int32_t add(const int32_t num1, const int32_t num2) = 0;
-  virtual int32_t insert_trie(const std::vector<int32_t> & point) = 0;
+  virtual int32_t insert_trie(const std::vector<int32_t> & point, const int32_t primary_key) = 0;
   virtual bool check(const std::vector<int32_t> & point) = 0;
   virtual void range_search_trie(std::vector<std::vector<int32_t> > & _return, const std::vector<int32_t> & start_range, const std::vector<int32_t> & end_range) = 0;
   virtual void primary_key_lookup(std::vector<int32_t> & _return, const int32_t primary_key) = 0;
@@ -64,7 +64,7 @@ class MDTrieShardNull : virtual public MDTrieShardIf {
     int32_t _return = 0;
     return _return;
   }
-  int32_t insert_trie(const std::vector<int32_t> & /* point */) {
+  int32_t insert_trie(const std::vector<int32_t> & /* point */, const int32_t /* primary_key */) {
     int32_t _return = 0;
     return _return;
   }
@@ -278,8 +278,9 @@ class MDTrieShard_add_presult {
 };
 
 typedef struct _MDTrieShard_insert_trie_args__isset {
-  _MDTrieShard_insert_trie_args__isset() : point(false) {}
+  _MDTrieShard_insert_trie_args__isset() : point(false), primary_key(false) {}
   bool point :1;
+  bool primary_key :1;
 } _MDTrieShard_insert_trie_args__isset;
 
 class MDTrieShard_insert_trie_args {
@@ -287,19 +288,24 @@ class MDTrieShard_insert_trie_args {
 
   MDTrieShard_insert_trie_args(const MDTrieShard_insert_trie_args&);
   MDTrieShard_insert_trie_args& operator=(const MDTrieShard_insert_trie_args&);
-  MDTrieShard_insert_trie_args() {
+  MDTrieShard_insert_trie_args() : primary_key(0) {
   }
 
   virtual ~MDTrieShard_insert_trie_args() noexcept;
   std::vector<int32_t>  point;
+  int32_t primary_key;
 
   _MDTrieShard_insert_trie_args__isset __isset;
 
   void __set_point(const std::vector<int32_t> & val);
 
+  void __set_primary_key(const int32_t val);
+
   bool operator == (const MDTrieShard_insert_trie_args & rhs) const
   {
     if (!(point == rhs.point))
+      return false;
+    if (!(primary_key == rhs.primary_key))
       return false;
     return true;
   }
@@ -323,6 +329,7 @@ class MDTrieShard_insert_trie_pargs {
 
   virtual ~MDTrieShard_insert_trie_pargs() noexcept;
   const std::vector<int32_t> * point;
+  const int32_t* primary_key;
 
   template <class Protocol_>
   uint32_t write(Protocol_* oprot) const;
@@ -756,8 +763,8 @@ class MDTrieShardClientT : virtual public MDTrieShardIf {
   int32_t add(const int32_t num1, const int32_t num2);
   void send_add(const int32_t num1, const int32_t num2);
   int32_t recv_add();
-  int32_t insert_trie(const std::vector<int32_t> & point);
-  void send_insert_trie(const std::vector<int32_t> & point);
+  int32_t insert_trie(const std::vector<int32_t> & point, const int32_t primary_key);
+  void send_insert_trie(const std::vector<int32_t> & point, const int32_t primary_key);
   int32_t recv_insert_trie();
   bool check(const std::vector<int32_t> & point);
   void send_check(const std::vector<int32_t> & point);
@@ -880,13 +887,13 @@ class MDTrieShardMultiface : virtual public MDTrieShardIf {
     return ifaces_[i]->add(num1, num2);
   }
 
-  int32_t insert_trie(const std::vector<int32_t> & point) {
+  int32_t insert_trie(const std::vector<int32_t> & point, const int32_t primary_key) {
     size_t sz = ifaces_.size();
     size_t i = 0;
     for (; i < (sz - 1); ++i) {
-      ifaces_[i]->insert_trie(point);
+      ifaces_[i]->insert_trie(point, primary_key);
     }
-    return ifaces_[i]->insert_trie(point);
+    return ifaces_[i]->insert_trie(point, primary_key);
   }
 
   bool check(const std::vector<int32_t> & point) {
@@ -957,8 +964,8 @@ class MDTrieShardConcurrentClientT : virtual public MDTrieShardIf {
   int32_t add(const int32_t num1, const int32_t num2);
   int32_t send_add(const int32_t num1, const int32_t num2);
   int32_t recv_add(const int32_t seqid);
-  int32_t insert_trie(const std::vector<int32_t> & point);
-  int32_t send_insert_trie(const std::vector<int32_t> & point);
+  int32_t insert_trie(const std::vector<int32_t> & point, const int32_t primary_key);
+  int32_t send_insert_trie(const std::vector<int32_t> & point, const int32_t primary_key);
   int32_t recv_insert_trie(const int32_t seqid);
   bool check(const std::vector<int32_t> & point);
   int32_t send_check(const std::vector<int32_t> & point);

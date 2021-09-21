@@ -69,7 +69,7 @@ public:
 
     // This function inserts a string into a trie_node.
     // The first part it traverses is the trie, followed by traversing the treeblock
-    void insert_trie(data_point<DIMENSION> *leaf_point, level_t length) {
+    void insert_trie(data_point<DIMENSION> *leaf_point, level_t length, n_leaves_t primary_key) {
 
         // raise(SIGINT);
         // if (root_ == nullptr) {
@@ -80,7 +80,7 @@ public:
         tree_block<DIMENSION, NUM_BRANCHES> *current_treeblock = walk_trie(current_trie_node, leaf_point, level);
 
         // return;
-        current_treeblock->insert_remaining(leaf_point, length, level);
+        current_treeblock->insert_remaining(leaf_point, length, level, primary_key);
         
     }
 

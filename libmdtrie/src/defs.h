@@ -73,7 +73,7 @@ uint64_t max_count = 0;
 TimeStamp vector_time = 0;
 uint64_t vect_opt_count = 0;
 std::shared_mutex mutex_p_key;
-n_leaves_t current_primary_key = 0;
+// n_leaves_t current_primary_key = 0;
 
 n_leaves_t total_points_count = 14583357;
 

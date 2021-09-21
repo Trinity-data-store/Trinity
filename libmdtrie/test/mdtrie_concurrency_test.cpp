@@ -27,7 +27,7 @@ void test_random_insert(md_trie<DIMENSION, NUM_BRANCHES> *mdtrie){
             leaf_point->set_coordinate(i, coordinate);
         }
         
-        mdtrie->insert_trie(leaf_point, max_depth);
+        mdtrie->insert_trie(leaf_point, max_depth, itr - 1);
     }
     return;    
 }

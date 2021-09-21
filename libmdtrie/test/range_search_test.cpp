@@ -39,7 +39,7 @@ bool test_range_search(n_leaves_t n_points, level_t max_depth, level_t trie_dept
                 }
             }
         }
-        mdtrie->insert_trie(leaf_point, max_depth);
+        mdtrie->insert_trie(leaf_point, max_depth, itr - 1);
     }
     auto *start_range = new data_point<DIMENSION_RANGE>();
     auto *end_range = new data_point<DIMENSION_RANGE>();
@@ -130,7 +130,7 @@ bool test_range_search_exact(n_leaves_t n_points, level_t max_depth, level_t tri
                 }
             }
         }
-        mdtrie->insert_trie(leaf_point, max_depth);
+        mdtrie->insert_trie(leaf_point, max_depth, itr - 1);
     }
     auto *start_range = new data_point<DIMENSION_EXACT>();
     auto *end_range = new data_point<DIMENSION_EXACT>();

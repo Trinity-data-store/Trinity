@@ -233,7 +233,7 @@ public:
 
     // This function inserts the string at the node position
     void insert(node_t node, data_point<DIMENSION> *leaf_point, level_t level, level_t length,
-                            preorder_t current_frontier, preorder_t current_primary) {
+                            preorder_t current_frontier, preorder_t current_primary, n_leaves_t primary_key) {
 
 
         mutex.lock();
@@ -248,7 +248,7 @@ public:
                 current_primary ++;
             }
 
-            insert_primary_key_at_present_index(current_primary);
+            insert_primary_key_at_present_index(current_primary, primary_key);
             mutex.unlock();
 
             return;
@@ -284,7 +284,7 @@ public:
             }
     
             mutex.unlock();
-            get_pointer(current_frontier)->insert(0, leaf_point, level, length, 0, 0);
+            get_pointer(current_frontier)->insert(0, leaf_point, level, length, 0, 0, primary_key);
 
             // return;
         }
@@ -313,7 +313,7 @@ public:
                 // }
             }
 
-            insert_primary_key_at_index(current_primary);
+            insert_primary_key_at_index(current_primary, primary_key);
             // if (!test_primary_key_correctness(node, current_primary)){
             //     raise(SIGINT);
             // }
@@ -378,7 +378,7 @@ public:
             // insert_bimap(this, from_node - 1, last_symbol);
 
 
-            insert_primary_key_at_index(current_primary);
+            insert_primary_key_at_index(current_primary, primary_key);
     
             mutex.unlock();
 
@@ -391,7 +391,7 @@ public:
             // }
             tree_capacity_ = num_nodes_ + (length - level);
             mutex.unlock();
-            insert(node, leaf_point, level, length, current_frontier, current_primary);
+            insert(node, leaf_point, level, length, current_frontier, current_primary, primary_key);
         } else {
 
             preorder_t subtree_size, selected_node_depth;
@@ -634,14 +634,14 @@ public:
                     dfuds_->set_symbol(insertion_node, leaf_point->leaf_to_symbol(level, max_depth_), false);
                     mutex.unlock();
                     // raise(SIGINT);
-                    new_block->insert(0, leaf_point, level, length, current_frontier_new_block, current_primary_new_block);
+                    new_block->insert(0, leaf_point, level, length, current_frontier_new_block, current_primary_new_block, primary_key);
                     // insert(insertion_node, leaf_point, level, length, current_frontier, current_primary);
                 } else {
                     // release 
                     mutex.unlock();
 
                     // fprintf(stderr, "insertion_in_new_block & is_not_in_root\n");
-                    new_block->insert(insertion_node, leaf_point, level, length, current_frontier_new_block, current_primary_new_block);
+                    new_block->insert(insertion_node, leaf_point, level, length, current_frontier_new_block, current_primary_new_block, primary_key);
                 }
             }
             // If the insertion is in the old block
@@ -650,7 +650,7 @@ public:
                 mutex.unlock();
 
                 // fprintf(stderr, "insertion in old block\n");
-                insert(insertion_node, leaf_point, level, length, current_frontier, current_primary); 
+                insert(insertion_node, leaf_point, level, length, current_frontier, current_primary, primary_key); 
             }
         }
         // for (preorder_t i = num_nodes_; i < dfuds_->get_flag_size(); i++){
@@ -774,7 +774,7 @@ public:
 
     // Traverse the current TreeBlock, going into frontier nodes as needed
     // Until it cannot traverse further and calls insertion
-    void insert_remaining(data_point<DIMENSION> *leaf_point, level_t length, level_t level) {
+    void insert_remaining(data_point<DIMENSION> *leaf_point, level_t length, level_t level, n_leaves_t primary_key) {
 
         // mutex.lock();
         // fprintf(stderr, "insert remaining\n");
@@ -837,7 +837,7 @@ public:
                 
                 tree_block<DIMENSION, NUM_BRANCHES> *next_block = get_pointer(current_frontier);
                 mutex.unlock_shared();
-                next_block->insert_remaining(leaf_point, length, level + 1);
+                next_block->insert_remaining(leaf_point, length, level + 1, primary_key);
                 return;
                 // current_node = (node_t) 0;
                 // current_frontier = 0;
@@ -850,7 +850,7 @@ public:
         //     current_node == get_preorder(current_frontier)) {
         //     raise(SIGINT);       
         // }
-        insert(current_node, leaf_point, level, length, current_frontier, current_primary);
+        insert(current_node, leaf_point, level, length, current_frontier, current_primary, primary_key);
         current_leaves_inserted ++;
 
     }
@@ -1531,32 +1531,29 @@ public:
         mutex.unlock_shared();
     }
     
-    void insert_primary_key_at_present_index(n_leaves_t index){
+    void insert_primary_key_at_present_index(n_leaves_t index, n_leaves_t primary_key){
 
         mutex_p_key.lock();
 
-        p_key_to_treeblock_compact.Set(current_primary_key, this);
-        // p_key_to_treeblock[current_primary_key] = (uint64_t) this;
+        p_key_to_treeblock_compact.Set(primary_key, this);
 
-        primary_key_list[index].push(current_primary_key);
+        primary_key_list[index].push(primary_key);
 
-        current_primary_key++;
+        primary_key++;
         
         mutex_p_key.unlock();                
 
     }
 
-    void insert_primary_key_at_index(n_leaves_t index){
+    void insert_primary_key_at_index(n_leaves_t index, n_leaves_t primary_key){
 
         mutex_p_key.lock();
 
-        p_key_to_treeblock_compact.Set(current_primary_key, this);
-        // p_key_to_treeblock[current_primary_key] = (uint64_t) this;
+        p_key_to_treeblock_compact.Set(primary_key, this);
         
-        primary_key_list.emplace(primary_key_list.begin() + index, bits::compact_ptr(current_primary_key));
+        primary_key_list.emplace(primary_key_list.begin() + index, bits::compact_ptr(primary_key));
 
-        current_primary_key++;
-        // total_stored ++;
+        primary_key++;
 
         mutex_p_key.unlock();
     }

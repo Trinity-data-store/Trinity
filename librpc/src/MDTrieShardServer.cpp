@@ -63,16 +63,16 @@ public:
     return n1 + n2;
   }
 
-  int32_t insert_trie(const std::vector<int32_t> & point){
+  int32_t insert_trie(const std::vector<int32_t> & point, int32_t primary_key){
 
     auto *leaf_point = new data_point<DIMENSION>();
 
     for (uint8_t i = 0; i < DIMENSION; i++)
       leaf_point->set_coordinate(i, point[i]);
     
-    mdtrie_->insert_trie(leaf_point, max_depth);
+    mdtrie_->insert_trie(leaf_point, max_depth, primary_key);
 
-    return current_primary_key - 1;
+    return primary_key;
   }
 
   bool check(const std::vector<int32_t> & point){
@@ -129,11 +129,11 @@ public:
     symbol_t parent_symbol_from_primary = t_ptr->get_node_path_primary_key(primary_key, node_path_from_primary);
     node_path_from_primary[max_depth - 1] = parent_symbol_from_primary;
 
-    auto returned_coordinates = t_ptr->node_path_to_coordinates(node_path_from_primary);      
-    for (uint8_t i = 0; i < DIMENSION; i++){
-      _return[i] = returned_coordinates->get_coordinate(i);
-    }      
+    auto returned_coordinates = t_ptr->node_path_to_coordinates(node_path_from_primary);  
 
+    for (uint8_t i = 0; i < DIMENSION; i++){
+      _return.push_back(returned_coordinates->get_coordinate(i));
+    }      
   }
   
 

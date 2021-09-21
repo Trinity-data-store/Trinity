@@ -82,37 +82,14 @@ void insert_for_node_path(point_array<DIMENSION> *found_points, level_t max_dept
                 }
             }
         }
-        // bool duplicate = false;
-        // for (auto point : all_stored_points){
-        //     duplicate = true;
-        //     for (dimension_t j = 0; j < DIMENSION; j++){
-        //         if (point.get_coordinate(j) != leaf_point->get_coordinate(j)){
-        //             duplicate = false;
-        //             break;
-        //         }
-        //     }
-        //     if (duplicate){
-        //         break;
-        //     }
-        // }
-        // if (duplicate){
-        //     continue;
-        // }
 
         (*all_points).push_back((*leaf_point));
-        // all_stored_points.push_back((*leaf_point));
 
         start = GetTimestamp();
-        mdtrie->insert_trie(leaf_point, max_depth);
+        mdtrie->insert_trie(leaf_point, max_depth, n_points);
         diff += GetTimestamp() - start;
         n_points ++;
-        // if (n_points != current_primary_key){
-        //     raise(SIGINT);
-        // }
 
-        // if (n_points > 1000000){
-        //     break;
-        // }
     }
 
     bar.finish();
@@ -133,8 +110,7 @@ void insert_for_node_path(point_array<DIMENSION> *found_points, level_t max_dept
     diff = GetTimestamp() - start;
 
     fprintf(stderr, "Average time to range query one point: %f microseconds\n", (float) diff / found_points->size());
-    fprintf(stderr, "found points: %ld, n points %ld, current_primary_key: %ld\n", found_points->size(), n_points, current_primary_key);
-
+    fprintf(stderr, "found points: %ld, n points %ld\n", found_points->size(), n_points);
 }
 
 data_point<DIMENSION> * profile_func(tree_block<DIMENSION, NUM_BRANCHES> *parent_treeblock, node_t parent_node, symbol_t *node_path, level_t max_depth, symbol_t parent_symbol){
@@ -344,7 +320,7 @@ void test_real_data(level_t max_depth, level_t trie_depth, preorder_t max_tree_n
                 }
             }
         }
-        mdtrie->insert_trie(leaf_point, max_depth);
+        mdtrie->insert_trie(leaf_point, max_depth, n_points);
         n_points ++;
     }
     bar.finish();
@@ -444,7 +420,7 @@ void range_search_insert(md_trie<DIMENSION, NUM_BRANCHES> *mdtrie, level_t max_d
                 }
             }
         }
-        mdtrie->insert_trie(leaf_point, max_depth);
+        mdtrie->insert_trie(leaf_point, max_depth, n_points);
         n_points ++;
     }
     bar.finish();
@@ -503,7 +479,7 @@ bool test_random_range_search(n_leaves_t n_points, level_t max_depth, level_t tr
                 }
             }
         }
-        mdtrie->insert_trie(leaf_point, max_depth);
+        mdtrie->insert_trie(leaf_point, max_depth, itr - 1);
     }
     auto *start_range = new data_point<DIMENSION>();
     auto *end_range = new data_point<DIMENSION>();
@@ -588,7 +564,7 @@ void test_search_one_dimension(level_t max_depth, level_t trie_depth, preorder_t
                 }
             }
         }
-        mdtrie->insert_trie(leaf_point, max_depth);
+        mdtrie->insert_trie(leaf_point, max_depth, n_points);
         n_points ++;
     }
     bar.finish();

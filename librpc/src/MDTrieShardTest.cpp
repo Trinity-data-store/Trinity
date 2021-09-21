@@ -20,11 +20,15 @@ n_leaves_t n_lines = 14252681;
 
 vector<vector <int32_t>> *get_data_vector(){
 
+/** 
+    Get data from the OSM dataset stored in a vector
+*/
+
   FILE *fp = fopen("../libmdtrie/bench/data/osm_combined_updated.csv", "r");
   char *line = nullptr;
   size_t len = 0;
   ssize_t read;
-  // If the file cannot be open
+
   if (fp == nullptr)
   {
       fprintf(stderr, "file not found\n");
@@ -70,22 +74,22 @@ vector<vector <int32_t>> *get_data_vector(){
   return data_vector;
 }
 
-int main(int argc, char *argv[]){
+int main(){
   
-  if (argc != 3){
-    cerr << "wrong number of arguments" << endl;
-  }
-
   auto client = MDTrieClient(9090, 10);
-  // auto client = MDTrieClient(atoi(argv[1]), atoi(argv[2]));
 
   client.ping();
 
   vector<vector <int32_t>> *data_vector = get_data_vector();
 
+/** 
+    Insert all points from the OSM dataset
+*/
+
   tqdm bar;
   TimeStamp diff = 0;
   TimeStamp start;
+
   for (uint32_t i = 0; i < n_lines; i ++){
     bar.progress(i, n_lines);
     vector <int32_t> point = (* data_vector)[i];
@@ -97,4 +101,68 @@ int main(int argc, char *argv[]){
 
   cout << "Insertion latency per point: " << (float) diff / n_lines << " us/point" << endl;
   bar.finish();
+
+// /** 
+//     Check if all inserted points are present
+// */
+
+  tqdm bar1;
+  diff = 0;
+  for (uint32_t i = 0; i < n_lines; i ++){
+    bar1.progress(i, n_lines);
+    vector <int32_t> point = (* data_vector)[i];
+    start = GetTimestamp();
+    if (!client.check(point, i)){
+      cout << "point not found!" << endl;
+    }
+    diff += GetTimestamp() - start;
+  }
+  bar1.finish();
+  cout << "Point Query latency per point: " << (float) diff / n_lines << " us/point" << endl;
+
+// /** 
+//     Range Search full range
+// */
+
+  auto start_range = vector <int32_t>(DIMENSION, 0);
+  auto end_range = vector <int32_t>(DIMENSION, 1 << 31);
+  
+  std::vector<std::vector<int32_t> > return_vect;
+
+  diff = 0;
+  start = GetTimestamp();
+  client.range_search_trie(return_vect, start_range, end_range);
+  diff = GetTimestamp() - start;
+
+  cout << "number of points found: " << return_vect.size() << endl;
+  cout << "Range Search Latency per found points: " << (float) diff / return_vect.size() << " us/point" << endl;
+
+/** 
+    Lookup Primary
+*/
+
+  tqdm bar2;
+  diff = 0;
+  for (uint32_t i = 0; i < n_lines; i ++){
+    bar2.progress(i, n_lines);
+    vector <int32_t> point = (* data_vector)[i];
+    vector <int32_t> found_point; 
+
+    start = GetTimestamp();
+    client.primary_key_lookup(found_point, i);
+    // cout << "size of found_point" << found_point.size() << endl;
+
+    diff += GetTimestamp() - start;
+
+    if (point != found_point){
+      cout << "Lookup found vector not equal!" << endl;
+      raise(SIGINT);
+      return -1;
+    }
+  }
+  
+  bar2.finish();
+  cout << "Lookup latency per point: " << (float) diff / n_lines << " us/point" << endl;
+
+  return 0;
 }

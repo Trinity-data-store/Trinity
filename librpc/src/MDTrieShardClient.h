@@ -75,7 +75,7 @@ public:
   void insert(vector<int32_t> point, int32_t p_key){
 
     int shard_index = p_key % shard_vector_.size();
-    shard_vector_[shard_index].send_insert_trie(point);
+    shard_vector_[shard_index].send_insert_trie(point, p_key);
     shard_vector_[shard_index].recv_insert_trie();
   }
 
@@ -84,6 +84,31 @@ public:
     int shard_index = p_key % shard_vector_.size();
     shard_vector_[shard_index].send_check(point);
     return shard_vector_[shard_index].recv_check();
+  }
+
+  void primary_key_lookup(std::vector<int32_t> & return_vect, const int32_t p_key){
+
+    int shard_index = p_key % shard_vector_.size();
+
+    shard_vector_[shard_index].send_primary_key_lookup(p_key);
+    shard_vector_[shard_index].recv_primary_key_lookup(return_vect);
+
+  }
+
+  void range_search_trie(std::vector<std::vector<int32_t> > & return_vect, const std::vector<int32_t> & start_range, const std::vector<int32_t> & end_range){
+
+    int client_count = shard_vector_.size();
+
+    for (uint8_t i = 0; i < client_count; i++){
+      shard_vector_[i].send_range_search_trie(start_range, end_range);
+    }     
+
+    for (uint8_t i = 0; i < client_count; i++){
+      std::vector<std::vector<int32_t> > return_vect_tmp;
+      shard_vector_[i].recv_range_search_trie(return_vect_tmp);
+      return_vect.insert(return_vect.end(), return_vect_tmp.begin(), return_vect_tmp.end());
+    }    
+
   }
 
 private:

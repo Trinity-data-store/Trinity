@@ -43,7 +43,7 @@ void test_random_insert(md_trie<DIMENSION, NUM_BRANCHES> *mdtrie){
             leaf_point->set_coordinate(i, coordinate);
         }
         
-        mdtrie->insert_trie(leaf_point, max_depth);
+        mdtrie->insert_trie(leaf_point, max_depth, itr - 1);
     }
     return;    
 }
@@ -165,7 +165,7 @@ void insert_mdtrie_from_vector(md_trie<DIMENSION, NUM_BRANCHES> *mdtrie, uint8_t
     {
         data_point<DIMENSION> *leaf_point = vect[count];
         // TimeStamp start = GetTimestamp();
-        mdtrie->insert_trie(leaf_point, max_depth);
+        mdtrie->insert_trie(leaf_point, max_depth, thread_num);
         
         // total_read_latency += GetTimestamp() - start;
         // total_count ++;
@@ -331,7 +331,7 @@ void test_read_concurrency(){
             }
         }
         vect.push_back(leaf_point);
-        mdtrie->insert_trie(leaf_point, max_depth);
+        mdtrie->insert_trie(leaf_point, max_depth, n_points);
         n_points ++;
     }
     if (n_points != n_lines){
@@ -456,7 +456,7 @@ void test_range_search(){
                 }
             }
         }
-        mdtrie->insert_trie(leaf_point, max_depth);
+        mdtrie->insert_trie(leaf_point, max_depth, n_points);
         n_points ++;
     }
     bar1.finish();

@@ -76,7 +76,7 @@ void test_real_data(level_t max_depth, level_t trie_depth, preorder_t max_tree_n
                 }
             }
         }
-        mdtrie->insert_trie(leaf_point, max_depth);
+        mdtrie->insert_trie(leaf_point, max_depth, n_points);
         n_points ++;
     }
     bar.finish();

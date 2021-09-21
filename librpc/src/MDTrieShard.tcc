@@ -372,6 +372,14 @@ uint32_t MDTrieShard_insert_trie_args::read(Protocol_* iprot) {
           xfer += iprot->skip(ftype);
         }
         break;
+      case 2:
+        if (ftype == ::apache::thrift::protocol::T_I32) {
+          xfer += iprot->readI32(this->primary_key);
+          this->__isset.primary_key = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
       default:
         xfer += iprot->skip(ftype);
         break;
@@ -402,6 +410,10 @@ uint32_t MDTrieShard_insert_trie_args::write(Protocol_* oprot) const {
   }
   xfer += oprot->writeFieldEnd();
 
+  xfer += oprot->writeFieldBegin("primary_key", ::apache::thrift::protocol::T_I32, 2);
+  xfer += oprot->writeI32(this->primary_key);
+  xfer += oprot->writeFieldEnd();
+
   xfer += oprot->writeFieldStop();
   xfer += oprot->writeStructEnd();
   return xfer;
@@ -424,6 +436,10 @@ uint32_t MDTrieShard_insert_trie_pargs::write(Protocol_* oprot) const {
     }
     xfer += oprot->writeListEnd();
   }
+  xfer += oprot->writeFieldEnd();
+
+  xfer += oprot->writeFieldBegin("primary_key", ::apache::thrift::protocol::T_I32, 2);
+  xfer += oprot->writeI32((*(this->primary_key)));
   xfer += oprot->writeFieldEnd();
 
   xfer += oprot->writeFieldStop();
@@ -1379,20 +1395,21 @@ int32_t MDTrieShardClientT<Protocol_>::recv_add()
 }
 
 template <class Protocol_>
-int32_t MDTrieShardClientT<Protocol_>::insert_trie(const std::vector<int32_t> & point)
+int32_t MDTrieShardClientT<Protocol_>::insert_trie(const std::vector<int32_t> & point, const int32_t primary_key)
 {
-  send_insert_trie(point);
+  send_insert_trie(point, primary_key);
   return recv_insert_trie();
 }
 
 template <class Protocol_>
-void MDTrieShardClientT<Protocol_>::send_insert_trie(const std::vector<int32_t> & point)
+void MDTrieShardClientT<Protocol_>::send_insert_trie(const std::vector<int32_t> & point, const int32_t primary_key)
 {
   int32_t cseqid = 0;
   this->oprot_->writeMessageBegin("insert_trie", ::apache::thrift::protocol::T_CALL, cseqid);
 
   MDTrieShard_insert_trie_pargs args;
   args.point = &point;
+  args.primary_key = &primary_key;
   args.write(this->oprot_);
 
   this->oprot_->writeMessageEnd();
@@ -1905,7 +1922,7 @@ void MDTrieShardProcessorT<Protocol_>::process_insert_trie(int32_t seqid, ::apac
 
   MDTrieShard_insert_trie_result result;
   try {
-    result.success = iface_->insert_trie(args.point);
+    result.success = iface_->insert_trie(args.point, args.primary_key);
     result.__isset.success = true;
   } catch (const std::exception& e) {
     if (this->eventHandler_.get() != nullptr) {
@@ -1960,7 +1977,7 @@ void MDTrieShardProcessorT<Protocol_>::process_insert_trie(int32_t seqid, Protoc
 
   MDTrieShard_insert_trie_result result;
   try {
-    result.success = iface_->insert_trie(args.point);
+    result.success = iface_->insert_trie(args.point, args.primary_key);
     result.__isset.success = true;
   } catch (const std::exception& e) {
     if (this->eventHandler_.get() != nullptr) {
@@ -2498,14 +2515,14 @@ int32_t MDTrieShardConcurrentClientT<Protocol_>::recv_add(const int32_t seqid)
 }
 
 template <class Protocol_>
-int32_t MDTrieShardConcurrentClientT<Protocol_>::insert_trie(const std::vector<int32_t> & point)
+int32_t MDTrieShardConcurrentClientT<Protocol_>::insert_trie(const std::vector<int32_t> & point, const int32_t primary_key)
 {
-  int32_t seqid = send_insert_trie(point);
+  int32_t seqid = send_insert_trie(point, primary_key);
   return recv_insert_trie(seqid);
 }
 
 template <class Protocol_>
-int32_t MDTrieShardConcurrentClientT<Protocol_>::send_insert_trie(const std::vector<int32_t> & point)
+int32_t MDTrieShardConcurrentClientT<Protocol_>::send_insert_trie(const std::vector<int32_t> & point, const int32_t primary_key)
 {
   int32_t cseqid = this->sync_->generateSeqId();
   ::apache::thrift::async::TConcurrentSendSentry sentry(this->sync_.get());
@@ -2513,6 +2530,7 @@ int32_t MDTrieShardConcurrentClientT<Protocol_>::send_insert_trie(const std::vec
 
   MDTrieShard_insert_trie_pargs args;
   args.point = &point;
+  args.primary_key = &primary_key;
   args.write(this->oprot_);
 
   this->oprot_->writeMessageEnd();
