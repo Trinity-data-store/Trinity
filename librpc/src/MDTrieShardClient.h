@@ -96,7 +96,7 @@ public:
 
   }
 
-  void range_search_trie(std::vector<std::vector<int32_t> > & return_vect, const std::vector<int32_t> & start_range, const std::vector<int32_t> & end_range){
+  void range_search_trie(std::vector<int32_t> & return_vect, const std::vector<int32_t> & start_range, const std::vector<int32_t> & end_range){
 
     int client_count = shard_vector_.size();
 
@@ -105,7 +105,7 @@ public:
     }     
 
     for (uint8_t i = 0; i < client_count; i++){
-      std::vector<std::vector<int32_t> > return_vect_tmp;
+      std::vector<int32_t> return_vect_tmp;
       shard_vector_[i].recv_range_search_trie(return_vect_tmp);
 
       TimeStamp start = GetTimestamp();

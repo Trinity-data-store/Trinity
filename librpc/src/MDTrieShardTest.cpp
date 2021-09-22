@@ -110,7 +110,7 @@ int main(){
   auto start_range = vector <int32_t>(DIMENSION, 0);
   auto end_range = vector <int32_t>(DIMENSION, 1 << 31);
   
-  std::vector<std::vector<int32_t> > return_vect;
+  std::vector<int32_t> return_vect;
 
   diff = 0;
   start = GetTimestamp();

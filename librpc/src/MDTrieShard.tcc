@@ -935,19 +935,7 @@ uint32_t MDTrieShard_range_search_trie_result::read(Protocol_* iprot) {
             uint32_t _i32;
             for (_i32 = 0; _i32 < _size28; ++_i32)
             {
-              {
-                this->success[_i32].clear();
-                uint32_t _size33;
-                ::apache::thrift::protocol::TType _etype36;
-                xfer += iprot->readListBegin(_etype36, _size33);
-                this->success[_i32].resize(_size33);
-                uint32_t _i37;
-                for (_i37 = 0; _i37 < _size33; ++_i37)
-                {
-                  xfer += iprot->readI32(this->success[_i32][_i37]);
-                }
-                xfer += iprot->readListEnd();
-              }
+              xfer += iprot->readI32(this->success[_i32]);
             }
             xfer += iprot->readListEnd();
           }
@@ -978,19 +966,11 @@ uint32_t MDTrieShard_range_search_trie_result::write(Protocol_* oprot) const {
   if (this->__isset.success) {
     xfer += oprot->writeFieldBegin("success", ::apache::thrift::protocol::T_LIST, 0);
     {
-      xfer += oprot->writeListBegin(::apache::thrift::protocol::T_LIST, static_cast<uint32_t>(this->success.size()));
-      std::vector<std::vector<int32_t> > ::const_iterator _iter38;
-      for (_iter38 = this->success.begin(); _iter38 != this->success.end(); ++_iter38)
+      xfer += oprot->writeListBegin(::apache::thrift::protocol::T_I32, static_cast<uint32_t>(this->success.size()));
+      std::vector<int32_t> ::const_iterator _iter33;
+      for (_iter33 = this->success.begin(); _iter33 != this->success.end(); ++_iter33)
       {
-        {
-          xfer += oprot->writeListBegin(::apache::thrift::protocol::T_I32, static_cast<uint32_t>((*_iter38).size()));
-          std::vector<int32_t> ::const_iterator _iter39;
-          for (_iter39 = (*_iter38).begin(); _iter39 != (*_iter38).end(); ++_iter39)
-          {
-            xfer += oprot->writeI32((*_iter39));
-          }
-          xfer += oprot->writeListEnd();
-        }
+        xfer += oprot->writeI32((*_iter33));
       }
       xfer += oprot->writeListEnd();
     }
@@ -1028,26 +1008,14 @@ uint32_t MDTrieShard_range_search_trie_presult::read(Protocol_* iprot) {
         if (ftype == ::apache::thrift::protocol::T_LIST) {
           {
             (*(this->success)).clear();
-            uint32_t _size40;
-            ::apache::thrift::protocol::TType _etype43;
-            xfer += iprot->readListBegin(_etype43, _size40);
-            (*(this->success)).resize(_size40);
-            uint32_t _i44;
-            for (_i44 = 0; _i44 < _size40; ++_i44)
+            uint32_t _size34;
+            ::apache::thrift::protocol::TType _etype37;
+            xfer += iprot->readListBegin(_etype37, _size34);
+            (*(this->success)).resize(_size34);
+            uint32_t _i38;
+            for (_i38 = 0; _i38 < _size34; ++_i38)
             {
-              {
-                (*(this->success))[_i44].clear();
-                uint32_t _size45;
-                ::apache::thrift::protocol::TType _etype48;
-                xfer += iprot->readListBegin(_etype48, _size45);
-                (*(this->success))[_i44].resize(_size45);
-                uint32_t _i49;
-                for (_i49 = 0; _i49 < _size45; ++_i49)
-                {
-                  xfer += iprot->readI32((*(this->success))[_i44][_i49]);
-                }
-                xfer += iprot->readListEnd();
-              }
+              xfer += iprot->readI32((*(this->success))[_i38]);
             }
             xfer += iprot->readListEnd();
           }
@@ -1169,14 +1137,14 @@ uint32_t MDTrieShard_primary_key_lookup_result::read(Protocol_* iprot) {
         if (ftype == ::apache::thrift::protocol::T_LIST) {
           {
             this->success.clear();
-            uint32_t _size50;
-            ::apache::thrift::protocol::TType _etype53;
-            xfer += iprot->readListBegin(_etype53, _size50);
-            this->success.resize(_size50);
-            uint32_t _i54;
-            for (_i54 = 0; _i54 < _size50; ++_i54)
+            uint32_t _size39;
+            ::apache::thrift::protocol::TType _etype42;
+            xfer += iprot->readListBegin(_etype42, _size39);
+            this->success.resize(_size39);
+            uint32_t _i43;
+            for (_i43 = 0; _i43 < _size39; ++_i43)
             {
-              xfer += iprot->readI32(this->success[_i54]);
+              xfer += iprot->readI32(this->success[_i43]);
             }
             xfer += iprot->readListEnd();
           }
@@ -1208,10 +1176,10 @@ uint32_t MDTrieShard_primary_key_lookup_result::write(Protocol_* oprot) const {
     xfer += oprot->writeFieldBegin("success", ::apache::thrift::protocol::T_LIST, 0);
     {
       xfer += oprot->writeListBegin(::apache::thrift::protocol::T_I32, static_cast<uint32_t>(this->success.size()));
-      std::vector<int32_t> ::const_iterator _iter55;
-      for (_iter55 = this->success.begin(); _iter55 != this->success.end(); ++_iter55)
+      std::vector<int32_t> ::const_iterator _iter44;
+      for (_iter44 = this->success.begin(); _iter44 != this->success.end(); ++_iter44)
       {
-        xfer += oprot->writeI32((*_iter55));
+        xfer += oprot->writeI32((*_iter44));
       }
       xfer += oprot->writeListEnd();
     }
@@ -1249,14 +1217,14 @@ uint32_t MDTrieShard_primary_key_lookup_presult::read(Protocol_* iprot) {
         if (ftype == ::apache::thrift::protocol::T_LIST) {
           {
             (*(this->success)).clear();
-            uint32_t _size56;
-            ::apache::thrift::protocol::TType _etype59;
-            xfer += iprot->readListBegin(_etype59, _size56);
-            (*(this->success)).resize(_size56);
-            uint32_t _i60;
-            for (_i60 = 0; _i60 < _size56; ++_i60)
+            uint32_t _size45;
+            ::apache::thrift::protocol::TType _etype48;
+            xfer += iprot->readListBegin(_etype48, _size45);
+            (*(this->success)).resize(_size45);
+            uint32_t _i49;
+            for (_i49 = 0; _i49 < _size45; ++_i49)
             {
-              xfer += iprot->readI32((*(this->success))[_i60]);
+              xfer += iprot->readI32((*(this->success))[_i49]);
             }
             xfer += iprot->readListEnd();
           }
@@ -1643,7 +1611,7 @@ bool MDTrieShardClientT<Protocol_>::recv_check()
 }
 
 template <class Protocol_>
-void MDTrieShardClientT<Protocol_>::range_search_trie(std::vector<std::vector<int32_t> > & _return, const std::vector<int32_t> & start_range, const std::vector<int32_t> & end_range)
+void MDTrieShardClientT<Protocol_>::range_search_trie(std::vector<int32_t> & _return, const std::vector<int32_t> & start_range, const std::vector<int32_t> & end_range)
 {
   send_range_search_trie(start_range, end_range);
   recv_range_search_trie(_return);
@@ -1666,7 +1634,7 @@ void MDTrieShardClientT<Protocol_>::send_range_search_trie(const std::vector<int
 }
 
 template <class Protocol_>
-void MDTrieShardClientT<Protocol_>::recv_range_search_trie(std::vector<std::vector<int32_t> > & _return)
+void MDTrieShardClientT<Protocol_>::recv_range_search_trie(std::vector<int32_t> & _return)
 {
 
   int32_t rseqid = 0;
@@ -2978,7 +2946,7 @@ bool MDTrieShardConcurrentClientT<Protocol_>::recv_check(const int32_t seqid)
 }
 
 template <class Protocol_>
-void MDTrieShardConcurrentClientT<Protocol_>::range_search_trie(std::vector<std::vector<int32_t> > & _return, const std::vector<int32_t> & start_range, const std::vector<int32_t> & end_range)
+void MDTrieShardConcurrentClientT<Protocol_>::range_search_trie(std::vector<int32_t> & _return, const std::vector<int32_t> & start_range, const std::vector<int32_t> & end_range)
 {
   int32_t seqid = send_range_search_trie(start_range, end_range);
   recv_range_search_trie(_return, seqid);
@@ -3005,7 +2973,7 @@ int32_t MDTrieShardConcurrentClientT<Protocol_>::send_range_search_trie(const st
 }
 
 template <class Protocol_>
-void MDTrieShardConcurrentClientT<Protocol_>::recv_range_search_trie(std::vector<std::vector<int32_t> > & _return, const int32_t seqid)
+void MDTrieShardConcurrentClientT<Protocol_>::recv_range_search_trie(std::vector<int32_t> & _return, const int32_t seqid)
 {
 
   int32_t rseqid = 0;

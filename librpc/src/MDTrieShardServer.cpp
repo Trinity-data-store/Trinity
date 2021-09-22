@@ -96,7 +96,7 @@ public:
     return result;
   }
 
-  void range_search_trie(std::vector<std::vector<int32_t> > & _return, const std::vector<int32_t> & start_range, const std::vector<int32_t> & end_range){
+  void range_search_trie(std::vector<int32_t> & _return, const std::vector<int32_t> & start_range, const std::vector<int32_t> & end_range){
     
     TimeStamp start;
     start = GetTimestamp();
@@ -124,15 +124,15 @@ public:
     start = GetTimestamp();
     for (n_leaves_t i = 0; i < n_found_points; i++){
 
-      auto current_point = found_points->at(i)->get();
+      // auto current_point = found_points->at(i)->get();
     
-      std::vector<int32_t> vector_point(DIMENSION);
+      // std::vector<int32_t> vector_point(DIMENSION);
 
-      for (uint8_t i = 0; i < DIMENSION; i++){
-        vector_point.emplace_back(current_point[i]);
-      }
+      // for (uint8_t i = 0; i < DIMENSION; i++){
+      //   vector_point.emplace_back(current_point[i]);
+      // }
 
-      _return.emplace_back(vector_point);
+      _return.emplace_back(found_points->at(i)->read_primary());
     }
     thrift_vector_time += GetTimestamp() - start;;
 
@@ -157,7 +157,7 @@ public:
     
     start = GetTimestamp();
     for (uint8_t i = 0; i < DIMENSION; i++){
-      _return.emplace_bac(returned_coordinates->get_coordinate(i));
+      _return.emplace_back(returned_coordinates->get_coordinate(i));
     }      
     thrift_vector_time += GetTimestamp() - start;
   }
