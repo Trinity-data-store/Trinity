@@ -106,4 +106,20 @@ MDTrieShard_primary_key_lookup_presult::~MDTrieShard_primary_key_lookup_presult(
 }
 
 
+MDTrieShard_get_time_args::~MDTrieShard_get_time_args() noexcept {
+}
+
+
+MDTrieShard_get_time_pargs::~MDTrieShard_get_time_pargs() noexcept {
+}
+
+
+MDTrieShard_get_time_result::~MDTrieShard_get_time_result() noexcept {
+}
+
+
+MDTrieShard_get_time_presult::~MDTrieShard_get_time_presult() noexcept {
+}
+
+
 

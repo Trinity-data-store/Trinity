@@ -28,6 +28,7 @@ class MDTrieShardIf {
   virtual bool check(const std::vector<int32_t> & point) = 0;
   virtual void range_search_trie(std::vector<std::vector<int32_t> > & _return, const std::vector<int32_t> & start_range, const std::vector<int32_t> & end_range) = 0;
   virtual void primary_key_lookup(std::vector<int32_t> & _return, const int32_t primary_key) = 0;
+  virtual void get_time() = 0;
 };
 
 class MDTrieShardIfFactory {
@@ -76,6 +77,9 @@ class MDTrieShardNull : virtual public MDTrieShardIf {
     return;
   }
   void primary_key_lookup(std::vector<int32_t> & /* _return */, const int32_t /* primary_key */) {
+    return;
+  }
+  void get_time() {
     return;
   }
 };
@@ -731,6 +735,86 @@ class MDTrieShard_primary_key_lookup_presult {
 
 };
 
+
+class MDTrieShard_get_time_args {
+ public:
+
+  MDTrieShard_get_time_args(const MDTrieShard_get_time_args&);
+  MDTrieShard_get_time_args& operator=(const MDTrieShard_get_time_args&);
+  MDTrieShard_get_time_args() {
+  }
+
+  virtual ~MDTrieShard_get_time_args() noexcept;
+
+  bool operator == (const MDTrieShard_get_time_args & /* rhs */) const
+  {
+    return true;
+  }
+  bool operator != (const MDTrieShard_get_time_args &rhs) const {
+    return !(*this == rhs);
+  }
+
+  bool operator < (const MDTrieShard_get_time_args & ) const;
+
+  template <class Protocol_>
+  uint32_t read(Protocol_* iprot);
+  template <class Protocol_>
+  uint32_t write(Protocol_* oprot) const;
+
+};
+
+
+class MDTrieShard_get_time_pargs {
+ public:
+
+
+  virtual ~MDTrieShard_get_time_pargs() noexcept;
+
+  template <class Protocol_>
+  uint32_t write(Protocol_* oprot) const;
+
+};
+
+
+class MDTrieShard_get_time_result {
+ public:
+
+  MDTrieShard_get_time_result(const MDTrieShard_get_time_result&);
+  MDTrieShard_get_time_result& operator=(const MDTrieShard_get_time_result&);
+  MDTrieShard_get_time_result() {
+  }
+
+  virtual ~MDTrieShard_get_time_result() noexcept;
+
+  bool operator == (const MDTrieShard_get_time_result & /* rhs */) const
+  {
+    return true;
+  }
+  bool operator != (const MDTrieShard_get_time_result &rhs) const {
+    return !(*this == rhs);
+  }
+
+  bool operator < (const MDTrieShard_get_time_result & ) const;
+
+  template <class Protocol_>
+  uint32_t read(Protocol_* iprot);
+  template <class Protocol_>
+  uint32_t write(Protocol_* oprot) const;
+
+};
+
+
+class MDTrieShard_get_time_presult {
+ public:
+
+
+  virtual ~MDTrieShard_get_time_presult() noexcept;
+
+  template <class Protocol_>
+  uint32_t read(Protocol_* iprot);
+
+};
+
 template <class Protocol_>
 class MDTrieShardClientT : virtual public MDTrieShardIf {
  public:
@@ -775,6 +859,9 @@ class MDTrieShardClientT : virtual public MDTrieShardIf {
   void primary_key_lookup(std::vector<int32_t> & _return, const int32_t primary_key);
   void send_primary_key_lookup(const int32_t primary_key);
   void recv_primary_key_lookup(std::vector<int32_t> & _return);
+  void get_time();
+  void send_get_time();
+  void recv_get_time();
  protected:
   std::shared_ptr< Protocol_> piprot_;
   std::shared_ptr< Protocol_> poprot_;
@@ -815,6 +902,8 @@ class MDTrieShardProcessorT : public ::apache::thrift::TDispatchProcessorT<Proto
   void process_range_search_trie(int32_t seqid, Protocol_* iprot, Protocol_* oprot, void* callContext);
   void process_primary_key_lookup(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
   void process_primary_key_lookup(int32_t seqid, Protocol_* iprot, Protocol_* oprot, void* callContext);
+  void process_get_time(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
+  void process_get_time(int32_t seqid, Protocol_* iprot, Protocol_* oprot, void* callContext);
  public:
   MDTrieShardProcessorT(::std::shared_ptr<MDTrieShardIf> iface) :
     iface_(iface) {
@@ -836,6 +925,9 @@ class MDTrieShardProcessorT : public ::apache::thrift::TDispatchProcessorT<Proto
     processMap_["primary_key_lookup"] = ProcessFunctions(
       &MDTrieShardProcessorT::process_primary_key_lookup,
       &MDTrieShardProcessorT::process_primary_key_lookup);
+    processMap_["get_time"] = ProcessFunctions(
+      &MDTrieShardProcessorT::process_get_time,
+      &MDTrieShardProcessorT::process_get_time);
   }
 
   virtual ~MDTrieShardProcessorT() {}
@@ -925,6 +1017,15 @@ class MDTrieShardMultiface : virtual public MDTrieShardIf {
     return;
   }
 
+  void get_time() {
+    size_t sz = ifaces_.size();
+    size_t i = 0;
+    for (; i < (sz - 1); ++i) {
+      ifaces_[i]->get_time();
+    }
+    ifaces_[i]->get_time();
+  }
+
 };
 
 // The 'concurrent' client is a thread safe client that correctly handles
@@ -976,6 +1077,9 @@ class MDTrieShardConcurrentClientT : virtual public MDTrieShardIf {
   void primary_key_lookup(std::vector<int32_t> & _return, const int32_t primary_key);
   int32_t send_primary_key_lookup(const int32_t primary_key);
   void recv_primary_key_lookup(std::vector<int32_t> & _return, const int32_t seqid);
+  void get_time();
+  int32_t send_get_time();
+  void recv_get_time(const int32_t seqid);
  protected:
   std::shared_ptr< Protocol_> piprot_;
   std::shared_ptr< Protocol_> poprot_;

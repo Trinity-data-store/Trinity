@@ -75,7 +75,9 @@ uint64_t vect_opt_count = 0;
 std::shared_mutex mutex_p_key;
 // n_leaves_t current_primary_key = 0;
 
-n_leaves_t total_points_count = 14583357;
+// n_leaves_t total_points_count = 14583357;
+n_leaves_t total_points_count = 14252681;
+
 
 bitmap::CompactPtrVector p_key_to_treeblock_compact(total_points_count);
 
@@ -97,4 +99,7 @@ bool is_osm = false;
 // std::map<uint64_t, uint64_t> primary_key_count_to_occurrences;
 // std::vector<data_point<2>> all_stored_points;
 
+
+uint64_t thrift_vector_time = 0;
+uint64_t thrift_inner_function_time = 0;
 #endif //MD_TRIE_DEFS_H

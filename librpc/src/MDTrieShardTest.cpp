@@ -101,6 +101,26 @@ int main(){
 
   cout << "Insertion latency per point: " << (float) diff / n_lines << " us/point" << endl;
   bar.finish();
+  client.get_time();
+
+// /** 
+//     Range Search full range
+// */
+
+  auto start_range = vector <int32_t>(DIMENSION, 0);
+  auto end_range = vector <int32_t>(DIMENSION, 1 << 31);
+  
+  std::vector<std::vector<int32_t> > return_vect;
+
+  diff = 0;
+  start = GetTimestamp();
+  client.range_search_trie(return_vect, start_range, end_range);
+  diff = GetTimestamp() - start;
+
+  cout << "number of points found: " << return_vect.size() << endl;
+  cout << "Range Search Latency per found points: " << (float) diff / return_vect.size() << " us/point" << endl;
+  cout << "outer vector time: " << (float) thrift_vector_time / return_vect.size() << endl;
+  client.get_time();
 
 // /** 
 //     Check if all inserted points are present
@@ -119,23 +139,7 @@ int main(){
   }
   bar1.finish();
   cout << "Point Query latency per point: " << (float) diff / n_lines << " us/point" << endl;
-
-// /** 
-//     Range Search full range
-// */
-
-  auto start_range = vector <int32_t>(DIMENSION, 0);
-  auto end_range = vector <int32_t>(DIMENSION, 1 << 31);
-  
-  std::vector<std::vector<int32_t> > return_vect;
-
-  diff = 0;
-  start = GetTimestamp();
-  client.range_search_trie(return_vect, start_range, end_range);
-  diff = GetTimestamp() - start;
-
-  cout << "number of points found: " << return_vect.size() << endl;
-  cout << "Range Search Latency per found points: " << (float) diff / return_vect.size() << " us/point" << endl;
+  client.get_time();
 
 /** 
     Lookup Primary
@@ -150,7 +154,6 @@ int main(){
 
     start = GetTimestamp();
     client.primary_key_lookup(found_point, i);
-    // cout << "size of found_point" << found_point.size() << endl;
 
     diff += GetTimestamp() - start;
 
@@ -163,6 +166,6 @@ int main(){
   
   bar2.finish();
   cout << "Lookup latency per point: " << (float) diff / n_lines << " us/point" << endl;
-
+  client.get_time();
   return 0;
 }

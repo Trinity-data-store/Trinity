@@ -13,4 +13,5 @@ service MDTrieShard {
 
     list<i32> primary_key_lookup(1:i32 primary_key),
 
+    void get_time(),
 }

@@ -23,6 +23,7 @@
 #include <thrift/transport/TSocket.h>
 #include <thrift/transport/TTransportUtils.h>
 
+#include "trie.h"
 #include "MDTrieShard.h"
 #include <future>
 
@@ -106,10 +107,19 @@ public:
     for (uint8_t i = 0; i < client_count; i++){
       std::vector<std::vector<int32_t> > return_vect_tmp;
       shard_vector_[i].recv_range_search_trie(return_vect_tmp);
+
+      TimeStamp start = GetTimestamp();
       return_vect.insert(return_vect.end(), return_vect_tmp.begin(), return_vect_tmp.end());
+      thrift_vector_time += GetTimestamp() - start;
     }    
 
   }
+
+  void get_time(){
+
+    shard_vector_[0].get_time();
+  }
+
 
 private:
   std::vector<MDTrieShardClient> shard_vector_; 
