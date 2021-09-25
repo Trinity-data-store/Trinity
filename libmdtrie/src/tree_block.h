@@ -35,7 +35,6 @@ public:
         if (parent_trie_node){
             parent_trie_node_ = parent_trie_node;
         }
-
     }
 
     inline node_n_t num_frontiers() {
@@ -210,7 +209,7 @@ public:
     void insert(node_t node, data_point<DIMENSION> *leaf_point, level_t level, level_t length,
                             preorder_t current_frontier, preorder_t current_primary, n_leaves_t primary_key) {
 
-        mutex.lock();
+        // mutex.lock();
 
         if (level == length) {
 
@@ -223,7 +222,7 @@ public:
             }
 
             insert_primary_key_at_present_index(current_primary, primary_key);
-            mutex.unlock();
+            // mutex.unlock();
 
             return;
         }
@@ -249,8 +248,11 @@ public:
                 dfuds_->set_symbol(node, leaf_point->leaf_to_symbol(level, max_depth_), true);
             }
     
-            mutex.unlock();
+            // mutex.unlock();
+            get_pointer(current_frontier)->mutex.lock();
             get_pointer(current_frontier)->insert(0, leaf_point, level, length, 0, 0, primary_key);
+            get_pointer(current_frontier)->mutex.unlock();
+            return;
         }
         //  If there is only one character left
         //  Insert that character into the correct position
@@ -269,7 +271,8 @@ public:
             }
 
             insert_primary_key_at_index(current_primary, primary_key);
-            mutex.unlock();
+            // mutex.unlock();
+            return;
         }
             // there is room in current block for new nodes
         else if (num_nodes_ + (length - level) - 1 <= tree_capacity_) {
@@ -321,15 +324,18 @@ public:
             if (!check_frontiers())
                 raise(SIGINT);
 
-            mutex.unlock();
+            // mutex.unlock();
+            return;
 
         } else if (num_nodes_ + (length - level) - 1 <= max_tree_nodes) 
         {
             dfuds_->realloc_bitmap(num_nodes_ + length - level);
 
             tree_capacity_ = num_nodes_ + (length - level);
-            mutex.unlock();
+            // mutex.unlock();
             insert(node, leaf_point, level, length, current_frontier, current_primary, primary_key);
+            return;
+
         } else {
 
             preorder_t subtree_size, selected_node_depth;
@@ -401,7 +407,9 @@ public:
             }
  
             auto new_block = new tree_block(selected_node_depth, subtree_size, subtree_size, max_depth_, max_tree_nodes_);
+            new_block->mutex.lock();
             new_block->dfuds_ = new_dfuds;
+            new_block->mutex.unlock();
 
             //  If no pointer is copied to the new block
             if (new_pointer_index == 0) {
@@ -429,6 +437,7 @@ public:
                 new_pointer_array = (frontier_node<DIMENSION> *) realloc(new_pointer_array,
                                                             sizeof(frontier_node<DIMENSION>) * (new_pointer_index));
 
+                new_block->mutex.lock();
                 new_block->frontiers_ = new_pointer_array;
                 new_block->num_frontiers_ = new_pointer_index;
                 // Update pointer block parent pointer
@@ -436,6 +445,7 @@ public:
                     new_block->set_preorder(j, new_block->get_preorder(j));
                     new_block->set_pointer(j, new_block->get_pointer(j));
                 }
+                new_block->mutex.unlock();
 
                 set_preorder(frontier_selected_node, orig_selected_node);
                 set_pointer(frontier_selected_node, new_block);
@@ -463,9 +473,6 @@ public:
                     p_key_to_treeblock_compact.Set(primary_key_list[i].get(j), new_block);
                 }
             }
-
-
-
             // Erase copied primary keys            
             primary_key_list.erase(std::next(primary_key_list.begin(), selected_primary_index), std::next(primary_key_list.begin(), selected_primary_index + num_primary));
 
@@ -478,12 +485,10 @@ public:
                 if (selected_node <= node /* && node <= num_nodes_ */) {
                     insertion_node = node - selected_node + orig_selected_node;
                 }
-
                 dfuds_->shift_forward(selected_node, orig_selected_node);
             }
 
             else if(selected_node >= num_nodes_){
-
                 dfuds_->bulk_clear_node(orig_selected_node, selected_node - 1);
             }
 
@@ -493,24 +498,19 @@ public:
 
             } else {
                 dfuds_->realloc_bitmap(tree_capacity_ - (subtree_size - 1));
-  
                 tree_capacity_ -= subtree_size - 1;
             }
-
             num_nodes_ -= (subtree_size - 1);
 
             if (insertion_node > orig_selected_node - 1 /*it was ++*/ && !insertion_in_new_block){
-
                 current_frontier -= copied_frontier - 1;
             }
                 
             // Update current primary
             if (current_primary >= selected_primary_index + num_primary){
-
                 current_primary -= num_primary;
             }
             else if (current_primary >= selected_primary_index){
-
                 current_primary = selected_primary_index;
             }
  
@@ -519,20 +519,21 @@ public:
                 if (is_in_root) {
  
                     dfuds_->set_symbol(insertion_node, leaf_point->leaf_to_symbol(level, max_depth_), false);
-                    mutex.unlock();
-
+                    new_block->mutex.lock();
                     new_block->insert(0, leaf_point, level, length, current_frontier_new_block, current_primary_new_block, primary_key);
+                    new_block->mutex.unlock();
 
                 } else {
-                    mutex.unlock();
+                    new_block->mutex.lock();
                     new_block->insert(insertion_node, leaf_point, level, length, current_frontier_new_block, current_primary_new_block, primary_key);
+                    new_block->mutex.unlock();
                 }
             }
             // If the insertion is in the old block
             else {
-                mutex.unlock();
                 insert(insertion_node, leaf_point, level, length, current_frontier, current_primary, primary_key); 
             }
+            return;
         }
     }
 
@@ -627,7 +628,7 @@ public:
             node_t temp_node = 0;
             p->mutex.lock();
             current_node = p->skip_children_subtree(temp_node, symbol, current_level, current_frontier, current_primary);
-            p->mutex.lock();
+            p->mutex.unlock();
         } else
             current_node = skip_children_subtree(node, symbol, current_level, current_frontier, current_primary);
 
@@ -654,22 +655,16 @@ public:
             if (temp_node == (node_t) -1)
                 break;
 
-            if (temp_node > num_nodes_){
-                raise(SIGINT);
-            }
-
             current_node = temp_node;
-
             if (current_node == num_nodes_){
-
                 break;
             }
+
             /**
                 TODO: consider the scenario where we go through the frontier node
                 But at node 0, symbol is not found;
                 Have to update the symbol at the previous treeblock as well.
             */               
-
             if (num_frontiers() > 0 && current_frontier < num_frontiers() &&
                 current_node == get_preorder(current_frontier)) {
                 
@@ -680,15 +675,11 @@ public:
             }
             level++;
         }
-        mutex.unlock();
-
         insert(current_node, leaf_point, level, length, current_frontier, current_primary, primary_key);
         current_leaves_inserted ++;
 
-        // mutex.lock();
-        // if (!check_frontiers())
-        //     raise(SIGINT);
-        // mutex.unlock();
+        mutex.unlock();
+        return;
     }
 
     // This function is used for testing.

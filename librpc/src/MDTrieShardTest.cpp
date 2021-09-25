@@ -108,7 +108,7 @@ int main(){
   vector<vector <int32_t>> *data_vector = get_data_vector();
 
 
-  auto client = MDTrieClient(9090, 18);
+  auto client = MDTrieClient(9090, 10);
 
   client.ping();
   
@@ -126,7 +126,7 @@ int main(){
   // # of cores = # of clients
 
   start = GetTimestamp();
-  create_insert_threads(10, data_vector);
+  create_insert_threads(36, data_vector);
   diff = GetTimestamp() - start;
 
   cout << "Insertion latency per point: " << (float) diff / n_lines << " us/point" << endl;
