@@ -247,7 +247,7 @@ public:
         auto server = std::make_shared<TNonblockingServer>(proc_factory, socket);
 
         cout << "Starting the server..." << endl;
-        server.serve();
+        server->serve();
         cout << "Done." << endl;
     }
 
