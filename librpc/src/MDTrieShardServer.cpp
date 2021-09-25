@@ -63,23 +63,6 @@ public:
     return n1 + n2;
   }
 
-  int32_t insert_trie(const std::vector<int32_t> & point, int32_t primary_key){
-
-    TimeStamp start = GetTimestamp();
-    auto *leaf_point = new data_point<DIMENSION>();
-
-    for (uint8_t i = 0; i < DIMENSION; i++)
-      leaf_point->set_coordinate(i, point[i]);
-    
-    thrift_vector_time += GetTimestamp() - start;
-
-    start = GetTimestamp();
-    mdtrie_->insert_trie(leaf_point, max_depth, primary_key);
-    thrift_inner_function_time += GetTimestamp() - start;
-
-    return primary_key;
-  }
-
   bool check(const std::vector<int32_t> & point){
 
     TimeStamp start = GetTimestamp();
@@ -94,6 +77,25 @@ public:
     thrift_inner_function_time += GetTimestamp() - start;
 
     return result;
+  }
+
+  int32_t insert_trie(const std::vector<int32_t> & point, int32_t primary_key){
+
+    inserted_points_ ++;
+    TimeStamp start = GetTimestamp();
+    auto *leaf_point = new data_point<DIMENSION>();
+
+    for (uint8_t i = 0; i < DIMENSION; i++)
+      leaf_point->set_coordinate(i, point[i]);
+    
+    thrift_vector_time += GetTimestamp() - start;
+
+    start = GetTimestamp();
+    mdtrie_->insert_trie(leaf_point, max_depth, primary_key);
+
+    thrift_inner_function_time += GetTimestamp() - start;
+
+    return primary_key;
   }
 
   void range_search_trie(std::vector<int32_t> & _return, const std::vector<int32_t> & start_range, const std::vector<int32_t> & end_range){
@@ -171,10 +173,14 @@ public:
 
   }
 
+  int32_t get_count(){
+    return inserted_points_;
+  }
+
 protected:
 
   md_trie<DIMENSION, NUM_BRANCHES> *mdtrie_; 
-
+  uint64_t inserted_points_ = 0;
 };
 
 class MDTrieCloneFactory : virtual public MDTrieShardIfFactory {
@@ -220,12 +226,18 @@ public:
 
     static void start_server(int port_num){
 
+        // TThreadedServer server(
+        // std::make_shared<MDTrieShardProcessorFactory>(std::make_shared<MDTrieCloneFactory>()),
+        // std::make_shared<TServerSocket>(port_num), //port
+        // std::make_shared<TBufferedTransportFactory>(),
+        // std::make_shared<TBinaryProtocolFactory>());
+
         TThreadedServer server(
-        std::make_shared<MDTrieShardProcessorFactory>(std::make_shared<MDTrieCloneFactory>()),
-        std::make_shared<TServerSocket>(port_num), //port
-        std::make_shared<TBufferedTransportFactory>(),
-        std::make_shared<TBinaryProtocolFactory>());
-        
+          std::make_shared<MDTrieShardProcessor>(std::make_shared<MDTrieHandler>()),
+          std::make_shared<TServerSocket>(port_num), //port
+          std::make_shared<TBufferedTransportFactory>(),
+          std::make_shared<TBinaryProtocolFactory>());
+
         cout << "Starting the server..." << endl;
         server.serve();
         cout << "Done." << endl;

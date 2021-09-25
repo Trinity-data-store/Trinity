@@ -17,6 +17,7 @@ using namespace apache::thrift::transport;
 
 const int DIMENSION = 6; 
 n_leaves_t n_lines = 14252681;
+// uint32_t insertion_calls = 0;
 
 vector<vector <int32_t>> *get_data_vector(){
 
@@ -74,14 +75,43 @@ vector<vector <int32_t>> *get_data_vector(){
   return data_vector;
 }
 
+void insert_each_thread(vector<vector <int32_t>> *data_vector, int total_partition, int partition_index){
+
+  auto client = MDTrieClient(9090, 10);
+  uint32_t start_pos = data_vector->size() / total_partition * partition_index;
+  uint32_t end_pos = data_vector->size() / total_partition * (partition_index + 1) - 1;
+
+  if (end_pos >= data_vector->size())
+    end_pos = data_vector->size() - 1;
+
+  for (uint32_t i = start_pos; i <= end_pos; i++){
+    // insertion_calls ++;
+    vector <int32_t> point = (* data_vector)[i];
+    client.insert(point, i);
+  }
+}
+
+void create_insert_threads(int num_clients, vector<vector <int32_t>> *data_vector){
+
+  std::thread *threads = new std::thread[num_clients];
+
+  for (uint8_t i = 0; i < num_clients; i++){
+    threads[i] = std::thread(insert_each_thread, data_vector, num_clients, i);
+  }  
+  for (uint8_t i = 0; i < num_clients; i++){
+    threads[i].join();
+  }  
+}
+
 int main(){
   
-  auto client = MDTrieClient(9090, 10);
-
-  client.ping();
-
   vector<vector <int32_t>> *data_vector = get_data_vector();
 
+
+  auto client = MDTrieClient(9090, 18);
+
+  client.ping();
+  
 /** 
     Insert all points from the OSM dataset
 */
@@ -90,18 +120,19 @@ int main(){
   TimeStamp diff = 0;
   TimeStamp start;
 
-  for (uint32_t i = 0; i < n_lines; i ++){
-    bar.progress(i, n_lines);
-    vector <int32_t> point = (* data_vector)[i];
+  // 72 36 18 9 4 2 1
+  // TODO: compute throughput
+  // # of cores = # of servers
+  // # of cores = # of clients
 
-    start = GetTimestamp();
-    client.insert(point, i);
-    diff += GetTimestamp() - start;
-  }
+  start = GetTimestamp();
+  create_insert_threads(10, data_vector);
+  diff = GetTimestamp() - start;
 
   cout << "Insertion latency per point: " << (float) diff / n_lines << " us/point" << endl;
-  bar.finish();
+  cout << "Throughput (pt / seconds): " << ((float) data_vector->size() / diff) * 100000 << endl;
   client.get_time();
+  cout << endl;
 
 // /** 
 //     Range Search full range
@@ -118,9 +149,13 @@ int main(){
   diff = GetTimestamp() - start;
 
   cout << "number of points found: " << return_vect.size() << endl;
+  cout << "total number of data points: " << data_vector->size() << endl;
+
   cout << "Range Search Latency per found points: " << (float) diff / return_vect.size() << " us/point" << endl;
-  cout << "outer vector time: " << (float) thrift_vector_time / return_vect.size() << endl;
+  cout << "Throughput (pt / seconds): " << ((float) return_vect.size() / diff) * 100000 << endl;
   client.get_time();
+
+  exit(0);
 
 // /** 
 //     Check if all inserted points are present

@@ -4,6 +4,8 @@
 #include "defs.h"
 #include <cstdlib>
 #include "tree_block.h"
+#include <mutex>
+#include <shared_mutex>
 
 template<dimension_t DIMENSION, symbol_t NUM_BRANCHES>
 class trie_node {
@@ -16,38 +18,34 @@ public:
         
         is_leaf_ = is_leaf;
         if (!is_leaf){
-            // trie_node<DIMENSION, NUM_BRANCHES> *children[NUM_BRANCHES] = {};
-            // raise(SIGINT);
             trie_or_treeblock_ptr_ = (trie_node<DIMENSION, NUM_BRANCHES> **)calloc(sizeof(trie_node<DIMENSION, NUM_BRANCHES> *), NUM_BRANCHES);
         }
-        // children_ = std::array(trie_node<DIMENSION> *, num_branches) = {0};
-        // children_ = (trie_node<DIMENSION> **)calloc(num_branches, sizeof(trie_node<DIMENSION> *));
-        // size_ = num_branches;
     }
 
     inline trie_node<DIMENSION, NUM_BRANCHES> *get_child(symbol_t symbol) {
-        // if (is_leaf_)
-            // return NULL;
+
         return ((trie_node<DIMENSION, NUM_BRANCHES> **)trie_or_treeblock_ptr_)[symbol];
     }
 
     inline void set_child(symbol_t symbol, trie_node *node) {
+        mutex_.lock();
         ((trie_node<DIMENSION, NUM_BRANCHES> **)trie_or_treeblock_ptr_)[symbol] = node;
+        mutex_.unlock();
     }
 
     inline tree_block<DIMENSION, NUM_BRANCHES> *block() const {
-        // if (!is_leaf_)
-            // return NULL;
+
         return (tree_block<DIMENSION, NUM_BRANCHES> *)trie_or_treeblock_ptr_;
     }
 
     inline void block(tree_block<DIMENSION, NUM_BRANCHES> *blk) {
+        mutex_.lock();
         trie_or_treeblock_ptr_ = blk;
+        mutex_.unlock();
     }
 
     uint64_t size() const {
         
-        // raise(SIGINT);
         // Array of Trie node pointers
         trie_size += NUM_BRANCHES * sizeof(trie_node *) + sizeof(trie_or_treeblock_ptr_) /*+ sizeof(is_leaf_)*/; 
         uint64_t total_size = NUM_BRANCHES * sizeof(trie_node *) + sizeof(trie_or_treeblock_ptr_) /*+ sizeof(is_leaf_)*/; 
@@ -58,7 +56,6 @@ public:
 
         // Treeblock pointer for bottom level trie
         // total_size += sizeof(tree_block<DIMENSION, NUM_BRANCHES> *); 
-
         if (!is_leaf_) {
             for (symbol_t i = 0; i < NUM_BRANCHES; i++)
             {
@@ -106,10 +103,7 @@ private:
 
     bool is_leaf_ = false;
     void *trie_or_treeblock_ptr_ = NULL;
-    // std::array<trie_node<DIMENSION, NUM_BRANCHES> *, NUM_BRANCHES> children_ = {0};
-
-    // tree_block<DIMENSION, NUM_BRANCHES> *block_; //Most cases not set
+    std::shared_mutex mutex_;
 };
-
 
 #endif //MD_TRIE_TRIE_NODE_H

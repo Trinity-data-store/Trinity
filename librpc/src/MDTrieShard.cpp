@@ -122,4 +122,20 @@ MDTrieShard_get_time_presult::~MDTrieShard_get_time_presult() noexcept {
 }
 
 
+MDTrieShard_get_count_args::~MDTrieShard_get_count_args() noexcept {
+}
+
+
+MDTrieShard_get_count_pargs::~MDTrieShard_get_count_pargs() noexcept {
+}
+
+
+MDTrieShard_get_count_result::~MDTrieShard_get_count_result() noexcept {
+}
+
+
+MDTrieShard_get_count_presult::~MDTrieShard_get_count_presult() noexcept {
+}
+
+
 

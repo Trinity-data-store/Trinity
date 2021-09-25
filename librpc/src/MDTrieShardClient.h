@@ -120,6 +120,17 @@ public:
     shard_vector_[0].get_time();
   }
 
+  int32_t get_count(){
+
+    int client_count = shard_vector_.size();
+
+    int32_t count = 0;
+    for (uint8_t i = 0; i < client_count; i++){
+      count += shard_vector_[i].get_count();
+    }        
+    return count;
+  }
+
 
 private:
   std::vector<MDTrieShardClient> shard_vector_; 

@@ -29,6 +29,7 @@ class MDTrieShardIf {
   virtual void range_search_trie(std::vector<int32_t> & _return, const std::vector<int32_t> & start_range, const std::vector<int32_t> & end_range) = 0;
   virtual void primary_key_lookup(std::vector<int32_t> & _return, const int32_t primary_key) = 0;
   virtual void get_time() = 0;
+  virtual int32_t get_count() = 0;
 };
 
 class MDTrieShardIfFactory {
@@ -81,6 +82,10 @@ class MDTrieShardNull : virtual public MDTrieShardIf {
   }
   void get_time() {
     return;
+  }
+  int32_t get_count() {
+    int32_t _return = 0;
+    return _return;
   }
 };
 
@@ -815,6 +820,104 @@ class MDTrieShard_get_time_presult {
 
 };
 
+
+class MDTrieShard_get_count_args {
+ public:
+
+  MDTrieShard_get_count_args(const MDTrieShard_get_count_args&);
+  MDTrieShard_get_count_args& operator=(const MDTrieShard_get_count_args&);
+  MDTrieShard_get_count_args() {
+  }
+
+  virtual ~MDTrieShard_get_count_args() noexcept;
+
+  bool operator == (const MDTrieShard_get_count_args & /* rhs */) const
+  {
+    return true;
+  }
+  bool operator != (const MDTrieShard_get_count_args &rhs) const {
+    return !(*this == rhs);
+  }
+
+  bool operator < (const MDTrieShard_get_count_args & ) const;
+
+  template <class Protocol_>
+  uint32_t read(Protocol_* iprot);
+  template <class Protocol_>
+  uint32_t write(Protocol_* oprot) const;
+
+};
+
+
+class MDTrieShard_get_count_pargs {
+ public:
+
+
+  virtual ~MDTrieShard_get_count_pargs() noexcept;
+
+  template <class Protocol_>
+  uint32_t write(Protocol_* oprot) const;
+
+};
+
+typedef struct _MDTrieShard_get_count_result__isset {
+  _MDTrieShard_get_count_result__isset() : success(false) {}
+  bool success :1;
+} _MDTrieShard_get_count_result__isset;
+
+class MDTrieShard_get_count_result {
+ public:
+
+  MDTrieShard_get_count_result(const MDTrieShard_get_count_result&);
+  MDTrieShard_get_count_result& operator=(const MDTrieShard_get_count_result&);
+  MDTrieShard_get_count_result() : success(0) {
+  }
+
+  virtual ~MDTrieShard_get_count_result() noexcept;
+  int32_t success;
+
+  _MDTrieShard_get_count_result__isset __isset;
+
+  void __set_success(const int32_t val);
+
+  bool operator == (const MDTrieShard_get_count_result & rhs) const
+  {
+    if (!(success == rhs.success))
+      return false;
+    return true;
+  }
+  bool operator != (const MDTrieShard_get_count_result &rhs) const {
+    return !(*this == rhs);
+  }
+
+  bool operator < (const MDTrieShard_get_count_result & ) const;
+
+  template <class Protocol_>
+  uint32_t read(Protocol_* iprot);
+  template <class Protocol_>
+  uint32_t write(Protocol_* oprot) const;
+
+};
+
+typedef struct _MDTrieShard_get_count_presult__isset {
+  _MDTrieShard_get_count_presult__isset() : success(false) {}
+  bool success :1;
+} _MDTrieShard_get_count_presult__isset;
+
+class MDTrieShard_get_count_presult {
+ public:
+
+
+  virtual ~MDTrieShard_get_count_presult() noexcept;
+  int32_t* success;
+
+  _MDTrieShard_get_count_presult__isset __isset;
+
+  template <class Protocol_>
+  uint32_t read(Protocol_* iprot);
+
+};
+
 template <class Protocol_>
 class MDTrieShardClientT : virtual public MDTrieShardIf {
  public:
@@ -862,6 +965,9 @@ class MDTrieShardClientT : virtual public MDTrieShardIf {
   void get_time();
   void send_get_time();
   void recv_get_time();
+  int32_t get_count();
+  void send_get_count();
+  int32_t recv_get_count();
  protected:
   std::shared_ptr< Protocol_> piprot_;
   std::shared_ptr< Protocol_> poprot_;
@@ -904,6 +1010,8 @@ class MDTrieShardProcessorT : public ::apache::thrift::TDispatchProcessorT<Proto
   void process_primary_key_lookup(int32_t seqid, Protocol_* iprot, Protocol_* oprot, void* callContext);
   void process_get_time(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
   void process_get_time(int32_t seqid, Protocol_* iprot, Protocol_* oprot, void* callContext);
+  void process_get_count(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
+  void process_get_count(int32_t seqid, Protocol_* iprot, Protocol_* oprot, void* callContext);
  public:
   MDTrieShardProcessorT(::std::shared_ptr<MDTrieShardIf> iface) :
     iface_(iface) {
@@ -928,6 +1036,9 @@ class MDTrieShardProcessorT : public ::apache::thrift::TDispatchProcessorT<Proto
     processMap_["get_time"] = ProcessFunctions(
       &MDTrieShardProcessorT::process_get_time,
       &MDTrieShardProcessorT::process_get_time);
+    processMap_["get_count"] = ProcessFunctions(
+      &MDTrieShardProcessorT::process_get_count,
+      &MDTrieShardProcessorT::process_get_count);
   }
 
   virtual ~MDTrieShardProcessorT() {}
@@ -1026,6 +1137,15 @@ class MDTrieShardMultiface : virtual public MDTrieShardIf {
     ifaces_[i]->get_time();
   }
 
+  int32_t get_count() {
+    size_t sz = ifaces_.size();
+    size_t i = 0;
+    for (; i < (sz - 1); ++i) {
+      ifaces_[i]->get_count();
+    }
+    return ifaces_[i]->get_count();
+  }
+
 };
 
 // The 'concurrent' client is a thread safe client that correctly handles
@@ -1080,6 +1200,9 @@ class MDTrieShardConcurrentClientT : virtual public MDTrieShardIf {
   void get_time();
   int32_t send_get_time();
   void recv_get_time(const int32_t seqid);
+  int32_t get_count();
+  int32_t send_get_count();
+  int32_t recv_get_count(const int32_t seqid);
  protected:
   std::shared_ptr< Protocol_> piprot_;
   std::shared_ptr< Protocol_> poprot_;
