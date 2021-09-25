@@ -27,6 +27,9 @@
 #include <thrift/transport/TSocket.h>
 #include <thrift/transport/TTransportUtils.h>
 #include <thrift/TToString.h>
+#include <thrift/server/TNonblockingServer.h>
+#include <thrift/server/TThreadPoolServer.h>
+#include <thrift/transport/TNonblockingServerSocket.h>
 
 #include <iostream>
 #include <stdexcept>
@@ -232,11 +235,11 @@ public:
         // std::make_shared<TBufferedTransportFactory>(),
         // std::make_shared<TBinaryProtocolFactory>());
 
-        TThreadedServer server(
-          std::make_shared<MDTrieShardProcessor>(std::make_shared<MDTrieHandler>()),
-          std::make_shared<TServerSocket>(port_num), //port
-          std::make_shared<TBufferedTransportFactory>(),
-          std::make_shared<TBinaryProtocolFactory>());
+        TNonblockingServer server(
+        std::make_shared<MDTrieShardProcessorFactory>(std::make_shared<MDTrieCloneFactory>()),
+        std::make_shared<TNonblockingServerSocket>(port_num), //port
+        std::make_shared<TBufferedTransportFactory>(),
+        std::make_shared<TBinaryProtocolFactory>());
 
         cout << "Starting the server..." << endl;
         server.serve();
