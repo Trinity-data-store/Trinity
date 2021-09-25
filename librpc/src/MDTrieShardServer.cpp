@@ -235,11 +235,16 @@ public:
         // std::make_shared<TBufferedTransportFactory>(),
         // std::make_shared<TBinaryProtocolFactory>());
 
-        TNonblockingServer server(
-        std::make_shared<MDTrieShardProcessorFactory>(std::make_shared<MDTrieCloneFactory>()),
-        std::make_shared<TNonblockingServerSocket>(port_num), //port
-        std::make_shared<TBufferedTransportFactory>(),
-        std::make_shared<TBinaryProtocolFactory>());
+        // TNonblockingServer server(
+        // std::make_shared<MDTrieShardProcessorFactory>(std::make_shared<MDTrieCloneFactory>()),
+        // std::make_shared<TNonblockingServerSocket>(port_num), //port
+        // std::make_shared<TBufferedTransportFactory>(),
+        // std::make_shared<TBinaryProtocolFactory>());
+
+        auto clone_factory = std::make_shared<MDTrieCloneFactory>();
+        auto proc_factory = std::make_shared<MDTrieShardProcessorFactory>(clone_factory);
+        auto socket = std::make_shared<TNonblockingServerSocket>(port_num);
+        auto server = std::make_shared<TNonblockingServer>(proc_factory, socket);
 
         cout << "Starting the server..." << endl;
         server.serve();
