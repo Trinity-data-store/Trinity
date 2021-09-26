@@ -12,6 +12,10 @@ add_executable(MDTrieShardServer
         src/MDTrieShard.h
         src/MDTrieShard.cpp)
 
+set(RPC_LIBS ${THRIFT_LIBRARY}
+            ${THRIFTNB_LIBRARY}
+            ${LIBEVENT_LIBRARY})
+
 target_link_libraries(MDTrieShardTest ${MDTRIE_LIBS} ${RPC_LIBS})
 add_dependencies(MDTrieShardTest thrift_ep)
 
