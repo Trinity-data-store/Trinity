@@ -95,7 +95,9 @@ endif ()
 
 include_directories(SYSTEM ${THRIFT_INCLUDE_DIR})
 set(RPC_LIBS ${THRIFT_LIBRARY}
-            ${THRIFTNB_LIBRARY})
+            ${THRIFTNB_LIBRARY}
+            ${LIBEVENT_LIBRARY})
+
 message(STATUS "Thrift include dir: ${THRIFT_INCLUDE_DIR}")
 message(STATUS "Thrift static library: ${THRIFT_LIBRARY}")
 message(STATUS "Thrift static nb library: ${THRIFTNB_LIBRARY}")
