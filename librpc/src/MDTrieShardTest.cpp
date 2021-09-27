@@ -70,6 +70,8 @@ vector<vector <int32_t>> *get_data_vector(){
 
       data_vector->push_back(point);
       n_points ++;
+      // if (n_points == 100000)
+      //   break;
   }  
   bar.finish();
   return data_vector;
@@ -126,14 +128,16 @@ int main(){
   // # of cores = # of clients
 
   start = GetTimestamp(); 
-  create_insert_threads(1, data_vector);
+  create_insert_threads(10, data_vector);
   diff = GetTimestamp() - start;
 
   cout << "Insertion latency per point: " << (float) diff / n_lines << " us/point" << endl;
   cout << "Throughput (pt / seconds): " << ((float) data_vector->size() / diff) * 100000 << endl;
   client.get_time();
-  cout << endl;
+  cout << "inserted points: " << client.get_count() << endl;
 
+  cout << endl;
+  exit(0);
 // /** 
 //     Range Search full range
 // */

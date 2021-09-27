@@ -30,6 +30,7 @@
 #include <thrift/server/TNonblockingServer.h>
 #include <thrift/server/TThreadPoolServer.h>
 #include <thrift/transport/TNonblockingServerSocket.h>
+#include <thrift/transport/TNonblockingServerTransport.h>
 
 #include <iostream>
 #include <stdexcept>
@@ -229,20 +230,28 @@ public:
 
     static void start_server(int port_num){
 
+        // This works... (multiple persistent connections)
         // TThreadedServer server(
-        // std::make_shared<MDTrieShardProcessorFactory>(std::make_shared<MDTrieCloneFactory>()),
+        // std::make_shared<MDTrieShardProcessor>(std::make_shared<MDTrieHandler>()),
         // std::make_shared<TServerSocket>(port_num), //port
         // std::make_shared<TBufferedTransportFactory>(),
         // std::make_shared<TBinaryProtocolFactory>());
 
-        auto clone_factory = std::make_shared<MDTrieCloneFactory>();
-        auto proc_factory = std::make_shared<MDTrieShardProcessorFactory>(clone_factory);
+        // This doesn't work (one persistent connection)
+        // auto clone_factory = std::make_shared<MDTrieCloneFactory>();
+        // auto proc_factory = std::make_shared<MDTrieShardProcessorFactory>(clone_factory);
+        // auto socket = std::make_shared<TNonblockingServerSocket>("localhost", port_num);
+        // auto server = std::make_shared<TNonblockingServer>(proc_factory, socket);
+
+        auto handler = std::make_shared<MDTrieHandler>();
+        auto processor = std::make_shared<MDTrieShardProcessor>(handler);
         auto socket = std::make_shared<TNonblockingServerSocket>(port_num);
-        auto server = std::make_shared<TNonblockingServer>(proc_factory, socket);
+        auto server = std::make_shared<TNonblockingServer>(processor, socket);
 
         // server->setUseHighPriorityIOThreads(true);  //give me some errors
-        server->setNumIOThreads(50 /*num_threads*/);
+        // server->setNumIOThreads(10 /*num_threads*/);
         cout << "Starting the server..." << endl;
+        // server->serve();
         server->serve();
         cout << "Done." << endl;
     }

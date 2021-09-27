@@ -51,6 +51,7 @@ public:
 
     cout << "Connecting to " << host << ":" << port << endl;
     std::shared_ptr<TTransport> socket(new TSocket(host, port));
+    // std::shared_ptr<TTransport> transport(new TBufferedTransport(socket));
     std::shared_ptr<TTransport> transport(new TFramedTransport(socket));
     std::shared_ptr<TProtocol> protocol(new TBinaryProtocol(transport));
     MDTrieShardClient client(protocol);
