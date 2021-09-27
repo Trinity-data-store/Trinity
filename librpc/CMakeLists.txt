@@ -17,8 +17,8 @@ set(RPC_LIBS ${THRIFT_LIBRARY}
             ${THRIFTNB_LIBRARY}
             ${LIBEVENT_LIBRARY})
 
-target_link_libraries(MDTrieShardTest ${MDTRIE_LIBS} ${RPC_LIBS} event)
+target_link_libraries(MDTrieShardTest ${MDTRIE_LIBS} ${RPC_LIBS} event thrift)
 add_dependencies(MDTrieShardTest thrift_ep)
 
-target_link_libraries(MDTrieShardServer ${MDTRIE_LIBS} ${RPC_LIBS} event)
+target_link_libraries(MDTrieShardServer ${MDTRIE_LIBS} ${RPC_LIBS} event thrift)
 add_dependencies(MDTrieShardServer thrift_ep)
