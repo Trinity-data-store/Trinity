@@ -125,8 +125,8 @@ int main(){
   // # of cores = # of servers
   // # of cores = # of clients
 
-  start = GetTimestamp();
-  create_insert_threads(36, data_vector);
+  start = GetTimestamp(); 
+  create_insert_threads(1, data_vector);
   diff = GetTimestamp() - start;
 
   cout << "Insertion latency per point: " << (float) diff / n_lines << " us/point" << endl;
