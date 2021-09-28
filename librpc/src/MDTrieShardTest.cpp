@@ -17,7 +17,7 @@ using namespace apache::thrift::transport;
 
 const int DIMENSION = 6; 
 n_leaves_t n_lines = 14252681;
-const int clients_num = 72;
+const int clients_num = 4;
 // uint32_t insertion_calls = 0;
 
 vector<vector <int32_t>> *get_data_vector(){
@@ -90,11 +90,7 @@ void insert_each_thread(vector<vector <int32_t>> *data_vector, int total_partiti
   for (uint32_t i = start_pos; i <= end_pos; i++){
     // insertion_calls ++;
     vector <int32_t> point = (* data_vector)[i];
-
-    if (i >= start_pos + clients_num)
-      client.insert_rec(i);
-
-    client.insert_send(point, i);
+    client.insert(point, i);
   }
 }
 
@@ -104,24 +100,25 @@ void insert_each_client(vector<vector <int32_t>> *data_vector, int client_index)
   auto client = MDTrieClient(9090 + client_index, 1);
   uint32_t start_pos = client_index;
   uint32_t end_pos = data_vector->size();
+  uint32_t i;
 
-  for (uint32_t i = start_pos; i < end_pos; i+= clients_num){
+  for (i = start_pos; i < end_pos; i+= clients_num){
     vector <int32_t> point = (* data_vector)[i];
     if (i >= start_pos + clients_num)
       client.insert_rec(i);
     client.insert_send(point, i);    
   }
+  client.insert_rec(i);
 }
 
-void create_insert_threads(int num_clients, vector<vector <int32_t>> *data_vector){
+void create_insert_threads(vector<vector <int32_t>> *data_vector){
 
-  std::thread *threads = new std::thread[num_clients];
+  std::thread *threads = new std::thread[clients_num];
 
-  for (uint8_t i = 0; i < num_clients; i++){
-    // threads[i] = std::thread(insert_each_thread, data_vector, num_clients, i);
+  for (uint8_t i = 0; i < clients_num; i++){
     threads[i] = std::thread(insert_each_client, data_vector, i);
   }  
-  for (uint8_t i = 0; i < num_clients; i++){
+  for (uint8_t i = 0; i < clients_num; i++){
     threads[i].join();
   }  
 }
@@ -129,7 +126,6 @@ void create_insert_threads(int num_clients, vector<vector <int32_t>> *data_vecto
 int main(){
   
   vector<vector <int32_t>> *data_vector = get_data_vector();
-
 
   auto client = MDTrieClient(9090, clients_num);
 
@@ -149,7 +145,7 @@ int main(){
   // # of cores = # of clients
 
   start = GetTimestamp(); 
-  create_insert_threads(clients_num, data_vector);
+  create_insert_threads(data_vector);
   diff = GetTimestamp() - start;
 
   cout << "Insertion latency per point: " << (float) diff / n_lines << " us/point" << endl;
