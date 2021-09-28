@@ -243,13 +243,14 @@ public:
         // auto socket = std::make_shared<TNonblockingServerSocket>("localhost", port_num);
         // auto server = std::make_shared<TNonblockingServer>(proc_factory, socket);
 
+        // Finally, this works! multiple persistent connection
         auto handler = std::make_shared<MDTrieHandler>();
         auto processor = std::make_shared<MDTrieShardProcessor>(handler);
         auto socket = std::make_shared<TNonblockingServerSocket>(port_num);
         auto server = std::make_shared<TNonblockingServer>(processor, socket);
 
         // server->setUseHighPriorityIOThreads(true);  //give me some errors
-        // server->setNumIOThreads(10 /*num_threads*/);
+        server->setNumIOThreads(50 /*num_threads*/);
         cout << "Starting the server..." << endl;
         // server->serve();
         server->serve();

@@ -81,6 +81,18 @@ public:
     shard_vector_[shard_index].recv_insert_trie();
   }
 
+  void insert_send(vector<int32_t> point, int32_t p_key){
+
+    int shard_index = p_key % shard_vector_.size();
+    shard_vector_[shard_index].send_insert_trie(point, p_key);
+  }
+
+  void insert_rec(int32_t p_key){
+
+    int shard_index = p_key % shard_vector_.size();
+    shard_vector_[shard_index].recv_insert_trie();
+  }
+
   bool check(vector<int32_t> point, int32_t p_key){
 
     int shard_index = p_key % shard_vector_.size();
