@@ -17,7 +17,7 @@ using namespace apache::thrift::transport;
 
 const int DIMENSION = 6; 
 n_leaves_t n_lines = 14252681;
-const int clients_num = 4;
+const int clients_num = 36;
 // uint32_t insertion_calls = 0;
 
 vector<vector <int32_t>> *get_data_vector(){
@@ -123,6 +123,67 @@ void create_insert_threads(vector<vector <int32_t>> *data_vector){
   }  
 }
 
+
+void point_query_each_client(vector<vector <int32_t>> *data_vector, int client_index){
+
+  auto client = MDTrieClient(9090 + client_index, 1);
+  uint32_t start_pos = client_index;
+  uint32_t end_pos = data_vector->size();
+  uint32_t i;
+
+  for (i = start_pos; i < end_pos; i+= clients_num){
+    vector <int32_t> point = (* data_vector)[i];
+    if (i >= start_pos + clients_num)
+      client.check_rec(i);
+    client.check_send(point, i);    
+  }
+  client.check_rec(i);
+}
+
+void create_point_query_threads(vector<vector <int32_t>> *data_vector){
+
+  std::thread *threads = new std::thread[clients_num];
+
+  for (uint8_t i = 0; i < clients_num; i++){
+    threads[i] = std::thread(point_query_each_client, data_vector, i);
+  }  
+  for (uint8_t i = 0; i < clients_num; i++){
+    threads[i].join();
+  }  
+}
+
+
+void lookup_each_client(vector<vector <int32_t>> *data_vector, int client_index){
+
+  auto client = MDTrieClient(9090 + client_index, 1);
+  uint32_t start_pos = client_index;
+  uint32_t end_pos = data_vector->size();
+  uint32_t i;
+
+  vector <int32_t> found_point_2; 
+  for (i = start_pos; i < end_pos; i+= clients_num){
+    // vector <int32_t> point = (* data_vector)[i];
+    vector <int32_t> found_point; 
+    if (i >= start_pos + clients_num)
+      client.primary_key_lookup_rec(found_point, i);
+    client.primary_key_lookup_send(i);    
+  }
+  client.primary_key_lookup_rec(found_point_2, i);
+}
+
+void create_lookup_threads(vector<vector <int32_t>> *data_vector){
+
+  std::thread *threads = new std::thread[clients_num];
+
+  for (uint8_t i = 0; i < clients_num; i++){
+    threads[i] = std::thread(lookup_each_client, data_vector, i);
+  }  
+  for (uint8_t i = 0; i < clients_num; i++){
+    threads[i].join();
+  }  
+}
+
+
 int main(){
   
   vector<vector <int32_t>> *data_vector = get_data_vector();
@@ -154,7 +215,7 @@ int main(){
   cout << "inserted points: " << client.get_count() << endl;
 
   cout << endl;
-  exit(0);
+
 // /** 
 //     Range Search full range
 // */
@@ -176,52 +237,65 @@ int main(){
   cout << "Throughput (pt / seconds): " << ((float) return_vect.size() / diff) * 100000 << endl;
   client.get_time();
 
-  exit(0);
-
 // /** 
 //     Check if all inserted points are present
 // */
 
-  tqdm bar1;
-  diff = 0;
-  for (uint32_t i = 0; i < n_lines; i ++){
-    bar1.progress(i, n_lines);
-    vector <int32_t> point = (* data_vector)[i];
-    start = GetTimestamp();
-    if (!client.check(point, i)){
-      cout << "point not found!" << endl;
-    }
-    diff += GetTimestamp() - start;
-  }
-  bar1.finish();
+  // tqdm bar1;
+  // diff = 0;
+  // for (uint32_t i = 0; i < n_lines; i ++){
+  //   bar1.progress(i, n_lines);
+  //   vector <int32_t> point = (* data_vector)[i];
+  //   start = GetTimestamp();
+  //   if (!client.check(point, i)){
+  //     cout << "point not found!" << endl;
+  //   }
+  //   diff += GetTimestamp() - start;
+  // }
+  // bar1.finish();
+  // cout << "Point Query latency per point: " << (float) diff / n_lines << " us/point" << endl;
+  // client.get_time();
+
+  start = GetTimestamp(); 
+  create_point_query_threads(data_vector);
+  diff = GetTimestamp() - start;
+
   cout << "Point Query latency per point: " << (float) diff / n_lines << " us/point" << endl;
+  cout << "Throughput (pt / seconds): " << ((float) data_vector->size() / diff) * 100000 << endl;
   client.get_time();
 
 /** 
     Lookup Primary
 */
 
-  tqdm bar2;
-  diff = 0;
-  for (uint32_t i = 0; i < n_lines; i ++){
-    bar2.progress(i, n_lines);
-    vector <int32_t> point = (* data_vector)[i];
-    vector <int32_t> found_point; 
+  // tqdm bar2;
+  // diff = 0;
+  // for (uint32_t i = 0; i < n_lines; i ++){
+  //   bar2.progress(i, n_lines);
+  //   vector <int32_t> point = (* data_vector)[i];
+  //   vector <int32_t> found_point; 
 
-    start = GetTimestamp();
-    client.primary_key_lookup(found_point, i);
+  //   start = GetTimestamp();
+  //   client.primary_key_lookup(found_point, i);
 
-    diff += GetTimestamp() - start;
+  //   diff += GetTimestamp() - start;
 
-    if (point != found_point){
-      cout << "Lookup found vector not equal!" << endl;
-      raise(SIGINT);
-      return -1;
-    }
-  }
+  //   if (point != found_point){
+  //     cout << "Lookup found vector not equal!" << endl;
+  //     raise(SIGINT);
+  //     return -1;
+  //   }
+  // }
   
-  bar2.finish();
+  // bar2.finish();
+
+  start = GetTimestamp(); 
+  create_lookup_threads(data_vector);
+  diff = GetTimestamp() - start;
+
   cout << "Lookup latency per point: " << (float) diff / n_lines << " us/point" << endl;
+  cout << "Throughput (pt / seconds): " << ((float) data_vector->size() / diff) * 100000 << endl;
+
   client.get_time();
   return 0;
 }
