@@ -129,20 +129,9 @@ public:
     _return.reserve(n_found_points);
     start = GetTimestamp();
     for (n_leaves_t i = 0; i < n_found_points; i++){
-
-      // auto current_point = found_points->at(i)->get();
-    
-      // std::vector<int32_t> vector_point(DIMENSION);
-
-      // for (uint8_t i = 0; i < DIMENSION; i++){
-      //   vector_point.emplace_back(current_point[i]);
-      // }
-
       _return.emplace_back(found_points->at(i)->read_primary());
     }
-    thrift_vector_time += GetTimestamp() - start;;
-
-
+    thrift_vector_time += GetTimestamp() - start;
   }
 
   void primary_key_lookup(std::vector<int32_t> & _return, const int32_t primary_key){
@@ -230,29 +219,13 @@ public:
 
     static void start_server(int port_num){
 
-        // This works... (multiple persistent connections)
-        // TThreadedServer server(
-        // std::make_shared<MDTrieShardProcessor>(std::make_shared<MDTrieHandler>()),
-        // std::make_shared<TServerSocket>(port_num), //port
-        // std::make_shared<TBufferedTransportFactory>(),
-        // std::make_shared<TBinaryProtocolFactory>());
-
-        // This doesn't work (one persistent connection)
-        // auto clone_factory = std::make_shared<MDTrieCloneFactory>();
-        // auto proc_factory = std::make_shared<MDTrieShardProcessorFactory>(clone_factory);
-        // auto socket = std::make_shared<TNonblockingServerSocket>("localhost", port_num);
-        // auto server = std::make_shared<TNonblockingServer>(proc_factory, socket);
-
-        // Finally, this works! multiple persistent connection
         auto handler = std::make_shared<MDTrieHandler>();
         auto processor = std::make_shared<MDTrieShardProcessor>(handler);
         auto socket = std::make_shared<TNonblockingServerSocket>(port_num);
         auto server = std::make_shared<TNonblockingServer>(processor, socket);
 
-        // server->setUseHighPriorityIOThreads(true);  //give me some errors
         server->setNumIOThreads(50 /*num_threads*/);
         cout << "Starting the server..." << endl;
-        // server->serve();
         server->serve();
         cout << "Done." << endl;
     }
@@ -269,7 +242,7 @@ int main(int argc, char *argv[]){
     return 0;
   }
 
-  MDTrieServerCoordinator(9090, 10);
+  MDTrieServerCoordinator(9090, 36);
   return 0;
   
 }

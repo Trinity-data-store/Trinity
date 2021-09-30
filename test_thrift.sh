@@ -5,6 +5,6 @@ do
     /home/ziming/md-trie/build/librpc/MDTrieShardServer $server_index &
 done
 
-/home/ziming/md-trie/build/librpc/MDTrieShardTest
+/home/ziming/md-trie/build/librpc/MDTrieShardTest 36
 
 kill $(jobs -p)

@@ -32,38 +32,26 @@ using namespace apache::thrift;
 using namespace apache::thrift::protocol;
 using namespace apache::thrift::transport;
 
-const int NUM_SERVERS = 72;
+const int NUM_SERVERS = 36;
 const int START_PORT_NUMBER = 9090;
-
 
 class MDTrieClient {
 
 public:
 
   MDTrieClient(){
-    std::vector<std::future<void>> futures;
+
     shard_vector_.reserve(NUM_SERVERS);
 
     for (int i = 0; i < NUM_SERVERS; ++i) {
       shard_vector_.push_back(launch_port(START_PORT_NUMBER + i));
     }
-  }
-
-  MDTrieClient(int port_num, int client_count) {
-
-    std::vector<std::future<void>> futures;
-    shard_vector_.reserve(NUM_SERVERS);
-
-    for (int i = 0; i < client_count; ++i) {
-      shard_vector_.push_back(launch_port(port_num + i));
-    }
+    // cout << "Server started!" << endl;
   }
 
   static MDTrieShardClient connect(const std::string &host, int port) {
 
-    cout << "Connecting to " << host << ":" << port << endl;
     std::shared_ptr<TTransport> socket(new TSocket(host, port));
-    // std::shared_ptr<TTransport> transport(new TBufferedTransport(socket));
     std::shared_ptr<TTransport> transport(new TFramedTransport(socket));
     std::shared_ptr<TProtocol> protocol(new TBinaryProtocol(transport));
     MDTrieShardClient client(protocol);
@@ -72,11 +60,9 @@ public:
     return client;
   }
 
-
   static MDTrieShardClient launch_port(int port_num) {
     
     return connect("localhost", port_num);
-  
   }
 
   void ping(){
@@ -119,6 +105,7 @@ public:
   }  
 
   bool check_rec(int32_t p_key){
+    
     int shard_index = p_key % shard_vector_.size();
     return shard_vector_[shard_index].recv_check();
   }
