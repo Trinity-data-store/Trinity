@@ -85,6 +85,7 @@ public:
 
   int32_t insert_trie(const std::vector<int32_t> & point, int32_t primary_key){
 
+    // std::cout << "Running thread: " << std::this_thread::get_id() << std::endl;
     inserted_points_ ++;
     TimeStamp start = GetTimestamp();
     auto *leaf_point = new data_point<DIMENSION>();
@@ -124,7 +125,7 @@ public:
     thrift_inner_function_time += GetTimestamp() - start;
 
     n_leaves_t n_found_points = found_points->size();
-    cout << "Range Search found " << n_found_points << " points" << endl;  
+    // cout << "Range Search found " << n_found_points << " points" << endl;  
 
     _return.reserve(n_found_points);
     start = GetTimestamp();
@@ -224,7 +225,7 @@ public:
         auto socket = std::make_shared<TNonblockingServerSocket>(port_num);
         auto server = std::make_shared<TNonblockingServer>(processor, socket);
 
-        // server->setNumIOThreads(50 /*num_threads*/);
+        // server->setNumIOThreads(10 /*num_threads*/);
         cout << "Starting the server..." << endl;
         server->serve();
         cout << "Done." << endl;

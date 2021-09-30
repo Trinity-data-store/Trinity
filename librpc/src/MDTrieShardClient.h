@@ -32,7 +32,7 @@ using namespace apache::thrift;
 using namespace apache::thrift::protocol;
 using namespace apache::thrift::transport;
 
-const int NUM_SERVERS = 36;
+const int NUM_SERVERS = 72;
 const int START_PORT_NUMBER = 9090;
 
 class MDTrieClient {
