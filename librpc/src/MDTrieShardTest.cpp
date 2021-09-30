@@ -77,7 +77,7 @@ void insert_each_client(vector<vector <int32_t>> *data_vector, int client_number
   uint32_t start_pos = data_vector->size() / client_number * client_index;
   uint32_t end_pos = data_vector->size() / client_number * (client_index + 1) - 1;
 
-  if (end_pos >= data_vector->size())
+  if (client_index == client_number - 1)
     end_pos = data_vector->size() - 1;
 
   int sent_count = 0;
@@ -138,6 +138,25 @@ int main(int argc, char *argv[]){
 
   cout << "Throughput (pt / seconds): " << ((float) data_vector_size / diff) * 100000 << endl;
   cout << "Inserted Points: " << client.get_count() << endl;
+
+
+// /** 
+//     Range Search full range
+// */
+
+  auto start_range = vector <int32_t>(DIMENSION, 0);
+  auto end_range = vector <int32_t>(DIMENSION, 1 << 31);
+  
+  std::vector<int32_t> return_vect;
+
+  diff = 0;
+  start = GetTimestamp();
+  client.range_search_trie(return_vect, start_range, end_range);
+  diff = GetTimestamp() - start;
+
+  cout << "number of points found: " << return_vect.size() << endl;
+  cout << "total number of data points: " << data_vector->size() << endl;
+  cout << "Throughput (pt / seconds): " << ((float) return_vect.size() / diff) * 100000 << endl;
 
   return 0;
 }

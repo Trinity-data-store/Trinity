@@ -224,7 +224,7 @@ public:
         auto socket = std::make_shared<TNonblockingServerSocket>(port_num);
         auto server = std::make_shared<TNonblockingServer>(processor, socket);
 
-        server->setNumIOThreads(50 /*num_threads*/);
+        // server->setNumIOThreads(50 /*num_threads*/);
         cout << "Starting the server..." << endl;
         server->serve();
         cout << "Done." << endl;
@@ -242,7 +242,7 @@ int main(int argc, char *argv[]){
     return 0;
   }
 
-  MDTrieServerCoordinator(9090, 36);
+  MDTrieServerCoordinator(9090, 72);
   return 0;
   
 }
