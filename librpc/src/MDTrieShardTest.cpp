@@ -136,9 +136,8 @@ int main(int argc, char *argv[]){
   total_client_insert(data_vector, client_number);
   diff = GetTimestamp() - start;
 
-  cout << "Throughput (pt / seconds): " << ((float) data_vector_size / diff) * 100000 << endl;
-  cout << "Inserted Points: " << client.get_count() << endl;
-
+  cout << "Insertion Throughput (pt / seconds): " << ((float) data_vector_size / diff) * 100000 << endl;
+  cout << "Inserted Points: " << client.get_count() << endl << endl;
 
 // /** 
 //     Range Search full range
@@ -156,7 +155,7 @@ int main(int argc, char *argv[]){
 
   cout << "number of points found: " << return_vect.size() << endl;
   cout << "total number of data points: " << data_vector->size() << endl;
-  cout << "Throughput (pt / seconds): " << ((float) return_vect.size() / diff) * 100000 << endl;
+  cout << "Range Search Throughput (pt / seconds): " << ((float) return_vect.size() / diff) * 100000 << endl;
 
   return 0;
 }
