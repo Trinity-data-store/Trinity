@@ -71,7 +71,7 @@ vector<vector <int32_t>> *get_data_vector(){
 }
 
 
-void insert_each_client(vector<vector <int32_t>> *data_vector, int client_number, int client_index){
+uint32_t insert_each_client(vector<vector <int32_t>> *data_vector, int client_number, int client_index){
 
   auto client = MDTrieClient();
   uint32_t start_pos = data_vector->size() / client_number * client_index;
@@ -82,6 +82,8 @@ void insert_each_client(vector<vector <int32_t>> *data_vector, int client_number
 
   int sent_count = 0;
   uint32_t current_pos;
+
+  TimeStamp start = GetTimestamp();
   for (current_pos = start_pos; current_pos <= end_pos; current_pos++){
     
     if (sent_count != 0 && sent_count % BATCH_SIZE == 0){
@@ -98,19 +100,30 @@ void insert_each_client(vector<vector <int32_t>> *data_vector, int client_number
   for (uint32_t j = end_pos - sent_count + 1; j <= end_pos; j++){
       client.insert_rec(j);
   }
+  TimeStamp diff = GetTimestamp() - start;
+  // cout << "end pos - start_pos + 1: " << end_pos - start_pos + 1 << " diff: " << diff << endl; 
 
+  return ((float) (end_pos - start_pos + 1) / diff) * 1000000;
 }
 
-void total_client_insert(vector<vector <int32_t>> *data_vector, int client_number){
+uint32_t total_client_insert(vector<vector <int32_t>> *data_vector, int client_number){
 
-  std::thread *threads = new std::thread[client_number];
+  // std::thread *threads = new std::thread[client_number];
+
+  std::vector<std::future<uint32_t>> threads; 
+  threads.reserve(client_number);
 
   for (uint8_t i = 0; i < client_number; i++){
-    threads[i] = std::thread(insert_each_client, data_vector, client_number, i);
+    threads[i] = std::async(insert_each_client, data_vector, client_number, i);
+    // threads[i] = std::thread(insert_each_client, data_vector, client_number, i);
   }  
+  uint32_t total_throughput = 0;
   for (uint8_t i = 0; i < client_number; i++){
-    threads[i].join();
-  }  
+    uint32_t throughput = threads[i].get();
+    total_throughput += throughput;
+    // cout << "throughput: " << throughput << endl; 
+  } 
+  return total_throughput;
 }
 
 int main(int argc, char *argv[]){
@@ -133,10 +146,12 @@ int main(int argc, char *argv[]){
 
   TimeStamp diff = 0;
   TimeStamp start = GetTimestamp();
-  total_client_insert(data_vector, client_number);
+  uint32_t total_throughput = total_client_insert(data_vector, client_number);
   diff = GetTimestamp() - start;
 
-  cout << "Insertion Throughput (pt / seconds): " << ((float) data_vector_size / diff) * 100000 << endl;
+  cout << "Insertion Throughput add thread (pt / seconds): " << total_throughput << endl;
+  cout << "Insertion Throughput: number of points / end to end latency (pt / seconds): " << ((float) data_vector_size / diff) * 1000000 << endl;
+  cout << "Total end to end latency / number of points (us): " << (float) diff / data_vector_size << endl;
   cout << "Inserted Points: " << client.get_count() << endl << endl;
 
 // /** 
@@ -155,7 +170,7 @@ int main(int argc, char *argv[]){
 
   cout << "number of points found: " << return_vect.size() << endl;
   cout << "total number of data points: " << data_vector->size() << endl;
-  cout << "Range Search Throughput (pt / seconds): " << ((float) return_vect.size() / diff) * 100000 << endl;
+  cout << "Range Search Throughput (pt / seconds): " << ((float) return_vect.size() / diff) * 1000000 << endl;
 
   return 0;
 }
