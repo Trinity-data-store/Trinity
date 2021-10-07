@@ -88,7 +88,7 @@ std::tuple<uint32_t, uint32_t, uint32_t> insert_each_client(vector<vector <int32
     end_pos = data_vector->size() - 1;
 
   uint32_t total_points_to_insert = end_pos - start_pos + 1;
-  uint32_t warmup_cooldown_points = total_points_to_insert / 5;
+  uint32_t warmup_cooldown_points = total_points_to_insert / 10;
 
   int sent_count = 0;
   uint32_t current_pos;
