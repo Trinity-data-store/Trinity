@@ -1,4 +1,3 @@
-
 #include <iostream>
 
 #include <thrift/protocol/TBinaryProtocol.h>
@@ -92,8 +91,6 @@ std::tuple<uint32_t, uint32_t, uint32_t> insert_each_client(vector<vector <int32
 
   int sent_count = 0;
   uint32_t current_pos;
-  // uint32_t start_pos_measurement = 0;
-  // uint32_t end_pos_measurement = 0;
 
   TimeStamp start = 0; 
   TimeStamp diff = 0;
@@ -104,34 +101,12 @@ std::tuple<uint32_t, uint32_t, uint32_t> insert_each_client(vector<vector <int32
 
       cout << "started measurement: " << client_index << endl;
       start = GetTimestamp();
-      // if (latency_start == 0)
-      //   latency_start = start;
-      // active_thread_num ++;
     }
-
-    // if (start == 0 && active_thread_num == client_number){
-
-    //   start = GetTimestamp();
-    //   start_pos_measurement = current_pos;
-    //   if (latency_start == 0)
-    //     latency_start = start;
-    // }
 
     if (current_pos == end_pos - warmup_cooldown_points){
-      // finished_thread_num ++;
 
       diff = GetTimestamp() - start;
-      // if (finished_thread_num == client_number)
-      //   latency_diff = GetTimestamp() - latency_start;
     }
-
-    // if (diff == 0 && start != 0 && finished_thread_num != 0){
-
-    //   diff = GetTimestamp() - start;
-    //   end_pos_measurement = current_pos;
-    //   if (finished_thread_num == client_number)
-    //     latency_diff = GetTimestamp() - latency_start;
-    // }
 
     if (sent_count != 0 && sent_count % BATCH_SIZE == 0){
         for (uint32_t j = current_pos - sent_count; j < current_pos; j++){
@@ -152,7 +127,6 @@ std::tuple<uint32_t, uint32_t, uint32_t> insert_each_client(vector<vector <int32
   }
 
   return std::make_tuple(((float) (total_points_to_insert - 2 * warmup_cooldown_points) / diff) * 1000000, diff, total_points_to_insert - 2 * warmup_cooldown_points);
-  // return std::make_tuple(((float) (end_pos_measurement - start_pos_measurement + 1) / diff) * 1000000, diff, end_pos_measurement - start_pos_measurement + 1);
 }
 
 std::tuple<uint32_t, float> total_client_insert(vector<vector <int32_t>> *data_vector, int client_number){
@@ -205,12 +179,9 @@ int main(int argc, char *argv[]){
     Insert all points from the OSM dataset
 */
 
-  // TimeStamp diff = 0;
-  // TimeStamp start = GetTimestamp();
   std::tuple<uint32_t, float> return_tuple = total_client_insert(data_vector, client_number);
   uint32_t throughput = std::get<0>(return_tuple);
   float latency = std::get<1>(return_tuple);
-  // diff = GetTimestamp() - start;
 
   cout << "Insertion Throughput add thread (pt / seconds): " << throughput << endl;
   cout << "Total end to end latency / number of points (us): " << latency << endl;
