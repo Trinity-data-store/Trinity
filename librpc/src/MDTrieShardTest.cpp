@@ -88,7 +88,7 @@ std::tuple<uint32_t, uint32_t, uint32_t> insert_each_client(vector<vector <int32
     end_pos = data_vector->size() - 1;
 
   uint32_t total_points_to_insert = end_pos - start_pos + 1;
-  uint32_t warmup_cooldown_points = total_points_to_insert / 10;
+  uint32_t warmup_cooldown_points = total_points_to_insert / 3;
 
   int sent_count = 0;
   uint32_t current_pos;
@@ -101,6 +101,8 @@ std::tuple<uint32_t, uint32_t, uint32_t> insert_each_client(vector<vector <int32
   for (current_pos = start_pos; current_pos <= end_pos; current_pos++){
     
     if (current_pos == start_pos + warmup_cooldown_points){
+
+      cout << "started measurement: " << client_index << endl;
       start = GetTimestamp();
       // if (latency_start == 0)
       //   latency_start = start;
@@ -117,6 +119,7 @@ std::tuple<uint32_t, uint32_t, uint32_t> insert_each_client(vector<vector <int32
 
     if (current_pos == end_pos - warmup_cooldown_points){
       // finished_thread_num ++;
+
       diff = GetTimestamp() - start;
       // if (finished_thread_num == client_number)
       //   latency_diff = GetTimestamp() - latency_start;
@@ -141,6 +144,8 @@ std::tuple<uint32_t, uint32_t, uint32_t> insert_each_client(vector<vector <int32
     client.insert_send(data_point, current_pos);
     sent_count ++;
   }
+
+  cout << "ended measurement: " << client_index << endl;
 
   for (uint32_t j = end_pos - sent_count + 1; j <= end_pos; j++){
       client.insert_rec(j);
