@@ -113,7 +113,7 @@ public:
     }
     thrift_vector_time += GetTimestamp() - start;
 
-    // get_time();
+    get_throughput(n_found_points);
   }
 
   void primary_key_lookup(std::vector<int32_t> & _return, const int32_t primary_key){
@@ -137,7 +137,14 @@ public:
     }      
     thrift_vector_time += GetTimestamp() - start;
   }
-  
+
+  void get_throughput(uint32_t count){
+
+    cout << "Throughput: " << ((float) count / thrift_inner_function_time) * 1000000  << endl;    
+    thrift_vector_time = 0;
+    thrift_inner_function_time = 0;    
+  }
+
   void get_time(){
 
     cout << "vector time: " << (float) thrift_vector_time  << endl;
