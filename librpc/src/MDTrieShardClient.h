@@ -139,44 +139,54 @@ public:
     }     
   }
 
-  // void range_search_trie_each_rec(std::vector<std::vector<int32_t>> *vect, int index){
+  // std::vector<int32_t> range_search_trie_each_rec(int index){
     
   //   std::vector<int32_t> return_vect_tmp;
-  //   shard_vector_[i].recv_range_search_trie(return_vect_tmp);
-  //   (* vect)[index] = return_vect_tmp;
+  //   shard_vector_[index].recv_range_search_trie(return_vect_tmp);
+  //   return return_vect_tmp;
   // }
 
   // void range_search_trie_rec(std::vector<int32_t> & return_vect){
 
   //   int client_count = shard_vector_.size();
+  //   std::vector<std::future<std::vector<int32_t>>> threads; 
+
   //   for (uint8_t i = 0; i < client_count; i++){
-      
-      
+  //     threads.push_back(std::async(range_search_trie_each_rec, i));
   //   }
+
+  //   TimeStamp start = GetTimestamp();
+  //   for (int i = 0; i < client_count; i++){
+
+  //     std::vector<int32_t> return_vect_tmp = threads[i].get();
+  //     return_vect.insert(return_vect.end(), return_vect_tmp.begin(), return_vect_tmp.end());
+  //   }
+  //   cout << "Latency: " << GetTimestamp() - start << " for: " << return_vect.size() << endl;
+
   // }
 
   void range_search_trie_rec(std::vector<int32_t> & return_vect){
 
     int client_count = shard_vector_.size();
     
-    // TimeStamp diff_recv = 0;
-    // TimeStamp diff_vect = 0;
-    // TimeStamp start = 0;
+    TimeStamp diff_recv = 0;
+    TimeStamp diff_vect = 0;
+    TimeStamp start = 0;
 
     for (uint8_t i = 0; i < client_count; i++){
       std::vector<int32_t> return_vect_tmp;
 
-      // start = GetTimestamp();
+      start = GetTimestamp();
       shard_vector_[i].recv_range_search_trie(return_vect_tmp);
-      // diff_recv += GetTimestamp() - start;
+      diff_recv += GetTimestamp() - start;
 
-      // start = GetTimestamp();
+      start = GetTimestamp();
       return_vect.insert(return_vect.end(), return_vect_tmp.begin(), return_vect_tmp.end());
-      // diff_vect += GetTimestamp() - start;
+      diff_vect += GetTimestamp() - start;
     }    
 
-    // cout << "Time taken for recv: " << diff_recv << " time taken for vect: " << diff_vect << endl;
-
+    cout << "Time taken for recv: " << diff_recv << " time taken for vect: " << diff_vect << endl;
+    cout << "Throughput: " << ((float) return_vect.size() / diff_recv) * 1000000 << endl;
   }
 
   void get_time(){

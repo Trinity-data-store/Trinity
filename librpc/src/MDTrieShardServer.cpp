@@ -113,7 +113,7 @@ public:
     }
     thrift_vector_time += GetTimestamp() - start;
 
-    get_throughput(n_found_points);
+    // get_throughput(n_found_points);
   }
 
   void primary_key_lookup(std::vector<int32_t> & _return, const int32_t primary_key){
