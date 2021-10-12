@@ -176,8 +176,7 @@ public:
     }    
 
     cout << "Time taken for recv: " << diff_recv << " time taken for vect: " << diff_vect << endl;
-    get_time();
-    
+
   }
 
   void get_time(){

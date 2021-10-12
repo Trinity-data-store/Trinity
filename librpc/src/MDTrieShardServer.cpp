@@ -112,6 +112,8 @@ public:
       _return.emplace_back(found_points->at(i)->read_primary());
     }
     thrift_vector_time += GetTimestamp() - start;
+
+    get_time();
   }
 
   void primary_key_lookup(std::vector<int32_t> & _return, const int32_t primary_key){
