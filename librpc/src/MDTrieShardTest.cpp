@@ -260,7 +260,6 @@ std::tuple<uint32_t, uint32_t, uint32_t> range_search_each_client(vector<vector 
   TimeStamp start = 0; 
   TimeStamp diff = 0;
   uint32_t total_points_returned = 0;
-  int mod_batch_size = BATCH_SIZE;
 
   for (current_pos = start_pos; current_pos <= end_pos; current_pos++){
     
@@ -268,7 +267,7 @@ std::tuple<uint32_t, uint32_t, uint32_t> range_search_each_client(vector<vector 
       start = GetTimestamp();
     }
 
-    if (sent_count != 0 && sent_count % mod_batch_size == 0){
+    if (sent_count != 0 && sent_count % BATCH_SIZE == 0){
         for (uint32_t j = current_pos - sent_count; j < current_pos; j++){
 
           std::vector<int32_t> rec_vect;
