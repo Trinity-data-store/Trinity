@@ -272,9 +272,9 @@ std::tuple<uint32_t, uint32_t, uint32_t> range_search_each_client(vector<vector 
 
           std::vector<int32_t> rec_vect;
 
-          TimeStamp start_here = GetTimestamp();
+          // TimeStamp start_here = GetTimestamp();
           client.range_search_trie_rec(rec_vect);
-          cout << "receive request time time: " << GetTimestamp() - start_here << " for index: " << j << " with points: " << rec_vect.size() << endl;
+          // cout << "receive request time time: " << GetTimestamp() - start_here << " for index: " << j << " with points: " << rec_vect.size() << endl;
 
           if (j == end_pos - warmup_cooldown_points){
             diff = GetTimestamp() - start;
@@ -287,13 +287,13 @@ std::tuple<uint32_t, uint32_t, uint32_t> range_search_each_client(vector<vector 
         sent_count = 0;
     }
 
-    TimeStamp start_here = GetTimestamp();
+    // TimeStamp start_here = GetTimestamp();
     std::vector<int32_t> start_range = (* start_range_collection)[current_pos];
     std::vector<int32_t> end_range = (* end_range_collection)[current_pos];
 
     client.range_search_trie_send(start_range, end_range);
 
-    cout << "send a request time: " << GetTimestamp() - start_here << " for " << current_pos << endl;
+    // cout << "send a request time: " << GetTimestamp() - start_here << " for " << current_pos << endl;
     sent_count ++;
 
   }

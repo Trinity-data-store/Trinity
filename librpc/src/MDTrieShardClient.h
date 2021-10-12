@@ -13,7 +13,7 @@ using namespace apache::thrift;
 using namespace apache::thrift::protocol;
 using namespace apache::thrift::transport;
 
-const int NUM_SERVERS = 72;
+const int NUM_SERVERS = 36;
 const int START_PORT_NUMBER = 9090;
 
 class MDTrieClient {
@@ -159,23 +159,23 @@ public:
 
     int client_count = shard_vector_.size();
     
-    TimeStamp diff_recv = 0;
-    TimeStamp diff_vect = 0;
-    TimeStamp start = 0;
+    // TimeStamp diff_recv = 0;
+    // TimeStamp diff_vect = 0;
+    // TimeStamp start = 0;
 
     for (uint8_t i = 0; i < client_count; i++){
       std::vector<int32_t> return_vect_tmp;
 
-      start = GetTimestamp();
+      // start = GetTimestamp();
       shard_vector_[i].recv_range_search_trie(return_vect_tmp);
-      diff_recv += GetTimestamp() - start;
+      // diff_recv += GetTimestamp() - start;
 
-      start = GetTimestamp();
+      // start = GetTimestamp();
       return_vect.insert(return_vect.end(), return_vect_tmp.begin(), return_vect_tmp.end());
-      diff_vect += GetTimestamp() - start;
+      // diff_vect += GetTimestamp() - start;
     }    
 
-    cout << "Time taken for recv: " << diff_recv << " time taken for vect: " << diff_vect << endl;
+    // cout << "Time taken for recv: " << diff_recv << " time taken for vect: " << diff_vect << endl;
 
   }
 
