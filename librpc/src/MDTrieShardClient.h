@@ -142,15 +142,24 @@ public:
   void range_search_trie_rec(std::vector<int32_t> & return_vect){
 
     int client_count = shard_vector_.size();
+    
+    TimeStamp diff = 0;
+    TimeStamp start = 0;
 
     for (uint8_t i = 0; i < client_count; i++){
       std::vector<int32_t> return_vect_tmp;
+
+      start = GetTimestamp();
       shard_vector_[i].recv_range_search_trie(return_vect_tmp);
+      diff += GetTimestamp() - start;
 
       TimeStamp start = GetTimestamp();
       return_vect.insert(return_vect.end(), return_vect_tmp.begin(), return_vect_tmp.end());
       thrift_vector_time += GetTimestamp() - start;
     }    
+
+    cout << "Time taken: " << diff << endl;
+
   }
 
   void get_time(){
