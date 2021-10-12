@@ -138,8 +138,8 @@ public:
   
   void get_time(){
 
-    cout << "vector time: " << (float) thrift_vector_time / total_points_count << endl;
-    cout << "inner function time: " << (float) thrift_inner_function_time / total_points_count << endl;
+    cout << "vector time: " << (float) thrift_vector_time  << endl;
+    cout << "inner function time: " << (float) thrift_inner_function_time  << endl;
     thrift_vector_time = 0;
     thrift_inner_function_time = 0;
 

@@ -139,11 +139,28 @@ public:
     }     
   }
 
+  // void range_search_trie_each_rec(std::vector<std::vector<int32_t>> *vect, int index){
+    
+  //   std::vector<int32_t> return_vect_tmp;
+  //   shard_vector_[i].recv_range_search_trie(return_vect_tmp);
+  //   (* vect)[index] = return_vect_tmp;
+  // }
+
+  // void range_search_trie_rec(std::vector<int32_t> & return_vect){
+
+  //   int client_count = shard_vector_.size();
+  //   for (uint8_t i = 0; i < client_count; i++){
+      
+      
+  //   }
+  // }
+
   void range_search_trie_rec(std::vector<int32_t> & return_vect){
 
     int client_count = shard_vector_.size();
     
-    TimeStamp diff = 0;
+    TimeStamp diff_recv = 0;
+    TimeStamp diff_vect = 0;
     TimeStamp start = 0;
 
     for (uint8_t i = 0; i < client_count; i++){
@@ -151,15 +168,16 @@ public:
 
       start = GetTimestamp();
       shard_vector_[i].recv_range_search_trie(return_vect_tmp);
-      diff += GetTimestamp() - start;
+      diff_recv += GetTimestamp() - start;
 
-      TimeStamp start = GetTimestamp();
+      start = GetTimestamp();
       return_vect.insert(return_vect.end(), return_vect_tmp.begin(), return_vect_tmp.end());
-      thrift_vector_time += GetTimestamp() - start;
+      diff_vect += GetTimestamp() - start;
     }    
 
-    cout << "Time taken: " << diff << endl;
-
+    cout << "Time taken for recv: " << diff_recv << " time taken for vect: " << diff_vect << endl;
+    get_time();
+    
   }
 
   void get_time(){

@@ -372,7 +372,7 @@ int main(int argc, char *argv[]){
   cout << "Insertion Throughput add thread (pt / seconds): " << throughput << endl;
   cout << "Latency (us): " << latency << endl;
   cout << "Inserted Points: " << client.get_count() << endl;
-
+  
 
 
 /**  Range Search Obtain Search Range
