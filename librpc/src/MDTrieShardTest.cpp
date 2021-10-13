@@ -377,6 +377,7 @@ int main(int argc, char *argv[]){
 
 /**  Range Search Obtain Search Range
 
+*/
   int32_t max_range = 1 << 31;
   auto start_range = vector <int32_t>(DIMENSION, 0);
   auto end_range = vector <int32_t>(DIMENSION, max_range);
@@ -405,7 +406,7 @@ int main(int argc, char *argv[]){
   // int itr = 10000;
   int i = 0;
 
-  ofstream file("range_search.csv", std::ios_base::app);
+  ofstream file("range_search_size_latency.csv", std::ios_base::app);
   vector<vector <int32_t>> start_range_collection;
   vector<vector <int32_t>> end_range_collection;
 
@@ -416,26 +417,34 @@ int main(int argc, char *argv[]){
       
     for (int j = 0; j < DIMENSION; j++){
 
-      start_range[j] = min[j] + (max[j] - min[j] + 1) / 10 * (rand() % 10);
-      end_range[j] = start_range[j] + (max[j] - start_range[j] + 1) / 10 * (rand() % 10);
+      // start_range[j] = min[j] + (max[j] - min[j] + 1) / 10 * (rand() % 10);
+      // end_range[j] = start_range[j] + (max[j] - start_range[j] + 1) / 10 * (rand() % 10);
+      start_range[j] = min[j] + (max[j] - min[j] + 1) / 15 * (rand() % 15);
+      end_range[j] = start_range[j] + (max[j] - start_range[j] + 1) / 15 * (rand() % 15);
     }
 
     std::vector<int32_t> return_vect;
+    TimeStamp start = GetTimestamp();
     client.range_search_trie(return_vect, start_range, end_range);
+    TimeStamp diff = GetTimestamp() - start;
 
-    if (return_vect.size() <= 2000 && return_vect.size() >= 1000){
-      cout << "matched: " << i << endl;
+    // if (return_vect.size() <= 1000 && return_vect.size() > 0){
+    if (return_vect.size() > 0){
+      cout << "found: " << i << endl;
 
       start_range_collection.push_back(start_range);
       end_range_collection.push_back(end_range);
 
-      for (int j = 0; j < DIMENSION; j++){
-        file << start_range[j] << ",";
-      }
-      for (int j = 0; j < DIMENSION; j++){
-        file << end_range[j] << ",";
-      }
+      // for (int j = 0; j < DIMENSION; j++){
+      //   file << start_range[j] << ",";
+      // }
+      // for (int j = 0; j < DIMENSION; j++){
+      //   file << end_range[j] << ",";
+      // }
+
+      file << return_vect.size() << "," << diff;
       file << endl;      
+      // return 0;
     }
     i++;
   }
@@ -444,11 +453,11 @@ int main(int argc, char *argv[]){
 
   return 0;
 
-*/
+
 
 /** 
      Range Search 
-*/
+
 
   FILE *fp = fopen("./range_search.csv", "r");
 
@@ -499,6 +508,8 @@ int main(int argc, char *argv[]){
   }
 
   return_tuple = total_client_range_search(&start_range_collection, &end_range_collection, client_number);
+  return_tuple = total_client_range_search(&start_range_collection, &end_range_collection, 1);
+
   throughput = std::get<0>(return_tuple);
   latency = std::get<1>(return_tuple);
 
@@ -507,7 +518,7 @@ int main(int argc, char *argv[]){
 
   return 0;
 
-
+*/
 
 /** 
     Point Lookup from the OSM dataset

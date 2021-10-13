@@ -4,6 +4,8 @@
 #include <climits>
 #include <tqdm.h>
 #include <vector>
+#include <iostream>
+#include <fstream>
 
 // Last coordinates all 0
 // Second last coordinate > 32
@@ -121,13 +123,44 @@ void insert_for_node_path(point_array<DIMENSION> *found_points, level_t max_dept
     auto *start_range = new data_point<DIMENSION>();
     auto *end_range = new data_point<DIMENSION>();
 
-    for (dimension_t i = 0; i < DIMENSION; i++){
-        start_range->set_coordinate(i, min[i]);
-        end_range->set_coordinate(i, max[i]);
+    // for (dimension_t i = 0; i < DIMENSION; i++){
+    //     start_range->set_coordinate(i, min[i]);
+    //     end_range->set_coordinate(i, max[i]);
+    // }
+    // start = GetTimestamp();
+    // mdtrie->range_search_trie(start_range, end_range, mdtrie->root(), 0, found_points);
+    // diff = GetTimestamp() - start;
+
+    int itr = 0;
+    std::ofstream file("range_search_size_latency_filesystem.csv", std::ios_base::app);
+    uint64_t search_volume = 1;
+
+    while (itr < 1000){
+
+        for (int j = 0; j < DIMENSION; j++){
+
+            start_range->set_coordinate(j, min[j] + (max[j] - min[j] + 1) / 15 * (rand() % 15));
+            end_range->set_coordinate(j, start_range->get_coordinate(j) + (max[j] - start_range->get_coordinate(j) + 1) / 15 * (rand() % 15));
+
+            search_volume *= start_range->get_coordinate(j) - end_range->get_coordinate(j) + 1;
+
+        }
+
+        auto *found_points_temp = new point_array<DIMENSION>();
+
+        start = GetTimestamp();
+        mdtrie->range_search_trie(start_range, end_range, mdtrie->root(), 0, found_points_temp);
+        diff = GetTimestamp() - start;
+
+        if (found_points_temp->size() > 1000){
+            std::cout << "found: " << itr << std::endl;
+            file << found_points_temp->size() << "," << diff << "," << search_volume << std::endl;
+            itr ++;
+        }
+
+        search_volume = 1;
+
     }
-    start = GetTimestamp();
-    mdtrie->range_search_trie(start_range, end_range, mdtrie->root(), 0, found_points);
-    diff = GetTimestamp() - start;
 
     fprintf(stderr, "Average time to range query one point: %f microseconds\n", (float) diff / found_points->size());
     fprintf(stderr, "found points: %ld, n points %ld\n", found_points->size(), n_points);

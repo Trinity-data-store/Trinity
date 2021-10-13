@@ -113,6 +113,9 @@ public:
             current_treeblock->range_search_treeblock(start_range, end_range, current_treeblock, level, 0, 0, 0, 0, found_points);
             return;
         }
+        
+        // TimeStamp start = GetTimestamp();
+
         symbol_t start_morton = start_range->leaf_to_symbol(level, max_depth_);
         symbol_t end_morton = end_range->leaf_to_symbol(level, max_depth_);
         symbol_t representation = start_morton ^ end_morton;
@@ -121,17 +124,24 @@ public:
         struct data_point<DIMENSION> original_start_range = (*start_range);
         struct data_point<DIMENSION> original_end_range = (*end_range); 
 
+        int count = 0;
+
         for (symbol_t current_morton = start_morton; current_morton <= end_morton; current_morton++){
 
             if ((start_morton & neg_representation) != (current_morton & neg_representation)){
                 continue;
-            }
-            
+            }            
             
             if (!current_trie_node->get_child(current_morton)) {
                 continue;
             }
+
+            count ++;
+
+            TimeStamp start = GetTimestamp();
             start_range->update_range_morton(end_range, current_morton, level, max_depth_);
+            update_range_latency += GetTimestamp() - start;
+
 
             range_search_trie(start_range, end_range, current_trie_node->get_child(current_morton), level + 1,
                                 found_points);
@@ -139,6 +149,10 @@ public:
             (*start_range) = original_start_range;
             (*end_range) = original_end_range;                
         }
+
+        // std::cout << "Trie count: " << count << " start range: " << start_morton << " end range: " << end_morton << " level: " << level << std::endl;
+
+        // top_trie_range_search_latency += GetTimestamp() - start;
     }
     
 
