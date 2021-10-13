@@ -1,22 +1,3 @@
-/*
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements. See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership. The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License. You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied. See the License for the
- * specific language governing permissions and limitations
- * under the License.
- */
-
 #include <thrift/concurrency/ThreadManager.h>
 #include <thrift/concurrency/ThreadFactory.h>
 #include <thrift/protocol/TBinaryProtocol.h>
@@ -85,7 +66,6 @@ public:
 
   int32_t insert_trie(const std::vector<int32_t> & point, int32_t primary_key){
 
-    // std::cout << "Running thread: " << std::this_thread::get_id() << std::endl;
     inserted_points_ ++;
     TimeStamp start = GetTimestamp();
     auto *leaf_point = new data_point<DIMENSION>();
@@ -125,7 +105,6 @@ public:
     thrift_inner_function_time += GetTimestamp() - start;
 
     n_leaves_t n_found_points = found_points->size();
-    // cout << "Range Search found " << n_found_points << " points" << endl;  
 
     _return.reserve(n_found_points);
     start = GetTimestamp();
@@ -133,10 +112,11 @@ public:
       _return.emplace_back(found_points->at(i)->read_primary());
     }
     thrift_vector_time += GetTimestamp() - start;
+
+    // get_throughput(n_found_points);
   }
 
   void primary_key_lookup(std::vector<int32_t> & _return, const int32_t primary_key){
-
 
     _return.reserve(DIMENSION);
 
@@ -157,11 +137,18 @@ public:
     }      
     thrift_vector_time += GetTimestamp() - start;
   }
-  
+
+  void get_throughput(uint32_t count){
+
+    cout << "Throughput: " << ((float) count / thrift_inner_function_time) * 1000000  << endl;    
+    thrift_vector_time = 0;
+    thrift_inner_function_time = 0;    
+  }
+
   void get_time(){
 
-    cout << "vector time: " << (float) thrift_vector_time / total_points_count << endl;
-    cout << "inner function time: " << (float) thrift_inner_function_time / total_points_count << endl;
+    cout << "vector time: " << (float) thrift_vector_time  << endl;
+    cout << "inner function time: " << (float) thrift_inner_function_time  << endl;
     thrift_vector_time = 0;
     thrift_inner_function_time = 0;
 
@@ -199,7 +186,6 @@ class MDTrieCloneFactory : virtual public MDTrieShardIfFactory {
 class MDTrieServerCoordinator {
 
 public:
-
     MDTrieServerCoordinator(int port_num) {
 
       start_server(port_num);
@@ -225,7 +211,6 @@ public:
         auto socket = std::make_shared<TNonblockingServerSocket>("172.29.249.44", port_num);
         auto server = std::make_shared<TNonblockingServer>(processor, socket);
 
-        // server->setNumIOThreads(10 /*num_threads*/);
         cout << "Starting the server..." << endl;
         server->serve();
         cout << "Done." << endl;

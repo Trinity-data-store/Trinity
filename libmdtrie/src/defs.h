@@ -102,4 +102,8 @@ bool is_osm = false;
 
 uint64_t thrift_vector_time = 0;
 uint64_t thrift_inner_function_time = 0;
+uint64_t top_trie_range_search_latency = 0;
+uint64_t treeblock_range_search_latency = 0;
+uint64_t update_range_latency = 0;
+uint64_t child_latency = 0;
 #endif //MD_TRIE_DEFS_H

@@ -1030,10 +1030,14 @@ public:
     void range_search_treeblock(data_point<DIMENSION> *start_range, data_point<DIMENSION> *end_range, tree_block *current_block,
                                             level_t level, preorder_t current_node, preorder_t prev_node, node_t current_frontier, preorder_t current_primary, point_array<DIMENSION> *found_points) {
 
-        mutex.lock();
+        // mutex.lock();
+        // // raise(SIGINT);
+        // if (level == 29)
+        //     raise(SIGINT);
 
         if (level == max_depth_) {
-        
+
+            // std::cout << "found" << std::endl;
             // GET which current primary corresponds to which node;
             // Now current_primary points to the leaf marked by tmp_symbol
 
@@ -1062,13 +1066,13 @@ public:
 
                 found_points->add_leaf(leaf);
             }
-            mutex.unlock();
+            // mutex.unlock();
 
             return;
         }
                                         
         if (current_node >= num_nodes_){
-            mutex.unlock();
+            // mutex.unlock();
             return;
         }
 
@@ -1076,12 +1080,14 @@ public:
             current_node == get_preorder(current_frontier)) {
             
             tree_block<DIMENSION, NUM_BRANCHES> *new_current_block = get_pointer(current_frontier);
-            mutex.unlock();
+            // mutex.unlock();
             node_t new_current_frontier = 0;
             preorder_t new_current_primary = 0;
             new_current_block->range_search_treeblock(start_range, end_range, new_current_block, level, 0, 0, new_current_frontier, new_current_primary, found_points); 
             return;
         }
+        
+        // TimeStamp start = GetTimestamp();
 
         symbol_t start_range_symbol = start_range->leaf_to_symbol(level, max_depth_);
         symbol_t end_range_symbol = end_range->leaf_to_symbol(level, max_depth_);
@@ -1097,36 +1103,64 @@ public:
 
         symbol_t current_symbol = dfuds_->next_symbol(start_range_symbol, current_node, end_range_symbol);
 
+        int count = 0;
+        
+        // bool has_child = false;
+
+        // for (symbol_t i = current_symbol; i <= end_range_symbol; i++){
+
+        //     if ((start_range_symbol & neg_representation) != (i & neg_representation))
+        //         continue;
+
+        //     if (dfuds_->has_symbol(current_node, i)){
+        //         has_child = true;
+        //     }            
+            
+        // }
+
+        // if (!has_child)
+        //     raise(SIGINT);
+
         while (current_symbol <= end_range_symbol){
             
             if (!dfuds_->has_symbol(current_node, current_symbol)){
 
                 continue;
             }
+
             if ((start_range_symbol & neg_representation) == (current_symbol & neg_representation)){
+                
+                count ++;
+
+                // if (count == 2)
+                //     raise(SIGINT);
 
                 new_current_block = current_block;
                 new_current_frontier = current_frontier;
                 new_current_primary = current_primary;
 
-
+                TimeStamp start = GetTimestamp();
                 new_current_node = current_block->child(new_current_block, current_node, current_symbol, level,
                                                         new_current_frontier, new_current_primary);
 
+                child_latency += GetTimestamp() - start;
+                start = GetTimestamp();
                 start_range->update_range_morton(end_range, current_symbol, level, max_depth_); // NOT HERE
+                update_range_latency += GetTimestamp() - start;
 
                 if (new_current_block != current_block){
 
-                    mutex.unlock();
+                    // mutex.unlock();
+                    // raise(SIGINT);
 
                     new_current_block->range_search_treeblock(start_range, end_range, new_current_block, level + 1, new_current_node, 0, new_current_frontier, new_current_primary, found_points); // NOT HERE
-                    mutex.lock();
+                    // mutex.lock();
                 }
                 else {
-                    mutex.unlock();
+                    // mutex.unlock();
 
                     current_block->range_search_treeblock(start_range, end_range, current_block, level + 1, new_current_node, current_node, new_current_frontier, new_current_primary, found_points);     // NOT HERE      
-                    mutex.lock();         
+                    // mutex.lock();         
                 }
 
                 (*start_range) = original_start_range;
@@ -1136,7 +1170,13 @@ public:
             current_symbol = dfuds_->next_symbol(current_symbol + 1, current_node, end_range_symbol); // NOT HERE
         }
 
-        mutex.unlock();
+        // if (count == 0)
+        //     std::cout << "Skipped " << " start range: " << start_range_symbol << " end range: " << end_range_symbol << " level: " << level << std::endl;
+        //     // raise(SIGINT);
+
+        // std::cout << "Treeblock count: " << count << " start range: " << start_range_symbol << " end range: " << end_range_symbol << " level: " << level << std::endl;
+        // treeblock_range_search_latency += GetTimestamp() - start;
+        // mutex.unlock();
     }
     
     void insert_primary_key_at_present_index(n_leaves_t index, n_leaves_t primary_key){
