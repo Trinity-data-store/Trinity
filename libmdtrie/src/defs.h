@@ -106,4 +106,24 @@ uint64_t top_trie_range_search_latency = 0;
 uint64_t treeblock_range_search_latency = 0;
 uint64_t update_range_latency = 0;
 uint64_t child_latency = 0;
+
+std::vector<symbol_t> level_to_bitwidth;
+
+void create_level_to_bitwidth_map(std::vector<level_t> dimension_bits, level_t max_level){
+
+    dimension_t num_dimensions = dimension_bits.size();
+
+    for (level_t level = 0; level < max_level; level++){
+
+        dimension_t dimension_left = num_dimensions;
+        for (dimension_t j = 0; j < num_dimensions; j++){
+            
+            if (level + 1 > dimension_bits[j])
+                dimension_left --;
+        }
+        level_to_bitwidth.push_back(1 << dimension_left);
+    }
+}
+
+
 #endif //MD_TRIE_DEFS_H
