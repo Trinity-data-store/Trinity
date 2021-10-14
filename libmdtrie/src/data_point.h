@@ -71,18 +71,31 @@ public:
     }
 
     // Given the leaf_point and the level we are at, return the Morton code corresponding to that level
+    // inline symbol_t leaf_to_symbol(level_t level, level_t max_depth) {
+
+    //     symbol_t result = 0;
+    //     level_t offset = max_depth - level - 1U; 
+    //     // size_t coordinate_size = coordinates.size();
+    //     for (size_t i = 0; i < DIMENSION; i++) {
+    //         point_t coordinate = coordinates[i];
+    //         bool bit = GETBIT(coordinate, offset); 
+    //         result = (result << 1U) + bit;
+    //     }
+    //     return result;
+    // }
+
     inline symbol_t leaf_to_symbol(level_t level, level_t max_depth) {
 
         symbol_t result = 0;
-        level_t offset = max_depth - level - 1U; 
-        // size_t coordinate_size = coordinates.size();
+
         for (size_t i = 0; i < DIMENSION; i++) {
-            point_t coordinate = coordinates[i];
-            bool bit = GETBIT(coordinate, offset); 
-            result = (result << 1U) + bit;
+            point_t coordinate = coordinates[i] >> level;
+            bool bit = coordinate & 1;
+            if (bit)
+                result = (result << 1U) + bit;
         }
         return result;
-    }
+    }    
 
     inline bool update_range_morton(data_point<DIMENSION> *end_range, symbol_t current_morton, level_t level, level_t max_depth) {
 
