@@ -637,7 +637,7 @@ public:
 
     // Traverse the current TreeBlock, going into frontier nodes as needed
     // Until it cannot traverse further and calls insertion
-    void insert_remaining(data_point<DIMENSION> *leaf_point, level_t length, level_t level, n_leaves_t primary_key) {
+    void insert_remaining(data_point<DIMENSION> *leaf_point, level_t length, level_t level, n_leaves_t primary_key, node_n_t node_pos) {
        
         mutex.lock();
         node_t current_node = 0;
@@ -649,7 +649,7 @@ public:
         while (level < length) {
             tree_block *current_treeblock = this;
 
-            temp_node = child(current_treeblock, current_node,
+            temp_node = child(current_treeblock, current_node, node_pos,
                                             leaf_point->leaf_to_symbol(level, max_depth_), level,
                                             current_frontier, current_primary);
             if (temp_node == (node_t) -1)
@@ -670,12 +670,12 @@ public:
                 
                 tree_block<DIMENSION, NUM_BRANCHES> *next_block = get_pointer(current_frontier);
                 mutex.unlock();
-                next_block->insert_remaining(leaf_point, length, level + 1, primary_key);
+                next_block->insert_remaining(leaf_point, length, level + 1, primary_key, 0);
                 return;
             }
             level++;
         }
-        insert(current_node, leaf_point, level, length, current_frontier, current_primary, primary_key);
+        insert(current_node, node_pos, leaf_point, level, length, current_frontier, current_primary, primary_key);
         current_leaves_inserted ++;
 
         mutex.unlock();
