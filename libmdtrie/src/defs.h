@@ -107,9 +107,9 @@ uint64_t treeblock_range_search_latency = 0;
 uint64_t update_range_latency = 0;
 uint64_t child_latency = 0;
 
-std::vector<symbol_t> level_to_bitwidth;
+std::vector<symbol_t> level_to_num_children;
 
-void create_level_to_bitwidth_map(std::vector<level_t> dimension_bits, level_t max_level){
+void create_level_to_num_children_map(std::vector<level_t> dimension_bits, level_t max_level){
 
     dimension_t num_dimensions = dimension_bits.size();
 
@@ -121,7 +121,7 @@ void create_level_to_bitwidth_map(std::vector<level_t> dimension_bits, level_t m
             if (level + 1 > dimension_bits[j])
                 dimension_left --;
         }
-        level_to_bitwidth.push_back(1 << dimension_left);
+        level_to_num_children.push_back(dimension_left);
     }
 }
 

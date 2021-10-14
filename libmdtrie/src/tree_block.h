@@ -1,40 +1,29 @@
 #ifndef MD_TRIE_TREE_BLOCK_H
 #define MD_TRIE_TREE_BLOCK_H
 
+#include <sys/time.h>
+#include <cmath>
 #include "point_array.h"
 #include "trie_node.h"
 #include "compressed_bitmap.h"
-#include <sys/time.h>
-#include <cmath>
-#include <mutex>
-#include <shared_mutex>
 #include "delta_encoded_array.h"
 #include "elias_gamma_encoder.h"
 #include "compact_ptr.h"
 
-uint64_t get_bit_count = 0;
-// uint64_t v2_storage_save_pos = 0;
-// uint64_t v2_storage_save_neg = 0;
-// uint64_t single_node_count = 0;
-// uint64_t total_number_nodes = 0;
-
-template<dimension_t DIMENSION, symbol_t NUM_BRANCHES>
 class tree_block {
 public:
     
-    explicit tree_block(level_t root_depth, node_n_t tree_capacity, node_n_t num_nodes,
-                        level_t max_depth, node_n_t max_tree_nodes, trie_node<DIMENSION, NUM_BRANCHES> *parent_trie_node = NULL) {
-        root_depth_ = root_depth;
-        tree_capacity_ = tree_capacity;
+    explicit tree_block(level_t root_depth, node_n_t node_capacity, node_n_t bit_capacity, node_n_t num_nodes,
+                        level_t max_depth, node_n_t max_tree_nodes, trie_node *parent_trie_node) {
 
+        root_depth_ = root_depth;
+        node_capacity_ = node_capacity;
         max_depth_ = max_depth;
         max_tree_nodes_ = max_tree_nodes;
         num_nodes_ = num_nodes;
-        dfuds_ = new compressed_bitmap::compressed_bitmap(tree_capacity_ + 1, DIMENSION);
-
-        if (parent_trie_node){
-            parent_trie_node_ = parent_trie_node;
-        }
+        bit_capacity_ = bit_capacity;
+        dfuds_ = new compressed_bitmap::compressed_bitmap(node_capacity, bit_capacity);
+        parent_trie_node_ = parent_trie_node;
     }
 
     inline node_n_t num_frontiers() {
@@ -64,18 +53,9 @@ public:
         pointer->treeblock_frontier_num_ = get_preorder(current_frontier);
     }
 
-    bool check_frontiers(){
-
-        for (preorder_t i = 1; i < num_frontiers_; i++){
-            if (frontiers_[i].preorder_ <= frontiers_[i-1].preorder_)
-                return false;
-        }
-        return true;
-    }
-
-    // This function selects the subTree starting from node 0
-    // The selected subtree has the maximum subtree size
     node_t select_subtree(preorder_t &subtree_size, preorder_t &selected_node_depth, preorder_t &num_primary, preorder_t &selected_primary_index, preorder_t *index_to_primary) {
+
+        // TODO: Look at this more closely.
 
         // index -> Number of children & preorder
         node_info index_to_node[4096];
@@ -84,7 +64,6 @@ public:
         subtree_info index_to_subtree[4096];
 
         num_primary = 0;
-        // preorder_t selected_primary_index_from_scratch = 0;
 
         // Index -> depth of the node
         preorder_t index_to_depth[4096];
@@ -95,8 +74,10 @@ public:
         preorder_t current_frontier = 0;
         selected_primary_index = 0;
 
+        node_n_t current_node_pos = 0;
         index_to_node[node_stack_top].preorder_ = 0;
-        index_to_node[node_stack_top++].n_children_ = dfuds_->get_n_children(0);
+        index_to_node[node_stack_top++].n_children_ = dfuds_->get_n_children(0, 0, level_to_num_children[root_depth_]);
+
         depth = root_depth_ + 1;
         preorder_t next_frontier_preorder;
 
@@ -106,10 +87,12 @@ public:
             next_frontier_preorder = get_preorder(current_frontier);
 
         for (preorder_t i = 1; i < num_nodes_; ++i) {
-            // fprintf(stderr, "i: %ld, depth: %ld\n", i, depth);
+
+            current_node_pos += level_to_num_children[root_depth_];
+
             if (depth == max_depth_ - 1){
-                index_to_primary[i] = dfuds_->get_n_children(i);
-                // selected_primary_index_from_scratch += index_to_primary[i];
+
+                index_to_primary[i] = dfuds_->get_n_children(i, current_node_pos, level_to_num_children[depth]);
             }
 
             // If meet a frontier node
@@ -121,16 +104,16 @@ public:
                     next_frontier_preorder = get_preorder(current_frontier);
                 --index_to_node[node_stack_top - 1].n_children_;
             }
-                //  Start searching for its children
+
+            //  Start searching for its children
             else if (depth < max_depth_ - 1) {
                 index_to_node[node_stack_top].preorder_ = i;
-                index_to_node[node_stack_top++].n_children_ = dfuds_->get_n_children(i);
+                index_to_node[node_stack_top++].n_children_ = dfuds_->get_n_children(i, current_node_pos, level_to_num_children[depth]);
                 depth++;
             }
-                //  Reached the maxDepth level
-            else{
-                // TODO: See if this is correct
 
+            //  Reached the maxDepth level
+            else{
                 --index_to_node[node_stack_top - 1].n_children_;
             }
                 
@@ -146,12 +129,12 @@ public:
                     index_to_node[node_stack_top - 1].n_children_--;
             }
         }
+
         // Now I have to go through the index_to_subtree vector to choose the proper subtree
         preorder_t min_node = 0;
         preorder_t min = (preorder_t) -1;
         preorder_t min_index = 0;
         preorder_t diff = (preorder_t) -1;
-
         auto leftmost = (preorder_t) -1;
 
         for (preorder_t i = 0; i < subtree_stack_top; ++i) {
@@ -159,7 +142,6 @@ public:
             if (index_to_subtree[i].preorder_ != 0 && num_nodes_ <= subtree_size_at_i * 4 && subtree_size_at_i * 4 <= 3 * num_nodes_ &&
                 index_to_subtree[i].preorder_ < leftmost) {
 
-                // TODO: root node's subtree size doesn't match num_nodes_
                 leftmost = min_node = index_to_subtree[i].preorder_;
                 min_index = i;
             }
@@ -193,150 +175,140 @@ public:
         for (preorder_t i = 0; i < min_node; i++ ){
             selected_primary_index += index_to_primary[i];
         }
-
         for (preorder_t i = min_node; i < min_node + subtree_size; i ++){
             num_primary += index_to_primary[i];
         }
-
-        if (min_node == 0){
-            raise(SIGINT);
-        }
-
         return min_node;
     }
 
-    // This function inserts the string at the node position
-    void insert(node_t node, data_point<DIMENSION> *leaf_point, level_t level, level_t length,
+    void insert(node_t node, node_t node_pos, data_point *leaf_point, level_t level,
                             preorder_t current_frontier, preorder_t current_primary, n_leaves_t primary_key) {
+        
+        symbol_t current_num_children = level_to_num_children[level];
 
-        // mutex.lock();
-
-        if (level == length) {
+        if (level == max_depth_) {
 
             symbol_t parent_symbol = leaf_point->leaf_to_symbol(max_depth_ - 1, max_depth_);
-            symbol_t tmp_symbol = dfuds_->next_symbol(0, node, NUM_BRANCHES - 1);
+            symbol_t tmp_symbol = dfuds_->next_symbol(0, node, 1 << current_num_children - 1, node_pos, current_num_children);
             
             while (tmp_symbol != parent_symbol){    
-                tmp_symbol = dfuds_->next_symbol(tmp_symbol + 1, node, NUM_BRANCHES - 1);
+                tmp_symbol = dfuds_->next_symbol(tmp_symbol + 1, node, 1 << current_num_children - 1, node_pos, current_num_children);
                 current_primary ++;
             }
 
             insert_primary_key_at_present_index(current_primary, primary_key);
-            // mutex.unlock();
 
             return;
         }
 
         node_t original_node = node;
+        node_n_t original_node_pos = node_pos;
         node_n_t max_tree_nodes;
 
-        if (root_depth_ <=/*=*/ 16) max_tree_nodes = 64;
-        else if (root_depth_ <= 24) max_tree_nodes = 128;
+        if (root_depth_ <= max_depth_ / 2) max_tree_nodes = 64;
+        else if (root_depth_ <= max_depth_ / 4 * 3) max_tree_nodes = 128;
         else max_tree_nodes = max_tree_nodes_;
 
         if (is_osm)
             max_tree_nodes = max_tree_nodes_;
 
-        //  node is a frontier node
         if (frontiers_ != nullptr && current_frontier < num_frontiers_ && node == get_preorder(current_frontier)) {
             
             if (dfuds_->get_n_children(node) >= 1){
-
                 dfuds_->set_symbol(node, leaf_point->leaf_to_symbol(level, max_depth_), false);
             }
             else {
                 dfuds_->set_symbol(node, leaf_point->leaf_to_symbol(level, max_depth_), true);
             }
-    
-            // mutex.unlock();
-            get_pointer(current_frontier)->mutex.lock();
-            get_pointer(current_frontier)->insert(0, leaf_point, level, length, 0, 0, primary_key);
-            get_pointer(current_frontier)->mutex.unlock();
+            get_pointer(current_frontier)->insert(0, 0, leaf_point, level, 0, 0, primary_key);
+
             return;
         }
-        //  If there is only one character left
-        //  Insert that character into the correct position
-        else if (length - level == 1) {
+
+        else if (max_depth_ - level == 1) {
 
             symbol_t next_symbol = leaf_point->leaf_to_symbol(level, max_depth_);
 
             dfuds_->set_symbol(original_node, next_symbol, false);
             
-            symbol_t tmp_symbol = dfuds_->next_symbol(0, node, NUM_BRANCHES - 1);
+            symbol_t tmp_symbol = dfuds_->next_symbol(0, node, 1 << current_num_children - 1, node_pos, current_num_children);
             
-            while (tmp_symbol != next_symbol)
-            {
-                tmp_symbol = dfuds_->next_symbol(tmp_symbol + 1, node, NUM_BRANCHES - 1);
+            while (tmp_symbol != next_symbol){
+
+                tmp_symbol = dfuds_->next_symbol(tmp_symbol + 1, node, 1 << current_num_children - 1, node_pos, current_num_children);
                 current_primary ++;
             }
 
             insert_primary_key_at_index(current_primary, primary_key);
-            // mutex.unlock();
+
             return;
         }
-            // there is room in current block for new nodes
-        else if (num_nodes_ + (length - level) - 1 <= tree_capacity_) {
-            // skip_children_subtree returns the position under node where the new str[0] will be inserted
+
+        else if (num_nodes_ + (max_depth_ - level) - 1 <= node_capacity_) {
+
             symbol_t current_symbol = leaf_point->leaf_to_symbol(level, max_depth_);
-            node = skip_children_subtree(node, current_symbol, level, current_frontier, current_primary);
+            node = skip_children_subtree(node, node_pos, current_symbol, level, current_frontier, current_primary);
 
-            dfuds_->set_symbol(original_node, current_symbol, false);
+            dfuds_->set_symbol(original_node, original_node_pos, current_symbol, false, current_num_children);
             node_t from_node = num_nodes_ - 1;
-
-            //  In this while loop, we are making space for str
-            //  By shifting nodes to the right of str[i] by len(str) spots
+            node_t from_node_pos;
 
             bool shifted = false;
             if (from_node >= node) {
+            
                 shifted = true;
-                dfuds_->shift_backward(node, length - level - 1);
+                dfuds_->shift_backward(node, node_pos, (max_depth_ - level - 1) * current_num_children, max_depth_ - level - 1);
                 from_node = node;
+                from_node_pos = node_pos;
             }
             else {
                 from_node++;
-                // TODO: bulk clear node doesn't work
-                // dfuds_->bulk_clear_node(from_node, from_node + length - level - 2);
+                from_node_pos = dfuds_->flag_size_;
             }
+
             level++;
 
-            //  Insert all remaining characters (Remember length -- above)
+            for (level_t current_level = level; current_level < max_depth_; current_level++) {
 
-            for (level_t i = level; i < length; i++) {
                 if (!shifted)
                 {
-                    dfuds_->clear_node(from_node);
+                    dfuds_->ClearWidth(from_node_pos, 1 << level_to_num_children[current_level], true);
+                    dfuds_->ClearWidth(from_node, 1, false);
                 }
-                symbol_t next_symbol = leaf_point->leaf_to_symbol(i, max_depth_);
-                dfuds_->set_symbol(from_node, next_symbol, true);                
+                symbol_t next_symbol = leaf_point->leaf_to_symbol(current_level, max_depth_);
+                dfuds_->set_symbol(from_node, from_node_pos, next_symbol, true, level_to_num_children[current_level]);                
 
                 num_nodes_++;
                 from_node++;
+                from_node_pos += 1 << level_to_num_children[current_level];
             }
+
             // shift the flags by length since all nodes have been shifted by that amount
             if (frontiers_ != nullptr)
                 for (preorder_t j = current_frontier; j < num_frontiers_; ++j){
-                    set_preorder(j, get_preorder(j) + length - level);
+                    set_preorder(j, get_preorder(j) + max_depth_ - level);
                     set_pointer(j, get_pointer(j));
                 }
 
             insert_primary_key_at_index(current_primary, primary_key);
             
-            if (!check_frontiers())
-                raise(SIGINT);
-
-            // mutex.unlock();
             return;
-
-        } else if (num_nodes_ + (length - level) - 1 <= max_tree_nodes) 
+        } 
+        else if (num_nodes_ + (max_depth_ - level) - 1 <= max_tree_nodes) 
         {
-            dfuds_->realloc_bitmap(num_nodes_ + length - level);
 
-            tree_capacity_ = num_nodes_ + (length - level);
-            // mutex.unlock();
-            insert(node, leaf_point, level, length, current_frontier, current_primary, primary_key);
+            dfuds_->increase_bits((max_depth_ - level) * current_num_children, true);
+            dfuds_->increase_bits(max_depth_ - level, false);
+
+            node_capacity_ = num_nodes_ + (max_depth_ - level);
+            insert(node, node_pos, leaf_point, level, current_frontier, current_primary, primary_key);
+
             return;
-
-        } else {
+        } 
+        else {
+            
+            // TODO: continue from here: 
+            // Return selected node and selected node path?
 
             preorder_t subtree_size, selected_node_depth;
             preorder_t num_primary = 0, selected_primary_index = 0;
@@ -345,7 +317,7 @@ public:
             node_t selected_node = select_subtree(subtree_size, selected_node_depth, num_primary, selected_primary_index, index_to_primary);
 
             node_t orig_selected_node = selected_node;
-            auto *new_dfuds = new compressed_bitmap::compressed_bitmap(tree_capacity_ + 1, DIMENSION);
+            auto *new_dfuds = new compressed_bitmap::compressed_bitmap(node_capacity_ + 1, DIMENSION);
 
             preorder_t frontier;
             //  Find the first frontier node > selected_node
@@ -493,12 +465,12 @@ public:
             }
 
             if (subtree_size > length) {
-                dfuds_->realloc_bitmap(tree_capacity_ - (subtree_size - length));
-                tree_capacity_ -= subtree_size - length;
+                dfuds_->realloc_bitmap(node_capacity_ - (subtree_size - length));
+                node_capacity_ -= subtree_size - length;
 
             } else {
-                dfuds_->realloc_bitmap(tree_capacity_ - (subtree_size - 1));
-                tree_capacity_ -= subtree_size - 1;
+                dfuds_->realloc_bitmap(node_capacity_ - (subtree_size - 1));
+                node_capacity_ -= subtree_size - 1;
             }
             num_nodes_ -= (subtree_size - 1);
 
@@ -1209,9 +1181,10 @@ public:
 private:
 
     node_n_t max_tree_nodes_;
-    level_t root_depth_{};
-    node_n_t num_nodes_{};
-    node_n_t tree_capacity_{};
+    level_t root_depth_;
+    node_n_t num_nodes_;
+    node_n_t node_capacity_;
+    node_n_t bit_capacity_;
     level_t max_depth_;
     compressed_bitmap::compressed_bitmap *dfuds_{};
     frontier_node<DIMENSION> *frontiers_ = nullptr; 
