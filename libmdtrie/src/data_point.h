@@ -15,11 +15,6 @@ public:
         coordinates_ = std::vector<point_t>(num_dimensions, 0);
     };
 
-    inline void set(std::vector<point_t> new_coordinates){
-
-        coordinates_ = new_coordinates;
-    }
-
     inline std::vector<point_t> get(){
 
         return coordinates_;
@@ -41,7 +36,7 @@ public:
     }
 
     inline n_leaves_t read_primary(){
-        
+
         return primary_key_;
     }
 
@@ -58,7 +53,7 @@ public:
         return result;
     }    
 
-    inline void update_range_morton(data_point<DIMENSION> *end_range, symbol_t current_morton, level_t level, level_t max_depth) {
+    inline void update_symbol(data_point*end_range, symbol_t current_morton, level_t level, level_t max_depth) {
 
         // TODO
     }
