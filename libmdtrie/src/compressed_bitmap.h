@@ -308,6 +308,22 @@ class compressed_bitmap {
     SetValPos(destination - bits, GetValPos(from - bits, bits, is_on_data), bits, is_on_data);
   }
 
+  inline void shift_backward(preorder_t node, pos_type node_pos, width_type data_bits, width_type flag_bits){
+
+    size_type orig_data_size = data_size_;
+    size_type orig_flag_size = flag_size_;
+    
+    increase_bits(data_bits, true);
+    increase_bits(flag_bits, false);    
+
+    BulkCopy_backward(orig_data_size, data_size_,  orig_data_size - node_pos, true);
+    BulkCopy_backward(orig_flag_size, flag_size_, orig_flag_size - node, false);    
+
+    ClearWidth(node_pos, data_bits, true);
+    ClearWidth(node, flag_bits, false);    
+
+  }
+
   inline bool is_collapse(preorder_t node){
     return !GETBITVAL(flag_, node);
   }

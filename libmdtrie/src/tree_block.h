@@ -53,7 +53,7 @@ public:
         pointer->treeblock_frontier_num_ = get_preorder(current_frontier);
     }
 
-    node_t select_subtree(preorder_t &subtree_size, preorder_t &selected_node_depth, preorder_t &num_primary, preorder_t &selected_primary_index, preorder_t *index_to_primary) {
+    node_t select_subtree(preorder_t &subtree_size, preorder_t &selected_node_depth, preorder_t &selected_node_pos, preorder_t &num_primary, preorder_t &selected_primary_index, preorder_t *index_to_primary) {
 
         // TODO: Look at this more closely.
 
@@ -67,6 +67,7 @@ public:
 
         // Index -> depth of the node
         preorder_t index_to_depth[4096];
+        level_t node_to_depth[4096];
 
         //  Corresponds to index_to_node, index_to_subtree, index_to_depth
         preorder_t node_stack_top = 0, subtree_stack_top = 0, depth_stack_top = 0;
@@ -89,7 +90,7 @@ public:
         for (preorder_t i = 1; i < num_nodes_; ++i) {
 
             current_node_pos += level_to_num_children[root_depth_];
-
+            node_to_depth[i] = depth;
             if (depth == max_depth_ - 1){
 
                 index_to_primary[i] = dfuds_->get_n_children(i, current_node_pos, level_to_num_children[depth]);
@@ -174,10 +175,13 @@ public:
         
         for (preorder_t i = 0; i < min_node; i++ ){
             selected_primary_index += index_to_primary[i];
+            selected_node_pos += level_to_num_children[node_to_depth[i]];
         }
         for (preorder_t i = min_node; i < min_node + subtree_size; i ++){
             num_primary += index_to_primary[i];
         }
+
+
         return min_node;
     }
 
@@ -257,7 +261,13 @@ public:
             if (from_node >= node) {
             
                 shifted = true;
-                dfuds_->shift_backward(node, node_pos, (max_depth_ - level - 1) * current_num_children, max_depth_ - level - 1);
+
+                symbol_t total_bits_to_shift = 0;
+                for (level_t i = level + 1; i < max_depth_; i++) {
+                    total_bits_to_shift += level_to_num_children[i];
+                }
+
+                dfuds_->shift_backward(node, node_pos, total_bits_to_shift, max_depth_ - level - 1);
                 from_node = node;
                 from_node_pos = node_pos;
             }
@@ -308,15 +318,19 @@ public:
         else {
             
             // TODO: continue from here: 
-            // Return selected node and selected node path?
+            // Return selected node and selected node pos?
 
             preorder_t subtree_size, selected_node_depth;
+            preorder_t selected_node_pos;
             preorder_t num_primary = 0, selected_primary_index = 0;
             preorder_t index_to_primary[4096] = {0};
 
-            node_t selected_node = select_subtree(subtree_size, selected_node_depth, num_primary, selected_primary_index, index_to_primary);
+            node_t selected_node = select_subtree(subtree_size, selected_node_depth, selected_node_pos, num_primary, selected_primary_index, index_to_primary);
+
+       
 
             node_t orig_selected_node = selected_node;
+            preorder_t orig_selected_node_pos = selected_node_pos;
             auto *new_dfuds = new compressed_bitmap::compressed_bitmap(node_capacity_ + 1, DIMENSION);
 
             preorder_t frontier;
