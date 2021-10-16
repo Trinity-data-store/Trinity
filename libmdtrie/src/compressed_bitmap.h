@@ -169,7 +169,6 @@ class compressed_bitmap {
     }
   }
 
-
   inline uint64_t popcount(pos_type pos, width_type width, bool is_on_data){
 
     if (width <= 64){
@@ -286,7 +285,7 @@ class compressed_bitmap {
   }
 
 
-  inline void BulkCopy_forward(pos_type from, pos_type destination, width_type bits, bool is_on_data)
+  inline void bulkcopy_forward(pos_type from, pos_type destination, width_type bits, bool is_on_data)
   {
     while (bits > 64){
       SetValPos(destination, GetValPos(from, 64, is_on_data), 64, is_on_data);
@@ -297,7 +296,7 @@ class compressed_bitmap {
     SetValPos(destination, GetValPos(from, bits, is_on_data), bits, is_on_data);
   }
 
-  inline void BulkCopy_backward(pos_type from, pos_type destination, width_type bits, bool is_on_data)
+  inline void bulkcopy_backward(pos_type from, pos_type destination, width_type bits, bool is_on_data)
   {
     while (bits > 64){
       SetValPos(destination - 64, GetValPos(from - 64, 64, is_on_data), 64, is_on_data);
@@ -316,19 +315,34 @@ class compressed_bitmap {
     increase_bits(data_bits, true);
     increase_bits(flag_bits, false);    
 
-    BulkCopy_backward(orig_data_size, data_size_,  orig_data_size - node_pos, true);
-    BulkCopy_backward(orig_flag_size, flag_size_, orig_flag_size - node, false);    
+    bulkcopy_backward(orig_data_size, data_size_,  orig_data_size - node_pos, true);
+    bulkcopy_backward(orig_flag_size, flag_size_, orig_flag_size - node, false);    
 
     ClearWidth(node_pos, data_bits, true);
     ClearWidth(node, flag_bits, false);    
 
   }
 
+  inline void shift_backward_to_uncollapse(preorder_t from_node, pos_type from_node_pos, width_type num_children)
+  {
+    if (!is_collapse(from_node)){
+      return;
+    }
+    size_t orig_data_size = data_size_;
+    width_type shift_amount = (1 << num_children) - num_children;
+    increase_bits(shift_amount, true);  
+
+    bulkcopy_backward(orig_data_size, orig_data_size + shift_amount,  orig_data_size - from_node_pos, true);
+
+    ClearWidth(from_node_pos, 1 << num_children, true);
+    SETBITVAL(flag_, from_node);
+  }
+
   inline void shift_forward(preorder_t from_node, pos_type from_node_pos, preorder_t to_node, pos_type to_node_pos)
 
   {
-    BulkCopy_forward(from_node_pos, to_node_pos, data_size_ - from_node_pos, true);
-    BulkCopy_forward(from_node, to_node, flag_size_ - from_node, false);
+    bulkcopy_forward(from_node_pos, to_node_pos, data_size_ - from_node_pos, true);
+    bulkcopy_forward(from_node, to_node, flag_size_ - from_node, false);
     pos_type shifted_amount = from_node_pos - to_node_pos;
     ClearWidth(data_size_ - shifted_amount, shifted_amount, true);
     ClearWidth(flag_size_ - (from_node - to_node), (from_node - to_node), false);
@@ -339,36 +353,35 @@ class compressed_bitmap {
     return !GETBITVAL(flag_, node);
   }
 
-  inline bool has_symbol(preorder_t node, pos_type node_pos, symbol_t symbol, width_type dimension){
+  inline bool has_symbol(preorder_t node, pos_type node_pos, symbol_t symbol, width_type num_children){
 
     if (node >= flag_size_){
       return false;
     }
 
     if (is_collapse(node)){
-      return symbol == GetValPos(node_pos, dimension, true);
+      return symbol == GetValPos(node_pos, num_children, true);
     }
     else {
       return GETBITVAL(data_, node_pos + symbol);
     }
   }
 
-  inline preorder_t get_num_children(node_t node, pos_type node_pos, width_type dimension)
+  inline preorder_t get_num_children(node_t node, pos_type node_pos, width_type num_children)
   {
-    width_type bit_width = 1 << dimension;
     if (is_collapse(node)){
       return 1;
     }
     else {
-      return popcount(node_pos, bit_width, true);
+      return popcount(node_pos, 1 << num_children, true);
     }
   }
 
-  inline preorder_t get_child_skip(node_t node, pos_type node_pos, symbol_t symbol, width_type dimension) 
+  inline preorder_t get_child_skip(node_t node, pos_type node_pos, symbol_t symbol, width_type num_children) 
   {
 
     if (is_collapse(node)){
-      symbol_t only_symbol = GetValPos(node_pos, dimension, true);
+      symbol_t only_symbol = GetValPos(node_pos, num_children, true);
       if (symbol > only_symbol)
         return 1;
       return 0;
@@ -382,12 +395,12 @@ class compressed_bitmap {
       return __builtin_ctzll(_pdep_u64(1ULL << n, x));
   }
 
-  symbol_t get_k_th_set_bit(preorder_t node, unsigned k /* 0-indexed */, pos_type node_pos, width_type dimension){
-    // Assume always present
+  symbol_t get_k_th_set_bit(preorder_t node, unsigned k /* 0-indexed */, pos_type node_pos, width_type num_children){
+
     if (is_collapse(node)){
-      return GetValPos(node_pos, dimension, true);
+      return GetValPos(node_pos, num_children, true);
     }
-    symbol_t pos_left = 1 << dimension;
+    symbol_t pos_left = 1 << num_children;
     symbol_t return_symbol = 0;
 
     while (pos_left > 64){
@@ -409,10 +422,10 @@ class compressed_bitmap {
     return return_symbol + nthset(next_block, k);
   }
 
-  inline symbol_t next_symbol(symbol_t symbol, preorder_t node, symbol_t end_symbol_range, pos_type node_pos, width_type dimension){
+  inline symbol_t next_symbol(symbol_t symbol, preorder_t node, symbol_t end_symbol_range, pos_type node_pos, width_type num_children){
 
     if (is_collapse(node)){
-      symbol_t only_symbol = GetValPos(node_pos, dimension, true);
+      symbol_t only_symbol = GetValPos(node_pos, num_children, true);
       if (symbol <= only_symbol)
         return only_symbol;
       
@@ -431,60 +444,46 @@ class compressed_bitmap {
     }
     else {
         if (over_64){
-            return next_symbol(symbol + limit, node, end_symbol_range, node_pos, dimension);
+            return next_symbol(symbol + limit, node, end_symbol_range, node_pos, num_children);
         }
         return end_symbol_range + 1;
     }
 
   }
 
-  inline void shift_backward_to_uncollapse(preorder_t from_node, pos_type from_node_pos, width_type dimension)
-  {
-    if (!is_collapse(from_node)){
-      return;
-    }
-    size_t orig_data_size = data_size_;
-    width_type shift_amount = (1 << dimension) - dimension;
-    increase_bits(shift_amount, true);  
 
-    BulkCopy_backward(orig_data_size, orig_data_size + shift_amount,  orig_data_size - from_node_pos, true);
-
-    ClearWidth(from_node_pos, 1 << dimension, true);
-    SETBITVAL(flag_, from_node);
-  }
-
-  inline void shift_forward_to_collapse(preorder_t from_node, pos_type from_node_pos, width_type dimension)
+  inline void shift_forward_to_collapse(preorder_t from_node, pos_type from_node_pos, width_type num_children)
   {
     if (is_collapse(from_node)){
       return;
     }
-    width_type shift_amount = (1 << dimension) - dimension;
+    width_type shift_amount = (1 << num_children) - num_children;
 
-    pos_type from_node_next_pos = from_node_pos + (1 << dimension);
-    BulkCopy_forward(from_node_next_pos, from_node_next_pos - shift_amount, data_size_ - from_node_next_pos, true);
+    pos_type from_node_next_pos = from_node_pos + (1 << num_children);
+    bulkcopy_forward(from_node_next_pos, from_node_next_pos - shift_amount, data_size_ - from_node_next_pos, true);
 
     decrease_bits(shift_amount, true);  
-    ClearWidth(from_node_next_pos - dimension, dimension, true);
+    ClearWidth(from_node_next_pos - num_children, num_children, true);
     CLRBITVAL(flag_, from_node);
   }
 
-  inline void set_symbol(preorder_t node, pos_type node_pos, symbol_t symbol, bool was_empty, width_type dimension){
+  inline void set_symbol(preorder_t node, pos_type node_pos, symbol_t symbol, bool was_empty, width_type num_children){
     
     if (is_collapse(node))
     {
       if (!was_empty){
-        symbol_t only_symbol = GetValPos(node_pos, dimension, true);
+        symbol_t only_symbol = GetValPos(node_pos, num_children, true);
         if (symbol == only_symbol){
           return;
         }
-        shift_backward_to_uncollapse(node, node_pos, dimension);
+        shift_backward_to_uncollapse(node, node_pos, num_children);
 
         SETBITVAL(data_, node_pos + only_symbol);
         SETBITVAL(data_, node_pos + symbol);
         SETBITVAL(flag_, node);
       }
       else {
-        SetValPos(node_pos, symbol, dimension, true);
+        SetValPos(node_pos, symbol, num_children, true);
       }
     }
     else {
@@ -493,31 +492,31 @@ class compressed_bitmap {
 
   }
 
-  inline void copy_node_cod(compressed_bitmap *to_dfuds, preorder_t from_node, pos_type from_pos, preorder_t to_node, pos_type to_node_pos, width_type dimension) {
+  inline void copy_node_cod(compressed_bitmap *to_dfuds, preorder_t from_node, pos_type from_node_pos, preorder_t to_node, pos_type to_node_pos, width_type num_children) {
 
     width_type width;
 
     if (is_collapse(from_node)){
       if (to_node == 0){
-        to_dfuds->shift_forward_to_collapse(to_node, to_node_pos, dimension);
+        to_dfuds->shift_forward_to_collapse(to_node, to_node_pos, num_children);
         CLRBITVAL(to_dfuds->flag_, to_node);
       }    
-      width = dimension;
+      width = num_children;
     }
     else {
-      width = 1 << dimension;
-      to_dfuds->shift_backward_to_uncollapse(to_node, to_node_pos, dimension);
+      width = 1 << num_children;
+      to_dfuds->shift_backward_to_uncollapse(to_node, to_node_pos, num_children);
       SETBITVAL(to_dfuds->flag_, to_node);
     }
     
     symbol_t visited = 0;
     while (visited < width) {
         if (width - visited > 64) {
-            to_dfuds->SetValPos(from_pos + visited, GetValPos(from_pos + visited, 64, true), 64, true);
+            to_dfuds->SetValPos(to_node_pos + visited, GetValPos(from_node_pos + visited, 64, true), 64, true);
             visited += 64;
         } else {
             symbol_t left = width - visited;
-            to_dfuds->SetValPos(from_pos + visited, GetValPos(from_pos + visited, left, true), left, true);
+            to_dfuds->SetValPos(to_node_pos + visited, GetValPos(from_node_pos + visited, left, true), left, true);
             break;
         }
     }    
