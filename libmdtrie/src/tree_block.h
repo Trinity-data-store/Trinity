@@ -53,33 +53,30 @@ public:
         pointer->treeblock_frontier_num_ = get_preorder(current_frontier);
     }
 
-    node_t select_subtree(preorder_t &subtree_size, preorder_t &selected_node_depth, preorder_t &selected_node_pos, preorder_t &num_primary, preorder_t &selected_primary_index, preorder_t *index_to_primary, preorder_t *index_to_depth) {
-
-        // TODO: Look at this more closely.
+    node_t select_subtree(preorder_t &subtree_size, preorder_t &selected_node_depth, preorder_t &selected_node_pos, preorder_t &num_primary, preorder_t &selected_primary_index, preorder_t *index_to_primary, preorder_t *node_to_depth) {
 
         // index -> Number of children & preorder
         node_info index_to_node[4096];
 
         // index -> size of subtree & preorder
         subtree_info index_to_subtree[4096];
-
         num_primary = 0;
 
         // Index -> depth of the node
-        // preorder_t index_to_depth[4096];
-        level_t node_to_depth[4096];
+        preorder_t index_to_depth[4096];
 
         //  Corresponds to index_to_node, index_to_subtree, index_to_depth
         preorder_t node_stack_top = 0, subtree_stack_top = 0, depth_stack_top = 0;
-        preorder_t depth;
         preorder_t current_frontier = 0;
         selected_primary_index = 0;
 
         node_n_t current_node_pos = 0;
         index_to_node[node_stack_top].preorder_ = 0;
-        index_to_node[node_stack_top++].n_children_ = dfuds_->get_num_children(0, 0, level_to_num_children[root_depth_]);
+        index_to_node[node_stack_top].n_children_ = dfuds_->get_num_children(0, 0, level_to_num_children[root_depth_]);
+        node_stack_top++;
+        node_to_depth[0] = root_depth_;
 
-        depth = root_depth_ + 1;
+        preorder_t depth = root_depth_ + 1;
         preorder_t next_frontier_preorder;
 
         if (num_frontiers_ == 0 || current_frontier >= num_frontiers_)
@@ -87,58 +84,58 @@ public:
         else
             next_frontier_preorder = get_preorder(current_frontier);
 
-        for (preorder_t i = 1; i < num_nodes_; ++i) {
+        for (preorder_t i = 1; i < num_nodes_; i++) {
 
-            current_node_pos += level_to_num_children[root_depth_];
+            current_node_pos += level_to_num_children[depth];
             node_to_depth[i] = depth;
             if (depth == max_depth_ - 1){
 
                 index_to_primary[i] = dfuds_->get_num_children(i, current_node_pos, level_to_num_children[depth]);
             }
-
-            // If meet a frontier node
             if (i == next_frontier_preorder) {
-                ++current_frontier;
+
+                current_frontier++;
                 if (num_frontiers_ == 0 || current_frontier >= num_frontiers_)
                     next_frontier_preorder = -1;
                 else
                     next_frontier_preorder = get_preorder(current_frontier);
-                --index_to_node[node_stack_top - 1].n_children_;
+                index_to_node[node_stack_top - 1].n_children_--;
             }
-
             //  Start searching for its children
             else if (depth < max_depth_ - 1) {
+
                 index_to_node[node_stack_top].preorder_ = i;
                 index_to_node[node_stack_top++].n_children_ = dfuds_->get_num_children(i, current_node_pos, level_to_num_children[depth]);
                 depth++;
             }
-
             //  Reached the maxDepth level
             else{
-                --index_to_node[node_stack_top - 1].n_children_;
+                index_to_node[node_stack_top - 1].n_children_--;
             }
                 
             while (node_stack_top > 0 && index_to_node[node_stack_top - 1].n_children_ == 0) {
-                index_to_subtree[subtree_stack_top].preorder_ = index_to_node[node_stack_top - 1].preorder_;
 
-                index_to_subtree[subtree_stack_top++].subtree_size_ = i - index_to_node[node_stack_top - 1].preorder_ + 1;
-                --node_stack_top;
-                index_to_depth[depth_stack_top++] = --depth;
+                index_to_subtree[subtree_stack_top].preorder_ = index_to_node[node_stack_top - 1].preorder_;
+                index_to_subtree[subtree_stack_top].subtree_size_ = i - index_to_node[node_stack_top - 1].preorder_ + 1;
+                subtree_stack_top++;
+                node_stack_top--;
+                index_to_depth[depth_stack_top] = depth;
+                depth_stack_top++;
+                depth--;
                 if (node_stack_top == 0)
                     break;
                 else
                     index_to_node[node_stack_top - 1].n_children_--;
             }
         }
-
-        // Now I have to go through the index_to_subtree vector to choose the proper subtree
+        // Go through the index_to_subtree vector to choose the proper subtree
         preorder_t min_node = 0;
         preorder_t min = (preorder_t) -1;
         preorder_t min_index = 0;
         preorder_t diff = (preorder_t) -1;
         auto leftmost = (preorder_t) -1;
 
-        for (preorder_t i = 0; i < subtree_stack_top; ++i) {
+        for (preorder_t i = 0; i < subtree_stack_top; i++) {
             auto subtree_size_at_i = (preorder_t) index_to_subtree[i].subtree_size_;
             if (index_to_subtree[i].preorder_ != 0 && num_nodes_ <= subtree_size_at_i * 4 && subtree_size_at_i * 4 <= 3 * num_nodes_ &&
                 index_to_subtree[i].preorder_ < leftmost) {
@@ -157,7 +154,7 @@ public:
             }
             min_index = 1;
 
-            for (preorder_t i = 1; i < subtree_stack_top; ++i) {
+            for (preorder_t i = 1; i < subtree_stack_top; i++) {
                 if (num_nodes_ > 2 * index_to_subtree[i].subtree_size_) {
                     diff = num_nodes_ - 2 * index_to_subtree[i].subtree_size_;
                 } else {
@@ -175,12 +172,13 @@ public:
         
         for (preorder_t i = 0; i < min_node; i++ ){
             selected_primary_index += index_to_primary[i];
-            selected_node_pos += level_to_num_children[node_to_depth[i]];
+        }
+        for (preorder_t i = 1; i < min_node; i++){
+            selected_node_pos += level_to_num_children[node_to_depth[i - 1]];
         }
         for (preorder_t i = min_node; i < min_node + subtree_size; i ++){
             num_primary += index_to_primary[i];
         }
-
 
         return min_node;
     }
@@ -323,9 +321,9 @@ public:
             preorder_t selected_node_pos;
             preorder_t num_primary = 0, selected_primary_index = 0;
             preorder_t index_to_primary[4096] = {0};
-            preorder_t index_to_depth[4096] = {0};
+            preorder_t node_to_depth[4096] = {0};
 
-            node_t selected_node = select_subtree(subtree_size, selected_node_depth, selected_node_pos, num_primary, selected_primary_index, index_to_primary, index_to_depth);
+            node_t selected_node = select_subtree(subtree_size, selected_node_depth, selected_node_pos, num_primary, selected_primary_index, index_to_primary, node_to_depth);
 
             node_t orig_selected_node = selected_node;
             preorder_t orig_selected_node_pos = selected_node_pos;
@@ -391,8 +389,8 @@ public:
                 dfuds_->copy_node_cod(new_dfuds, selected_node, selected_node_pos, dest_node, dest_node_pos, level_to_num_children[index_to_depth[selected_node]]);
 
                 dest_node += 1;
-                dest_node_pos += level_to_num_children[index_to_depth[selected_node]];
-                selected_node_pos += level_to_num_children[index_to_depth[selected_node]];
+                dest_node_pos += level_to_num_children[node_to_depth[selected_node]];
+                selected_node_pos += level_to_num_children[node_to_depth[selected_node]];
                 selected_node += 1;
                 n_nodes_copied += 1;
             }
@@ -472,7 +470,7 @@ public:
             }
 
             else if (selected_node >= num_nodes_){
-                dfuds_->bulk_clear_node(orig_selected_node, orig_selected_node_pos, selected_node - 1, selected_node_pos - 1);
+                dfuds_->bulk_clear_node(orig_selected_node, orig_selected_node_pos, selected_node, selected_node_pos);
             }
 
             if (subtree_size > max_depth_) {
@@ -620,9 +618,10 @@ public:
 
     // Traverse the current TreeBlock, going into frontier nodes as needed
     // Until it cannot traverse further and calls insertion
-    void insert_remaining(data_point *leaf_point, level_t length, level_t level, n_leaves_t primary_key, node_n_t node_pos) {
+    void insert_remaining(data_point *leaf_point, level_t level, n_leaves_t primary_key) {
        
         mutex.lock();
+        node_n_t node_pos = 0;
         node_t current_node = 0;
         preorder_t current_node_pos = 0;
         preorder_t current_frontier = 0;
@@ -630,7 +629,7 @@ public:
 
         node_t temp_node = 0;
 
-        while (level < length) {
+        while (level < max_depth_) {
             tree_block *current_treeblock = this;
 
             temp_node = child(current_treeblock, current_node, node_pos,
@@ -654,7 +653,7 @@ public:
                 
                 tree_block *next_block = get_pointer(current_frontier);
                 mutex.unlock();
-                next_block->insert_remaining(leaf_point, length, level + 1, primary_key, 0);
+                next_block->insert_remaining(leaf_point, level + 1, primary_key);
                 return;
             }
             level++;
@@ -668,7 +667,7 @@ public:
 
     // This function is used for testing.
     // It differs from above as it only returns True or False.
-    bool walk_tree_block(data_point *leaf_point, level_t length, level_t level) {
+    bool walk_tree_block(data_point *leaf_point, level_t level) {
         preorder_t current_frontier = 0;
         preorder_t current_primary = 0;
         node_t current_node = 0;
@@ -677,7 +676,7 @@ public:
 
         mutex.lock();
 
-        while (level < length) {
+        while (level < max_depth_) {
             symbol_t current_symbol = leaf_point->leaf_to_symbol(level);
 
             tree_block *current_treeblock = this;
@@ -694,7 +693,7 @@ public:
                 current_node == get_preorder(current_frontier)) {
                 tree_block *next_block = get_pointer(current_frontier);
                 mutex.unlock();
-                return next_block->walk_tree_block(leaf_point, length, level + 1);
+                return next_block->walk_tree_block(leaf_point, level + 1);
             }
             level++;
         }
@@ -1115,7 +1114,7 @@ public:
                 new_current_node = current_block->child(new_current_block, current_node, new_current_node_pos, current_symbol, level,
                                                         new_current_frontier, new_current_primary);
 
-                start_range->update_symbol(end_range, current_symbol, level, max_depth_); // NOT HERE
+                start_range->update_symbol(end_range, current_symbol, level); // NOT HERE
 
                 if (new_current_block != current_block){
 

@@ -90,7 +90,7 @@ void insert_for_node_path(point_array *found_points, level_t max_depth, level_t 
         (*all_points).push_back((*leaf_point));
 
         start = GetTimestamp();
-        mdtrie->insert_trie(leaf_point, max_depth, n_points);
+        mdtrie->insert_trie(leaf_point, n_points);
         diff += GetTimestamp() - start;
         n_points ++;
     }

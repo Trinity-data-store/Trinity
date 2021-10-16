@@ -35,8 +35,8 @@ void test_random_data(n_leaves_t n_points, level_t max_depth, level_t trie_depth
         for (dimension_t i = 0; i < DIMENSION; i++){
             leaf_point->set_coordinate(i, rand() % range);
         }
-        mdtrie->insert_trie(leaf_point, max_depth, itr - 1);
-        if (!mdtrie->check(leaf_point, max_depth)){
+        mdtrie->insert_trie(leaf_point, itr - 1);
+        if (!mdtrie->check(leaf_point)){
             fprintf(stderr, "Error insertion!\n");
         }
     }
@@ -100,7 +100,7 @@ void test_real_data(level_t max_depth, level_t trie_depth, preorder_t max_tree_n
             }
         }
         start = GetTimestamp();
-        mdtrie->insert_trie(leaf_point, max_depth, n_points);
+        mdtrie->insert_trie(leaf_point, n_points);
         diff += GetTimestamp() - start;
         n_points ++;
     }
@@ -122,7 +122,7 @@ void test_real_data(level_t max_depth, level_t trie_depth, preorder_t max_tree_n
             leaf_point->set_coordinate(i, rand() % range);
         }
         start = GetTimestamp();
-        if(!mdtrie->check(leaf_point, max_depth)){
+        if(!mdtrie->check(leaf_point)){
             diff += GetTimestamp() - start;
             n_nonexistent += 1;
         }
@@ -152,9 +152,9 @@ void test_real_data(level_t max_depth, level_t trie_depth, preorder_t max_tree_n
             leaf_point->set_coordinate(i, strtoul(token, &ptr, 10));
         }
         start = GetTimestamp();
-        if (!mdtrie->check(leaf_point, max_depth)){
+        if (!mdtrie->check(leaf_point)){
             raise(SIGINT);
-            mdtrie->check(leaf_point, max_depth);
+            mdtrie->check(leaf_point);
             fprintf(stderr, "error!\n");
         }
         diff += GetTimestamp() - start;
@@ -215,7 +215,7 @@ void test_insert_data(level_t max_depth, level_t trie_depth, preorder_t max_tree
             }
         }
         start = GetTimestamp();
-        mdtrie->insert_trie(leaf_point, max_depth, n_points);
+        mdtrie->insert_trie(leaf_point, n_points);
         diff += GetTimestamp() - start;
         n_points ++;
     }
@@ -295,7 +295,7 @@ void test_mdtrie_size(level_t max_depth, level_t trie_depth, preorder_t max_tree
             leaf_point->set_coordinate(i, strtoul(token, &ptr, 10));
         }
         start = GetTimestamp();
-        mdtrie->insert_trie(leaf_point, max_depth, n_points);
+        mdtrie->insert_trie(leaf_point, n_points);
         diff += GetTimestamp() - start;
         n_points ++;
     }
@@ -354,7 +354,7 @@ void cdf_insert(level_t max_depth, level_t trie_depth, preorder_t max_tree_node)
         }
         n_points ++;
         start = GetTimestamp();
-        mdtrie->insert_trie(leaf_point, max_depth, n_points);
+        mdtrie->insert_trie(leaf_point, n_points);
         // latency += GetTimestamp() - start;
         latency = GetTimestamp() - start;
 

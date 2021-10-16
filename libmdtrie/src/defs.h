@@ -63,24 +63,16 @@ static TimeStamp GetTimestamp() {
 
 
 n_leaves_t current_leaves_inserted = 0;
-// n_leaves_t total_stored = 0;
-// std::vector<uint64_t> p_key_to_treeblock;
-// std::unordered_map<n_leaves_t, uint64_t> p_key_to_count;
 uint64_t max_count = 0;
 
 TimeStamp vector_time = 0;
 uint64_t vect_opt_count = 0;
 std::shared_mutex mutex_p_key;
-// n_leaves_t current_primary_key = 0;
 
-// n_leaves_t total_points_count = 14583357;
 n_leaves_t total_points_count = 14252681;
 
 
 bitmap::CompactPtrVector p_key_to_treeblock_compact(total_points_count);
-
-// std::vector<uint64_t> p_key_to_treeblock(total_points_count, 0);
-// std::unordered_map<n_leaves_t, uint64_t> p_key_to_treeblock;
 
 uint64_t trie_size = 0;
 uint64_t vector_size = 0;
@@ -93,9 +85,6 @@ class data_point;
 
 std::map<uint64_t, uint64_t> node_children_to_occurrences;
 bool is_osm = false;
-// std::map<uint64_t, uint64_t> primary_key_count_to_occurrences;
-// std::vector<data_point<2>> all_stored_points;
-
 
 uint64_t thrift_vector_time = 0;
 uint64_t thrift_inner_function_time = 0;
@@ -105,8 +94,9 @@ uint64_t update_range_latency = 0;
 uint64_t child_latency = 0;
 
 std::vector<symbol_t> level_to_num_children;
+std::vector<symbol_t> dimension_to_num_bits;
 
-void create_level_to_num_children_map(std::vector<level_t> dimension_bits, level_t max_level){
+void create_level_to_num_children(std::vector<level_t> dimension_bits, level_t max_level){
 
     dimension_t num_dimensions = dimension_bits.size();
 

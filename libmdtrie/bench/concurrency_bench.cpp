@@ -35,7 +35,7 @@ void test_random_insert(md_trie *mdtrie){
             leaf_point->set_coordinate(i, coordinate);
         }
         
-        mdtrie->insert_trie(leaf_point, max_depth, itr - 1);
+        mdtrie->insert_trie(leaf_point, itr - 1);
     }
     return;    
 }
@@ -53,7 +53,7 @@ void test_random_read(md_trie *mdtrie){
             leaf_point->set_coordinate(i, coordinate);
         }
         
-        mdtrie->check(leaf_point, max_depth);
+        mdtrie->check(leaf_point);
     }
     return;    
 }
@@ -156,7 +156,7 @@ void insert_mdtrie_from_vector(md_trie *mdtrie, uint8_t thread_num, uint8_t tota
     {
         data_point *leaf_point = vect[count];
         // TimeStamp start = GetTimestamp();
-        mdtrie->insert_trie(leaf_point, max_depth, thread_num);
+        mdtrie->insert_trie(leaf_point, thread_num);
         
         // total_read_latency += GetTimestamp() - start;
         // total_count ++;
@@ -211,7 +211,7 @@ void random_read_mdtrie_inserted_from_vector(md_trie *mdtrie, uint8_t total_thre
 
         data_point *leaf_point = (*vect)[rand_generator->rand_uint64(0, n_lines - 1)];
         // TimeStamp start = GetTimestamp();
-        if (!mdtrie->check(leaf_point, max_depth)){
+        if (!mdtrie->check(leaf_point)){
             fprintf(stderr, "error! not found\n");
         }
         // total_read_latency += GetTimestamp() - start;
@@ -228,7 +228,7 @@ void read_mdtrie_inserted_from_vector(md_trie *mdtrie, uint8_t thread_num, uint8
 
         data_point *leaf_point = (*vect)[count];
         // TimeStamp start = GetTimestamp();
-        if (!mdtrie->check(leaf_point, max_depth)){
+        if (!mdtrie->check(leaf_point)){
             fprintf(stderr, "error! not found\n");
         }
         // total_read_latency += GetTimestamp() - start;
@@ -271,7 +271,7 @@ void test_read_concurrency(){
             }
         }
         vect.push_back(leaf_point);
-        mdtrie->insert_trie(leaf_point, max_depth, n_points);
+        mdtrie->insert_trie(leaf_point, n_points);
         n_points ++;
     }
     if (n_points != n_lines){
@@ -396,7 +396,7 @@ void test_range_search(){
                 }
             }
         }
-        mdtrie->insert_trie(leaf_point, max_depth, n_points);
+        mdtrie->insert_trie(leaf_point, n_points);
         n_points ++;
     }
     bar1.finish();

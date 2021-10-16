@@ -5,6 +5,8 @@
 #include <cstdlib>
 #include <cstring>
 #include "compressed_bitmap.h"
+#include <bit>
+#include <bitset>
 
 class data_point {
 
@@ -48,6 +50,7 @@ public:
         return primary_key_;
     }
 
+    // Coordinates are pre-reversed!
     inline symbol_t leaf_to_symbol(level_t level) {
 
         symbol_t result = 0;
@@ -61,32 +64,30 @@ public:
         return result;
     }    
 
-    inline void update_symbol(data_point *end_range, symbol_t current_morton, level_t level, level_t max_depth) {
-
-        level_t offset = max_depth - level - 1U;    
-        for (size_t j = 0; j < level_to_num_children[level]; j++) {
+    inline void update_symbol(data_point *end_range, symbol_t current_symbol, level_t level) {
+        
+    
+        dimension_t dimension = coordinates_.size();
+        for (size_t j = 0; j < dimension; j++) {
             point_t start_coordinate = coordinates_[j];
             point_t end_coordinate = end_range->coordinates_[j];
-            dimension_t morton_offset = level_to_num_children[level] - j - 1U;
 
-            bool start_bit = GETBIT(start_coordinate, offset); 
-            bool end_bit = GETBIT(end_coordinate, offset);
-            bool morton_bit = GETBIT(current_morton, morton_offset);
+            bool start_bit = GETBIT(start_coordinate, level); 
+            bool end_bit = GETBIT(end_coordinate, level);
+            bool symbol_bit = GETBIT(current_symbol, j);
             
             // Bring the start of the search range to second half
-            if (morton_bit && !start_bit) {
-                start_coordinate = start_coordinate & compressed_bitmap::low_bits_unset[offset];
-                SETBIT(start_coordinate, offset);
+            if (symbol_bit && !start_bit) {
+                point_t mask = (start_coordinate >> (level + 1)) << (level + 1);
+                start_coordinate -= mask;
+                SETBIT(start_coordinate, level);
             } 
             // Bring the end of the search range to first half
-            if (!morton_bit && end_bit) {
-                end_coordinate = end_coordinate | compressed_bitmap::low_bits_set[offset];
-                // In the end, only the start_coordinate is kept as the returned point
-                CLRBIT(end_coordinate, offset);            
+            if (!symbol_bit && end_bit) {
+                point_t mask = ((end_coordinate >> (level + 1)) | compressed_bitmap::low_bits_set[0]) << (level + 1); 
+                end_coordinate = end_coordinate | mask;
+                CLRBIT(end_coordinate, level);            
             }
-            // if (GETBIT(start_coordinate, offset) != GETBIT(end_coordinate, offset)){
-            //     raise(SIGINT);
-            // }
             coordinates_[j] = start_coordinate;
             end_range->coordinates_[j] = end_coordinate;
         }

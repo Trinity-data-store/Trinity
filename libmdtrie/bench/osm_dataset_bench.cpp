@@ -95,22 +95,14 @@ void insert_for_node_path(point_array *found_points, level_t max_depth, level_t 
                 }
             }            
         }
-        // raise(SIGINT);
+
         (*all_points).push_back((*leaf_point));
 
         start = GetTimestamp();
-        // if (leaf_point->get_coordinate(0) == 2 && leaf_point->get_coordinate(1) == 22 && leaf_point->get_coordinate(2) == 13 && leaf_point->get_coordinate(3) == 25 && leaf_point->get_coordinate(4) == 5 && leaf_point->get_coordinate(5) == 2021 && leaf_point->get_coordinate(6) == 247084021 && leaf_point->get_coordinate(7) == 603852889)
-        //     raise(SIGINT);
 
-        // if (n_points == 1050914)
-        //     raise(SIGINT);
-
-        mdtrie->insert_trie(leaf_point, max_depth, n_points);
+        mdtrie->insert_trie(leaf_point, n_points);
         diff += GetTimestamp() - start;
 
-        // if (!mdtrie->check(leaf_point, max_depth))
-        //     raise(SIGINT);
-        
         n_points ++;
     }
 

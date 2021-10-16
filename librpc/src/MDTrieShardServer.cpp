@@ -58,7 +58,7 @@ public:
     thrift_vector_time += GetTimestamp() - start;
 
     start = GetTimestamp();
-    bool result = mdtrie_->check(leaf_point, max_depth);
+    bool result = mdtrie_->check(leaf_point);
     thrift_inner_function_time += GetTimestamp() - start;
 
     return result;
@@ -76,7 +76,7 @@ public:
     thrift_vector_time += GetTimestamp() - start;
 
     start = GetTimestamp();
-    mdtrie_->insert_trie(leaf_point, max_depth, primary_key);
+    mdtrie_->insert_trie(leaf_point, primary_key);
 
     thrift_inner_function_time += GetTimestamp() - start;
 

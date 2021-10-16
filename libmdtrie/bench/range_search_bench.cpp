@@ -86,7 +86,7 @@ void insert_for_node_path(point_array *found_points, level_t max_depth, level_t 
         (*all_points).push_back((*leaf_point));
 
         start = GetTimestamp();
-        mdtrie->insert_trie(leaf_point, max_depth, n_points);
+        mdtrie->insert_trie(leaf_point, n_points);
         diff += GetTimestamp() - start;
         n_points ++;
 
@@ -244,7 +244,7 @@ void test_real_data(level_t max_depth, level_t trie_depth, preorder_t max_tree_n
                 }
             }
         }
-        mdtrie->insert_trie(leaf_point, max_depth, n_points);
+        mdtrie->insert_trie(leaf_point, n_points);
         n_points ++;
     }
     bar.finish();
@@ -288,7 +288,7 @@ void test_real_data(level_t max_depth, level_t trie_depth, preorder_t max_tree_n
 
 
 
-void range_search_insert(md_trie *mdtrie, level_t max_depth, uint64_t * max, uint64_t *min){
+void range_search_insert(md_trie *mdtrie, uint64_t * max, uint64_t *min){
     auto *leaf_point = new data_point();
 
     char *line = nullptr;
@@ -343,7 +343,7 @@ void range_search_insert(md_trie *mdtrie, level_t max_depth, uint64_t * max, uin
                 }
             }
         }
-        mdtrie->insert_trie(leaf_point, max_depth, n_points);
+        mdtrie->insert_trie(leaf_point, n_points);
         n_points ++;
     }
     bar.finish();
@@ -355,7 +355,7 @@ void test_range_only(level_t max_depth, level_t trie_depth, preorder_t max_tree_
     uint64_t min[DIMENSION];
 
     auto *mdtrie = new md_trie(max_depth, trie_depth, max_tree_node);
-    range_search_insert(mdtrie, max_depth, max, min);
+    range_search_insert(mdtrie, max, min);
 
     auto *start_range = new data_point();
     auto *end_range = new data_point();
@@ -402,7 +402,7 @@ bool test_random_range_search(n_leaves_t n_points, level_t max_depth, level_t tr
                 }
             }
         }
-        mdtrie->insert_trie(leaf_point, max_depth, itr - 1);
+        mdtrie->insert_trie(leaf_point, itr - 1);
     }
     auto *start_range = new data_point();
     auto *end_range = new data_point();
@@ -487,7 +487,7 @@ void test_search_one_dimension(level_t max_depth, level_t trie_depth, preorder_t
                 }
             }
         }
-        mdtrie->insert_trie(leaf_point, max_depth, n_points);
+        mdtrie->insert_trie(leaf_point, n_points);
         n_points ++;
     }
     bar.finish();

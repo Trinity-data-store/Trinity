@@ -39,7 +39,7 @@ bool test_range_search(n_leaves_t n_points, level_t max_depth, level_t trie_dept
                 }
             }
         }
-        mdtrie->insert_trie(leaf_point, max_depth, itr - 1);
+        mdtrie->insert_trie(leaf_point, itr - 1);
     }
     auto *start_range = new data_point();
     auto *end_range = new data_point();
@@ -54,7 +54,7 @@ bool test_range_search(n_leaves_t n_points, level_t max_depth, level_t trie_dept
 
         for (n_leaves_t i = 0; i < found_points->size(); i++) {
             data_point *leaf = found_points->at(i);
-            if (!mdtrie->check(leaf, max_depth)) {
+            if (!mdtrie->check(leaf)) {
                 return false;
             }
         }
@@ -83,11 +83,11 @@ bool test_range_search(n_leaves_t n_points, level_t max_depth, level_t trie_dept
             }
             if (!found) {
                 checked_points++;
-                if (mdtrie->check(leaf_check, max_depth)){
+                if (mdtrie->check(leaf_check)){
                     return false;
                 }
             } else {
-                if (!mdtrie->check(leaf_check, max_depth)){
+                if (!mdtrie->check(leaf_check)){
                     return false;
                 }
             }
@@ -130,7 +130,7 @@ bool test_range_search_exact(n_leaves_t n_points, level_t max_depth, level_t tri
                 }
             }
         }
-        mdtrie->insert_trie(leaf_point, max_depth, itr - 1);
+        mdtrie->insert_trie(leaf_point, itr - 1);
     }
     auto *start_range = new data_point();
     auto *end_range = new data_point();
@@ -165,11 +165,11 @@ bool test_range_search_exact(n_leaves_t n_points, level_t max_depth, level_t tri
                             break;
                     }
                     if (!found) {
-                        if (mdtrie->check(leaf_check, max_depth)){
+                        if (mdtrie->check(leaf_check)){
                             return false;
                         }
                     } else {
-                        if (!mdtrie->check(leaf_check, max_depth)){
+                        if (!mdtrie->check(leaf_check)){
                             return false;
                         }
                     }

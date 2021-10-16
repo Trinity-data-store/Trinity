@@ -28,7 +28,7 @@ void test_random_insert(md_trie *mdtrie){
             leaf_point->set_coordinate(i, coordinate);
         }
         
-        mdtrie->insert_trie(leaf_point, max_depth, itr - 1);
+        mdtrie->insert_trie(leaf_point, itr - 1);
     }
     return;    
 }
@@ -46,7 +46,7 @@ void test_random_read(md_trie *mdtrie){
             leaf_point->set_coordinate(i, coordinate);
         }
         
-        mdtrie->check(leaf_point, max_depth);
+        mdtrie->check(leaf_point);
     }
     return;    
 }
@@ -122,7 +122,7 @@ void test_osm_insert(md_trie *mdtrie, std::vector<std::vector <int32_t>> *data_v
     for (uint8_t i = 0; i < DIMENSION; i++)
       leaf_point->set_coordinate(i, point[i]);
     
-    mdtrie->insert_trie(leaf_point, max_depth, i);
+    mdtrie->insert_trie(leaf_point, i);
   }      
 
 }
@@ -155,9 +155,9 @@ TEST_CASE("Test OSM datasets", "[trie]") {
         for (uint8_t j = 0; j < DIMENSION; j++)
             leaf_point->set_coordinate(j, point[j]);
 
-        if (!mdtrie->check(leaf_point, max_depth)){
+        if (!mdtrie->check(leaf_point)){
             raise(SIGINT);
-            mdtrie->check(leaf_point, max_depth);
+            mdtrie->check(leaf_point);
             std::cout << "index: " << i << " points not found!" << std::endl;
         }        
     }
