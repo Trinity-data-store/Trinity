@@ -15,9 +15,9 @@ n_leaves_t n_points = 500000;
 uint8_t max_num_threads = 18;
 const uint32_t read_number_count = 10000000;
 
-void test_random_insert(md_trie<DIMENSION, NUM_BRANCHES> *mdtrie){
+void test_random_insert(md_trie *mdtrie){
 
-    auto *leaf_point = new data_point<DIMENSION>();
+    auto *leaf_point = new data_point();
     symbol_t range = pow(2, max_depth);
     auto *rand_generator = new utils::rand_utils();
 
@@ -33,9 +33,9 @@ void test_random_insert(md_trie<DIMENSION, NUM_BRANCHES> *mdtrie){
     return;    
 }
 
-void test_random_read(md_trie<DIMENSION, NUM_BRANCHES> *mdtrie){
+void test_random_read(md_trie *mdtrie){
 
-    auto *leaf_point = new data_point<DIMENSION>();
+    auto *leaf_point = new data_point();
     symbol_t range = pow(2, max_depth);
     auto *rand_generator = new utils::rand_utils();
 
@@ -105,7 +105,7 @@ std::vector<std::vector <int32_t>> *get_data_vector(){
   return data_vector;
 }
 
-void test_osm_insert(md_trie<DIMENSION, NUM_BRANCHES> *mdtrie, std::vector<std::vector <int32_t>> *data_vector, int total_partition, int partition_index)
+void test_osm_insert(md_trie *mdtrie, std::vector<std::vector <int32_t>> *data_vector, int total_partition, int partition_index)
 {
 
   uint32_t start_pos = data_vector->size() / total_partition * partition_index;
@@ -117,7 +117,7 @@ void test_osm_insert(md_trie<DIMENSION, NUM_BRANCHES> *mdtrie, std::vector<std::
   for (uint32_t i = start_pos; i <= end_pos; i++){
     // insertion_calls ++;
     std::vector <int32_t> point = (* data_vector)[i];
-    auto *leaf_point = new data_point<DIMENSION>();
+    auto *leaf_point = new data_point();
 
     for (uint8_t i = 0; i < DIMENSION; i++)
       leaf_point->set_coordinate(i, point[i]);
@@ -129,7 +129,7 @@ void test_osm_insert(md_trie<DIMENSION, NUM_BRANCHES> *mdtrie, std::vector<std::
 
 TEST_CASE("Test OSM datasets", "[trie]") {
 
-    auto *mdtrie = new md_trie<DIMENSION, NUM_BRANCHES>(max_depth, trie_depth, max_tree_node);
+    auto *mdtrie = new md_trie(max_depth, trie_depth, max_tree_node);
 
     unsigned int max_num_threads = std::thread::hardware_concurrency();
 
@@ -150,7 +150,7 @@ TEST_CASE("Test OSM datasets", "[trie]") {
 
     for (int i = 0; i < data_vector_size; i++){
         std::vector <int32_t> point = (* data_vector)[i];
-        auto *leaf_point = new data_point<DIMENSION>();
+        auto *leaf_point = new data_point();
 
         for (uint8_t j = 0; j < DIMENSION; j++)
             leaf_point->set_coordinate(j, point[j]);
@@ -170,7 +170,7 @@ TEST_CASE("Test random insert and reads", "[trie]") {
         See if there is error or deadlocks
     */
 
-    auto *mdtrie = new md_trie<DIMENSION, NUM_BRANCHES>(max_depth, trie_depth, max_tree_node);
+    auto *mdtrie = new md_trie(max_depth, trie_depth, max_tree_node);
 
     unsigned int max_num_threads = std::thread::hardware_concurrency();
 

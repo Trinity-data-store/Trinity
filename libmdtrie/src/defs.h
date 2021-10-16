@@ -34,7 +34,6 @@ extern uint64_t v2_storage_save_neg;
 extern uint64_t single_node_count;
 extern uint64_t total_number_nodes; 
 
-template<dimension_t DIMENSION, symbol_t NUM_BRANCHES>
 class tree_block;
 
 // node_info and subtree info are used to obtain subtree size when splitting the treeblock
@@ -48,10 +47,9 @@ struct subtree_info {
     preorder_t subtree_size_ = 0;
 };
 
-template<dimension_t DIMENSION>
 struct frontier_node {
     preorder_t preorder_;
-    tree_block<DIMENSION, (symbol_t)pow(2, (double)DIMENSION)> *pointer_;
+    tree_block *pointer_;
 };
 
 typedef unsigned long long int TimeStamp;
@@ -91,7 +89,6 @@ uint64_t treeblock_nodes_size = 0;
 uint64_t total_leaf_number = 0;
 
 TimeStamp primary_time = 0;
-template<dimension_t DIMENSION>
 class data_point;
 
 std::map<uint64_t, uint64_t> node_children_to_occurrences;

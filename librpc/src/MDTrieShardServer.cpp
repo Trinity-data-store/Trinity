@@ -38,7 +38,7 @@ class MDTrieHandler : public MDTrieShardIf {
 public:
 
   MDTrieHandler(){
-    mdtrie_ = new md_trie<DIMENSION, NUM_BRANCHES>(max_depth, trie_depth, max_tree_node);
+    mdtrie_ = new md_trie(max_depth, trie_depth, max_tree_node);
   };
 
   void ping() { cout << "ping()" << endl; }
@@ -51,7 +51,7 @@ public:
   bool check(const std::vector<int32_t> & point){
 
     TimeStamp start = GetTimestamp();
-    auto *leaf_point = new data_point<DIMENSION>();
+    auto *leaf_point = new data_point();
 
     for (uint8_t i = 0; i < DIMENSION; i++)
       leaf_point->set_coordinate(i, point[i]);
@@ -68,7 +68,7 @@ public:
 
     inserted_points_ ++;
     TimeStamp start = GetTimestamp();
-    auto *leaf_point = new data_point<DIMENSION>();
+    auto *leaf_point = new data_point();
 
     for (uint8_t i = 0; i < DIMENSION; i++)
       leaf_point->set_coordinate(i, point[i]);
@@ -87,17 +87,17 @@ public:
     
     TimeStamp start;
     start = GetTimestamp();
-    auto *start_range_point = new data_point<DIMENSION>();
+    auto *start_range_point = new data_point();
 
     for (uint8_t i = 0; i < DIMENSION; i++)
       start_range_point->set_coordinate(i, start_range[i]);    
 
-    auto *end_range_point = new data_point<DIMENSION>();
+    auto *end_range_point = new data_point();
 
     for (uint8_t i = 0; i < DIMENSION; i++)
       end_range_point->set_coordinate(i, end_range[i]);     
 
-    auto *found_points = new point_array<DIMENSION>();
+    auto *found_points = new point_array();
     thrift_vector_time += GetTimestamp() - start;
 
     start = GetTimestamp();
@@ -122,7 +122,7 @@ public:
 
     TimeStamp start = GetTimestamp();
     symbol_t *node_path_from_primary = (symbol_t *)malloc((max_depth + 1) * sizeof(symbol_t));
-    tree_block<DIMENSION, NUM_BRANCHES> *t_ptr = (tree_block<DIMENSION, NUM_BRANCHES> *) (p_key_to_treeblock_compact.At(primary_key));
+    tree_block *t_ptr = (tree_block *) (p_key_to_treeblock_compact.At(primary_key));
 
     symbol_t parent_symbol_from_primary = t_ptr->get_node_path_primary_key(primary_key, node_path_from_primary);
     node_path_from_primary[max_depth - 1] = parent_symbol_from_primary;
@@ -160,7 +160,7 @@ public:
 
 protected:
 
-  md_trie<DIMENSION, NUM_BRANCHES> *mdtrie_; 
+  md_trie *mdtrie_; 
   uint64_t inserted_points_ = 0;
 };
 

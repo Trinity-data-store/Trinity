@@ -324,6 +324,17 @@ class compressed_bitmap {
 
   }
 
+  inline void shift_forward(preorder_t from_node, pos_type from_node_pos, preorder_t to_node, pos_type to_node_pos)
+
+  {
+    BulkCopy_forward(from_node_pos, to_node_pos, data_size_ - from_node_pos, true);
+    BulkCopy_forward(from_node, to_node, flag_size_ - from_node, false);
+    pos_type shifted_amount = from_node_pos - to_node_pos;
+    ClearWidth(data_size_ - shifted_amount, shifted_amount, true);
+    ClearWidth(flag_size_ - (from_node - to_node), (from_node - to_node), false);
+
+  }
+
   inline bool is_collapse(preorder_t node){
     return !GETBITVAL(flag_, node);
   }
@@ -342,8 +353,9 @@ class compressed_bitmap {
     }
   }
 
-  inline preorder_t get_n_children_from_node_pos(node_t node, pos_type node_pos, width_type bit_width)
+  inline preorder_t get_num_children(node_t node, pos_type node_pos, width_type dimension)
   {
+    width_type bit_width = 1 << dimension;
     if (is_collapse(node)){
       return 1;
     }
@@ -397,7 +409,7 @@ class compressed_bitmap {
     return return_symbol + nthset(next_block, k);
   }
 
-  inline symbol_t next_symbol_with_node_pos(symbol_t symbol, preorder_t node, symbol_t end_symbol_range, pos_type node_pos, width_type dimension){
+  inline symbol_t next_symbol(symbol_t symbol, preorder_t node, symbol_t end_symbol_range, pos_type node_pos, width_type dimension){
 
     if (is_collapse(node)){
       symbol_t only_symbol = GetValPos(node_pos, dimension, true);
@@ -419,11 +431,41 @@ class compressed_bitmap {
     }
     else {
         if (over_64){
-            return next_symbol_with_node_pos(symbol + limit, node, end_symbol_range, node_pos);
+            return next_symbol(symbol + limit, node, end_symbol_range, node_pos, dimension);
         }
         return end_symbol_range + 1;
     }
 
+  }
+
+  inline void shift_backward_to_uncollapse(preorder_t from_node, pos_type from_node_pos, width_type dimension)
+  {
+    if (!is_collapse(from_node)){
+      return;
+    }
+    size_t orig_data_size = data_size_;
+    width_type shift_amount = (1 << dimension) - dimension;
+    increase_bits(shift_amount, true);  
+
+    BulkCopy_backward(orig_data_size, orig_data_size + shift_amount,  orig_data_size - from_node_pos, true);
+
+    ClearWidth(from_node_pos, 1 << dimension, true);
+    SETBITVAL(flag_, from_node);
+  }
+
+  inline void shift_forward_to_collapse(preorder_t from_node, pos_type from_node_pos, width_type dimension)
+  {
+    if (is_collapse(from_node)){
+      return;
+    }
+    width_type shift_amount = (1 << dimension) - dimension;
+
+    pos_type from_node_next_pos = from_node_pos + (1 << dimension);
+    BulkCopy_forward(from_node_next_pos, from_node_next_pos - shift_amount, data_size_ - from_node_next_pos, true);
+
+    decrease_bits(shift_amount, true);  
+    ClearWidth(from_node_next_pos - dimension, dimension, true);
+    CLRBITVAL(flag_, from_node);
   }
 
   inline void set_symbol(preorder_t node, pos_type node_pos, symbol_t symbol, bool was_empty, width_type dimension){
@@ -435,7 +477,7 @@ class compressed_bitmap {
         if (symbol == only_symbol){
           return;
         }
-        shift_backward_to_uncollapse(node);
+        shift_backward_to_uncollapse(node, node_pos, dimension);
 
         SETBITVAL(data_, node_pos + only_symbol);
         SETBITVAL(data_, node_pos + symbol);
@@ -451,6 +493,41 @@ class compressed_bitmap {
 
   }
 
+  inline void copy_node_cod(compressed_bitmap *to_dfuds, preorder_t from_node, pos_type from_pos, preorder_t to_node, pos_type to_node_pos, width_type dimension) {
+
+    width_type width;
+
+    if (is_collapse(from_node)){
+      if (to_node == 0){
+        to_dfuds->shift_forward_to_collapse(to_node, to_node_pos, dimension);
+        CLRBITVAL(to_dfuds->flag_, to_node);
+      }    
+      width = dimension;
+    }
+    else {
+      width = 1 << dimension;
+      to_dfuds->shift_backward_to_uncollapse(to_node, to_node_pos, dimension);
+      SETBITVAL(to_dfuds->flag_, to_node);
+    }
+    
+    symbol_t visited = 0;
+    while (visited < width) {
+        if (width - visited > 64) {
+            to_dfuds->SetValPos(from_pos + visited, GetValPos(from_pos + visited, 64, true), 64, true);
+            visited += 64;
+        } else {
+            symbol_t left = width - visited;
+            to_dfuds->SetValPos(from_pos + visited, GetValPos(from_pos + visited, left, true), left, true);
+            break;
+        }
+    }    
+  }
+
+  inline void bulk_clear_node(preorder_t start_node, pos_type start_node_pos, preorder_t end_node, preorder_t end_node_pos)
+  {
+    ClearWidth(start_node_pos, end_node_pos - start_node_pos, true);
+    ClearWidth(start_node, end_node + 1 - start_node, false);
+  }
 
   virtual size_type Serialize(std::ostream& out) {
     size_t out_size = 0;

@@ -11,11 +11,11 @@ const int DIMENSION = 6; // <= 8
 const symbol_t NUM_BRANCHES = pow(2, DIMENSION);
 
 
-void insert_for_node_path(point_array<DIMENSION> *found_points, level_t max_depth, level_t trie_depth, preorder_t max_tree_node, std::vector<data_point<DIMENSION>> *all_points){
+void insert_for_node_path(point_array *found_points, level_t max_depth, level_t trie_depth, preorder_t max_tree_node, std::vector<data_point> *all_points){
     // to-do
     
-    auto *mdtrie = new md_trie<DIMENSION, NUM_BRANCHES>(max_depth, trie_depth, max_tree_node);
-    auto *leaf_point = new data_point<DIMENSION>();
+    auto *mdtrie = new md_trie(max_depth, trie_depth, max_tree_node);
+    auto *leaf_point = new data_point(level_to_num_children[0]);
 
     char *line = nullptr;
     size_t len = 0;
@@ -140,8 +140,8 @@ void insert_for_node_path(point_array<DIMENSION> *found_points, level_t max_dept
     // bar2.finish();
 
 
-    auto *start_range = new data_point<DIMENSION>();
-    auto *end_range = new data_point<DIMENSION>();
+    auto *start_range = new data_point(level_to_num_children[0]);
+    auto *end_range = new data_point(level_to_num_children[0]);
     
     // std::vector<int> start_range_vect{ 0,19,7,2015,359921496,543371677 };
     // std::vector<int> end_range_vect{ 12,25,8,2019,1511670284,719557336 };
@@ -181,7 +181,7 @@ void insert_for_node_path(point_array<DIMENSION> *found_points, level_t max_dept
             search_volume *= start_range->get_coordinate(j) - end_range->get_coordinate(j) + 1;
         }
 
-        auto *found_points_temp = new point_array<DIMENSION>();
+        auto *found_points_temp = new point_array();
         start = GetTimestamp();
         mdtrie->range_search_trie(start_range, end_range, mdtrie->root(), 0, found_points_temp);
         diff = GetTimestamp() - start;
@@ -205,7 +205,8 @@ void insert_for_node_path(point_array<DIMENSION> *found_points, level_t max_dept
 
 }
 
-data_point<DIMENSION> * profile_func(tree_block<DIMENSION, NUM_BRANCHES> *parent_treeblock, node_t parent_node, symbol_t *node_path, level_t max_depth, symbol_t parent_symbol){
+data_point *profile_func(tree_block *parent_treeblock, node_t parent_node, symbol_t *node_path, level_t max_depth, symbol_t parent_symbol){
+
     parent_treeblock->get_node_path(parent_node, node_path); 
 
     node_path[max_depth - 1] = parent_symbol;
@@ -214,8 +215,8 @@ data_point<DIMENSION> * profile_func(tree_block<DIMENSION, NUM_BRANCHES> *parent
 }
 
 void test_node_path_only(level_t max_depth, level_t trie_depth, preorder_t max_tree_node){
-    auto *found_points = new point_array<DIMENSION>();
-    auto *all_points = new std::vector<data_point<DIMENSION>>();
+    auto *found_points = new point_array();
+    auto *all_points = new std::vector<data_point>(level_to_num_children[0]);
 
     insert_for_node_path(found_points, max_depth, trie_depth, max_tree_node, all_points);
     // assert(all_points->size() == 14583357);
@@ -223,7 +224,6 @@ void test_node_path_only(level_t max_depth, level_t trie_depth, preorder_t max_t
     //     found_points = insert_for_node_path(max_depth, trie_depth, max_tree_node);
     // }
 
-    TimeStamp diff = 0;
     TimeStamp start;
     n_leaves_t found_points_size = found_points->size();
     TimeStamp diff_primary = 0;
@@ -232,61 +232,28 @@ void test_node_path_only(level_t max_depth, level_t trie_depth, preorder_t max_t
     n_leaves_t checked_points_size = 0;
     for (n_leaves_t i = 0; i < found_points_size; i+= 10){
         checked_points_size++;
+
         bar.progress(i, found_points_size);
         symbol_t *node_path = (symbol_t *)malloc((max_depth + 1) * sizeof(symbol_t));
-        data_point<DIMENSION> *point = found_points->at(i);
-        tree_block<DIMENSION, NUM_BRANCHES> *parent_treeblock = point->get_parent_treeblock();
-        symbol_t parent_symbol = point->get_parent_symbol();
-        node_t parent_node = point->get_parent_node();
-
-        start = GetTimestamp();
-        // parent_treeblock->get_node_path(parent_node, node_path); 
-
-        // node_path[max_depth - 1] = parent_symbol;
-        
-        // auto returned_coordinates = parent_treeblock->node_path_to_coordinates(node_path);
-        auto returned_coordinates = profile_func(parent_treeblock, parent_node, node_path, max_depth, parent_symbol);
-        diff += GetTimestamp() - start;
-
-        for (dimension_t j = 0; j < DIMENSION; j++){
-            if (returned_coordinates->get_coordinate(j) != point->get_coordinate(j)){
-                raise(SIGINT);
-            }
-        }
-
+        data_point *point = found_points->at(i);
 
         n_leaves_t returned_primary_key = point->read_primary();
-        bool found = false;
 
-        data_point<DIMENSION> current_point = (*all_points)[returned_primary_key];
+        data_point current_point = (*all_points)[returned_primary_key];
 
-        for (dimension_t j = 0; j < DIMENSION; j++){
-            if (returned_coordinates->get_coordinate(j) != current_point.get_coordinate(j)){
-                break;
-            }
-            if (j == DIMENSION - 1){
-                found = true;
-            }
-        }
-
-        if (!found){
-            raise(SIGINT);
-        }
 
         // Lookup from primary key
-
         symbol_t *node_path_from_primary = (symbol_t *)malloc((max_depth + 1) * sizeof(symbol_t));
 
         
-        tree_block<DIMENSION, NUM_BRANCHES> *t_ptr = (tree_block<DIMENSION, NUM_BRANCHES> *) (p_key_to_treeblock_compact.At(returned_primary_key));
+        tree_block *t_ptr = (tree_block *) (p_key_to_treeblock_compact.At(returned_primary_key));
         
         start = GetTimestamp();
         symbol_t parent_symbol_from_primary = t_ptr->get_node_path_primary_key(returned_primary_key, node_path_from_primary);
         node_path_from_primary[max_depth - 1] = parent_symbol_from_primary;
 
-        returned_coordinates = t_ptr->node_path_to_coordinates(node_path_from_primary);
+        auto returned_coordinates = t_ptr->node_path_to_coordinates(node_path_from_primary);
 
-        // returned_coordinates = profile_func(t_ptr, returned_primary_key, node_path_from_primary, max_depth);
         diff_primary += GetTimestamp() - start;
 
         for (dimension_t j = 0; j < DIMENSION; j++){

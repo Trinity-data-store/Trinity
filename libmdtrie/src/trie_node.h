@@ -13,18 +13,21 @@ public:
         
         is_leaf_ = is_leaf;
         if (!is_leaf){
-            trie_or_treeblock_ptr_ = &std::vector<trie_node *>(num_children, 0);
+            trie_or_treeblock_ptr_ = new std::vector<trie_node *>(num_children, 0);
         }
     }
 
     inline trie_node *get_child(symbol_t symbol) {
 
-        return ((std::vector<trie_node *> *) trie_or_treeblock_ptr_)[symbol];
+        auto trie_ptr = (std::vector<trie_node *> *) trie_or_treeblock_ptr_;
+
+        return (* trie_ptr)[symbol];
     }
 
     inline void set_child(symbol_t symbol, trie_node *node) {
-
-        ((std::vector<trie_node *> *) trie_or_treeblock_ptr_)[symbol] = node;
+        
+        auto trie_ptr = (std::vector<trie_node *> *) trie_or_treeblock_ptr_;
+        (* trie_ptr)[symbol] = node;
     }
 
     inline tree_block *get_block() const {
@@ -45,10 +48,27 @@ public:
 
     void get_node_path(level_t level, symbol_t *node_path){
 
-        if (parent_trie_node){
+        if (parent_trie_node_){
             node_path[level - 1] = parent_symbol_;
             parent_trie_node_->get_node_path(level - 1, node_path);
         }
+    }
+
+    trie_node *get_parent_trie_node(){
+        return parent_trie_node_;
+    }
+
+    symbol_t get_parent_symbol(){
+
+        return parent_symbol_;
+    }
+
+    void set_parent_trie_node(trie_node *node){
+        parent_trie_node_ = node;
+    }
+
+    void set_parent_symbol(symbol_t symbol){
+        parent_symbol_ = symbol;
     }
 
 private:

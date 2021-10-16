@@ -20,18 +20,10 @@ n_leaves_t n_points = 1000000;
 uint8_t max_num_threads = 18;
 const uint32_t read_number_count = 1000000;
 
-// typedef unsigned long long int TimeStamp;
 
-// static TimeStamp GetTimestamp() {
-//   struct timeval now;
-//   gettimeofday(&now, nullptr);
+void test_random_insert(md_trie *mdtrie){
 
-//   return now.tv_usec + (TimeStamp) now.tv_sec * 1000000;
-// }
-
-void test_random_insert(md_trie<DIMENSION, NUM_BRANCHES> *mdtrie){
-
-    auto *leaf_point = new data_point<DIMENSION>();
+    auto *leaf_point = new data_point();
     // TODO: bug, smaller range raise an error
     symbol_t range = pow(2, max_depth);
     auto *rand_generator = new utils::rand_utils();
@@ -48,9 +40,9 @@ void test_random_insert(md_trie<DIMENSION, NUM_BRANCHES> *mdtrie){
     return;    
 }
 
-void test_random_read(md_trie<DIMENSION, NUM_BRANCHES> *mdtrie){
+void test_random_read(md_trie *mdtrie){
 
-    auto *leaf_point = new data_point<DIMENSION>();
+    auto *leaf_point = new data_point();
     symbol_t range = pow(2, max_depth);
     auto *rand_generator = new utils::rand_utils();
 
@@ -86,7 +78,7 @@ void vector_insertion(){
 
 void test_insert_concurrency(){
     
-    auto *mdtrie = new md_trie<DIMENSION, NUM_BRANCHES>(max_depth, trie_depth, max_tree_node);
+    auto *mdtrie = new md_trie(max_depth, trie_depth, max_tree_node);
 
     fprintf(stderr, "Dimension: %d\n", DIMENSION);
     srand(static_cast<unsigned int>(time(0)));
@@ -119,7 +111,7 @@ void test_insert_concurrency(){
 
 }
 
-std::vector<data_point<DIMENSION> *>get_dataset_vector()
+std::vector<data_point *>get_dataset_vector()
 {
     char *line = nullptr;
     size_t len = 0;
@@ -129,10 +121,10 @@ std::vector<data_point<DIMENSION> *>get_dataset_vector()
     n_leaves_t n_points = 0;
     n_leaves_t n_lines = 14583357;
     tqdm bar1;
-    std::vector<data_point<DIMENSION> *> vect;
+    std::vector<data_point *> vect;
     while ((read = getline(&line, &len, fp)) != -1)
     {
-        auto *leaf_point = new data_point<DIMENSION>();
+        auto *leaf_point = new data_point();
         bar1.progress(n_points, n_lines);
         // Get the first token
         char *token = strtok(line, " ");
@@ -157,13 +149,12 @@ std::vector<data_point<DIMENSION> *>get_dataset_vector()
 }
 
 
-void insert_mdtrie_from_vector(md_trie<DIMENSION, NUM_BRANCHES> *mdtrie, uint8_t thread_num, uint8_t total_thread_num, std::vector<data_point<DIMENSION> *> vect){
+void insert_mdtrie_from_vector(md_trie *mdtrie, uint8_t thread_num, uint8_t total_thread_num, std::vector<data_point *> vect){
 
-    // md_trie<DIMENSION> *mdtrie2 = new md_trie<DIMENSION>(max_depth, trie_depth, max_tree_node);
     n_leaves_t n_lines = 14583357;
     for (uint64_t count = thread_num; count < n_lines; count += total_thread_num)
     {
-        data_point<DIMENSION> *leaf_point = vect[count];
+        data_point *leaf_point = vect[count];
         // TimeStamp start = GetTimestamp();
         mdtrie->insert_trie(leaf_point, max_depth, thread_num);
         
@@ -175,8 +166,8 @@ void insert_mdtrie_from_vector(md_trie<DIMENSION, NUM_BRANCHES> *mdtrie, uint8_t
 
 void test_insert_concurrency_real_dataset(){
     
-    auto *mdtrie = new md_trie<DIMENSION, NUM_BRANCHES>(max_depth, trie_depth, max_tree_node);
-    std::vector<data_point<DIMENSION> *> vect = get_dataset_vector();
+    auto *mdtrie = new md_trie(max_depth, trie_depth, max_tree_node);
+    std::vector<data_point *> vect = get_dataset_vector();
     fprintf(stderr, "Dimension: %d\n", DIMENSION);
     srand(static_cast<unsigned int>(time(0)));
 
@@ -208,59 +199,8 @@ void test_insert_concurrency_real_dataset(){
 
 }
 
-// TODO: remove global variable
-// TimeStamp total_read_latency = 0;
-// uint64_t total_count = 0;
 
-// void read_mdtrie_inserted(md_trie<DIMENSION> *mdtrie, uint8_t thread_num, uint8_t total_thread_num){
-
-//     auto *leaf_point = new data_point<DIMENSION>();
-//     char *line = nullptr;
-//     size_t len = 0;
-//     ssize_t read;
-//     char *saveptr;
-    
-//     FILE *fp = fopen("../libmdtrie/bench/data/sample_shuf.txt", "r");
-//     uint64_t count = 0;
-
-//     while ((read = getline(&line, &len, fp)) != -1)
-//     {
-//         count ++;
-        
-//         if (count % total_thread_num != thread_num){
-//             continue;
-//         }
-
-//         char *token = strtok_r(line, " ", &saveptr);
-//         char *ptr;
-        
-//         // Skip the second and third token
-//         for (uint8_t i = 0; i < 2; i ++){
-//             token = strtok_r(nullptr, " ", &saveptr);
-//         }
-
-//         for (dimension_t i = 0; i < DIMENSION; i++){
-//             if (i >= 4){
-//                 leaf_point->set_coordinate(i, leaf_point->get_coordinate(i % 4));
-//             }
-//             else {
-//                 token = strtok_r(nullptr, " ", &saveptr);
-//                 leaf_point->set_coordinate(i, strtoul(token, &ptr, 10));
-//             }
-//         }
-//         // TimeStamp start = GetTimestamp();
-//         if (!mdtrie->check(leaf_point, max_depth)){
-//             fprintf(stderr, "error! not found\n");
-//         }
-//         // total_read_latency += GetTimestamp() - start;
-//         // total_count ++;
-//     }
-    
-//     fclose(fp);
-//     return;
-// }
-
-void random_read_mdtrie_inserted_from_vector(md_trie<DIMENSION, NUM_BRANCHES> *mdtrie, uint8_t total_thread_num, std::vector<data_point<DIMENSION> *> *vect){
+void random_read_mdtrie_inserted_from_vector(md_trie *mdtrie, uint8_t total_thread_num, std::vector<data_point *> *vect){
 
     n_leaves_t n_lines = 14583357;
     uint64_t total_iter = n_lines / total_thread_num;
@@ -269,7 +209,7 @@ void random_read_mdtrie_inserted_from_vector(md_trie<DIMENSION, NUM_BRANCHES> *m
     while (count < total_iter){
         count ++;
 
-        data_point<DIMENSION> *leaf_point = (*vect)[rand_generator->rand_uint64(0, n_lines - 1)];
+        data_point *leaf_point = (*vect)[rand_generator->rand_uint64(0, n_lines - 1)];
         // TimeStamp start = GetTimestamp();
         if (!mdtrie->check(leaf_point, max_depth)){
             fprintf(stderr, "error! not found\n");
@@ -281,12 +221,12 @@ void random_read_mdtrie_inserted_from_vector(md_trie<DIMENSION, NUM_BRANCHES> *m
 }
 
 
-void read_mdtrie_inserted_from_vector(md_trie<DIMENSION, NUM_BRANCHES> *mdtrie, uint8_t thread_num, uint8_t total_thread_num, std::vector<data_point<DIMENSION> *> *vect){
+void read_mdtrie_inserted_from_vector(md_trie *mdtrie, uint8_t thread_num, uint8_t total_thread_num, std::vector<data_point *> *vect){
 
     n_leaves_t n_lines = 14583357;
     for (uint64_t count = thread_num; count < n_lines; count += total_thread_num){
 
-        data_point<DIMENSION> *leaf_point = (*vect)[count];
+        data_point *leaf_point = (*vect)[count];
         // TimeStamp start = GetTimestamp();
         if (!mdtrie->check(leaf_point, max_depth)){
             fprintf(stderr, "error! not found\n");
@@ -299,7 +239,7 @@ void read_mdtrie_inserted_from_vector(md_trie<DIMENSION, NUM_BRANCHES> *mdtrie, 
 
 void test_read_concurrency(){
 
-    auto *mdtrie = new md_trie<DIMENSION, NUM_BRANCHES>(max_depth, trie_depth, max_tree_node);
+    auto *mdtrie = new md_trie(max_depth, trie_depth, max_tree_node);
     
     char *line = nullptr;
     size_t len = 0;
@@ -309,10 +249,10 @@ void test_read_concurrency(){
     n_leaves_t n_points = 0;
     n_leaves_t n_lines = 14583357;
     tqdm bar1;
-    std::vector<data_point<DIMENSION> *> vect;
+    std::vector<data_point *> vect;
     while ((read = getline(&line, &len, fp)) != -1)
     {
-        auto *leaf_point = new data_point<DIMENSION>();
+        auto *leaf_point = new data_point();
         bar1.progress(n_points, n_lines);
         // Get the first token
         char *token = strtok(line, " ");
@@ -386,11 +326,11 @@ void test_read_concurrency(){
 const int n_itr = 100;
 uint64_t total_found_points = 0;
 TimeStamp total_range_search_latency = 0;
-void range_search_mdtrie(md_trie<DIMENSION, NUM_BRANCHES> *mdtrie, uint64_t max[], uint64_t min[]){
+void range_search_mdtrie(md_trie *mdtrie, uint64_t max[], uint64_t min[]){
 
-    auto *start_range = new data_point<DIMENSION>();
-    auto *end_range = new data_point<DIMENSION>();
-    auto *found_points = new point_array<DIMENSION>();
+    auto *start_range = new data_point();
+    auto *end_range = new data_point();
+    auto *found_points = new point_array();
     int itr = 1;
 
     while (itr <= n_itr){
@@ -412,8 +352,8 @@ void range_search_mdtrie(md_trie<DIMENSION, NUM_BRANCHES> *mdtrie, uint64_t max[
 
 void test_range_search(){
 
-    auto *mdtrie = new md_trie<DIMENSION, NUM_BRANCHES>(max_depth, trie_depth, max_tree_node);
-    auto *leaf_point = new data_point<DIMENSION>();
+    auto *mdtrie = new md_trie(max_depth, trie_depth, max_tree_node);
+    auto *leaf_point = new data_point();
 
     char *line = nullptr;
     size_t len = 0;
@@ -485,11 +425,11 @@ void test_range_search(){
     }
 }
 
-void random_range_search_mdtrie(md_trie<DIMENSION, NUM_BRANCHES> *mdtrie){
+void random_range_search_mdtrie(md_trie *mdtrie){
 
-    auto *start_range = new data_point<DIMENSION>();
-    auto *end_range = new data_point<DIMENSION>();
-    auto *found_points = new point_array<DIMENSION>();
+    auto *start_range = new data_point();
+    auto *end_range = new data_point();
+    auto *found_points = new point_array();
     int itr = 1;
     symbol_t range = pow(2, max_depth);
     auto *rand_generator = new utils::rand_utils();
@@ -515,7 +455,7 @@ void random_range_search_mdtrie(md_trie<DIMENSION, NUM_BRANCHES> *mdtrie){
 
 void test_read_insert_random(){
 
-    auto *mdtrie = new md_trie<DIMENSION, NUM_BRANCHES>(max_depth, trie_depth, max_tree_node);
+    auto *mdtrie = new md_trie(max_depth, trie_depth, max_tree_node);
 
     fprintf(stderr, "Dimension: %d\n", DIMENSION);
     srand(static_cast<unsigned int>(time(0)));

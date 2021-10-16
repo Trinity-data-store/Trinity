@@ -27,7 +27,7 @@ public:
         max_depth_ = max_depth;
         trie_depth_ = trie_depth;
         max_tree_nodes_ = max_tree_nodes;
-        root_ = new trie_node(false);
+        root_ = new trie_node(false, level_to_num_children[trie_depth]);
     }
 
     inline trie_node *root() {
@@ -39,32 +39,32 @@ public:
 
         symbol_t current_symbol;
 
-        while (level < trie_depth_ && current_trie_node->get_child(leaf_point->leaf_to_symbol(level, max_depth_))){
+        while (level < trie_depth_ && current_trie_node->get_child(leaf_point->leaf_to_symbol(level))){
             
-            current_trie_node = current_trie_node->get_child(leaf_point->leaf_to_symbol(level++, max_depth_));
+            current_trie_node = current_trie_node->get_child(leaf_point->leaf_to_symbol(level++));
         }
         while (level < trie_depth_) {
 
-            current_symbol = leaf_point->leaf_to_symbol(level, max_depth_);
+            current_symbol = leaf_point->leaf_to_symbol(level);
             if (level == trie_depth_ - 1){
-                current_trie_node->set_child(current_symbol, new trie_node(true));
+                current_trie_node->set_child(current_symbol, new trie_node(true, level_to_num_children[level]));
             }
             else {
-                current_trie_node->set_child(current_symbol, new trie_node(false));
+                current_trie_node->set_child(current_symbol, new trie_node(false, level_to_num_children[level]));
             }
-            current_trie_node->get_child(current_symbol)->parent_trie_node = current_trie_node;
-            current_trie_node->get_child(current_symbol)->parent_symbol = current_symbol;
+            current_trie_node->get_child(current_symbol)->set_parent_trie_node(current_trie_node);
+            current_trie_node->get_child(current_symbol)->set_parent_symbol(current_symbol);
             current_trie_node = current_trie_node->get_child(current_symbol);
             level++;
         }
 
         tree_block *current_treeblock = nullptr;
         if (current_trie_node->get_block() == nullptr) {
-            current_treeblock = new tree_block(trie_depth_, initial_tree_capacity_, 1, max_depth_, max_tree_nodes_, current_trie_node);
+            current_treeblock = new tree_block(trie_depth_, initial_tree_capacity_, initial_tree_capacity_ * level_to_num_children[trie_depth_], 1, max_depth_, max_tree_nodes_, current_trie_node);
             current_trie_node->set_block(current_treeblock);
         } 
         else {
-            current_treeblock = (tree_block<DIMENSION, NUM_BRANCHES> *) current_trie_node->get_block();
+            current_treeblock = (tree_block *) current_trie_node->get_block();
         }
 
         return current_treeblock;
@@ -75,8 +75,9 @@ public:
         level_t level = 0;
         trie_node *current_trie_node = root_;
         tree_block *current_treeblock = walk_trie(current_trie_node, leaf_point, level);
+        preorder_t node_pos = 0;
 
-        current_treeblock->insert_remaining(leaf_point, length, level, primary_key);
+        current_treeblock->insert_remaining(leaf_point, length, level, primary_key, node_pos);
     }
 
 
@@ -102,12 +103,12 @@ public:
         if (level == trie_depth_) {
 
             auto *current_treeblock = (tree_block *) current_trie_node->get_block();
-            current_treeblock->range_search_treeblock(start_range, end_range, current_treeblock, level, 0, 0, 0, 0, found_points);
+            current_treeblock->range_search_treeblock(start_range, end_range, current_treeblock, level, 0, 0, 0, 0, 0, 0, found_points);
             return;
         }
         
-        symbol_t start_symbol = start_range->leaf_to_symbol(level, max_depth_);
-        symbol_t end_symbol = end_range->leaf_to_symbol(level, max_depth_);
+        symbol_t start_symbol = start_range->leaf_to_symbol(level);
+        symbol_t end_symbol = end_range->leaf_to_symbol(level);
         symbol_t representation = start_symbol ^ end_symbol;
         symbol_t neg_representation = ~representation;
 
@@ -123,8 +124,6 @@ public:
             if (!current_trie_node->get_child(current_symbol)) {
                 continue;
             }
-
-            count ++;
 
             start_range->update_symbol(end_range, current_symbol, level, max_depth_);
 

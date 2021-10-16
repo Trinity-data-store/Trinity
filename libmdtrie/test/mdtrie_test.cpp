@@ -17,8 +17,8 @@ bool test_random_data(n_leaves_t n_points, level_t max_depth, level_t trie_depth
     */     
 
     auto range = (n_leaves_t) pow(2, max_depth);
-    auto *mdtrie = new md_trie<DIMENSION, NUM_BRANCHES>(max_depth, trie_depth, max_tree_nodes);
-    auto *leaf_point = new data_point<DIMENSION>();
+    auto *mdtrie = new md_trie(max_depth, trie_depth, max_tree_nodes);
+    auto *leaf_point = new data_point();
 
     for (n_leaves_t itr = 1; itr <= n_points; itr++) {
         for (dimension_t i = 0; i < DIMENSION; i++) {
@@ -42,8 +42,8 @@ bool test_contiguous_data(n_leaves_t n_points, level_t max_depth, level_t trie_d
     */ 
 
     auto range = (n_leaves_t) pow(2, max_depth);
-    auto *mdtrie = new md_trie<DIMENSION, NUM_BRANCHES>(max_depth, trie_depth, max_tree_node);
-    auto *leaf_point = new data_point<DIMENSION>();
+    auto *mdtrie = new md_trie(max_depth, trie_depth, max_tree_node);
+    auto *leaf_point = new data_point();
 
     for (n_leaves_t itr = 1; itr <= n_points; itr++) {
 
@@ -74,8 +74,8 @@ bool test_nonexistent_data(n_leaves_t n_points, level_t max_depth, level_t trie_
     */ 
 
     auto range = (n_leaves_t) pow(2, max_depth);
-    auto *mdtrie = new md_trie<DIMENSION, NUM_BRANCHES>(max_depth, trie_depth, max_tree_node);
-    auto *leaf_point = new data_point<DIMENSION>();
+    auto *mdtrie = new md_trie(max_depth, trie_depth, max_tree_node);
+    auto *leaf_point = new data_point();
 
     for (n_leaves_t itr = 1; itr <= n_points; itr++) {
         for (dimension_t i = 0; i < DIMENSION; i++) {
