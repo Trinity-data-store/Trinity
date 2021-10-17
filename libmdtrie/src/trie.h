@@ -38,6 +38,7 @@ public:
     tree_block *walk_trie(trie_node *current_trie_node, data_point *leaf_point, level_t &level) const {
 
         symbol_t current_symbol;
+        // raise(SIGINT);
 
         while (level < trie_depth_ && current_trie_node->get_child(leaf_point->leaf_to_symbol(level))){
             
@@ -61,7 +62,7 @@ public:
 
         tree_block *current_treeblock = nullptr;
         if (current_trie_node->get_block() == nullptr) {
-            current_treeblock = new tree_block(trie_depth_, initial_tree_capacity_ /*is 1*/, initial_tree_capacity_ * level_to_num_children[trie_depth_], 1, max_depth_, max_tree_nodes_, current_trie_node);
+            current_treeblock = new tree_block(trie_depth_, initial_tree_capacity_ /*is 1*/, 1 << level_to_num_children[trie_depth_], 1, max_depth_, max_tree_nodes_, current_trie_node);
             current_trie_node->set_block(current_treeblock);
         } 
         else {

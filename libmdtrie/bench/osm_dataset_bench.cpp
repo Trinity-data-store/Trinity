@@ -97,10 +97,19 @@ void insert_for_node_path(point_array *found_points, level_t max_depth, level_t 
         }
 
         (*all_points).push_back((*leaf_point));
-
         start = GetTimestamp();
 
+        if (n_points == 691594){
+            raise(SIGINT);
+        }
+
         mdtrie->insert_trie(leaf_point, n_points);
+
+        if (!mdtrie->check(leaf_point)){
+            raise(SIGINT);
+            mdtrie->check(leaf_point);
+        }
+
         diff += GetTimestamp() - start;
 
         n_points ++;
@@ -117,7 +126,8 @@ void insert_for_node_path(point_array *found_points, level_t max_depth, level_t 
     // fprintf(stderr, "md-trie size: %ld\n", mdtrie->size());   
     // fprintf(stderr, "top level trie size: %ld, primary key vector size: %ld, treeblock ptr size: %ld, treeblock_nodes_size: %ld\n", trie_size, vector_size, treeblock_ptr_size, treeblock_nodes_size);   
     fprintf(stderr, "Average time to insert one point: %f microseconds per insertion\n", (float) diff / n_points);
-    
+
+    exit(0);    
     // for (auto const &pair: node_children_to_occurrences) {
     //     std::cout << "{" << pair.first << ": " << pair.second << "}\n";
     // }
@@ -157,7 +167,6 @@ void insert_for_node_path(point_array *found_points, level_t max_depth, level_t 
     std::cout << "update range latency: " << update_range_latency << std::endl;
     std::cout << "child latency " << child_latency << std::endl; 
 
-    exit(0);
 
     int itr = 0;
     std::ofstream file("range_search_size_latency_osm_with_search_volume.csv", std::ios_base::app);
@@ -207,14 +216,12 @@ data_point *profile_func(tree_block *parent_treeblock, node_t parent_node, symbo
 }
 
 void test_node_path_only(level_t max_depth, level_t trie_depth, preorder_t max_tree_node){
+
+    create_level_to_num_children(std::vector<point_t>(DIMENSION, 32), max_depth);
     auto *found_points = new point_array();
-    auto *all_points = new std::vector<data_point>(level_to_num_children[0]);
+    auto *all_points = new std::vector<data_point>(32);
 
     insert_for_node_path(found_points, max_depth, trie_depth, max_tree_node, all_points);
-    // assert(all_points->size() == 14583357);
-    // while (found_points->size() == 0){
-    //     found_points = insert_for_node_path(max_depth, trie_depth, max_tree_node);
-    // }
 
     TimeStamp start;
     n_leaves_t found_points_size = found_points->size();

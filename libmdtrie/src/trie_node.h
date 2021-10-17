@@ -9,25 +9,24 @@ class trie_node {
     
 public:
 
-    explicit trie_node(bool is_leaf, dimension_t num_children) {
+    explicit trie_node(bool is_leaf, dimension_t num_dimensions) {
         
         is_leaf_ = is_leaf;
         if (!is_leaf){
-            trie_or_treeblock_ptr_ = new std::vector<trie_node *>(num_children, 0);
+            trie_or_treeblock_ptr_ = (trie_node **)calloc(sizeof(trie_node *), 1 << num_dimensions);
         }
     }
 
     inline trie_node *get_child(symbol_t symbol) {
 
-        auto trie_ptr = (std::vector<trie_node *> *) trie_or_treeblock_ptr_;
-
-        return (* trie_ptr)[symbol];
+        auto trie_ptr = (trie_node **) trie_or_treeblock_ptr_;
+        return trie_ptr[symbol];
     }
 
     inline void set_child(symbol_t symbol, trie_node *node) {
-        
-        auto trie_ptr = (std::vector<trie_node *> *) trie_or_treeblock_ptr_;
-        (* trie_ptr)[symbol] = node;
+
+        auto trie_ptr = (trie_node **) trie_or_treeblock_ptr_;
+        trie_ptr[symbol] = node;
     }
 
     inline tree_block *get_block() const {
@@ -55,6 +54,7 @@ public:
     }
 
     trie_node *get_parent_trie_node(){
+
         return parent_trie_node_;
     }
 
@@ -64,10 +64,12 @@ public:
     }
 
     void set_parent_trie_node(trie_node *node){
+
         parent_trie_node_ = node;
     }
 
     void set_parent_symbol(symbol_t symbol){
+
         parent_symbol_ = symbol;
     }
 

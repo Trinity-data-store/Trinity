@@ -284,6 +284,16 @@ class compressed_bitmap {
     SetValPos(s_idx * 64, 0, width, is_on_data);  
   }
 
+  width_type get_num_bits(pos_type node, level_t level){
+
+    if (is_collapse(node)){
+      return level_to_num_children[level];
+    }
+    else {
+      return 1 << level_to_num_children[level];
+    }
+
+  }
 
   inline void bulkcopy_forward(pos_type from, pos_type destination, width_type bits, bool is_on_data)
   {
@@ -295,6 +305,7 @@ class compressed_bitmap {
     }
     SetValPos(destination, GetValPos(from, bits, is_on_data), bits, is_on_data);
   }
+
 
   inline void bulkcopy_backward(pos_type from, pos_type destination, width_type bits, bool is_on_data)
   {
@@ -422,7 +433,7 @@ class compressed_bitmap {
     return return_symbol + nthset(next_block, k);
   }
 
-  inline symbol_t next_symbol(symbol_t symbol, preorder_t node, symbol_t end_symbol_range, pos_type node_pos, width_type num_children){
+  inline symbol_t next_symbol(symbol_t symbol, preorder_t node, pos_type node_pos, symbol_t end_symbol_range, width_type num_children){
 
     if (is_collapse(node)){
       symbol_t only_symbol = GetValPos(node_pos, num_children, true);
@@ -557,6 +568,10 @@ class compressed_bitmap {
 
   size_type get_flag_size(){
     return flag_size_;
+  }
+
+  size_type get_data_size(){
+    return data_size_;
   }
 
  protected:
