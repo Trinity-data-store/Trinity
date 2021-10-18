@@ -112,5 +112,16 @@ void create_level_to_num_children(std::vector<level_t> dimension_bits, level_t m
     }
 }
 
+unsigned int reverse(unsigned int b) {
+   b = (b & 0xF0) >> 4 | (b & 0x0F) << 4;
+   b = (b & 0xCC) >> 2 | (b & 0x33) << 2;
+   b = (b & 0xAA) >> 1 | (b & 0x55) << 1;
+   return b;
+}
 
+unsigned int bit_width(uint64_t val){
+    return 64 - __builtin_clzll(val);
+}
+
+bool toggle = false;
 #endif //MD_TRIE_DEFS_H

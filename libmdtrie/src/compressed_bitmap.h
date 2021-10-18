@@ -233,6 +233,9 @@ class compressed_bitmap {
                 | (val >> (64 - s_off));
       }
     }
+
+    // if (GetValPos(0, 64, true) == 0)
+    //   raise(SIGINT);
   }
 
   inline data_type GetValPos(pos_type pos, width_type bits, bool is_on_data) const {
@@ -455,7 +458,7 @@ class compressed_bitmap {
     }
     else {
         if (over_64){
-            return next_symbol(symbol + limit, node, end_symbol_range, node_pos, num_children);
+            return next_symbol(symbol + limit, node, node_pos, end_symbol_range, num_children);
         }
         return end_symbol_range + 1;
     }

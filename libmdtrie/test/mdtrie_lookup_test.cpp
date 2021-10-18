@@ -117,7 +117,7 @@ bool test_lookup(level_t max_depth, level_t trie_depth, preorder_t max_tree_node
         symbol_t parent_symbol_from_primary = t_ptr->get_node_path_primary_key(returned_primary_key, node_path_from_primary);
         node_path_from_primary[max_depth - 1] = parent_symbol_from_primary;
 
-        auto returned_coordinates = t_ptr->node_path_to_coordinates(node_path_from_primary);
+        auto returned_coordinates = t_ptr->node_path_to_coordinates(node_path_from_primary, DIMENSION);
 
         for (dimension_t j = 0; j < DIMENSION; j++){
             if (returned_coordinates->get_coordinate(j) != point->get_coordinate(j)){

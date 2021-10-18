@@ -49,10 +49,10 @@ public:
 
             current_symbol = leaf_point->leaf_to_symbol(level);
             if (level == trie_depth_ - 1){
-                current_trie_node->set_child(current_symbol, new trie_node(true, level_to_num_children[level]));
+                current_trie_node->set_child(current_symbol, new trie_node(true, level_to_num_children[level + 1]));
             }
             else {
-                current_trie_node->set_child(current_symbol, new trie_node(false, level_to_num_children[level]));
+                current_trie_node->set_child(current_symbol, new trie_node(false, level_to_num_children[level + 1]));
             }
             current_trie_node->get_child(current_symbol)->set_parent_trie_node(current_trie_node);
             current_trie_node->get_child(current_symbol)->set_parent_symbol(current_symbol);
@@ -76,6 +76,7 @@ public:
 
         level_t level = 0;
         trie_node *current_trie_node = root_;
+
         tree_block *current_treeblock = walk_trie(current_trie_node, leaf_point, level);
 
         current_treeblock->insert_remaining(leaf_point, level, primary_key);
@@ -88,7 +89,8 @@ public:
         trie_node *current_trie_node = root_;
         tree_block *current_treeblock = walk_trie(current_trie_node, leaf_point, level);
 
-        return current_treeblock->walk_tree_block(leaf_point, level);
+        bool result = current_treeblock->walk_tree_block(leaf_point, level);
+        return result;
     }
 
     uint64_t size() const {
@@ -104,6 +106,7 @@ public:
         if (level == trie_depth_) {
 
             auto *current_treeblock = (tree_block *) current_trie_node->get_block();
+            
             current_treeblock->range_search_treeblock(start_range, end_range, current_treeblock, level, 0, 0, 0, 0, 0, 0, found_points);
             return;
         }
