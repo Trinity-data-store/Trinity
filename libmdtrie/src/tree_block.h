@@ -1,11 +1,11 @@
 #ifndef MD_TRIE_TREE_BLOCK_H
 #define MD_TRIE_TREE_BLOCK_H
 
-#include <sys/time.h>
-#include <cmath>
 #include "point_array.h"
 #include "trie_node.h"
 #include "compressed_bitmap.h"
+#include <sys/time.h>
+#include <cmath>
 #include "delta_encoded_array.h"
 #include "elias_gamma_encoder.h"
 #include "compact_ptr.h"
@@ -74,6 +74,7 @@ public:
         node_n_t current_node_pos = 0;
         index_to_node[node_stack_top].preorder_ = 0;
         index_to_node[node_stack_top].n_children_ = dfuds_->get_num_children(0, 0, level_to_num_children[root_depth_]);
+
         node_stack_top++;
         node_to_depth[0] = root_depth_;
         preorder_t prev_depth = root_depth_;
@@ -84,6 +85,8 @@ public:
             next_frontier_preorder = -1;
         else
             next_frontier_preorder = get_preorder(current_frontier);
+
+
 
         for (preorder_t i = 1; i < num_nodes_; i++) {
 
@@ -132,6 +135,12 @@ public:
             }
 
         }
+
+        current_node_pos += dfuds_->get_num_bits(num_nodes_ - 1, prev_depth);
+        if (current_node_pos != total_nodes_bits_)
+            raise(SIGINT);
+
+
         // Go through the index_to_subtree vector to choose the proper subtree
         preorder_t min_node = 0;
         preorder_t min = (preorder_t) -1;
@@ -431,10 +440,23 @@ public:
         else if (num_nodes_ + (max_depth_ - level) - 1 <= max_tree_nodes) 
         {
             // It is going to allocate more, but that's fine...
-            dfuds_->increase_bits((max_depth_ - level) * current_num_children, true);
+
+            uint32_t total_extra_bits = 0;
+            for (unsigned int i = level; i < max_depth_; i++){
+                total_extra_bits += level_to_num_children[i];
+            }
+
+            dfuds_->keep_bits(total_nodes_bits_, true);
+            dfuds_->increase_bits(total_extra_bits, true);
+
+            dfuds_->keep_bits(num_nodes_, false);
             dfuds_->increase_bits(max_depth_ - level, false);
 
+
             node_capacity_ = num_nodes_ + (max_depth_ - level);
+            // bit_capacity_ += total_extra_bits;
+            bit_capacity_ = total_nodes_bits_ + total_extra_bits;
+
             insert(node, node_pos, leaf_point, level, current_frontier, current_primary, primary_key);
 
             return;
@@ -450,8 +472,15 @@ public:
             node_t selected_node = select_subtree(subtree_size, selected_node_depth, selected_node_pos, num_primary, selected_primary_index, node_to_primary, node_to_depth);
 
             preorder_t total_primary_count = 0;
-            for (preorder_t i = 0; i < num_nodes_; i++)
+            // preorder_t total_primary_count_from_depth = 0;
+            // preorder_t i_pos = 0;
+            for (preorder_t i = 0; i < num_nodes_; i++){
                 total_primary_count += node_to_primary[i];
+                // if (node_to_depth[i] == max_depth_ - 1){
+                //     total_primary_count_from_depth += dfuds_->get_num_children(i, i_pos, level_to_num_children[node_to_depth[i]]);
+                // }
+                // i_pos += dfuds_->get_num_bits(i, node_to_depth[i]);
+            }
             if (total_primary_count != primary_key_list.size())
                 raise(SIGINT);
 
@@ -487,6 +516,7 @@ public:
             }
             preorder_t current_frontier_new_block = 0;
             preorder_t current_primary_new_block = 0;
+            preorder_t subtree_bits = 0;
 
             while (n_nodes_copied < subtree_size) {
                 //  If we meet the current node (from which we want to do insertion)
@@ -521,7 +551,7 @@ public:
                 }
 
                 dfuds_->copy_node_cod(new_dfuds, selected_node, selected_node_pos, dest_node, dest_node_pos, level_to_num_children[node_to_depth[selected_node]]);
-
+                subtree_bits += dfuds_->get_num_bits(selected_node, node_to_depth[selected_node]);
                 dest_node_pos += dfuds_->get_num_bits(selected_node, node_to_depth[selected_node]);  // Still selected_node
                 selected_node_pos += dfuds_->get_num_bits(selected_node, node_to_depth[selected_node]);
                 selected_node += 1;
@@ -610,16 +640,21 @@ public:
                 dfuds_->bulk_clear_node(orig_selected_node, orig_selected_node_pos, selected_node, selected_node_pos);
                 total_nodes_bits_ -= selected_node_pos - orig_selected_node_pos;
             }
+            // bit_capacity_ -= subtree_bits;
+            if (node_capacity_ * level_to_num_children[root_depth_] < bit_capacity_){
+
+                bit_capacity_ = node_capacity_ * level_to_num_children[root_depth_];
+            }
+            // dfuds_->keep_bits(bit_capacity_, true);
 
             if (subtree_size > max_depth_) {
-                // TODO: no need to shrink dfuds_
-                // dfuds_->realloc_bitmap(node_capacity_ - (subtree_size - length));
-                node_capacity_ -= subtree_size - max_depth_;
-
+                node_capacity_ -= subtree_size - max_depth_; 
             } else {
-                // dfuds_->realloc_bitmap(node_capacity_ - (subtree_size - 1));
                 node_capacity_ -= subtree_size - 1;
             }
+            // TODO!
+            // dfuds_->keep_bits(bit_capacity_, true);
+            dfuds_->keep_bits(node_capacity_, false);
 
             num_nodes_ -= (subtree_size - 1);
 
@@ -635,7 +670,22 @@ public:
                 current_primary = selected_primary_index;
             }
 
-           
+            // preorder_t subtree_size_dup, selected_node_depth_dup;
+            // preorder_t selected_node_pos_dup = 0;
+            // preorder_t num_primary_dup = 0, selected_primary_index_dup = 0;
+            // preorder_t node_to_primary_dup[4096] = {0};
+            // preorder_t node_to_depth_dup[4096] = {0};
+
+            // select_subtree(subtree_size_dup, selected_node_depth_dup, selected_node_pos_dup, num_primary_dup, selected_primary_index_dup, node_to_primary_dup, node_to_depth_dup);
+
+            // preorder_t total_primary_count_dup = 0;
+
+            // for (preorder_t i = 0; i < num_nodes_; i++){
+            //     total_primary_count_dup += node_to_primary_dup[i];
+            // }
+            // if (total_primary_count_dup != primary_key_list.size())
+            //     raise(SIGINT);
+
             // If the insertion continues in the new block
             if (insertion_in_new_block) {
                 if (is_in_root) {
@@ -656,7 +706,11 @@ public:
                 insert(insertion_node, insertion_node_pos, leaf_point, level, current_frontier, current_primary, primary_key); 
             }
 
+            // dfuds_->keep_bits(total_nodes_bits_, true);
 
+            // if (dfuds_->get_flag_size() > num_nodes_){
+            //     raise(SIGINT);
+            // }
             return;
         }
     }
@@ -665,6 +719,24 @@ public:
     // Until it cannot traverse further and calls insertion
     void insert_remaining(data_point *leaf_point, level_t level, n_leaves_t primary_key) {
         
+
+
+        // preorder_t subtree_size_dup, selected_node_depth_dup;
+        // preorder_t selected_node_pos_dup = 0;
+        // preorder_t num_primary_dup = 0, selected_primary_index_dup = 0;
+        // preorder_t node_to_primary_dup[4096] = {0};
+        // preorder_t node_to_depth_dup[4096] = {0};
+
+        // select_subtree(subtree_size_dup, selected_node_depth_dup, selected_node_pos_dup, num_primary_dup, selected_primary_index_dup, node_to_primary_dup, node_to_depth_dup);
+
+        // preorder_t total_primary_count_dup = 0;
+
+        // for (preorder_t i = 0; i < num_nodes_; i++){
+        //     total_primary_count_dup += node_to_primary_dup[i];
+        // }
+        // if (total_primary_count_dup != primary_key_list.size())
+        //     raise(SIGINT);
+
 
         node_t current_node = 0;
         preorder_t current_node_pos = 0;
@@ -711,6 +783,25 @@ public:
         insert(current_node, current_node_pos, leaf_point, level, current_frontier, current_primary, primary_key);
         current_leaves_inserted ++;
 
+        // dfuds_->keep_bits(bit_capacity_, true);
+        // dfuds_->keep_bits(node_capacity_, false);
+        // preorder_t subtree_size, selected_node_depth;
+        // preorder_t selected_node_pos = 0;
+        // preorder_t num_primary = 0, selected_primary_index = 0;
+        // preorder_t node_to_primary[4096] = {0};
+        // preorder_t node_to_depth[4096] = {0};
+
+        // select_subtree(subtree_size, selected_node_depth, selected_node_pos, num_primary, selected_primary_index, node_to_primary, node_to_depth);
+
+        // preorder_t total_primary_count = 0;
+
+        // for (preorder_t i = 0; i < num_nodes_; i++){
+        //     total_primary_count += node_to_primary[i];
+        // }
+        // if (total_primary_count != primary_key_list.size())
+        //     raise(SIGINT);
+
+
         return;
     }
 
@@ -750,7 +841,29 @@ public:
 
     uint64_t size() {
         
-        return 0;
+        uint64_t total_size = sizeof(root_depth_) /*max_depth can be hard coded*/+ sizeof(max_tree_nodes_) + sizeof(num_nodes_) + sizeof(node_capacity_);
+
+        total_size += sizeof(total_nodes_bits_) + sizeof(bit_capacity_);
+
+        // Using compact representation, I just need to store one pointer
+        total_size += sizeof(tree_block *) /*+ sizeof(trie_node<DIMENSION> *) and preorder number*/;
+
+        total_size += sizeof(primary_key_list) + ((primary_key_list.size() * 46) / 64 + 1) * 8;
+
+        for (preorder_t i = 0; i < primary_key_list.size(); i++)
+        {
+            total_size += primary_key_list[i].size_overhead();
+        }
+
+        // total_size += (bit_capacity_ + node_capacity_) / 8 + sizeof(size_t) + 2 * sizeof(uint64_t *);
+        total_size += dfuds_->size() /*+ sizeof(dfuds_)*/;
+
+        total_size += num_frontiers_ * sizeof(tree_block *) /*Use compact pointer representation*/ + sizeof(frontiers_) /*pointer*/;
+
+        for (uint16_t i = 0; i < num_frontiers_; i++)
+            total_size += ((frontier_node *) frontiers_)[i].pointer_->size();
+
+        return total_size;
     }
     
     void get_node_path(node_t node, symbol_t *node_path) {

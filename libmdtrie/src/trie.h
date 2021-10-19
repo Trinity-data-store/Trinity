@@ -12,6 +12,8 @@
 #include "compressed_bitmap.h"
 #include <sys/stat.h>
 #include <vector>
+#include <queue>
+
 #include "defs.h"
 #include "data_point.h"
 #include "point_array.h"
@@ -93,10 +95,40 @@ public:
         return result;
     }
 
-    uint64_t size() const {
+    uint64_t size() {
 
-        // TODO
-        return 0;
+
+        uint64_t total_size = sizeof(trie_node *) /*root_*/ + sizeof(uint8_t) * 2 /* level_t*/+  sizeof(uint16_t) /* preorder_t*/+ sizeof(uint16_t) /*node_n_t*/;
+
+        // Include primary key size:
+        total_size += sizeof(p_key_to_treeblock_compact) + (44 * total_points_count / 64 + 1) * 8;
+        
+        std::queue<trie_node *> trie_node_queue;
+        trie_node_queue.push(root_);
+        num_trie_nodes ++;
+
+        while (!trie_node_queue.empty()){
+
+            trie_node *current_node = trie_node_queue.front();
+            trie_node_queue.pop();
+            total_size += current_node->size();
+            trie_size += current_node->size();
+            
+            if (!current_node->is_leaf()) {
+                for (symbol_t i = 0; i < current_node->get_num_children(); i++)
+                {
+                    if (current_node->get_child(i)) {
+                        trie_node_queue.push(current_node->get_child(i));
+                        num_trie_nodes++;
+                    }
+                }
+            }
+            else {
+                total_size += current_node->get_block()->size();
+            }
+        }
+
+        return total_size;
     }
 
 

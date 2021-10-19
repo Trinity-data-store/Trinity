@@ -169,6 +169,19 @@ class compressed_bitmap {
     }
   }
 
+
+  inline void keep_bits(width_type new_size, bool is_on_data){
+    
+    if (is_on_data){
+      data_ = (data_type *)realloc(data_, BITS2BLOCKS(new_size) * sizeof(data_type));
+      data_size_ = new_size;
+    }
+    else {
+      flag_ = (data_type *)realloc(flag_, BITS2BLOCKS(new_size) * sizeof(data_type));
+      flag_size_ = new_size;      
+    }
+  }
+
   inline uint64_t popcount(pos_type pos, width_type width, bool is_on_data){
 
     if (width <= 64){

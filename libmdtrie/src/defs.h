@@ -92,6 +92,7 @@ uint64_t top_trie_range_search_latency = 0;
 uint64_t treeblock_range_search_latency = 0;
 uint64_t update_range_latency = 0;
 uint64_t child_latency = 0;
+uint64_t num_trie_nodes = 0;
 
 std::vector<symbol_t> level_to_num_children;
 std::vector<symbol_t> dimension_to_num_bits;

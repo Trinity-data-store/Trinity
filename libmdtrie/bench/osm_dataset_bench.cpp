@@ -91,6 +91,9 @@ void insert_for_node_path(point_array *found_points, level_t max_depth, level_t 
         (*all_points).push_back((*leaf_point));
         start = GetTimestamp();
 
+        // if (n_points == 4868)
+        //     raise(SIGINT);
+
         mdtrie->insert_trie(leaf_point, n_points);
         diff += GetTimestamp() - start;
 
@@ -105,8 +108,9 @@ void insert_for_node_path(point_array *found_points, level_t max_depth, level_t 
     bar.finish();
     fprintf(stderr, "dimension: %d\n", DIMENSION);
     fprintf(stderr, "Average time to insert one point: %f microseconds per operation\n", (float) diff / n_lines);
+    std::cout << "mdtrie storage: " << mdtrie->size() << " trie size" << trie_size << "num trie nodes" << num_trie_nodes << std::endl;
 
-
+    // raise(SIGINT);
     tqdm bar2;
     TimeStamp check_diff = 0;
     
@@ -132,7 +136,8 @@ void insert_for_node_path(point_array *found_points, level_t max_depth, level_t 
     uint64_t search_volume = 1;
     srand(time(NULL));
     while (itr < 300){
-
+        if (itr % 20 == 0)
+            std::cout << itr << std::endl;
         for (int j = 0; j < DIMENSION; j++){
 
             start_range->set_coordinate(j, min[j] + (max[j] - min[j] + 1) / 5 * (rand() % 5));
@@ -184,7 +189,10 @@ data_point *profile_func(tree_block *parent_treeblock, node_t parent_node, symbo
 
 void test_node_path_only(level_t max_depth, level_t trie_depth, preorder_t max_tree_node){
 
+    // std::vector<level_t> dimension_bits = {32, 32, 32, 32, 32, 32};
     std::vector<level_t> dimension_bits = {6, 6, 6, 12, 32, 32};
+    // std::vector<level_t> dimension_bits = {5, 5, 4, 11, 32, 32}; //TODO: fix BUG in lookup given primary key
+    
     dimension_to_num_bits = dimension_bits;
     create_level_to_num_children(dimension_bits, max_depth);
     auto *found_points = new point_array();
