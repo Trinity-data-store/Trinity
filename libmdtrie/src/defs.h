@@ -111,6 +111,10 @@ void create_level_to_num_children(std::vector<level_t> dimension_bits, level_t m
         }
         level_to_num_children.push_back(dimension_left);
     }
+
+    // for (level_t level = 0; level < max_level; level++){
+    //     std::cout << "level: " << level << ", dimension: " << level_to_num_children[level] << std::endl;
+    // }
 }
 
 unsigned int reverse(unsigned int b) {

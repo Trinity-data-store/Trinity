@@ -8,6 +8,7 @@
 #include <fstream>
 // Remove ID
 const int DIMENSION = 6; // <= 8
+level_t TRIE_DEPTH = 10;
 const symbol_t NUM_BRANCHES = pow(2, DIMENSION);
 
 
@@ -108,9 +109,11 @@ void insert_for_node_path(point_array *found_points, level_t max_depth, level_t 
     bar.finish();
     fprintf(stderr, "dimension: %d\n", DIMENSION);
     fprintf(stderr, "Average time to insert one point: %f microseconds per operation\n", (float) diff / n_lines);
-    std::cout << "mdtrie storage: " << mdtrie->size() << " trie size" << trie_size << "num trie nodes" << num_trie_nodes << std::endl;
+    std::cout << "mdtrie storage: " << mdtrie->size() << " trie size: " << trie_size << " num trie nodes" << num_trie_nodes << std::endl;
 
     // raise(SIGINT);
+
+/*
     tqdm bar2;
     TimeStamp check_diff = 0;
     
@@ -127,10 +130,12 @@ void insert_for_node_path(point_array *found_points, level_t max_depth, level_t 
     bar2.finish();
     fprintf(stderr, "Average time to check one point: %f microseconds per operation\n", (float) check_diff / n_lines);
 
+*/
 
     auto *start_range = new data_point(DIMENSION);
     auto *end_range = new data_point(DIMENSION);
 
+/*
     int itr = 0;
     std::ofstream file("range_search_osm.csv");
     uint64_t search_volume = 1;
@@ -159,7 +164,7 @@ void insert_for_node_path(point_array *found_points, level_t max_depth, level_t 
         search_volume = 1;
     }
 
-
+*/
 
     for (dimension_t i = 0; i < DIMENSION; i++){
         start_range->set_coordinate(i, min[i]);
@@ -171,6 +176,8 @@ void insert_for_node_path(point_array *found_points, level_t max_depth, level_t 
     diff = GetTimestamp() - start;
 
     std::cout << "found_pts size: " << found_points->size() << " diff: " << diff << std::endl;
+    std::cout << "Latency: " << (float) diff / found_points->size() << std::endl;
+    // exit(0);
 
     // raise(SIGINT);
     // mdtrie->check(found_points->at(6860));
@@ -187,10 +194,11 @@ data_point *profile_func(tree_block *parent_treeblock, node_t parent_node, symbo
     return parent_treeblock->node_path_to_coordinates(node_path, DIMENSION);
 }
 
-void test_node_path_only(level_t max_depth, level_t trie_depth, preorder_t max_tree_node){
+void test_node_path_only(level_t max_depth, level_t trie_depth, preorder_t max_tree_node, std::vector<level_t> dimension_bits){
 
-    // std::vector<level_t> dimension_bits = {32, 32, 32, 32, 32, 32};
-    std::vector<level_t> dimension_bits = {6, 6, 6, 12, 32, 32};
+   
+
+    // std::vector<level_t> dimension_bits = {6, 6, 6, 12, 32, 32};
     // std::vector<level_t> dimension_bits = {5, 5, 4, 11, 32, 32}; //TODO: fix BUG in lookup given primary key
     
     dimension_to_num_bits = dimension_bits;
@@ -249,5 +257,36 @@ void test_node_path_only(level_t max_depth, level_t trie_depth, preorder_t max_t
 
 int main() {
     is_osm = true;
-    test_node_path_only(32, 10, 512);
+    // test_node_path_only(32, 10, 512);
+
+    // std::vector<level_t> dimension_bits = {32, 32, 32, 32, 32, 32};
+
+    // TRIE_DEPTH = 2;
+    // std::cout << TRIE_DEPTH << std::endl;
+    // test_node_path_only(32, TRIE_DEPTH, 512, dimension_bits);
+
+    // TRIE_DEPTH = 4;
+    // std::cout << TRIE_DEPTH << std::endl;
+    // test_node_path_only(32, TRIE_DEPTH, 512, dimension_bits);
+
+    // TRIE_DEPTH = 8;
+    // std::cout << TRIE_DEPTH << std::endl;
+    // test_node_path_only(32, TRIE_DEPTH, 512, dimension_bits);
+
+    // TRIE_DEPTH = 1;
+    // std::cout << TRIE_DEPTH << std::endl;
+    // test_node_path_only(32, TRIE_DEPTH, 512, dimension_bits);
+
+    // TRIE_DEPTH = 5;
+    // std::cout << TRIE_DEPTH << std::endl;
+    // test_node_path_only(32, TRIE_DEPTH, 512, dimension_bits);
+
+    std::vector<level_t> dimension_bits = {6, 6, 6, 12, 32, 32};
+    TRIE_DEPTH = 8;
+    std::cout << TRIE_DEPTH << std::endl;
+    test_node_path_only(32, TRIE_DEPTH, 512, dimension_bits);
+
+    TRIE_DEPTH = 10;
+    std::cout << TRIE_DEPTH << std::endl;
+    test_node_path_only(32, TRIE_DEPTH, 512, dimension_bits);        
 }
