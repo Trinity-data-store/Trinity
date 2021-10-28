@@ -5,7 +5,7 @@ const int DIMENSION = 2;
 const symbol_t NUM_BRANCHES = pow(2, DIMENSION);
 
 void insert_for_node_path(point_array *found_points, level_t max_depth, level_t trie_depth, preorder_t max_tree_node, std::vector<data_point> *all_points){
-    
+
     auto *mdtrie = new md_trie(max_depth, trie_depth, max_tree_node);
     auto *leaf_point = new data_point();
 
@@ -82,6 +82,10 @@ void insert_for_node_path(point_array *found_points, level_t max_depth, level_t 
 }
 
 bool test_lookup(level_t max_depth, level_t trie_depth, preorder_t max_tree_node){
+
+
+    create_level_to_num_children(std::vector<level_t>(DIMENSION, max_depth), max_depth);
+
     auto *found_points = new point_array();
     auto *all_points = new std::vector<data_point>();
     // 

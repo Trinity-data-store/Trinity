@@ -104,15 +104,24 @@ void insert_for_node_path(point_array *found_points, level_t max_depth, level_t 
         // }   
 
         n_points ++;
+        // if (n_points == 10000)
+        //     break;
     }
 
     bar.finish();
     fprintf(stderr, "dimension: %d\n", DIMENSION);
     fprintf(stderr, "Average time to insert one point: %f microseconds per operation\n", (float) diff / n_lines);
     std::cout << "mdtrie storage: " << mdtrie->size() << " trie size: " << trie_size << " num trie nodes" << num_trie_nodes << std::endl;
-
+    std::cout << "treeblock_nodes_size: " << treeblock_nodes_size << std::endl;
+    std::cout << "treeblock_frontier_size: " << treeblock_frontier_size << std::endl;
+    std::cout << "treeblock_primary_size: " << treeblock_primary_size << std::endl;
+    std::cout << "treeblock_primary_pointer_size: " << treeblock_primary_pointer_size << std::endl;
+    std::cout << "treeblock_variable_storage: " << treeblock_variable_storage << std::endl;
+    std::cout << "p_key_to_treeblock_compact: " << p_key_to_treeblock_compact_size << std::endl;
+    std::cout << "total_treeblock_num: " << total_treeblock_num << std::endl;
+    std::cout << "single_leaf_count: " << single_leaf_count << std::endl;
     // raise(SIGINT);
-
+    exit(0);
 /*
     tqdm bar2;
     TimeStamp check_diff = 0;
@@ -260,11 +269,6 @@ int main() {
     // test_node_path_only(32, 10, 512);
 
     // std::vector<level_t> dimension_bits = {32, 32, 32, 32, 32, 32};
-
-    // TRIE_DEPTH = 2;
-    // std::cout << TRIE_DEPTH << std::endl;
-    // test_node_path_only(32, TRIE_DEPTH, 512, dimension_bits);
-
     // TRIE_DEPTH = 4;
     // std::cout << TRIE_DEPTH << std::endl;
     // test_node_path_only(32, TRIE_DEPTH, 512, dimension_bits);
@@ -281,12 +285,18 @@ int main() {
     // std::cout << TRIE_DEPTH << std::endl;
     // test_node_path_only(32, TRIE_DEPTH, 512, dimension_bits);
 
-    std::vector<level_t> dimension_bits = {6, 6, 6, 12, 32, 32};
-    TRIE_DEPTH = 8;
-    std::cout << TRIE_DEPTH << std::endl;
-    test_node_path_only(32, TRIE_DEPTH, 512, dimension_bits);
+    // std::vector<level_t> dimension_bits = {6, 6, 6, 12, 32, 32};
+    // TRIE_DEPTH = 8;
+    // std::cout << TRIE_DEPTH << std::endl;
+    // test_node_path_only(32, TRIE_DEPTH, 512, dimension_bits);
 
-    TRIE_DEPTH = 10;
+    // TRIE_DEPTH = 10;
+    // std::cout << TRIE_DEPTH << std::endl;
+    // test_node_path_only(32, TRIE_DEPTH, 512, dimension_bits);  
+
+    std::vector<level_t> dimension_bits = {6, 6, 6, 12, 32, 32};
+    TRIE_DEPTH = 4;
     std::cout << TRIE_DEPTH << std::endl;
-    test_node_path_only(32, TRIE_DEPTH, 512, dimension_bits);        
+    test_node_path_only(32, TRIE_DEPTH, 1024, dimension_bits);
+
 }

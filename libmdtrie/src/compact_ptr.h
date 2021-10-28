@@ -60,6 +60,7 @@ class compact_ptr {
   uint64_t size_overhead(){
 
     if (flag_ == 0){
+      // single_leaf_count ++;
       return 0 /*sizeof(compact_ptr)*/;
     }
     if (flag_ == 1){

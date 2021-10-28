@@ -48,7 +48,6 @@ public:
         total_size += sizeof(trie_node *) + sizeof(uint16_t) /*symbol_t*/; 
 
         total_size += sizeof(trie_node *) * num_children_;
-
         // if (!is_leaf_) {
         //     for (symbol_t i = 0; i < num_children_; i++)
         //     {

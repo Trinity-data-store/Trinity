@@ -16,6 +16,7 @@ bool test_range_search(n_leaves_t n_points, level_t max_depth, level_t trie_dept
         and check if random points in that search range either is 
         found correctly or not 
     */     
+    create_level_to_num_children(std::vector<level_t>(DIMENSION_RANGE, max_depth), max_depth);
 
     auto range = (symbol_t) pow(2, max_depth);
     auto *mdtrie = new md_trie(max_depth, trie_depth, max_tree_nodes);
@@ -107,6 +108,7 @@ bool test_range_search_exact(n_leaves_t n_points, level_t max_depth, level_t tri
         Check if all points in that search range is found
         All points out of that search range is not found
     */   
+    create_level_to_num_children(std::vector<level_t>(DIMENSION_EXACT, max_depth), max_depth);
 
     auto range = (symbol_t) pow(2, max_depth);
     auto *mdtrie = new md_trie(max_depth, trie_depth, max_tree_nodes);

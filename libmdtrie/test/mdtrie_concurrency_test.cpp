@@ -130,6 +130,7 @@ void test_osm_insert(md_trie *mdtrie, std::vector<std::vector <int32_t>> *data_v
 TEST_CASE("Test OSM datasets", "[trie]") {
 
     auto *mdtrie = new md_trie(max_depth, trie_depth, max_tree_node);
+    create_level_to_num_children(std::vector<level_t>(DIMENSION, max_depth), max_depth);
 
     unsigned int max_num_threads = std::thread::hardware_concurrency();
 
@@ -169,6 +170,7 @@ TEST_CASE("Test random insert and reads", "[trie]") {
         Test concurrent reads and writes (5 reads and 5 writes)
         See if there is error or deadlocks
     */
+    create_level_to_num_children(std::vector<level_t>(DIMENSION, max_depth), max_depth);
 
     auto *mdtrie = new md_trie(max_depth, trie_depth, max_tree_node);
 

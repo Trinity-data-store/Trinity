@@ -101,8 +101,12 @@ public:
         uint64_t total_size = sizeof(trie_node *) /*root_*/ + sizeof(uint8_t) * 2 /* level_t*/+  sizeof(uint16_t) /* preorder_t*/+ sizeof(uint16_t) /*node_n_t*/;
 
         // Include primary key size:
-        total_size += sizeof(p_key_to_treeblock_compact) + (44 * total_points_count / 64 + 1) * 8;
+        // p_key_to_treeblock_compact_size += sizeof(p_key_to_treeblock_compact) + (44 * total_points_count / 64 + 1) * 8;
+        // total_size += sizeof(p_key_to_treeblock_compact) + (44 * total_points_count / 64 + 1) * 8;
         
+        p_key_to_treeblock_compact_size += sizeof(p_key_to_treeblock_compact) + total_points_count * sizeof(uint16_t);
+        total_size += sizeof(p_key_to_treeblock_compact) + total_points_count * sizeof(uint16_t);
+
         std::queue<trie_node *> trie_node_queue;
         trie_node_queue.push(root_);
         num_trie_nodes ++;
@@ -128,6 +132,8 @@ public:
             }
         }
 
+        total_size += sizeof(uint64_t) + (44 * total_treeblock_num / 64 + 1) * 8;
+        p_key_to_treeblock_compact_size += sizeof(uint64_t) + (44 * total_treeblock_num / 64 + 1) * 8;
         return total_size;
     }
 

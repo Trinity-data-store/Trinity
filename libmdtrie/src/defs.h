@@ -74,11 +74,19 @@ n_leaves_t total_points_count = 14252681;
 
 bitmap::CompactPtrVector p_key_to_treeblock_compact(total_points_count);
 
+uint64_t treeblock_nodes_size = 0;
+uint64_t treeblock_frontier_size = 0;
+uint64_t treeblock_primary_size = 0;
+uint64_t treeblock_variable_storage = 0;
+uint64_t p_key_to_treeblock_compact_size = 0;
+uint64_t treeblock_primary_pointer_size = 0;
+uint64_t total_treeblock_num = 0;
+uint64_t single_leaf_count = 0;
+
 uint64_t trie_size = 0;
 uint64_t vector_size = 0;
-uint64_t treeblock_ptr_size = 0;
-uint64_t treeblock_nodes_size = 0;
 uint64_t total_leaf_number = 0;
+uint64_t treeblock_ptr_size = 0;
 
 TimeStamp primary_time = 0;
 class data_point;
@@ -99,6 +107,7 @@ std::vector<symbol_t> dimension_to_num_bits;
 
 void create_level_to_num_children(std::vector<level_t> dimension_bits, level_t max_level){
 
+    dimension_to_num_bits = dimension_bits;
     dimension_t num_dimensions = dimension_bits.size();
 
     for (level_t level = 0; level < max_level; level++){

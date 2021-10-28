@@ -801,7 +801,9 @@ public:
         // if (total_primary_count != primary_key_list.size())
         //     raise(SIGINT);
 
-
+        if (num_frontiers_ > 0 && !frontiers_)
+            raise(SIGINT);
+            
         return;
     }
 
@@ -841,27 +843,35 @@ public:
 
     uint64_t size() {
         
-        uint64_t total_size = sizeof(root_depth_) /*max_depth can be hard coded*/+ sizeof(max_tree_nodes_) + sizeof(num_nodes_) + sizeof(node_capacity_);
-
-        total_size += sizeof(total_nodes_bits_) + sizeof(bit_capacity_);
-
-        // Using compact representation, I just need to store one pointer
-        total_size += sizeof(tree_block *) /*+ sizeof(trie_node<DIMENSION> *) and preorder number*/;
+        total_treeblock_num ++;
+        
+        uint64_t total_size = 0;
+        total_size += sizeof(uint8_t); // root_depth_
+        total_size += sizeof(uint16_t); // node_capacity_
+        // total_size += sizeof(uint16_t); // num_nodes_
+        total_size += sizeof(uint64_t); // Either a treeblock pointer or trie node pointer + preorder number
+        treeblock_variable_storage += total_size;
 
         total_size += sizeof(primary_key_list) + ((primary_key_list.size() * 46) / 64 + 1) * 8;
+        treeblock_primary_pointer_size += sizeof(primary_key_list) + ((primary_key_list.size() * 46) / 64 + 1) * 8;
 
         for (preorder_t i = 0; i < primary_key_list.size(); i++)
         {
             total_size += primary_key_list[i].size_overhead();
+            treeblock_primary_size += primary_key_list[i].size_overhead();
+            if (primary_key_list[i].size_overhead() == 0)
+                single_leaf_count++;
         }
 
-        // total_size += (bit_capacity_ + node_capacity_) / 8 + sizeof(size_t) + 2 * sizeof(uint64_t *);
+        treeblock_nodes_size += dfuds_->size();
         total_size += dfuds_->size() /*+ sizeof(dfuds_)*/;
 
+        treeblock_frontier_size += num_frontiers_ * sizeof(tree_block *) /*Use compact pointer representation*/ + sizeof(frontiers_) /*pointer*/;
         total_size += num_frontiers_ * sizeof(tree_block *) /*Use compact pointer representation*/ + sizeof(frontiers_) /*pointer*/;
 
-        for (uint16_t i = 0; i < num_frontiers_; i++)
+        for (uint16_t i = 0; i < num_frontiers_; i++){
             total_size += ((frontier_node *) frontiers_)[i].pointer_->size();
+        }
 
         return total_size;
     }
