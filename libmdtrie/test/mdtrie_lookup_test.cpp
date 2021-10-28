@@ -59,7 +59,7 @@ void insert_for_node_path(point_array *found_points, level_t max_depth, level_t 
 
         mdtrie->insert_trie(leaf_point, n_points);
         n_points ++;
-        if (n_points > 1000000){
+        if (n_points > 100000){
             break;
         }
     }

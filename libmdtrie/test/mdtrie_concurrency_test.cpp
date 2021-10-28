@@ -127,69 +127,69 @@ void test_osm_insert(md_trie *mdtrie, std::vector<std::vector <int32_t>> *data_v
 
 }
 
-TEST_CASE("Test OSM datasets", "[trie]") {
+// TEST_CASE("Test OSM datasets", "[trie]") {
 
-    auto *mdtrie = new md_trie(max_depth, trie_depth, max_tree_node);
-    create_level_to_num_children(std::vector<level_t>(DIMENSION, max_depth), max_depth);
+//     auto *mdtrie = new md_trie(max_depth, trie_depth, max_tree_node);
+//     create_level_to_num_children(std::vector<level_t>(DIMENSION, max_depth), max_depth);
 
-    unsigned int max_num_threads = std::thread::hardware_concurrency();
+//     unsigned int max_num_threads = std::thread::hardware_concurrency();
 
-    uint8_t num_threads = 36;
+//     uint8_t num_threads = 36;
 
-    std::thread *threads = new std::thread[num_threads];
-    std::vector<std::vector <int32_t>> *data_vector = get_data_vector();
+//     std::thread *threads = new std::thread[num_threads];
+//     std::vector<std::vector <int32_t>> *data_vector = get_data_vector();
 
-    for (uint8_t i = 0; i < num_threads; i++){
-        threads[i] = std::thread(test_osm_insert, mdtrie, data_vector, num_threads, i);
-    }
+//     for (uint8_t i = 0; i < num_threads; i++){
+//         threads[i] = std::thread(test_osm_insert, mdtrie, data_vector, num_threads, i);
+//     }
 
-    for (uint8_t i = 0; i < num_threads; i++){
-        threads[i].join();
-    }
+//     for (uint8_t i = 0; i < num_threads; i++){
+//         threads[i].join();
+//     }
 
-    int32_t data_vector_size = data_vector->size();
+//     int32_t data_vector_size = data_vector->size();
 
-    for (int i = 0; i < data_vector_size; i++){
-        std::vector <int32_t> point = (* data_vector)[i];
-        auto *leaf_point = new data_point();
+//     for (int i = 0; i < data_vector_size; i++){
+//         std::vector <int32_t> point = (* data_vector)[i];
+//         auto *leaf_point = new data_point();
 
-        for (uint8_t j = 0; j < DIMENSION; j++)
-            leaf_point->set_coordinate(j, point[j]);
+//         for (uint8_t j = 0; j < DIMENSION; j++)
+//             leaf_point->set_coordinate(j, point[j]);
 
-        if (!mdtrie->check(leaf_point)){
-            raise(SIGINT);
-            mdtrie->check(leaf_point);
-            std::cout << "index: " << i << " points not found!" << std::endl;
-        }        
-    }
-}
+//         if (!mdtrie->check(leaf_point)){
+//             raise(SIGINT);
+//             mdtrie->check(leaf_point);
+//             std::cout << "index: " << i << " points not found!" << std::endl;
+//         }        
+//     }
+// }
 
-TEST_CASE("Test random insert and reads", "[trie]") {
+// TEST_CASE("Test random insert and reads", "[trie]") {
 
-    /**
-        Test concurrent reads and writes (5 reads and 5 writes)
-        See if there is error or deadlocks
-    */
-    create_level_to_num_children(std::vector<level_t>(DIMENSION, max_depth), max_depth);
+//     /**
+//         Test concurrent reads and writes (5 reads and 5 writes)
+//         See if there is error or deadlocks
+//     */
+//     create_level_to_num_children(std::vector<level_t>(DIMENSION, max_depth), max_depth);
 
-    auto *mdtrie = new md_trie(max_depth, trie_depth, max_tree_node);
+//     auto *mdtrie = new md_trie(max_depth, trie_depth, max_tree_node);
 
-    unsigned int max_num_threads = std::thread::hardware_concurrency();
+//     unsigned int max_num_threads = std::thread::hardware_concurrency();
 
-    uint8_t num_threads = 10;
+//     uint8_t num_threads = 10;
 
-    std::thread *threads = new std::thread[num_threads];
+//     std::thread *threads = new std::thread[num_threads];
 
-    for (uint8_t i = 0; i < num_threads; i++){
+//     for (uint8_t i = 0; i < num_threads; i++){
 
-        if (i % 2 == 0)
-            threads[i] = std::thread(test_random_insert, mdtrie);
-        else
-            threads[i] = std::thread(test_random_read, mdtrie);
-    }
+//         if (i % 2 == 0)
+//             threads[i] = std::thread(test_random_insert, mdtrie);
+//         else
+//             threads[i] = std::thread(test_random_read, mdtrie);
+//     }
 
-    for (uint8_t i = 0; i < num_threads; i++){
-        threads[i].join();
-    }
-}
+//     for (uint8_t i = 0; i < num_threads; i++){
+//         threads[i].join();
+//     }
+// }
 

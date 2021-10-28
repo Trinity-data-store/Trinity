@@ -15,7 +15,8 @@ bool test_range_search(n_leaves_t n_points, level_t max_depth, level_t trie_dept
         Range query random search range
         and check if random points in that search range either is 
         found correctly or not 
-    */     
+    */   
+
     create_level_to_num_children(std::vector<level_t>(DIMENSION_RANGE, max_depth), max_depth);
 
     auto range = (symbol_t) pow(2, max_depth);
@@ -50,7 +51,10 @@ bool test_range_search(n_leaves_t n_points, level_t max_depth, level_t trie_dept
             start_range->set_coordinate(i, min[i] + rand() % (max[i] - min[i] + 1));
             end_range->set_coordinate(i, start_range->get_coordinate(i) + rand() % (max[i] - start_range->get_coordinate(i) + 1));
         }
-    
+
+        // if (found_points->size() != 0)
+        //     raise(SIGINT);
+            
         mdtrie->range_search_trie(start_range, end_range, mdtrie->root(), 0, found_points);
 
         for (n_leaves_t i = 0; i < found_points->size(); i++) {
@@ -93,6 +97,10 @@ bool test_range_search(n_leaves_t n_points, level_t max_depth, level_t trie_dept
                 }
             }
         }
+
+        // if (found_points->size() < 0)
+        //     raise(SIGINT);
+
         found_points->reset();
     }
     return true;
@@ -108,6 +116,7 @@ bool test_range_search_exact(n_leaves_t n_points, level_t max_depth, level_t tri
         Check if all points in that search range is found
         All points out of that search range is not found
     */   
+
     create_level_to_num_children(std::vector<level_t>(DIMENSION_EXACT, max_depth), max_depth);
 
     auto range = (symbol_t) pow(2, max_depth);
@@ -183,12 +192,13 @@ bool test_range_search_exact(n_leaves_t n_points, level_t max_depth, level_t tri
     return true;
 }
 
-TEST_CASE("Test Exact Range Search", "[trie]") {
-    srand(static_cast<unsigned int>(time(0)));
-    REQUIRE(test_range_search_exact(1000, 10, 3, 128, 10));
-}
-
 TEST_CASE("Test Range Search", "[trie]") {
     srand(static_cast<unsigned int>(time(0)));
-    REQUIRE(test_range_search(5000, 10, 3, 128, 10, 1000));
+    REQUIRE(test_range_search(50000, 10, 3, 128, 5, 100));
+}
+
+
+TEST_CASE("Test Exact Range Search", "[trie]") {
+    srand(static_cast<unsigned int>(time(0)));
+    REQUIRE(test_range_search_exact(1000, 10, 3, 128, 3));
 }
