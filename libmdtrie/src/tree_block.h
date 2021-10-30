@@ -331,8 +331,8 @@ public:
         node_n_t original_node_pos = node_pos;
         node_n_t max_tree_nodes;
 
-        if (root_depth_ <= max_depth_ / 2) max_tree_nodes = 64;
-        else if (root_depth_ <= max_depth_ / 4 * 3) max_tree_nodes = 128;
+        if (root_depth_ <= max_depth_ / 2) max_tree_nodes = max_tree_nodes_ / 4;
+        else if (root_depth_ <= max_depth_ / 4 * 3) max_tree_nodes = max_tree_nodes_ / 2;
         else max_tree_nodes = max_tree_nodes_;
 
         if (is_osm)
@@ -1161,6 +1161,8 @@ public:
 
         if (level == max_depth_) {
 
+            // TimeStamp start = GetTimestamp();
+
             symbol_t parent_symbol = start_range->leaf_to_symbol(max_depth_ - 1);
             symbol_t tmp_symbol = dfuds_->next_symbol(0, prev_node, prev_node_pos, (1 << level_to_num_children[level - 1]) - 1, level_to_num_children[level - 1]);
 
@@ -1174,12 +1176,14 @@ public:
             {
                 auto primary_key = primary_key_list[current_primary].get(i);
  
-                auto *leaf = new data_point();
-                leaf->set(start_range->get());
+                auto *leaf = new data_point(start_range->get());
+                // leaf->set(start_range->get());
                 leaf->set_primary(primary_key);
 
                 found_points->add_leaf(leaf);
             }
+
+            // add_primary_time += GetTimestamp() - start;
             return;
         }
                                         
@@ -1202,8 +1206,15 @@ public:
         representation_t representation = start_range_symbol ^ end_range_symbol;
         representation_t neg_representation = ~representation;
 
+        TimeStamp start = GetTimestamp();
         struct data_point original_start_range = (*start_range);
         struct data_point original_end_range = (*end_range); 
+        copy_vect_time += GetTimestamp() - start;
+
+        // std::vector<point_t> original_start_range_vect = start_range->get();
+        // std::vector<point_t> original_end_range_vect = end_range->get();
+        // copy_vect_time += GetTimestamp() - start;
+
         preorder_t new_current_node;
         preorder_t new_current_node_pos = 0;
         tree_block *new_current_block;
@@ -1225,10 +1236,15 @@ public:
                 new_current_frontier = current_frontier;
                 new_current_primary = current_primary;
                 new_current_node_pos = current_node_pos;
+
+                start = GetTimestamp();
                 new_current_node = current_block->child(new_current_block, current_node, new_current_node_pos, current_symbol, level,
                                                         new_current_frontier, new_current_primary);
-
+                range_search_child_time += GetTimestamp() - start;
+                
+                start = GetTimestamp();
                 start_range->update_symbol(end_range, current_symbol, level); // NOT HERE
+                update_symbol_time += GetTimestamp() - start;
 
                 if (new_current_block != current_block){
 
@@ -1239,8 +1255,13 @@ public:
                     current_block->range_search_treeblock(start_range, end_range, current_block, level + 1, new_current_node, new_current_node_pos, current_node, current_node_pos, new_current_frontier, new_current_primary, found_points);     // NOT HERE      
                 }
 
+                start = GetTimestamp();
+                // start_range->set(original_start_range_vect);
+                // end_range->set(original_end_range_vect);
                 (*start_range) = original_start_range;
                 (*end_range) = original_end_range;    
+                copy_vect_time += GetTimestamp() - start;
+
             }
 
             current_symbol = dfuds_->next_symbol(current_symbol + 1, current_node, current_node_pos, end_range_symbol, level_to_num_children[level]); // NOT HERE

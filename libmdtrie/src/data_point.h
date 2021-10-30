@@ -16,6 +16,10 @@ public:
         coordinates_ = std::vector<point_t>(level_to_num_children[0], 0);
     }
 
+    explicit data_point(std::vector<point_t> coordinates){
+        coordinates_ = coordinates;
+    }
+
     explicit data_point(dimension_t num_dimensions){
 
         coordinates_ = std::vector<point_t>(num_dimensions, 0);

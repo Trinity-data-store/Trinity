@@ -105,6 +105,11 @@ uint64_t num_trie_nodes = 0;
 std::vector<symbol_t> level_to_num_children;
 std::vector<symbol_t> dimension_to_num_bits;
 
+uint64_t add_primary_time = 0;
+uint64_t copy_vect_time = 0;
+uint64_t update_symbol_time = 0;
+uint64_t range_search_child_time = 0;
+
 void create_level_to_num_children(std::vector<level_t> dimension_bits, level_t max_level){
 
     dimension_to_num_bits = dimension_bits;

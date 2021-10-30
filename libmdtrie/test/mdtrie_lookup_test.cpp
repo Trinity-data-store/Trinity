@@ -64,8 +64,6 @@ void insert_for_node_path(point_array *found_points, level_t max_depth, level_t 
         }
     }
 
-    
-
     auto *start_range = new data_point();
     auto *end_range = new data_point();
 

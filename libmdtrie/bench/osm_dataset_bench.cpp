@@ -10,7 +10,8 @@
 const int DIMENSION = 6; // <= 8
 level_t TRIE_DEPTH = 10;
 const symbol_t NUM_BRANCHES = pow(2, DIMENSION);
-
+uint32_t TREEBLOCK_SIZE = 1024;
+std::ofstream myfile;
 
 void insert_for_node_path(point_array *found_points, level_t max_depth, level_t trie_depth, preorder_t max_tree_node, std::vector<data_point> *all_points){
     // to-do
@@ -35,14 +36,14 @@ void insert_for_node_path(point_array *found_points, level_t max_depth, level_t 
         }
         exit(EXIT_FAILURE);
     }
-    // TimeStamp start, diff;
+
     
     n_leaves_t n_points = 0;
     uint64_t max[DIMENSION];
     uint64_t min[DIMENSION];
     n_leaves_t n_lines = 14252681;
     total_points_count = n_lines;
-    // diff = 0;
+
     tqdm bar;
     TimeStamp start, diff;
     diff = 0;
@@ -65,12 +66,7 @@ void insert_for_node_path(point_array *found_points, level_t max_depth, level_t 
    
             if (i < 8 - DIMENSION)
                 continue;
-            
-            // std::string token_string(token);
-            // std::reverse(token_string.begin(), token_string.end());
 
-            // uint64_t coordinate = std::stoull(token_string);
-            // leaf_point->set_coordinate(i - (8 - DIMENSION), coordinate);
             leaf_point->set_coordinate(i - (8 - DIMENSION), strtoul(token, &ptr, 10));
         }
 
@@ -91,37 +87,31 @@ void insert_for_node_path(point_array *found_points, level_t max_depth, level_t 
 
         (*all_points).push_back((*leaf_point));
         start = GetTimestamp();
-
-        // if (n_points == 4868)
-        //     raise(SIGINT);
-
+ 
         mdtrie->insert_trie(leaf_point, n_points);
         diff += GetTimestamp() - start;
-
-        // if (!mdtrie->check(leaf_point)){
-        //     raise(SIGINT);
-        //     mdtrie->check(leaf_point);
-        // }   
-
+ 
         n_points ++;
-        // if (n_points == 10000)
-        //     break;
     }
 
     bar.finish();
     fprintf(stderr, "dimension: %d\n", DIMENSION);
     fprintf(stderr, "Average time to insert one point: %f microseconds per operation\n", (float) diff / n_lines);
-    std::cout << "mdtrie storage: " << mdtrie->size() << " trie size: " << trie_size << " num trie nodes" << num_trie_nodes << std::endl;
-    std::cout << "treeblock_nodes_size: " << treeblock_nodes_size << std::endl;
-    std::cout << "treeblock_frontier_size: " << treeblock_frontier_size << std::endl;
-    std::cout << "treeblock_primary_size: " << treeblock_primary_size << std::endl;
-    std::cout << "treeblock_primary_pointer_size: " << treeblock_primary_pointer_size << std::endl;
-    std::cout << "treeblock_variable_storage: " << treeblock_variable_storage << std::endl;
-    std::cout << "p_key_to_treeblock_compact: " << p_key_to_treeblock_compact_size << std::endl;
-    std::cout << "total_treeblock_num: " << total_treeblock_num << std::endl;
-    std::cout << "single_leaf_count: " << single_leaf_count << std::endl;
+    myfile << "Insertion Latency: " << (float) diff / n_lines << std::endl;
+    uint64_t total_size = mdtrie->size();
+    myfile << "mdtrie storage: " << total_size << std::endl << "trie size: " << trie_size << " num trie nodes: " << num_trie_nodes << std::endl;
+    myfile << "treeblock_nodes_size: " << treeblock_nodes_size << std::endl;
+    myfile << "treeblock_frontier_size: " << treeblock_frontier_size << std::endl;
+    myfile << "treeblock_primary_size: " << treeblock_primary_size << std::endl;
+    myfile << "treeblock_primary_pointer_size: " << treeblock_primary_pointer_size << std::endl;
+    myfile << "treeblock_variable_storage: " << treeblock_variable_storage << std::endl;
+    myfile << "p_key_to_treeblock_compact: " << p_key_to_treeblock_compact_size << std::endl;
+    myfile << "total_treeblock_num: " << total_treeblock_num << std::endl;
+    myfile << "single_leaf_count: " << single_leaf_count << std::endl;
+
+    myfile << "Without Primary key lookup support: " << total_size - treeblock_primary_size - treeblock_primary_pointer_size - p_key_to_treeblock_compact_size << std::endl;
     // raise(SIGINT);
-    exit(0);
+    // exit(0);
 /*
     tqdm bar2;
     TimeStamp check_diff = 0;
@@ -184,12 +174,14 @@ void insert_for_node_path(point_array *found_points, level_t max_depth, level_t 
     mdtrie->range_search_trie(start_range, end_range, mdtrie->root(), 0, found_points);
     diff = GetTimestamp() - start;
 
-    std::cout << "found_pts size: " << found_points->size() << " diff: " << diff << std::endl;
-    std::cout << "Latency: " << (float) diff / found_points->size() << std::endl;
-    // exit(0);
+    myfile << "found_pts size: " << found_points->size() << std::endl;
+    myfile << "Range Search Latency: " << (float) diff / found_points->size() << std::endl;
+    std::cout << "found_pts size: " << found_points->size() << std::endl;
+    std::cout << "Range Search Latency: " << (float) diff / found_points->size() << std::endl;
+    std::cout << "add_primary_time: " << (float) add_primary_time / found_points->size() << std::endl;
+    std::cout << "diff: " << diff << " copy_vect_time: " << copy_vect_time << " update_symbol_time: " << update_symbol_time << " range_search_child_time: " << range_search_child_time << std::endl;
+    exit(0);
 
-    // raise(SIGINT);
-    // mdtrie->check(found_points->at(6860));
     return;  
 
 }
@@ -204,11 +196,6 @@ data_point *profile_func(tree_block *parent_treeblock, node_t parent_node, symbo
 }
 
 void test_node_path_only(level_t max_depth, level_t trie_depth, preorder_t max_tree_node, std::vector<level_t> dimension_bits){
-
-   
-
-    // std::vector<level_t> dimension_bits = {6, 6, 6, 12, 32, 32};
-    // std::vector<level_t> dimension_bits = {5, 5, 4, 11, 32, 32}; //TODO: fix BUG in lookup given primary key
     
     dimension_to_num_bits = dimension_bits;
     create_level_to_num_children(dimension_bits, max_depth);
@@ -232,7 +219,7 @@ void test_node_path_only(level_t max_depth, level_t trie_depth, preorder_t max_t
 
         n_leaves_t returned_primary_key = point->read_primary();
 
-        data_point current_point = (*all_points)[returned_primary_key];
+        // data_point current_point = (*all_points)[returned_primary_key];
 
         // Lookup from primary key
         symbol_t *node_path_from_primary = (symbol_t *)malloc((max_depth + 1) * sizeof(symbol_t));
@@ -260,43 +247,100 @@ void test_node_path_only(level_t max_depth, level_t trie_depth, preorder_t max_t
     bar.finish();
 
     // fprintf(stderr, "Time per Checking: %f us, out of %ld points\n", (float)diff / checked_points_size, found_points->size());
-    fprintf(stderr, "Time per Primary Key lookup: %f us, out of %ld points\n", (float)diff_primary / checked_points_size, checked_points_size);
+    // fprintf(stderr, "Time per Primary Key lookup: %f us, out of %ld points\n", (float)diff_primary / checked_points_size, checked_points_size);
+    myfile << "Lookup Latency: " << (float)diff_primary / checked_points_size << std::endl;
      
 }
 
+void reset_values(){
+
+    treeblock_nodes_size = 0;
+    treeblock_frontier_size = 0;
+    treeblock_primary_size = 0;
+    treeblock_variable_storage = 0;
+    p_key_to_treeblock_compact_size = 0;
+    treeblock_primary_pointer_size = 0;
+    total_treeblock_num = 0;
+    single_leaf_count = 0;
+    trie_size = 0;
+    vector_size = 0;
+    total_leaf_number = 0;
+    treeblock_ptr_size = 0;    
+}
+
 int main() {
-    is_osm = true;
-    // test_node_path_only(32, 10, 512);
 
+    // myfile.open("osm_latency_storage_tradeoff_loop.txt", std::ios_base::app);
+    // myfile.open("osm_latency_storage_tradeoff_new.txt", std::ios_base::app);
+    // myfile.open("osm_before_after.txt", std::ios_base::app);
+    myfile.open("range search.txt");
+    std::vector<level_t> dimension_bits = {8, 8, 8, 16, 32, 32};
     // std::vector<level_t> dimension_bits = {32, 32, 32, 32, 32, 32};
-    // TRIE_DEPTH = 4;
-    // std::cout << TRIE_DEPTH << std::endl;
-    // test_node_path_only(32, TRIE_DEPTH, 512, dimension_bits);
+    TREEBLOCK_SIZE = 512;
+    TRIE_DEPTH = 6;
+    is_osm = true;
 
-    // TRIE_DEPTH = 8;
-    // std::cout << TRIE_DEPTH << std::endl;
-    // test_node_path_only(32, TRIE_DEPTH, 512, dimension_bits);
+    myfile << "trie depth: " << TRIE_DEPTH << std::endl;
+    myfile << "treeblock sizes: " << TREEBLOCK_SIZE << std::endl;
+    test_node_path_only(32, TRIE_DEPTH, TREEBLOCK_SIZE, dimension_bits);
+    myfile << std::endl;
+    reset_values();      
 
-    // TRIE_DEPTH = 1;
-    // std::cout << TRIE_DEPTH << std::endl;
-    // test_node_path_only(32, TRIE_DEPTH, 512, dimension_bits);
 
-    // TRIE_DEPTH = 5;
-    // std::cout << TRIE_DEPTH << std::endl;
-    // test_node_path_only(32, TRIE_DEPTH, 512, dimension_bits);
+    // TRIE_DEPTH = 2;
+    // TREEBLOCK_SIZE = 256;
+    // myfile << "trie depth: " << TRIE_DEPTH << std::endl;
+    // myfile << "treeblock sizes: " << TREEBLOCK_SIZE << std::endl;
+    // test_node_path_only(32, TRIE_DEPTH, TREEBLOCK_SIZE, dimension_bits);
+    // myfile << std::endl;
+    // reset_values();
 
-    // std::vector<level_t> dimension_bits = {6, 6, 6, 12, 32, 32};
-    // TRIE_DEPTH = 8;
-    // std::cout << TRIE_DEPTH << std::endl;
-    // test_node_path_only(32, TRIE_DEPTH, 512, dimension_bits);
+    // exit(0);
+    // ********************************************************
 
-    // TRIE_DEPTH = 10;
-    // std::cout << TRIE_DEPTH << std::endl;
-    // test_node_path_only(32, TRIE_DEPTH, 512, dimension_bits);  
+    // TRIE_DEPTH = 6;
+    // TREEBLOCK_SIZE = 2048;
+    // myfile << "trie depth: " << TRIE_DEPTH << std::endl;
+    // myfile << "treeblock sizes: " << TREEBLOCK_SIZE << std::endl;
+    // test_node_path_only(32, TRIE_DEPTH, TREEBLOCK_SIZE, dimension_bits);
+    // myfile << std::endl;
+    // reset_values();
+ 
+    // ********************************************************
 
-    std::vector<level_t> dimension_bits = {6, 6, 6, 12, 32, 32};
-    TRIE_DEPTH = 4;
-    std::cout << TRIE_DEPTH << std::endl;
-    test_node_path_only(32, TRIE_DEPTH, 1024, dimension_bits);
+/*
+    is_osm = true;
+    bool skipped = true;
+    for (TREEBLOCK_SIZE = 256; TREEBLOCK_SIZE <= 2048; TREEBLOCK_SIZE *= 2) // 3
+    {  
+        for (TRIE_DEPTH = 2; TRIE_DEPTH <= 8; TRIE_DEPTH += 2) // 4
+        { 
+            if (TRIE_DEPTH == 4 && TREEBLOCK_SIZE == 1024)
+                skipped = false;
+
+            if (skipped)
+                continue;
+
+            myfile << "trie depth: " << TRIE_DEPTH << std::endl;
+            myfile << "treeblock sizes: " << TREEBLOCK_SIZE << std::endl;
+            test_node_path_only(32, TRIE_DEPTH, TREEBLOCK_SIZE, dimension_bits);
+            myfile << std::endl;
+            reset_values();            
+        }
+    }
+
+*/
+    // is_osm = true;
+    // TREEBLOCK_SIZE = 512;
+    // for (TRIE_DEPTH = 2; TRIE_DEPTH <= 8; TRIE_DEPTH += 2) // 4
+    // { 
+    //     myfile << "trie depth: " << TRIE_DEPTH << std::endl;
+    //     myfile << "treeblock sizes: " << TREEBLOCK_SIZE << std::endl;
+    //     test_node_path_only(32, TRIE_DEPTH, TREEBLOCK_SIZE, dimension_bits);
+    //     myfile << std::endl;
+    //     reset_values();            
+    // }    
+
+    // myfile.close();
 
 }
