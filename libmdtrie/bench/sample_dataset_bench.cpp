@@ -196,7 +196,7 @@ void test_node_path_only(level_t max_depth, level_t trie_depth, preorder_t max_t
 
         n_leaves_t returned_primary_key = point->read_primary();
 
-        data_point current_point = (*all_points)[returned_primary_key];
+        // data_point current_point = (*all_points)[returned_primary_key];
 
         // Lookup from primary key
 

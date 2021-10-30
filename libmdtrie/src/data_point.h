@@ -7,31 +7,38 @@
 #include "compressed_bitmap.h"
 #include <bit>
 #include <bitset>
+#include <array>
 
 class data_point {
 
 public:
     
     explicit data_point(){
-        coordinates_ = std::vector<point_t>(level_to_num_children[0], 0);
+        // coordinates_ = std::vector<point_t>(level_to_num_children[0], 0);
     }
 
-    explicit data_point(std::vector<point_t> coordinates){
-        coordinates_ = coordinates;
-    }
+    // explicit data_point(std::vector<point_t> coordinates){
+    //     // coordinates_ = coordinates;
+    // }
 
-    explicit data_point(dimension_t num_dimensions){
+    // explicit data_point(dimension_t num_dimensions){
 
-        coordinates_ = std::vector<point_t>(num_dimensions, 0);
-    };
+    //     coordinates_ = std::vector<point_t>(num_dimensions, 0);
+    // };
 
-    inline std::vector<point_t> get(){
+    inline point_t *get(){
 
         return coordinates_;
     }
 
-    inline void set(std::vector<point_t> coordinates){
-        coordinates_ = coordinates;
+    inline void set(point_t *coordinates){
+
+        // std::copy(std::begin(coordinates), std::end(coordinates), std::begin(coordinates_));
+        // coordinates_ = coordinates;
+        // std::copy(std::begin(coordinates), std::end(coordinates), std::begin(coordinates_));
+
+        memcpy(coordinates_, coordinates, sizeof(point_t) * DATA_DIMENSION);
+        // coordinates_ = coordinates;
     }
 
     inline point_t get_coordinate(dimension_t index){
@@ -58,7 +65,7 @@ public:
     inline symbol_t leaf_to_symbol(level_t level) {
 
         symbol_t result = 0;
-        dimension_t dimension = coordinates_.size();
+        dimension_t dimension = DATA_DIMENSION;
 
         for (size_t i = 0; i < dimension; i++) {
 
@@ -90,7 +97,7 @@ public:
 
     inline void update_symbol(data_point *end_range, symbol_t current_symbol, level_t level) {
         
-        dimension_t dimension = coordinates_.size();
+        dimension_t dimension = DATA_DIMENSION;
         for (size_t j = 0; j < dimension; j++) {
 
             if (dimension_to_num_bits[j] <= level)
@@ -131,7 +138,9 @@ public:
 
 private:
 
-    std::vector<point_t> coordinates_;
+    // std::vector<point_t> coordinates_;
+    point_t coordinates_[DATA_DIMENSION] = {0};
+    // std::array<point_t, DATA_DIMENSION>coordinates_ = {};
     n_leaves_t primary_key_ = 0;
 
 };

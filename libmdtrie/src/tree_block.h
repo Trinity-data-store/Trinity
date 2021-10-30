@@ -1130,9 +1130,9 @@ public:
         return parent_symbol;
     }
 
-    data_point *node_path_to_coordinates(symbol_t *node_path, dimension_t dimension){
+    data_point *node_path_to_coordinates(symbol_t *node_path, dimension_t dimension) const{
 
-        auto coordinates = new data_point(dimension);
+        auto coordinates = new data_point();
 
         for (level_t i = 0; i < max_depth_; i++){
             symbol_t current_symbol = node_path[i];
@@ -1176,8 +1176,8 @@ public:
             {
                 auto primary_key = primary_key_list[current_primary].get(i);
  
-                auto *leaf = new data_point(start_range->get());
-                // leaf->set(start_range->get());
+                auto *leaf = new data_point();
+                leaf->set(start_range->get());
                 leaf->set_primary(primary_key);
 
                 found_points->add_leaf(leaf);

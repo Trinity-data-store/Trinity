@@ -102,13 +102,15 @@ uint64_t update_range_latency = 0;
 uint64_t child_latency = 0;
 uint64_t num_trie_nodes = 0;
 
-std::vector<symbol_t> level_to_num_children;
+// std::vector<symbol_t> level_to_num_children;
+symbol_t level_to_num_children[32] = {0};
 std::vector<symbol_t> dimension_to_num_bits;
 
 uint64_t add_primary_time = 0;
 uint64_t copy_vect_time = 0;
 uint64_t update_symbol_time = 0;
 uint64_t range_search_child_time = 0;
+const dimension_t DATA_DIMENSION = 6;
 
 void create_level_to_num_children(std::vector<level_t> dimension_bits, level_t max_level){
 
@@ -123,7 +125,8 @@ void create_level_to_num_children(std::vector<level_t> dimension_bits, level_t m
             if (level + 1 > dimension_bits[j])
                 dimension_left --;
         }
-        level_to_num_children.push_back(dimension_left);
+        // level_to_num_children.push_back(dimension_left);
+        level_to_num_children[level] = dimension_left;
     }
 
     // for (level_t level = 0; level < max_level; level++){

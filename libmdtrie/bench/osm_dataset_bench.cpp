@@ -17,7 +17,7 @@ void insert_for_node_path(point_array *found_points, level_t max_depth, level_t 
     // to-do
     
     auto *mdtrie = new md_trie(max_depth, trie_depth, max_tree_node);
-    auto *leaf_point = new data_point(level_to_num_children[0]);
+    auto *leaf_point = new data_point();
 
     char *line = nullptr;
     size_t len = 0;
@@ -92,6 +92,8 @@ void insert_for_node_path(point_array *found_points, level_t max_depth, level_t 
         diff += GetTimestamp() - start;
  
         n_points ++;
+        // if (n_points == 1000000)
+        //     break;
     }
 
     bar.finish();
@@ -99,6 +101,7 @@ void insert_for_node_path(point_array *found_points, level_t max_depth, level_t 
     fprintf(stderr, "Average time to insert one point: %f microseconds per operation\n", (float) diff / n_lines);
     myfile << "Insertion Latency: " << (float) diff / n_lines << std::endl;
     uint64_t total_size = mdtrie->size();
+    std::cout << "mdtrie storage: " << total_size << std::endl;
     myfile << "mdtrie storage: " << total_size << std::endl << "trie size: " << trie_size << " num trie nodes: " << num_trie_nodes << std::endl;
     myfile << "treeblock_nodes_size: " << treeblock_nodes_size << std::endl;
     myfile << "treeblock_frontier_size: " << treeblock_frontier_size << std::endl;
@@ -131,8 +134,8 @@ void insert_for_node_path(point_array *found_points, level_t max_depth, level_t 
 
 */
 
-    auto *start_range = new data_point(DIMENSION);
-    auto *end_range = new data_point(DIMENSION);
+    auto *start_range = new data_point();
+    auto *end_range = new data_point();
 
 /*
     int itr = 0;
@@ -140,8 +143,8 @@ void insert_for_node_path(point_array *found_points, level_t max_depth, level_t 
     uint64_t search_volume = 1;
     srand(time(NULL));
     while (itr < 300){
-        if (itr % 20 == 0)
-            std::cout << itr << std::endl;
+        // if (itr % 20 == 0)
+        //     std::cout << itr << std::endl;
         for (int j = 0; j < DIMENSION; j++){
 
             start_range->set_coordinate(j, min[j] + (max[j] - min[j] + 1) / 5 * (rand() % 5));
@@ -178,9 +181,9 @@ void insert_for_node_path(point_array *found_points, level_t max_depth, level_t 
     myfile << "Range Search Latency: " << (float) diff / found_points->size() << std::endl;
     std::cout << "found_pts size: " << found_points->size() << std::endl;
     std::cout << "Range Search Latency: " << (float) diff / found_points->size() << std::endl;
-    std::cout << "add_primary_time: " << (float) add_primary_time / found_points->size() << std::endl;
-    std::cout << "diff: " << diff << " copy_vect_time: " << copy_vect_time << " update_symbol_time: " << update_symbol_time << " range_search_child_time: " << range_search_child_time << std::endl;
-    exit(0);
+    // std::cout << "add_primary_time: " << (float) add_primary_time / found_points->size() << std::endl;
+    // std::cout << "diff: " << diff << " copy_vect_time: " << copy_vect_time << " update_symbol_time: " << update_symbol_time << " range_search_child_time: " << range_search_child_time << std::endl;
+    // exit(0);
 
     return;  
 
@@ -228,16 +231,20 @@ void test_node_path_only(level_t max_depth, level_t trie_depth, preorder_t max_t
         tree_block *t_ptr = (tree_block *) (p_key_to_treeblock_compact.At(returned_primary_key));
         
         start = GetTimestamp();
+
         symbol_t parent_symbol_from_primary = t_ptr->get_node_path_primary_key(returned_primary_key, node_path_from_primary);
         node_path_from_primary[max_depth - 1] = parent_symbol_from_primary;
 
-        auto returned_coordinates = t_ptr->node_path_to_coordinates(node_path_from_primary, DIMENSION);
+        data_point *returned_coordinates = t_ptr->node_path_to_coordinates(node_path_from_primary, DIMENSION);
+        // returned_coordinates = t_ptr->node_path_to_coordinates(node_path_from_primary, DIMENSION);
 
         diff_primary += GetTimestamp() - start;
 
         for (dimension_t j = 0; j < DIMENSION; j++){
             if (returned_coordinates->get_coordinate(j) != point->get_coordinate(j)){
                 raise(SIGINT);
+
+                returned_coordinates = t_ptr->node_path_to_coordinates(node_path_from_primary, DIMENSION);
             }
         }    
 
@@ -249,6 +256,7 @@ void test_node_path_only(level_t max_depth, level_t trie_depth, preorder_t max_t
     // fprintf(stderr, "Time per Checking: %f us, out of %ld points\n", (float)diff / checked_points_size, found_points->size());
     // fprintf(stderr, "Time per Primary Key lookup: %f us, out of %ld points\n", (float)diff_primary / checked_points_size, checked_points_size);
     myfile << "Lookup Latency: " << (float)diff_primary / checked_points_size << std::endl;
+    std::cout << "Lookup Latency: " << (float)diff_primary / checked_points_size << std::endl;
      
 }
 
