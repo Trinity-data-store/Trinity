@@ -151,51 +151,64 @@ class Bitmap {
   Bitmap(size_type num_bits) {
     // TODO： change it to vector
 
-    data_ = std::vector<data_type>(BITS2BLOCKS(num_bits), 0);
+    // data_ = std::vector<data_type>(BITS2BLOCKS(num_bits), 0);
     // data_.reserve(BITS2BLOCKS(num_bits));
     // std::fill(data_.begin(), data_.end(), 0);
     // data_ = (data_type *)calloc(BITS2BLOCKS(num_bits), sizeof(data_type));
     // data_ = new data_type[BITS2BLOCKS(num_bits)]();
-    size_ = num_bits;
+    // size_ = num_bits;
+
+    Bitmap_Init(num_bits);
   }
 
   void Bitmap_Init(size_type num_bits){
 
     // raise(SIGINT);
-    data_ = std::vector<data_type>(BITS2BLOCKS(num_bits), 0);
-    // data_.reserve(BITS2BLOCKS(num_bits));
-    // std::fill(data_.begin(), data_.end(), 0);
-    // data_ = (data_type *)calloc(BITS2BLOCKS(num_bits), sizeof(data_type));
-    // data_ = new data_type[BITS2BLOCKS(num_bits)]();
-    size_ = num_bits;
-        
+    // data_ = std::vector<data_type>(BITS2BLOCKS(num_bits), 0);
+    // // data_.reserve(BITS2BLOCKS(num_bits));
+    // // std::fill(data_.begin(), data_.end(), 0);
+    // // data_ = (data_type *)calloc(BITS2BLOCKS(num_bits), sizeof(data_type));
+    // // data_ = new data_type[BITS2BLOCKS(num_bits)]();
+    // size_ = num_bits;
+    data_ = static_cast<data_type *>(malloc(BITS2BLOCKS(num_bits) * sizeof(data_type)));
+    size_ = num_bits;        
   }
+
+  void Resize(size_type num_bits) {
+    size_type target = BITS2BLOCKS(num_bits);
+    if (target > BITS2BLOCKS(size_))
+      data_ = static_cast<data_type *>(realloc(data_, target * sizeof(data_type)));
+    size_ = num_bits;
+  }
+
 
   void Realloc_increase(size_type num_bits){
 
     // TimeStamp start = GetTimestamp();
     // TODO： here allocate more memory than needed
-    if (BITS2BLOCKS(size_ + num_bits + 1) == BITS2BLOCKS(size_)){
+    // if (BITS2BLOCKS(size_ + num_bits + 1) == BITS2BLOCKS(size_)){
       
-      size_ += num_bits;
-      SetValPos(size_ - num_bits, 0, num_bits);
-      return;
-    }
-
-    // num_bits always < 32?
-    data_.push_back(0);
-    
-    // data_.resize(BITS2BLOCKS(size_ + num_bits + 1), 0);
-    // for (unsigned int i = BITS2BLOCKS(size_) + 1; i <= BITS2BLOCKS(size_ + num_bits + 1); i++){
-    //   data_.push_back(0);
+    //   size_ += num_bits;
+    //   SetValPos(size_ - num_bits, 0, num_bits);
+    //   return;
     // }
-    // data_ = (data_type *)realloc(data_, BITS2BLOCKS(size_ + num_bits + 1) * sizeof(data_type));
-    // memset(data_ + BITS2BLOCKS(size_), 0, BITS2BLOCKS(size_ + num_bits + 1) - BITS2BLOCKS(size_));
-    // data_[BITS2BLOCKS(size_ + num_bits + 1) - 1] = 0;
 
-    size_ += num_bits;
-    SetValPos(size_ - num_bits, 0, num_bits);
+    // // num_bits always < 32?
+    // data_.push_back(0);
+    
+    // // data_.resize(BITS2BLOCKS(size_ + num_bits + 1), 0);
+    // // for (unsigned int i = BITS2BLOCKS(size_) + 1; i <= BITS2BLOCKS(size_ + num_bits + 1); i++){
+    // //   data_.push_back(0);
+    // // }
+    // // data_ = (data_type *)realloc(data_, BITS2BLOCKS(size_ + num_bits + 1) * sizeof(data_type));
+    // // memset(data_ + BITS2BLOCKS(size_), 0, BITS2BLOCKS(size_ + num_bits + 1) - BITS2BLOCKS(size_));
+    // // data_[BITS2BLOCKS(size_ + num_bits + 1) - 1] = 0;
+
+    // size_ += num_bits;
+    // SetValPos(size_ - num_bits, 0, num_bits);
     // realloc_time += GetTimestamp() - start;
+
+    Resize(size_ + num_bits);
   }
 
   virtual ~Bitmap() = default;
@@ -207,10 +220,10 @@ class Bitmap {
   //   size_ = 0;
   // }
 
-  // Getters
-  std::vector<data_type> GetData() {
-    return data_;
-  }
+  // // Getters
+  // std::vector<data_type> GetData() {
+  //   return data_;
+  // }
 
   size_type GetSizeInBits() {
     return size_;
@@ -221,9 +234,14 @@ class Bitmap {
   }
 
   // Bit operations
+  // void Clear() {
+  //   std::fill(data_.begin(), data_.end(), 0);
+  // }
+
   void Clear() {
-    std::fill(data_.begin(), data_.end(), 0);
+    memset((void *) data_, 0, BITS2BLOCKS(size_) * sizeof(uint64_t));
   }
+
 
   void SetBit(pos_type i) {
     SETBITVAL(data_, i);
@@ -271,38 +289,38 @@ class Bitmap {
   }
 
   // Serialization/De-serialization
-  // virtual size_type Serialize(std::ostream& out) {
-  //   size_t out_size = 0;
+  virtual size_type Serialize(std::ostream& out) {
+    size_t out_size = 0;
 
-  //   out.write(reinterpret_cast<const char *>(&size_), sizeof(size_type));
-  //   out_size += sizeof(size_type);
+    out.write(reinterpret_cast<const char *>(&size_), sizeof(size_type));
+    out_size += sizeof(size_type);
 
-  //   out.write(reinterpret_cast<const char *>(data_),
-  //             sizeof(data_type) * BITS2BLOCKS(size_));
-  //   out_size += (BITS2BLOCKS(size_) * sizeof(uint64_t));
+    out.write(reinterpret_cast<const char *>(data_),
+              sizeof(data_type) * BITS2BLOCKS(size_));
+    out_size += (BITS2BLOCKS(size_) * sizeof(uint64_t));
 
-  //   return out_size;
-  // }
+    return out_size;
+  }
 
-  // virtual size_type Deserialize(std::istream& in) {
-  //   size_t in_size = 0;
+  virtual size_type Deserialize(std::istream& in) {
+    size_t in_size = 0;
 
-  //   in.read(reinterpret_cast<char *>(&size_), sizeof(size_type));
-  //   in_size += sizeof(size_type);
+    in.read(reinterpret_cast<char *>(&size_), sizeof(size_type));
+    in_size += sizeof(size_type);
 
-  //   data_ = new data_type[BITS2BLOCKS(size_)];
-  //   in.read(reinterpret_cast<char *>(data_),
-  //   BITS2BLOCKS(size_) * sizeof(data_type));
-  //   in_size += (BITS2BLOCKS(size_) * sizeof(data_type));
+    data_ = new data_type[BITS2BLOCKS(size_)];
+    in.read(reinterpret_cast<char *>(data_),
+    BITS2BLOCKS(size_) * sizeof(data_type));
+    in_size += (BITS2BLOCKS(size_) * sizeof(data_type));
 
-  //   return in_size;
-  // }
+    return in_size;
+  }
 
  protected:
   // Data members
-  std::vector<data_type> data_;
-  // data_type *data_;
-  size_type size_;
+  // std::vector<data_type> data_;
+  data_type *data_{};
+  size_type size_{};
 };
 
 }

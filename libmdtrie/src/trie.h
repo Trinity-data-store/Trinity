@@ -178,6 +178,54 @@ public:
 
     }
     
+    virtual size_t Serialize(std::ostream& out) {
+
+        size_t out_size = 0;
+        
+        // trie_node *root_ = nullptr;
+        out.write(reinterpret_cast<const char *>(&root_), sizeof(trie_node *));
+        out_size += sizeof(trie_node *);     
+
+        // level_t max_depth_;
+        out.write(reinterpret_cast<const char *>(&max_depth_), sizeof(level_t));
+        out_size += sizeof(level_t);      
+
+        // level_t trie_depth_;
+        out.write(reinterpret_cast<const char *>(&trie_depth_), sizeof(level_t));
+        out_size += sizeof(level_t);          
+
+        // node_n_t initial_tree_capacity_;
+        out.write(reinterpret_cast<const char *>(&initial_tree_capacity_), sizeof(node_n_t));
+        out_size += sizeof(node_n_t);         
+
+        // preorder_t max_tree_nodes_;
+        out.write(reinterpret_cast<const char *>(&max_tree_nodes_), sizeof(preorder_t));
+        out_size += sizeof(preorder_t);         
+
+        std::queue<trie_node *> trie_node_queue;
+        trie_node_queue.push(root_);
+
+        while (!trie_node_queue.empty()){
+
+            trie_node *current_node = trie_node_queue.front();
+            trie_node_queue.pop();
+            out_size += current_node->Serialize(out);
+            
+            if (!current_node->is_leaf()) {
+                for (symbol_t i = 0; i < current_node->get_num_children(); i++)
+                {
+                    if (current_node->get_child(i)) {
+                        trie_node_queue.push(current_node->get_child(i));
+                    }
+                }
+            }
+            else {
+                out_size += current_node->get_block()->Serialize(out);
+            }
+        }
+
+        return out_size;
+    }
 
 private:
     trie_node *root_ = nullptr;

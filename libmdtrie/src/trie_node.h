@@ -86,6 +86,33 @@ public:
         return num_children_;
     }
 
+    virtual size_t Serialize(std::ostream& out) {
+
+        size_t out_size = 0;
+
+        // bool is_leaf_;
+        out.write(reinterpret_cast<const char *>(&is_leaf_), sizeof(bool));
+        out_size += sizeof(bool);         
+
+        // void *trie_or_treeblock_ptr_ = NULL;
+        out.write(reinterpret_cast<const char *>(&trie_or_treeblock_ptr_), sizeof(uint64_t));
+        out_size += sizeof(uint64_t);
+
+        // trie_node *parent_trie_node_;
+        out.write(reinterpret_cast<const char *>(&parent_trie_node_), sizeof(trie_node *));
+        out_size += sizeof(trie_node *);
+
+        // symbol_t parent_symbol_ = 0; 
+        out.write(reinterpret_cast<const char *>(&parent_symbol_), sizeof(symbol_t));
+        out_size += sizeof(symbol_t);           
+
+        // dimension_t num_children_ = 0;
+        out.write(reinterpret_cast<const char *>(&num_children_), sizeof(dimension_t));
+        out_size += sizeof(dimension_t);          
+
+        return out_size;
+    } 
+
 private:
 
     bool is_leaf_ = false;

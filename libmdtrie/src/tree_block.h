@@ -295,10 +295,10 @@ public:
             current_primary = 0;
             node_t temp_node = 0;
             preorder_t temp_node_pos = 0;
-            p->mutex.lock();
+
             current_node = p->skip_children_subtree(temp_node, temp_node_pos, symbol, current_level, current_frontier, current_primary);
             node_pos = temp_node_pos;
-            p->mutex.unlock();
+
         } else {
             current_node = skip_children_subtree(node, node_pos, symbol, current_level, current_frontier, current_primary);
         }
@@ -1234,21 +1234,15 @@ public:
     
     void insert_primary_key_at_present_index(n_leaves_t index, n_leaves_t primary_key){
 
-        mutex_p_key.lock();
-
         p_key_to_treeblock_compact.Set(primary_key, this);
 
         primary_key_list[index].push(primary_key);
 
         primary_key++;
         
-        mutex_p_key.unlock();                
-
     }
 
     void insert_primary_key_at_index(n_leaves_t index, n_leaves_t primary_key){
-
-        mutex_p_key.lock();
 
         p_key_to_treeblock_compact.Set(primary_key, this);
 
@@ -1259,8 +1253,85 @@ public:
 
         primary_key++;
 
-        mutex_p_key.unlock();
     }
+
+
+    virtual size_t Serialize(std::ostream& out) {
+        size_t out_size = 0;
+
+        // node_n_t max_tree_nodes_;
+        out.write(reinterpret_cast<const char *>(&max_tree_nodes_), sizeof(node_n_t));
+        out_size += sizeof(node_n_t);
+
+        // level_t root_depth_;
+        out.write(reinterpret_cast<const char *>(&root_depth_), sizeof(level_t));
+        out_size += sizeof(level_t);
+
+        // node_n_t num_nodes_;
+        out.write(reinterpret_cast<const char *>(&num_nodes_), sizeof(node_n_t));
+        out_size += sizeof(node_n_t);        
+
+        // preorder_t total_nodes_bits_;
+        out.write(reinterpret_cast<const char *>(&total_nodes_bits_), sizeof(preorder_t));
+        out_size += sizeof(preorder_t);         
+
+        // node_n_t node_capacity_;
+        out.write(reinterpret_cast<const char *>(&node_capacity_), sizeof(node_n_t));
+        out_size += sizeof(node_n_t);     
+
+        // node_n_t bit_capacity_;
+        out.write(reinterpret_cast<const char *>(&bit_capacity_), sizeof(node_n_t));
+        out_size += sizeof(node_n_t);          
+
+        // level_t max_depth_;
+        out.write(reinterpret_cast<const char *>(&max_depth_), sizeof(level_t));
+        out_size += sizeof(level_t);
+
+        // compressed_bitmap::compressed_bitmap *dfuds_{};
+        out_size += dfuds_->Serialize(out); 
+
+        // frontier_node *frontiers_ = nullptr; 
+        out.write(reinterpret_cast<const char *>(frontiers_),
+                    sizeof(frontier_node) * num_frontiers_);        
+        out_size += (num_frontiers_ * sizeof(frontier_node));
+
+        // node_n_t num_frontiers_;
+        out.write(reinterpret_cast<const char *>(&num_frontiers_), sizeof(node_n_t));
+        out_size += sizeof(node_n_t);    
+
+        // preorder_t previous_p_key_;
+        out.write(reinterpret_cast<const char *>(&previous_p_key_), sizeof(preorder_t));
+        out_size += sizeof(preorder_t);          
+
+        //  tree_block *parent_tree_block_
+        out.write(reinterpret_cast<const char *>(&parent_tree_block_), sizeof(tree_block *));
+        out_size += sizeof(tree_block *);          
+
+        //  trie_node *parent_trie_node_
+        out.write(reinterpret_cast<const char *>(&parent_trie_node_), sizeof(trie_node *));
+        out_size += sizeof(trie_node *);     
+
+        // preorder_t treeblock_frontier_num_ = 0;
+        out.write(reinterpret_cast<const char *>(&treeblock_frontier_num_), sizeof(preorder_t));
+        out_size += sizeof(preorder_t);    
+
+        // std::vector<bits::compact_ptr> primary_key_list;
+        auto primary_key_list_size = primary_key_list.size();
+        out.write(reinterpret_cast<char const*>(&primary_key_list_size), sizeof(primary_key_list_size));
+        out_size += sizeof(primary_key_list_size);
+
+        out.write(reinterpret_cast<char const*>(primary_key_list.data()), primary_key_list_size * sizeof(bits::compact_ptr));
+        out_size += primary_key_list_size * sizeof(bits::compact_ptr);
+
+        for (uint16_t i = 0; i < primary_key_list_size; i++){
+            out_size += primary_key_list[i].Serialize(out);
+        }
+
+        return out_size;
+    }
+
+
+
 
 private:
 
@@ -1283,7 +1354,6 @@ private:
     preorder_t treeblock_frontier_num_ = 0;
 
     std::vector<bits::compact_ptr> primary_key_list;
-    std::shared_mutex mutex;
 };
 
 #endif //MD_TRIE_TREE_BLOCK_H

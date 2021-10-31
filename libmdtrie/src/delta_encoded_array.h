@@ -24,25 +24,35 @@ class DeltaEncodedArray {
   virtual ~DeltaEncodedArray() = default;
 
   // Serialization and De-serialization
-  // virtual size_type Serialize(std::ostream& out) {
-  //   size_type out_size = 0;
+  // TODO!
+  virtual size_type Serialize(std::ostream& out) {
+    size_type out_size = 0;
 
-  //   out_size += samples_.Serialize(out);
-  //   out_size += delta_offsets_.Serialize(out);
-  //   out_size += deltas_.Serialize(out);
+    out_size += samples_.Serialize(out);
+    out_size += delta_offsets_.Serialize(out);
+    out_size += deltas_.Serialize(out);
 
-  //   return out_size;
-  // }
+    // size_type num_elements_ = 0;
 
-  // virtual size_type Deserialize(std::istream& in) {
-  //   size_type in_size = 0;
+    out.write(reinterpret_cast<const char *>(&num_elements_), sizeof(size_type));
+    out_size += sizeof(size_type);    
 
-  //   in_size += samples_.Deserialize(in);
-  //   in_size += delta_offsets_.Deserialize(in);
-  //   in_size += deltas_.Deserialize(in);
+    // T last_val_;
+    out.write(reinterpret_cast<const char *>(&last_val_), sizeof(T));
+    out_size += sizeof(T);  
 
-  //   return in_size;
-  // }
+    return out_size;
+  }
+
+  virtual size_type Deserialize(std::istream& in) {
+    size_type in_size = 0;
+
+    in_size += samples_.Deserialize(in);
+    in_size += delta_offsets_.Deserialize(in);
+    in_size += deltas_.Deserialize(in);
+
+    return in_size;
+  }
 
 
  protected:
