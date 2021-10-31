@@ -20,8 +20,8 @@ void test_real_data(level_t max_depth, level_t trie_depth, preorder_t max_tree_n
     // to-do
     // Bimap primary_key_tuple;
     
-    auto *mdtrie = new md_trie<DIMENSION, NUM_BRANCHES>(max_depth, trie_depth, max_tree_node);
-    auto *leaf_point = new data_point<DIMENSION>();
+    auto *mdtrie = new md_trie(max_depth, trie_depth, max_tree_node);
+    auto *leaf_point = new data_point();
 
     char *line = nullptr;
     size_t len = 0;
@@ -76,7 +76,7 @@ void test_real_data(level_t max_depth, level_t trie_depth, preorder_t max_tree_n
                 }
             }
         }
-        mdtrie->insert_trie(leaf_point, max_depth, n_points);
+        mdtrie->insert_trie(leaf_point, n_points);
         n_points ++;
     }
     bar.finish();
