@@ -476,10 +476,7 @@ public:
             // preorder_t i_pos = 0;
             for (preorder_t i = 0; i < num_nodes_; i++){
                 total_primary_count += node_to_primary[i];
-                // if (node_to_depth[i] == max_depth_ - 1){
-                //     total_primary_count_from_depth += dfuds_->get_num_children(i, i_pos, level_to_num_children[node_to_depth[i]]);
-                // }
-                // i_pos += dfuds_->get_num_bits(i, node_to_depth[i]);
+
             }
             if (total_primary_count != primary_key_list.size())
                 raise(SIGINT);
@@ -670,22 +667,6 @@ public:
                 current_primary = selected_primary_index;
             }
 
-            // preorder_t subtree_size_dup, selected_node_depth_dup;
-            // preorder_t selected_node_pos_dup = 0;
-            // preorder_t num_primary_dup = 0, selected_primary_index_dup = 0;
-            // preorder_t node_to_primary_dup[4096] = {0};
-            // preorder_t node_to_depth_dup[4096] = {0};
-
-            // select_subtree(subtree_size_dup, selected_node_depth_dup, selected_node_pos_dup, num_primary_dup, selected_primary_index_dup, node_to_primary_dup, node_to_depth_dup);
-
-            // preorder_t total_primary_count_dup = 0;
-
-            // for (preorder_t i = 0; i < num_nodes_; i++){
-            //     total_primary_count_dup += node_to_primary_dup[i];
-            // }
-            // if (total_primary_count_dup != primary_key_list.size())
-            //     raise(SIGINT);
-
             // If the insertion continues in the new block
             if (insertion_in_new_block) {
                 if (is_in_root) {
@@ -782,24 +763,6 @@ public:
         }
         insert(current_node, current_node_pos, leaf_point, level, current_frontier, current_primary, primary_key);
         current_leaves_inserted ++;
-
-        // dfuds_->keep_bits(bit_capacity_, true);
-        // dfuds_->keep_bits(node_capacity_, false);
-        // preorder_t subtree_size, selected_node_depth;
-        // preorder_t selected_node_pos = 0;
-        // preorder_t num_primary = 0, selected_primary_index = 0;
-        // preorder_t node_to_primary[4096] = {0};
-        // preorder_t node_to_depth[4096] = {0};
-
-        // select_subtree(subtree_size, selected_node_depth, selected_node_pos, num_primary, selected_primary_index, node_to_primary, node_to_depth);
-
-        // preorder_t total_primary_count = 0;
-
-        // for (preorder_t i = 0; i < num_nodes_; i++){
-        //     total_primary_count += node_to_primary[i];
-        // }
-        // if (total_primary_count != primary_key_list.size())
-        //     raise(SIGINT);
 
         if (num_frontiers_ > 0 && !frontiers_)
             raise(SIGINT);

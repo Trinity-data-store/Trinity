@@ -44,20 +44,9 @@ public:
 
         // Array of Trie node pointers
         uint64_t total_size = sizeof(trie_or_treeblock_ptr_);
-
         total_size += sizeof(trie_node *) + sizeof(uint16_t) /*symbol_t*/; 
-
         total_size += sizeof(trie_node *) * num_children_;
-        // if (!is_leaf_) {
-        //     for (symbol_t i = 0; i < num_children_; i++)
-        //     {
-        //         if (((trie_node **)trie_or_treeblock_ptr_)[i]) {
-        //             total_size += ((trie_node **)trie_or_treeblock_ptr_)[i]->size();
-        //         }
-        //     }
-        // } else {
-        //     total_size += ((tree_block *) trie_or_treeblock_ptr_)->size();
-        // }
+
         return total_size;
     }
 

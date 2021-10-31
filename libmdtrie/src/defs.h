@@ -74,6 +74,8 @@ n_leaves_t total_points_count = 14252681;
 
 bitmap::CompactPtrVector p_key_to_treeblock_compact(total_points_count);
 
+
+
 uint64_t treeblock_nodes_size = 0;
 uint64_t treeblock_frontier_size = 0;
 uint64_t treeblock_primary_size = 0;

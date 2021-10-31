@@ -10,35 +10,18 @@
 #include <array>
 
 class data_point {
-
 public:
     
     explicit data_point(){
-        // coordinates_ = std::vector<point_t>(level_to_num_children[0], 0);
     }
 
-    // explicit data_point(std::vector<point_t> coordinates){
-    //     // coordinates_ = coordinates;
-    // }
-
-    // explicit data_point(dimension_t num_dimensions){
-
-    //     coordinates_ = std::vector<point_t>(num_dimensions, 0);
-    // };
-
     inline point_t *get(){
-
         return coordinates_;
     }
 
     inline void set(point_t *coordinates){
 
-        // std::copy(std::begin(coordinates), std::end(coordinates), std::begin(coordinates_));
-        // coordinates_ = coordinates;
-        // std::copy(std::begin(coordinates), std::end(coordinates), std::begin(coordinates_));
-
         memcpy(coordinates_, coordinates, sizeof(point_t) * DATA_DIMENSION);
-        // coordinates_ = coordinates;
     }
 
     inline point_t get_coordinate(dimension_t index){
@@ -61,7 +44,6 @@ public:
         return primary_key_;
     }
 
-    // Coordinates are pre-reversed!
     inline symbol_t leaf_to_symbol(level_t level) {
 
         symbol_t result = 0;
@@ -73,25 +55,11 @@ public:
                 continue;
 
             level_t offset = dimension_to_num_bits[i] - level - 1;
-
-
             point_t coordinate = coordinates_[i];
 
-            // int offset = -1;
-            // if (coordinate > 0)
-            //     offset = dimension_to_num_bits[i] - level - 1U;
-            //     // offset = bit_width(coordinate) - level - 1U;
-
-            // bool bit = 0;
-
-            // if (offset >= 0){
-            //     point_t shifted_coordinate = coordinate >> offset;
-            //     bit = shifted_coordinate & 1;
-            // }
             bool bit = GETBIT(coordinate, offset);
             result = (result << 1U) + bit;
         }
-
         return result;
     }    
 
@@ -115,21 +83,15 @@ public:
             
             // Bring the start of the search range to second half
             if (symbol_bit && !start_bit) {
-                // point_t mask = (start_coordinate >> (level + 1)) << (level + 1);
-                // start_coordinate -= mask;
-                // SETBIT(start_coordinate, level);
+
                 start_coordinate = start_coordinate & compressed_bitmap::low_bits_unset[offset];
                 SETBIT(start_coordinate, offset);
-
             } 
             // Bring the end of the search range to first half
             if (!symbol_bit && end_bit) {
-                // point_t mask = ((end_coordinate >> (level + 1)) | compressed_bitmap::low_bits_set[0]) << (level + 1); 
-                // end_coordinate = end_coordinate | mask;
-                // CLRBIT(end_coordinate, level);            
+         
                 end_coordinate = end_coordinate | compressed_bitmap::low_bits_set[offset];
                 CLRBIT(end_coordinate, offset);            
-
             }
             coordinates_[j] = start_coordinate;
             end_range->coordinates_[j] = end_coordinate;
@@ -137,12 +99,8 @@ public:
     }
 
 private:
-
-    // std::vector<point_t> coordinates_;
     point_t coordinates_[DATA_DIMENSION] = {0};
-    // std::array<point_t, DATA_DIMENSION>coordinates_ = {};
     n_leaves_t primary_key_ = 0;
-
 };
 
 #endif //MD_TRIE_DATA_POINT_H

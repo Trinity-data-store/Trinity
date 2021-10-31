@@ -565,6 +565,13 @@ class compressed_bitmap {
               sizeof(data_type) * BITS2BLOCKS(data_size_));
     out_size += (BITS2BLOCKS(data_size_) * sizeof(uint64_t));
 
+    out.write(reinterpret_cast<const char *>(&flag_size_), sizeof(size_type));
+    out_size += sizeof(size_type);
+
+    out.write(reinterpret_cast<const char *>(flag_),
+              sizeof(data_type) * BITS2BLOCKS(flag_size_));
+    out_size += (BITS2BLOCKS(flag_size_) * sizeof(uint64_t));
+
     return out_size;
   }
 
@@ -578,6 +585,16 @@ class compressed_bitmap {
     in.read(reinterpret_cast<char *>(data_),
     BITS2BLOCKS(data_size_) * sizeof(data_type));
     in_size += (BITS2BLOCKS(data_size_) * sizeof(data_type));
+
+
+    in.read(reinterpret_cast<char *>(&flag_size_), sizeof(size_type));
+    in_size += sizeof(size_type);
+
+    flag_ = new data_type[BITS2BLOCKS(flag_size_)];
+    in.read(reinterpret_cast<char *>(flag_),
+    BITS2BLOCKS(flag_size_) * sizeof(data_type));
+    in_size += (BITS2BLOCKS(flag_size_) * sizeof(data_type));
+
 
     return in_size;
   }
