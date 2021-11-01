@@ -209,7 +209,9 @@ public:
 
             trie_node *current_node = trie_node_queue.front();
             trie_node_queue.pop();
-            out_size += current_node->Serialize(out);
+            uint64_t node_serialized_size = current_node->Serialize(out);
+            trie_node_serialized_size += node_serialized_size;
+            out_size += node_serialized_size;
             
             if (!current_node->is_leaf()) {
                 for (symbol_t i = 0; i < current_node->get_num_children(); i++)
@@ -220,9 +222,21 @@ public:
                 }
             }
             else {
-                out_size += current_node->get_block()->Serialize(out);
+                uint64_t block_serialized_size = current_node->get_block()->Serialize(out);
+                blocks_serialized_size += block_serialized_size;
+                out_size += block_serialized_size;
             }
         }
+
+        // std::vector<bits::compact_ptr> primary_key_list;
+
+        out.write(reinterpret_cast<char const*>(&p_key_to_treeblock_compact_size), sizeof(p_key_to_treeblock_compact_size));
+        out_size += sizeof(p_key_to_treeblock_compact_size);     
+
+        uint64_t tmp = p_key_to_treeblock_compact.Serialize(out);
+        p_key_treeblock_compact_serialized_size += tmp;
+        out_size += tmp;          
+
 
         return out_size;
     }

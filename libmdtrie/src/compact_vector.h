@@ -478,6 +478,16 @@ class CompactPtrVector : CompactVector<uint64_t, 44> {
   void PushBack(void *val) {
     CompactVector<uint64_t, 44>::Append(reinterpret_cast<uint64_t>(val) >> 4ULL);
   }
+
+  // Serialization and De-serialization
+  size_type Serialize(std::ostream &out) {
+    return CompactVector<uint64_t, 44>::Serialize(out);
+  }
+
+  size_type Deserialize(std::istream &in) {
+    return CompactVector<uint64_t, 44>::Deserialize(in);
+  }
+
 };
 
 }

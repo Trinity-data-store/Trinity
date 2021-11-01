@@ -1316,17 +1316,26 @@ public:
         out_size += sizeof(preorder_t);    
 
         // std::vector<bits::compact_ptr> primary_key_list;
+
+        uint64_t out_prev = out_size;
         auto primary_key_list_size = primary_key_list.size();
         out.write(reinterpret_cast<char const*>(&primary_key_list_size), sizeof(primary_key_list_size));
         out_size += sizeof(primary_key_list_size);
 
         out.write(reinterpret_cast<char const*>(primary_key_list.data()), primary_key_list_size * sizeof(bits::compact_ptr));
         out_size += primary_key_list_size * sizeof(bits::compact_ptr);
+        primary_key_ptr_vector_serialized_size += out_size - out_prev;
+        out_prev = out_size;
 
         for (uint16_t i = 0; i < primary_key_list_size; i++){
             out_size += primary_key_list[i].Serialize(out);
         }
+        primary_key_list_serialized_size += out_size - out_prev;
 
+
+        for (uint16_t i = 0; i < num_frontiers_; i++){
+            out_size += ((frontier_node *) frontiers_)[i].pointer_->Serialize(out);
+        }
         return out_size;
     }
 

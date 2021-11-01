@@ -90,6 +90,12 @@ uint64_t vector_size = 0;
 uint64_t total_leaf_number = 0;
 uint64_t treeblock_ptr_size = 0;
 
+uint64_t trie_node_serialized_size = 0;
+uint64_t blocks_serialized_size = 0;
+uint64_t p_key_treeblock_compact_serialized_size = 0;
+uint64_t primary_key_ptr_vector_serialized_size = 0;
+uint64_t primary_key_list_serialized_size = 0;
+
 TimeStamp primary_time = 0;
 class data_point;
 

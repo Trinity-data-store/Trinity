@@ -12,6 +12,7 @@ level_t TRIE_DEPTH = 10;
 const symbol_t NUM_BRANCHES = pow(2, DIMENSION);
 uint32_t TREEBLOCK_SIZE = 1024;
 std::ofstream myfile;
+std::ofstream serialize_file;
 
 void insert_for_node_path(point_array *found_points, level_t max_depth, level_t trie_depth, preorder_t max_tree_node, std::vector<data_point> *all_points){
     // to-do
@@ -113,8 +114,17 @@ void insert_for_node_path(point_array *found_points, level_t max_depth, level_t 
     myfile << "single_leaf_count: " << single_leaf_count << std::endl;
 
     myfile << "Without Primary key lookup support: " << total_size - treeblock_primary_size - treeblock_primary_pointer_size - p_key_to_treeblock_compact_size << std::endl;
+
+    serialize_file.open("serialized.txt");
+    uint64_t size = mdtrie->Serialize(serialize_file);
+    std::cout << "size: " << size << std::endl;
+    std::cout << "trie_node_serialized_size: " << trie_node_serialized_size << std::endl;
+    std::cout << "blocks_serialized_size: " << blocks_serialized_size << std::endl;
+    std::cout << "p_key_treeblock_compact_serialized_size: " << p_key_treeblock_compact_serialized_size << std::endl;
+    std::cout << "primary_key_list_serialized_size: " << primary_key_list_serialized_size << std::endl;
+    std::cout << "primary_key_ptr_vector_serialized_size: " << primary_key_ptr_vector_serialized_size << std::endl;
     // raise(SIGINT);
-    // exit(0);
+    exit(0);
 /*
     tqdm bar2;
     TimeStamp check_diff = 0;
