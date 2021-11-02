@@ -17,8 +17,15 @@ class compact_ptr {
   compact_ptr(uint64_t primary_key){
 
     ptr_ = (uintptr_t) primary_key;
+    // size_ = 1;
     flag_ = 0;
   }
+
+  // Doesn't do anything, only for deserialization
+  compact_ptr(){
+
+  }
+
 
   std::vector<uint64_t> *get_vector_pointer(){
     return (std::vector<uint64_t> *) (ptr_ << 4ULL);
@@ -46,10 +53,10 @@ class compact_ptr {
       }
       return false;
   }
-
   uint64_t size_overhead(){
 
     if (flag_ == 0){
+      // single_leaf_count ++;
       return 0 /*sizeof(compact_ptr)*/;
     }
     if (flag_ == 1){
@@ -60,7 +67,6 @@ class compact_ptr {
       return get_delta_encoded_array_pointer()->size_overhead() /*+ sizeof(compact_ptr)*/;
     }
   }
-
   void push(uint64_t primary_key){
     // size_ ++;
     if (flag_ == 0){
@@ -84,7 +90,11 @@ class compact_ptr {
       get_vector_pointer()->push_back(primary_key);
     }
     else {
+      // raise(SIGINT);
       get_delta_encoded_array_pointer()->Push(primary_key);
+      // if (get(size_ - 1) != primary_key){
+      //   raise(SIGINT);
+      // }
     }    
   }
 
@@ -93,20 +103,23 @@ class compact_ptr {
       return (uint64_t)ptr_;
     }
     if (flag_ == 1){
+      // if (index >= get_vector_pointer()->size()){
+      //   raise(SIGINT);
+      // }
       return (*get_vector_pointer())[index];
     }
     else {
+      // raise(SIGINT);
       return (*get_delta_encoded_array_pointer())[index];
     }       
   }
 
   bool check_if_present(uint64_t primary_key){
 
-
     if (flag_ == 0){
       return primary_key == (uint64_t)ptr_;
     }
-    if (flag_ == 1){
+    else if (flag_ == 1){
       return binary_if_present(get_vector_pointer(), primary_key);
 
     }
@@ -118,26 +131,27 @@ class compact_ptr {
   }
 
   size_t size() {
+
     if (flag_ == 0){
       return 1;
     }
-    if (flag_ == 1){
+    else if (flag_ == 1){
       return get_vector_pointer()->size();
     }
     return get_delta_encoded_array_pointer()->get_num_elements();
   }
 
-  virtual size_t Serialize(std::ostream& out) {
+  size_t Serialize(std::ostream& out) {
 
     size_t out_size = 0;
 
     if (flag_ == 0){
       return 0;
     }
-    if (flag_ == 1){
+    else if (flag_ == 1){
 
       std::vector<uint64_t> *vect = get_vector_pointer();
-      auto vect_size = vect->size();
+      uint32_t vect_size = vect->size();
       out.write(reinterpret_cast<char const*>(&vect_size), sizeof(vect_size));
       out_size += sizeof(vect_size);
 
@@ -151,9 +165,52 @@ class compact_ptr {
 
   } 
 
+
+  size_t Deserialize(std::istream& in) {
+
+    size_t in_size = 0;
+
+    if (flag_ == 0){
+      return 0;
+    }
+    else if (flag_ == 1){
+
+      std::vector<uint64_t> *vect = get_vector_pointer();
+      uint32_t vect_size;
+      in.read(reinterpret_cast<char *>(&vect_size), sizeof(vect_size));
+      in_size += sizeof(vect_size);
+
+      vect->resize(vect_size);
+      in.read(reinterpret_cast<char *>(vect->data()), vect_size * sizeof(uint64_t));
+      in_size += vect_size * sizeof(uint64_t);      
+      return in_size;
+    }
+    else {
+      return get_delta_encoded_array_pointer()->Deserialize(in);
+    }  
+
+  } 
+
+  // uintptr_t ptr(){
+  //   return ptr_flag_ >> 2;
+  // }
+
+  // size_t flag(){
+  //   return ptr_flag_ & 0b11;
+  // }
+
+  // void set_ptr(uintptr_t ptr){
+  //   ptr_flag_ = ptr_flag_ & (ptr << 2);
+  // }
+
+  // void set_flag(unsigned flag){
+  //   ptr_flag_ = ptr_flag_ & flag;
+  // }
+
  private:
   uintptr_t ptr_: 44;
-  size_t flag_ : 2;
+  unsigned flag_ : 2;
+  // uint64_t ptr_flag_ : 46;
 };
 
 }

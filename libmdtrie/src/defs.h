@@ -11,6 +11,13 @@
 #include <shared_mutex>
 #include "compact_vector.h"
 
+#include <stdio.h>
+#include <sys/mman.h>
+#include <stdlib.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <unistd.h>
+
 // Maximum number of bits for node configuration
 typedef uint64_t node_t;
 // Maximum number of nodes/preorder numbers
@@ -92,6 +99,7 @@ uint64_t treeblock_ptr_size = 0;
 
 uint64_t trie_node_serialized_size = 0;
 uint64_t blocks_serialized_size = 0;
+uint64_t treeblock_nodes_serialized_size = 0;
 uint64_t p_key_treeblock_compact_serialized_size = 0;
 uint64_t primary_key_ptr_vector_serialized_size = 0;
 uint64_t primary_key_list_serialized_size = 0;
@@ -119,6 +127,10 @@ uint64_t copy_vect_time = 0;
 uint64_t update_symbol_time = 0;
 uint64_t range_search_child_time = 0;
 const dimension_t DATA_DIMENSION = 6;
+
+int fd = open("mmap_file.txt", O_RDWR);
+off_t offset = 0;
+#define MEMORY_SIZE 300000000
 
 void create_level_to_num_children(std::vector<level_t> dimension_bits, level_t max_level){
 

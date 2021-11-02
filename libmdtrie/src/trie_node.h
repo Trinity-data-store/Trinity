@@ -4,6 +4,7 @@
 #include "defs.h"
 #include <cstdlib>
 #include "tree_block.h"
+#include <sys/mman.h>
 
 class trie_node {
     
@@ -13,7 +14,15 @@ public:
         
         is_leaf_ = is_leaf;
         if (!is_leaf){
-            trie_or_treeblock_ptr_ = (trie_node **)calloc(sizeof(trie_node *), 1 << num_dimensions);
+
+            // trie_or_treeblock_ptr_ = (trie_node **)calloc(sizeof(trie_node *), 1 << num_dimensions);
+
+            trie_or_treeblock_ptr_ = (trie_node **) mmap( NULL, (1 << num_dimensions)* sizeof(trie_node *),
+                PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
+
+            // trie_or_treeblock_ptr_ = (trie_node **) mmap( NULL, (1 << num_dimensions) * sizeof(trie_node *),
+                // PROT_READ | PROT_WRITE, MAP_PRIVATE, fd, offset);
+            // offset = (offset + (1 << num_dimensions) * sizeof(trie_node *)) & ~(sysconf(_SC_PAGE_SIZE) - 1);
         }
         num_children_ = 1 << num_dimensions;
     }
@@ -31,13 +40,15 @@ public:
     }
 
     inline tree_block *get_block() const {
-
+        if (!is_leaf_)
+            return nullptr;
         return (tree_block *)trie_or_treeblock_ptr_;
     }
 
     inline void set_block(tree_block *block) {
 
         trie_or_treeblock_ptr_ = block;
+        is_leaf_ = true;
     }
 
     uint64_t size() {
@@ -112,6 +123,34 @@ public:
 
         return out_size;
     } 
+
+    virtual size_t Deserialize(std::istream& in) {
+
+        size_t in_size = 0;
+
+        // bool is_leaf_;
+        in.read(reinterpret_cast<char *>(&is_leaf_), sizeof(bool));
+        in_size += sizeof(bool);         
+
+        // void *trie_or_treeblock_ptr_ = NULL;
+        in.read(reinterpret_cast<char *>(&trie_or_treeblock_ptr_), sizeof(uint64_t));
+        in_size += sizeof(uint64_t);
+
+        // trie_node *parent_trie_node_;
+        in.read(reinterpret_cast<char *>(&parent_trie_node_), sizeof(trie_node *));
+        in_size += sizeof(trie_node *);
+
+        // symbol_t parent_symbol_ = 0; 
+        in.read(reinterpret_cast<char *>(&parent_symbol_), sizeof(symbol_t));
+        in_size += sizeof(symbol_t);           
+
+        // dimension_t num_children_ = 0;
+        in.read(reinterpret_cast<char *>(&num_children_), sizeof(dimension_t));
+        in_size += sizeof(dimension_t);          
+
+        return in_size;
+    } 
+
 
 private:
 
