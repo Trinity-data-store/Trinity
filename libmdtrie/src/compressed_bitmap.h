@@ -246,9 +246,6 @@ class compressed_bitmap {
                 | (val >> (64 - s_off));
       }
     }
-
-    // if (GetValPos(0, 64, true) == 0)
-    //   raise(SIGINT);
   }
 
   inline data_type GetValPos(pos_type pos, width_type bits, bool is_on_data) const {
@@ -308,7 +305,6 @@ class compressed_bitmap {
     else {
       return 1 << level_to_num_children[level];
     }
-
   }
 
   inline void bulkcopy_forward(pos_type from, pos_type destination, width_type bits, bool is_on_data)
@@ -406,7 +402,6 @@ class compressed_bitmap {
 
   inline preorder_t get_child_skip(node_t node, pos_type node_pos, symbol_t symbol, width_type num_children) 
   {
-
     if (is_collapse(node)){
       symbol_t only_symbol = GetValPos(node_pos, num_children, true);
       if (symbol > only_symbol)
@@ -535,7 +530,6 @@ class compressed_bitmap {
       to_dfuds->shift_backward_to_uncollapse(to_node, to_node_pos, num_children);
       SETBITVAL(to_dfuds->flag_, to_node);
     }
-    
     symbol_t visited = 0;
     while (visited < width) {
         if (width - visited > 64) {
@@ -586,7 +580,6 @@ class compressed_bitmap {
     BITS2BLOCKS(data_size_) * sizeof(data_type));
     in_size += (BITS2BLOCKS(data_size_) * sizeof(data_type));
 
-
     in.read(reinterpret_cast<char *>(&flag_size_), sizeof(size_type));
     in_size += sizeof(size_type);
 
@@ -594,8 +587,6 @@ class compressed_bitmap {
     in.read(reinterpret_cast<char *>(flag_),
     BITS2BLOCKS(flag_size_) * sizeof(data_type));
     in_size += (BITS2BLOCKS(flag_size_) * sizeof(data_type));
-
-
     return in_size;
   }
 

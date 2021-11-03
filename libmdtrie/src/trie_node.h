@@ -15,14 +15,7 @@ public:
         is_leaf_ = is_leaf;
         if (!is_leaf){
 
-            // trie_or_treeblock_ptr_ = (trie_node **)calloc(sizeof(trie_node *), 1 << num_dimensions);
-
-            trie_or_treeblock_ptr_ = (trie_node **) mmap( NULL, (1 << num_dimensions)* sizeof(trie_node *),
-                PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
-
-            // trie_or_treeblock_ptr_ = (trie_node **) mmap( NULL, (1 << num_dimensions) * sizeof(trie_node *),
-                // PROT_READ | PROT_WRITE, MAP_PRIVATE, fd, offset);
-            // offset = (offset + (1 << num_dimensions) * sizeof(trie_node *)) & ~(sysconf(_SC_PAGE_SIZE) - 1);
+            trie_or_treeblock_ptr_ = (trie_node **)calloc(sizeof(trie_node *), 1 << num_dimensions);
         }
         num_children_ = 1 << num_dimensions;
     }
@@ -52,7 +45,6 @@ public:
     }
 
     uint64_t size() {
-
         // Array of Trie node pointers
         uint64_t total_size = sizeof(trie_or_treeblock_ptr_);
         total_size += sizeof(trie_node *) + sizeof(uint16_t) /*symbol_t*/; 
@@ -75,7 +67,6 @@ public:
     }
 
     symbol_t get_parent_symbol(){
-
         return parent_symbol_;
     }
 
@@ -150,7 +141,6 @@ public:
 
         return in_size;
     } 
-
 
 private:
 

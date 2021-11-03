@@ -526,8 +526,6 @@ class CompactPrimaryVector : CompactVector<uint64_t, 46> {
     return CompactVector<uint64_t, 46>::Deserialize(in);
   }
 
-//  **********************************************************
-
   uintptr_t ptr(pos_type idx){
     return At(idx) >> 0b11;
   }
@@ -581,7 +579,6 @@ class CompactPrimaryVector : CompactVector<uint64_t, 46> {
   }  
 
   void push(pos_type idx, uint64_t primary_key){
-    // size_ ++;
 
     if (flag(idx) == 0){
         auto array = new std::vector<uint64_t>;
@@ -592,14 +589,12 @@ class CompactPrimaryVector : CompactVector<uint64_t, 46> {
         return;      
     }
     else if (size(idx) == compact_pointer_vector_size_limit + 1){
-      // raise(SIGINT);
+
       std::vector<uint64_t> *vect_ptr = get_vector_pointer(idx);
 
       auto enc_array = new bitmap::EliasGammaDeltaEncodedArray<uint64_t>(*vect_ptr, vect_ptr->size());
       delete vect_ptr;
-      // ptr_ = ((uintptr_t) enc_array) >> 4ULL;
       set_ptr(idx, ((uintptr_t) enc_array) >> 4ULL);
-      // flag_ = 2;
       set_flag(idx, 2);
     }
     if (flag(idx) == 1){
@@ -655,8 +650,6 @@ class CompactPrimaryVector : CompactVector<uint64_t, 46> {
   void set_flag(pos_type idx, unsigned flag){
     Set(idx, At(idx) & flag);
   }
-
-
 };
 
 }

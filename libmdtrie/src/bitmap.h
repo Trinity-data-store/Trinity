@@ -11,18 +11,6 @@
 #include <sys/time.h>
 #include <vector>
 
-// typedef unsigned long long int TimeStamp;
-
-// static TimeStamp GetTimestamp() {
-//   struct timeval now;
-//   gettimeofday(&now, nullptr);
-
-//   return now.tv_usec + (TimeStamp) now.tv_sec * 1000000;
-// }
-
-// TimeStamp realloc_time = 0;
-
-
 namespace bitmap {
 
 #define GETBIT(n, i)    ((n >> i) & 1UL)
@@ -149,27 +137,12 @@ class Bitmap {
   }
 
   Bitmap(size_type num_bits) {
-    // TODO： change it to vector
-
-    // data_ = std::vector<data_type>(BITS2BLOCKS(num_bits), 0);
-    // data_.reserve(BITS2BLOCKS(num_bits));
-    // std::fill(data_.begin(), data_.end(), 0);
-    // data_ = (data_type *)calloc(BITS2BLOCKS(num_bits), sizeof(data_type));
-    // data_ = new data_type[BITS2BLOCKS(num_bits)]();
-    // size_ = num_bits;
 
     Bitmap_Init(num_bits);
   }
 
   void Bitmap_Init(size_type num_bits){
 
-    // raise(SIGINT);
-    // data_ = std::vector<data_type>(BITS2BLOCKS(num_bits), 0);
-    // // data_.reserve(BITS2BLOCKS(num_bits));
-    // // std::fill(data_.begin(), data_.end(), 0);
-    // // data_ = (data_type *)calloc(BITS2BLOCKS(num_bits), sizeof(data_type));
-    // // data_ = new data_type[BITS2BLOCKS(num_bits)]();
-    // size_ = num_bits;
     data_ = static_cast<data_type *>(malloc(BITS2BLOCKS(num_bits) * sizeof(data_type)));
     size_ = num_bits;        
   }
@@ -184,46 +157,10 @@ class Bitmap {
 
   void Realloc_increase(size_type num_bits){
 
-    // TimeStamp start = GetTimestamp();
-    // TODO： here allocate more memory than needed
-    // if (BITS2BLOCKS(size_ + num_bits + 1) == BITS2BLOCKS(size_)){
-      
-    //   size_ += num_bits;
-    //   SetValPos(size_ - num_bits, 0, num_bits);
-    //   return;
-    // }
-
-    // // num_bits always < 32?
-    // data_.push_back(0);
-    
-    // // data_.resize(BITS2BLOCKS(size_ + num_bits + 1), 0);
-    // // for (unsigned int i = BITS2BLOCKS(size_) + 1; i <= BITS2BLOCKS(size_ + num_bits + 1); i++){
-    // //   data_.push_back(0);
-    // // }
-    // // data_ = (data_type *)realloc(data_, BITS2BLOCKS(size_ + num_bits + 1) * sizeof(data_type));
-    // // memset(data_ + BITS2BLOCKS(size_), 0, BITS2BLOCKS(size_ + num_bits + 1) - BITS2BLOCKS(size_));
-    // // data_[BITS2BLOCKS(size_ + num_bits + 1) - 1] = 0;
-
-    // size_ += num_bits;
-    // SetValPos(size_ - num_bits, 0, num_bits);
-    // realloc_time += GetTimestamp() - start;
-
     Resize(size_ + num_bits);
   }
 
   virtual ~Bitmap() = default;
-  // virtual ~Bitmap() {
-  //   if (data_ != NULL) {
-  //     free(data_);
-  //     data_ = NULL;
-  //   }
-  //   size_ = 0;
-  // }
-
-  // // Getters
-  // std::vector<data_type> GetData() {
-  //   return data_;
-  // }
 
   size_type GetSizeInBits() {
     return size_;
@@ -232,11 +169,6 @@ class Bitmap {
   size_type GetSize(){
     return sizeof(size_t) + sizeof(data_type *) + sizeof(data_type) * BITS2BLOCKS(size_);
   }
-
-  // Bit operations
-  // void Clear() {
-  //   std::fill(data_.begin(), data_.end(), 0);
-  // }
 
   void Clear() {
     memset((void *) data_, 0, BITS2BLOCKS(size_) * sizeof(uint64_t));
@@ -318,7 +250,6 @@ class Bitmap {
 
  protected:
   // Data members
-  // std::vector<data_type> data_;
   data_type *data_{};
   size_type size_{};
 };
