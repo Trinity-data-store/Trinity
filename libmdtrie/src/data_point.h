@@ -12,8 +12,7 @@
 class data_point {
 public:
     
-    explicit data_point(){
-    }
+    explicit data_point(){}
 
     inline point_t *get(){
         return coordinates_;

@@ -2,6 +2,7 @@
 #define BITMAP_COMPACT_VECTOR_H_
 
 #include "bit_vector.h"
+#include "delta_encoded_array.h"
 
 #include <limits>
 
@@ -477,6 +478,177 @@ class CompactPtrVector : CompactVector<uint64_t, 44> {
 
   void PushBack(void *val) {
     CompactVector<uint64_t, 44>::Append(reinterpret_cast<uint64_t>(val) >> 4ULL);
+  }
+
+  // Serialization and De-serialization
+  size_type Serialize(std::ostream &out) {
+    return CompactVector<uint64_t, 44>::Serialize(out);
+  }
+
+  size_type Deserialize(std::istream &in) {
+    return CompactVector<uint64_t, 44>::Deserialize(in);
+  }
+
+};
+
+class CompactPrimaryVector : CompactVector<uint64_t, 46> {
+ public:
+
+  // Type definitions
+  typedef typename BitVector::size_type size_type;
+  typedef typename BitVector::width_type width_type;
+  typedef typename BitVector::pos_type pos_type;
+  typedef int64_t tmp_pos_type;
+  const uint64_t compact_pointer_vector_size_limit = 1000;
+
+  CompactPrimaryVector() : CompactVector<uint64_t, 46>() {}
+  CompactPrimaryVector(size_type num_elements) : CompactVector<uint64_t, 46>(num_elements) {}
+
+  // Accessors, Mutators
+  uint64_t At(pos_type idx) {
+    return reinterpret_cast<uint64_t>(CompactVector<uint64_t, 46>::Get(idx) << 20ULL);
+  }
+
+  void Set(pos_type idx, uint64_t val) {
+    CompactVector<uint64_t, 46>::Set(idx, reinterpret_cast<uint64_t>(val) >> 20ULL);
+  }
+
+  void PushBack(uint64_t val) {
+    CompactVector<uint64_t, 46>::Append(reinterpret_cast<uint64_t>(val) >> 20ULL);
+  }
+
+  // Serialization and De-serialization
+  size_type Serialize(std::ostream &out) {
+    return CompactVector<uint64_t, 46>::Serialize(out);
+  }
+
+  size_type Deserialize(std::istream &in) {
+    return CompactVector<uint64_t, 46>::Deserialize(in);
+  }
+
+  uintptr_t ptr(pos_type idx){
+    return At(idx) >> 0b11;
+  }
+
+  size_t flag(pos_type idx){
+    return At(idx) & 0b11;
+  }
+  
+  std::vector<uint64_t> *get_vector_pointer(pos_type idx){
+
+    return (std::vector<uint64_t> *) (ptr(idx) << 4ULL);
+  
+  }
+
+  bitmap::EliasGammaDeltaEncodedArray<uint64_t> *get_delta_encoded_array_pointer(pos_type idx){
+    return (bitmap::EliasGammaDeltaEncodedArray<uint64_t> *) (ptr(idx) << 4ULL);
+  }
+
+  bool binary_if_present(std::vector<uint64_t> *vect, uint64_t primary_key){
+
+    uint64_t low = 0;
+    uint64_t high = vect->size() - 1;
+
+    while (low + 1 < high){
+        uint64_t mid = (low + high) / 2;
+        if ((*vect)[mid] < primary_key){
+            low = mid;
+        }
+        else {
+            high = mid;
+        }
+    }
+    if ((*vect)[low] == primary_key || (*vect)[high] == primary_key){
+        return true;
+    }
+    return false;
+  }  
+
+  uint64_t size_overhead(pos_type idx){
+
+    if (flag(idx) == 0){
+      return 0 /*sizeof(compact_ptr)*/;
+    }
+    else if (flag(idx) == 1){
+      std::vector<uint64_t> *vect_ptr = get_vector_pointer(idx);
+      return /*sizeof(*vect_ptr) + */ sizeof(uint32_t) /*primary key size*/ * vect_ptr->size() /*+ sizeof(compact_ptr)*/;
+    }
+    else {
+      return get_delta_encoded_array_pointer(idx)->size_overhead() /*+ sizeof(compact_ptr)*/;
+    }
+  }  
+
+  void push(pos_type idx, uint64_t primary_key){
+
+    if (flag(idx) == 0){
+        auto array = new std::vector<uint64_t>;
+        array->push_back((uint64_t) ptr(idx));
+        array->push_back(primary_key);
+        set_ptr(idx, ((uintptr_t) array) >> 4ULL);
+        set_flag(idx, 1);
+        return;      
+    }
+    else if (size(idx) == compact_pointer_vector_size_limit + 1){
+
+      std::vector<uint64_t> *vect_ptr = get_vector_pointer(idx);
+
+      auto enc_array = new bitmap::EliasGammaDeltaEncodedArray<uint64_t>(*vect_ptr, vect_ptr->size());
+      delete vect_ptr;
+      set_ptr(idx, ((uintptr_t) enc_array) >> 4ULL);
+      set_flag(idx, 2);
+    }
+    if (flag(idx) == 1){
+      get_vector_pointer(idx)->push_back(primary_key);
+    }
+    else {
+      get_delta_encoded_array_pointer(idx)->Push(primary_key);
+    }    
+  }  
+
+  uint64_t get(pos_type idx, uint32_t index){
+
+    if (flag(idx) == 0){
+      return (uint64_t)ptr(idx);
+    }
+    else if (flag(idx) == 1){
+      return (*get_vector_pointer(idx))[index];
+    }
+    else {
+      return (*get_delta_encoded_array_pointer(idx))[index];
+    }       
+  }
+
+  bool check_if_present(pos_type idx, uint64_t primary_key){
+
+    if (flag(idx) == 0){
+      return primary_key == (uint64_t)ptr(idx);
+    }
+    else if (flag(idx) == 1){
+      return binary_if_present(get_vector_pointer(idx), primary_key);
+
+    }
+    else {
+      return get_delta_encoded_array_pointer(idx)->Find(primary_key);
+    } 
+  }   
+
+  size_t size(pos_type idx) {
+
+    if (flag(idx) == 0){
+      return 1;
+    }
+    else if (flag(idx) == 1){
+      return get_vector_pointer(idx)->size();
+    }
+    return get_delta_encoded_array_pointer(idx)->get_num_elements();
+  }   
+
+  void set_ptr(pos_type idx, uintptr_t ptr){
+    Set(idx, At(idx) & (ptr << 2));
+  }
+
+  void set_flag(pos_type idx, unsigned flag){
+    Set(idx, At(idx) & flag);
   }
 };
 

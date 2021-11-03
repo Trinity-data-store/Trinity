@@ -3,13 +3,19 @@
 
 #include <cinttypes>
 #include <vector>
-#include <bimap.h>
 #include <compressed_bitmap.h>
 #include <assert.h> 
 #include <boost/bimap.hpp>
 #include <mutex>
 #include <shared_mutex>
 #include "compact_vector.h"
+
+#include <stdio.h>
+#include <sys/mman.h>
+#include <stdlib.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <unistd.h>
 
 // Maximum number of bits for node configuration
 typedef uint64_t node_t;
@@ -54,27 +60,21 @@ struct frontier_node {
 
 typedef unsigned long long int TimeStamp;
 
-static TimeStamp GetTimestamp() {
+TimeStamp GetTimestamp() {
   struct timeval now;
   gettimeofday(&now, nullptr);
 
   return now.tv_usec + (TimeStamp) now.tv_sec * 1000000;
 }
 
-
 n_leaves_t current_leaves_inserted = 0;
 uint64_t max_count = 0;
-
 TimeStamp vector_time = 0;
 uint64_t vect_opt_count = 0;
 std::shared_mutex mutex_p_key;
-
 n_leaves_t total_points_count = 14252681;
 
-
 bitmap::CompactPtrVector p_key_to_treeblock_compact(total_points_count);
-
-
 
 uint64_t treeblock_nodes_size = 0;
 uint64_t treeblock_frontier_size = 0;
@@ -90,6 +90,13 @@ uint64_t vector_size = 0;
 uint64_t total_leaf_number = 0;
 uint64_t treeblock_ptr_size = 0;
 
+uint64_t trie_node_serialized_size = 0;
+uint64_t blocks_serialized_size = 0;
+uint64_t treeblock_nodes_serialized_size = 0;
+uint64_t p_key_treeblock_compact_serialized_size = 0;
+uint64_t primary_key_ptr_vector_serialized_size = 0;
+uint64_t primary_key_list_serialized_size = 0;
+
 TimeStamp primary_time = 0;
 class data_point;
 
@@ -104,7 +111,6 @@ uint64_t update_range_latency = 0;
 uint64_t child_latency = 0;
 uint64_t num_trie_nodes = 0;
 
-// std::vector<symbol_t> level_to_num_children;
 symbol_t level_to_num_children[32] = {0};
 std::vector<symbol_t> dimension_to_num_bits;
 
@@ -113,6 +119,9 @@ uint64_t copy_vect_time = 0;
 uint64_t update_symbol_time = 0;
 uint64_t range_search_child_time = 0;
 const dimension_t DATA_DIMENSION = 6;
+
+int fd = open("mmap_file.txt", O_RDWR);
+off_t offset = 0;
 
 void create_level_to_num_children(std::vector<level_t> dimension_bits, level_t max_level){
 
@@ -127,24 +136,8 @@ void create_level_to_num_children(std::vector<level_t> dimension_bits, level_t m
             if (level + 1 > dimension_bits[j])
                 dimension_left --;
         }
-        // level_to_num_children.push_back(dimension_left);
         level_to_num_children[level] = dimension_left;
     }
-
-    // for (level_t level = 0; level < max_level; level++){
-    //     std::cout << "level: " << level << ", dimension: " << level_to_num_children[level] << std::endl;
-    // }
-}
-
-unsigned int reverse(unsigned int b) {
-   b = (b & 0xF0) >> 4 | (b & 0x0F) << 4;
-   b = (b & 0xCC) >> 2 | (b & 0x33) << 2;
-   b = (b & 0xAA) >> 1 | (b & 0x55) << 1;
-   return b;
-}
-
-unsigned int bit_width(uint64_t val){
-    return 64 - __builtin_clzll(val);
 }
 
 bool toggle = false;

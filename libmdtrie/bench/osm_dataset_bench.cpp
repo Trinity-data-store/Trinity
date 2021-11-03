@@ -12,6 +12,8 @@ level_t TRIE_DEPTH = 10;
 const symbol_t NUM_BRANCHES = pow(2, DIMENSION);
 uint32_t TREEBLOCK_SIZE = 1024;
 std::ofstream myfile;
+std::ofstream out_serialize_file;
+std::ifstream in_serialize_file;
 
 void insert_for_node_path(point_array *found_points, level_t max_depth, level_t trie_depth, preorder_t max_tree_node, std::vector<data_point> *all_points){
     // to-do
@@ -113,9 +115,23 @@ void insert_for_node_path(point_array *found_points, level_t max_depth, level_t 
     myfile << "single_leaf_count: " << single_leaf_count << std::endl;
 
     myfile << "Without Primary key lookup support: " << total_size - treeblock_primary_size - treeblock_primary_pointer_size - p_key_to_treeblock_compact_size << std::endl;
+
+    out_serialize_file.open("serialized.txt");
+    uint64_t out_size = mdtrie->Serialize(out_serialize_file);
+    std::cout << "out size: " << out_size << std::endl;
+    std::cout << "trie_node_serialized_size: " << trie_node_serialized_size << std::endl;
+    std::cout << "blocks_serialized_size: " << blocks_serialized_size << std::endl;
+    std::cout << "p_key_treeblock_compact_serialized_size: " << p_key_treeblock_compact_serialized_size << std::endl;
+    std::cout << "primary_key_list_serialized_size: " << primary_key_list_serialized_size << std::endl;
+    std::cout << "primary_key_ptr_vector_serialized_size: " << primary_key_ptr_vector_serialized_size << std::endl;
+    std::cout << "treeblock_nodes_serialized_size: " << treeblock_nodes_serialized_size << std::endl;
     // raise(SIGINT);
-    // exit(0);
-/*
+
+    in_serialize_file.open("serialized.txt");
+    auto *mdtrie_new = new md_trie(max_depth, trie_depth, max_tree_node);
+    uint64_t in_size = mdtrie_new->Deserialize(in_serialize_file);
+    std::cout << "in size: " << in_size << std::endl;
+
     tqdm bar2;
     TimeStamp check_diff = 0;
     
@@ -123,26 +139,28 @@ void insert_for_node_path(point_array *found_points, level_t max_depth, level_t 
         bar2.progress(i, n_lines);
         auto check_point = (*all_points)[i];
         TimeStamp start = GetTimestamp();
-        if (!mdtrie->check(&check_point)){
+        if (!mdtrie_new->check(&check_point)){
             raise(SIGINT);
-            mdtrie->check(&check_point);
+            mdtrie_new->check(&check_point);
         } 
         check_diff += GetTimestamp() - start;  
     }
     bar2.finish();
     fprintf(stderr, "Average time to check one point: %f microseconds per operation\n", (float) check_diff / n_lines);
 
-*/
 
     auto *start_range = new data_point();
     auto *end_range = new data_point();
 
-/*
+
     int itr = 0;
     std::ofstream file("range_search_osm.csv");
     uint64_t search_volume = 1;
     srand(time(NULL));
+
+    tqdm bar3;
     while (itr < 300){
+        bar3.progress(itr, 300);
         // if (itr % 20 == 0)
         //     std::cout << itr << std::endl;
         for (int j = 0; j < DIMENSION; j++){
@@ -158,15 +176,16 @@ void insert_for_node_path(point_array *found_points, level_t max_depth, level_t 
         mdtrie->range_search_trie(start_range, end_range, mdtrie->root(), 0, found_points_temp);
         diff = GetTimestamp() - start;
 
-        if (found_points_temp->size() > 0){
+        if (found_points_temp->size() > 1000){
             // std::cout << "found: " << itr << std::endl;
             file << found_points_temp->size() << "," << diff << "," << search_volume << std::endl;
             itr ++;
         }
         search_volume = 1;
     }
+    bar3.finish();
 
-*/
+
 
     for (dimension_t i = 0; i < DIMENSION; i++){
         start_range->set_coordinate(i, min[i]);
@@ -174,7 +193,7 @@ void insert_for_node_path(point_array *found_points, level_t max_depth, level_t 
     }
 
     start = GetTimestamp();
-    mdtrie->range_search_trie(start_range, end_range, mdtrie->root(), 0, found_points);
+    mdtrie_new->range_search_trie(start_range, end_range, mdtrie_new->root(), 0, found_points);
     diff = GetTimestamp() - start;
 
     myfile << "found_pts size: " << found_points->size() << std::endl;

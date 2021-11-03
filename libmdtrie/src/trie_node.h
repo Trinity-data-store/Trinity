@@ -4,6 +4,7 @@
 #include "defs.h"
 #include <cstdlib>
 #include "tree_block.h"
+#include <sys/mman.h>
 
 class trie_node {
     
@@ -13,6 +14,7 @@ public:
         
         is_leaf_ = is_leaf;
         if (!is_leaf){
+
             trie_or_treeblock_ptr_ = (trie_node **)calloc(sizeof(trie_node *), 1 << num_dimensions);
         }
         num_children_ = 1 << num_dimensions;
@@ -31,17 +33,18 @@ public:
     }
 
     inline tree_block *get_block() const {
-
+        if (!is_leaf_)
+            return nullptr;
         return (tree_block *)trie_or_treeblock_ptr_;
     }
 
     inline void set_block(tree_block *block) {
 
         trie_or_treeblock_ptr_ = block;
+        is_leaf_ = true;
     }
 
     uint64_t size() {
-
         // Array of Trie node pointers
         uint64_t total_size = sizeof(trie_or_treeblock_ptr_);
         total_size += sizeof(trie_node *) + sizeof(uint16_t) /*symbol_t*/; 
@@ -64,7 +67,6 @@ public:
     }
 
     symbol_t get_parent_symbol(){
-
         return parent_symbol_;
     }
 
@@ -85,6 +87,60 @@ public:
     dimension_t get_num_children(){
         return num_children_;
     }
+
+    virtual size_t Serialize(std::ostream& out) {
+
+        size_t out_size = 0;
+
+        // bool is_leaf_;
+        out.write(reinterpret_cast<const char *>(&is_leaf_), sizeof(bool));
+        out_size += sizeof(bool);         
+
+        // void *trie_or_treeblock_ptr_ = NULL;
+        out.write(reinterpret_cast<const char *>(&trie_or_treeblock_ptr_), sizeof(uint64_t));
+        out_size += sizeof(uint64_t);
+
+        // trie_node *parent_trie_node_;
+        out.write(reinterpret_cast<const char *>(&parent_trie_node_), sizeof(trie_node *));
+        out_size += sizeof(trie_node *);
+
+        // symbol_t parent_symbol_ = 0; 
+        out.write(reinterpret_cast<const char *>(&parent_symbol_), sizeof(symbol_t));
+        out_size += sizeof(symbol_t);           
+
+        // dimension_t num_children_ = 0;
+        out.write(reinterpret_cast<const char *>(&num_children_), sizeof(dimension_t));
+        out_size += sizeof(dimension_t);          
+
+        return out_size;
+    } 
+
+    virtual size_t Deserialize(std::istream& in) {
+
+        size_t in_size = 0;
+
+        // bool is_leaf_;
+        in.read(reinterpret_cast<char *>(&is_leaf_), sizeof(bool));
+        in_size += sizeof(bool);         
+
+        // void *trie_or_treeblock_ptr_ = NULL;
+        in.read(reinterpret_cast<char *>(&trie_or_treeblock_ptr_), sizeof(uint64_t));
+        in_size += sizeof(uint64_t);
+
+        // trie_node *parent_trie_node_;
+        in.read(reinterpret_cast<char *>(&parent_trie_node_), sizeof(trie_node *));
+        in_size += sizeof(trie_node *);
+
+        // symbol_t parent_symbol_ = 0; 
+        in.read(reinterpret_cast<char *>(&parent_symbol_), sizeof(symbol_t));
+        in_size += sizeof(symbol_t);           
+
+        // dimension_t num_children_ = 0;
+        in.read(reinterpret_cast<char *>(&num_children_), sizeof(dimension_t));
+        in_size += sizeof(dimension_t);          
+
+        return in_size;
+    } 
 
 private:
 
