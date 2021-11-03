@@ -152,12 +152,15 @@ void insert_for_node_path(point_array *found_points, level_t max_depth, level_t 
     auto *start_range = new data_point();
     auto *end_range = new data_point();
 
-/*
+
     int itr = 0;
     std::ofstream file("range_search_osm.csv");
     uint64_t search_volume = 1;
     srand(time(NULL));
+
+    tqdm bar3;
     while (itr < 300){
+        bar3.progress(itr, 300);
         // if (itr % 20 == 0)
         //     std::cout << itr << std::endl;
         for (int j = 0; j < DIMENSION; j++){
@@ -173,15 +176,16 @@ void insert_for_node_path(point_array *found_points, level_t max_depth, level_t 
         mdtrie->range_search_trie(start_range, end_range, mdtrie->root(), 0, found_points_temp);
         diff = GetTimestamp() - start;
 
-        if (found_points_temp->size() > 0){
+        if (found_points_temp->size() > 1000){
             // std::cout << "found: " << itr << std::endl;
             file << found_points_temp->size() << "," << diff << "," << search_volume << std::endl;
             itr ++;
         }
         search_volume = 1;
     }
+    bar3.finish();
 
-*/
+
 
     for (dimension_t i = 0; i < DIMENSION; i++){
         start_range->set_coordinate(i, min[i]);
