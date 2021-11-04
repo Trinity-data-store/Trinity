@@ -61,7 +61,7 @@ class DeltaEncodedArray {
       return;
     }
     num_elements_ = num_elements;
-
+    
 #ifdef DEBUG
     assert(std::is_sorted(elements, elements + num_elements));
 #endif
@@ -138,11 +138,11 @@ static struct EliasGammaPrefixSum {
     }
   }
 
-  uint8_t offset(const block_type i) const {
+  uint16_t offset(const block_type i) const {
     return ((prefixsum_[(i)] >> 24) & 0xFF);
   }
 
-  uint8_t count(const block_type i) const {
+  uint16_t count(const block_type i) const {
     return ((prefixsum_[i] >> 16) & 0xFF);
   }
 

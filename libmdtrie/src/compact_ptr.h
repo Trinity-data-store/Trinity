@@ -6,7 +6,8 @@
 #include <vector>
 #include "delta_encoded_array.h"
 
-const uint64_t compact_pointer_vector_size_limit = 1000;
+// const uint64_t compact_pointer_vector_size_limit = 1000; // TODO: bug
+const uint64_t compact_pointer_vector_size_limit = 14252681;
 
 namespace bits {
 
@@ -63,13 +64,13 @@ class compact_ptr {
   }
 
   void push(uint64_t primary_key){
-
+    
     if (flag_ == 0){
         auto array = new std::vector<uint64_t>;
         array->push_back((uint64_t) ptr_);
         array->push_back(primary_key);
         ptr_ = ((uintptr_t) array) >> 4ULL;
-        flag_ = 1;
+        flag_ = 1; 
         return;      
     }
     else if (size() == compact_pointer_vector_size_limit + 1){
@@ -80,17 +81,20 @@ class compact_ptr {
       delete vect_ptr;
       ptr_ = ((uintptr_t) enc_array) >> 4ULL;
       flag_ = 2;
+
     }
     if (flag_ == 1){
       get_vector_pointer()->push_back(primary_key);
     }
     else {
-
       get_delta_encoded_array_pointer()->Push(primary_key);
     }    
   }
 
   uint64_t get(uint32_t index){
+    if (index >= size())
+      return 0;
+
     if (flag_ == 0){
       return (uint64_t)ptr_;
     }
@@ -114,8 +118,6 @@ class compact_ptr {
     else {
       return get_delta_encoded_array_pointer()->Find(primary_key);
     } 
-
-    
   }
 
   size_t size() {

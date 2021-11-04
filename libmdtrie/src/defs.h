@@ -25,7 +25,7 @@ typedef uint64_t n_leaves_t;
 typedef uint16_t node_n_t;
 typedef uint64_t level_t;
 typedef uint64_t symbol_t;
-typedef uint8_t dimension_t;
+typedef uint16_t dimension_t;
 typedef uint64_t point_t;
 typedef uint16_t representation_t;
 typedef point_t * coordinates_t;
@@ -118,7 +118,7 @@ uint64_t add_primary_time = 0;
 uint64_t copy_vect_time = 0;
 uint64_t update_symbol_time = 0;
 uint64_t range_search_child_time = 0;
-const dimension_t DATA_DIMENSION = 6;
+const dimension_t DATA_DIMENSION = 5;
 
 int fd = open("mmap_file.txt", O_RDWR);
 off_t offset = 0;
@@ -139,6 +139,24 @@ void create_level_to_num_children(std::vector<level_t> dimension_bits, level_t m
         level_to_num_children[level] = dimension_left;
     }
 }
+
+
+void reset_values(){
+
+    treeblock_nodes_size = 0;
+    treeblock_frontier_size = 0;
+    treeblock_primary_size = 0;
+    treeblock_variable_storage = 0;
+    p_key_to_treeblock_compact_size = 0;
+    treeblock_primary_pointer_size = 0;
+    total_treeblock_num = 0;
+    single_leaf_count = 0;
+    trie_size = 0;
+    vector_size = 0;
+    total_leaf_number = 0;
+    treeblock_ptr_size = 0;    
+}
+std::vector<data_point> *all_points_ptr;
 
 bool toggle = false;
 #endif //MD_TRIE_DEFS_H

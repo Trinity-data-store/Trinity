@@ -45,11 +45,15 @@ public:
     }
 
     uint64_t size() {
-        // Array of Trie node pointers
-        uint64_t total_size = sizeof(trie_or_treeblock_ptr_);
-        total_size += sizeof(trie_node *) + sizeof(uint16_t) /*symbol_t*/; 
-        total_size += sizeof(trie_node *) * num_children_;
 
+        uint64_t total_size = sizeof(uint64_t); // trie_or_treeblock_ptr_
+        total_size += sizeof(uint64_t); // parent_trie_node_
+        total_size += sizeof(uint8_t); // parent_symbol_
+
+        if (!is_leaf_)
+            total_size += sizeof(trie_node *) * num_children_; // Array of Trie node ptrs
+
+        // is_leaf and num_children_ can be deduced from outside
         return total_size;
     }
 

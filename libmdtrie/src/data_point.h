@@ -65,16 +65,19 @@ public:
     inline void update_symbol(data_point *end_range, symbol_t current_symbol, level_t level) {
         
         dimension_t dimension = DATA_DIMENSION;
+        size_t visited_ct = 0;
         for (size_t j = 0; j < dimension; j++) {
-
+            
             if (dimension_to_num_bits[j] <= level)
                 continue;
+
+            visited_ct ++;
 
             level_t offset = dimension_to_num_bits[j] - level - 1U;    
 
             point_t start_coordinate = coordinates_[j];
             point_t end_coordinate = end_range->coordinates_[j];
-            dimension_t symbol_offset = dimension - j - 1;
+            dimension_t symbol_offset = level_to_num_children[level] - visited_ct;
 
             bool start_bit = GETBIT(start_coordinate, offset); 
             bool end_bit = GETBIT(end_coordinate, offset);
