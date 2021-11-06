@@ -204,10 +204,11 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node, 
 int main() {
 
     TREEBLOCK_SIZE = 512;
-    TRIE_DEPTH = 3;
+    TRIE_DEPTH = 6;
     myfile.open("osm_benchmark_" + std::to_string(DATA_DIMENSION) + "_" + std::to_string(TRIE_DEPTH) + "_" + std::to_string(TREEBLOCK_SIZE) + ".txt", std::ios_base::app);
     // std::vector<level_t> dimension_bits = {8, 8, 24, 16, 32, 32}; // 6 Dimensions
     std::vector<level_t> dimension_bits = {16, 8, 8, 8, 8, 16, 32, 32}; // 8 Dimensions
+    // std::vector<level_t> dimension_bits = {16, 8, 8, 8, 8, 16, 64, 64}; // 8 Dimensions
     // std::vector<level_t> dimension_bits = {16, 16, 8, 8, 24, 24, 32, 32}; // 8 Dimensions
 
     // std::vector<level_t> dimension_bits = {8, 8, 8, 24, 16, 32, 32}; // 7 Dimensions
@@ -226,6 +227,7 @@ int main() {
     myfile << "dimension: " << DATA_DIMENSION << std::endl;
     myfile << "trie depth: " << TRIE_DEPTH << std::endl;
     myfile << "treeblock sizes: " << TREEBLOCK_SIZE << std::endl;
+    // run_bench(32, TRIE_DEPTH, TREEBLOCK_SIZE, dimension_bits);
     run_bench(32, TRIE_DEPTH, TREEBLOCK_SIZE, dimension_bits);
     myfile << std::endl;
 
