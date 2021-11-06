@@ -82,5 +82,5 @@ test-driver
 target
 .vscode/
 
-osm/*
+*.osm.pbf
 

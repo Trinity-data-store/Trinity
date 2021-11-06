@@ -1264,6 +1264,13 @@ public:
 
     uint64_t size() {
         
+        for (uint16_t i = 0; i < num_nodes_; i ++){
+
+            if (dfuds_->is_collapse(i))
+                collapsed_node_num ++;
+        }
+
+
         total_treeblock_num ++; // For primary key -> treeblock index -> treeblock pointer
         
         uint64_t total_size = 0;

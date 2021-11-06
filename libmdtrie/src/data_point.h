@@ -44,12 +44,12 @@ public:
     }
 
     inline symbol_t leaf_to_symbol(level_t level) {
-
+        
         symbol_t result = 0;
         dimension_t dimension = DATA_DIMENSION;
 
-        for (size_t i = 0; i < dimension; i++) {
-
+        for (size_t i = 0; i < dimension; i++) 
+        {
             if (dimension_to_num_bits[i] <= level)
                 continue;
 
