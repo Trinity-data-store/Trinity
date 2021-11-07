@@ -977,7 +977,7 @@ public:
 
             for (dimension_t j = 0; j < dimension; j++){
 
-                if (dimension_to_num_bits[j] <= i)
+                if (dimension_to_num_bits[j] <= i || i < start_dimension_bits[j])
                     continue;         
 
                 level_t current_bit = GETBIT(current_symbol, current_symbol_pos);

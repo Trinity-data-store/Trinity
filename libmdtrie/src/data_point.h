@@ -50,7 +50,7 @@ public:
 
         for (size_t i = 0; i < dimension; i++) 
         {
-            if (dimension_to_num_bits[i] <= level)
+            if (dimension_to_num_bits[i] <= level || level < start_dimension_bits[i])
                 continue;
 
             level_t offset = dimension_to_num_bits[i] - level - 1;
@@ -68,7 +68,7 @@ public:
         size_t visited_ct = 0;
         for (size_t j = 0; j < dimension; j++) {
             
-            if (dimension_to_num_bits[j] <= level)
+            if (dimension_to_num_bits[j] <= level || level < start_dimension_bits[j])
                 continue;
 
             visited_ct ++;

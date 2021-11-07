@@ -119,10 +119,11 @@ uint64_t copy_vect_time = 0;
 uint64_t update_symbol_time = 0;
 uint64_t range_search_child_time = 0;
 uint64_t collapsed_node_num = 0;
-const dimension_t DATA_DIMENSION = 8;
+const dimension_t DATA_DIMENSION = 6;
 
 int fd = open("mmap_file.txt", O_RDWR);
 off_t offset = 0;
+std::vector<level_t> start_dimension_bits(8, 0);
 
 void create_level_to_num_children(std::vector<level_t> dimension_bits, level_t max_level){
 
@@ -134,7 +135,8 @@ void create_level_to_num_children(std::vector<level_t> dimension_bits, level_t m
         dimension_t dimension_left = num_dimensions;
         for (dimension_t j = 0; j < num_dimensions; j++){
             
-            if (level + 1 > dimension_bits[j])
+            // if (level + 1 > dimension_bits[j])
+            if (level + 1 > dimension_bits[j] || level < start_dimension_bits[j])
                 dimension_left --;
         }
         level_to_num_children[level] = dimension_left;

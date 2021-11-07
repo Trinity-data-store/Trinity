@@ -97,6 +97,7 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node, 
     myfile << "treeblock_nodes_size: " << treeblock_nodes_size << std::endl;
     myfile << "collapsed_node_num: " << collapsed_node_num << std::endl;
 
+
     tqdm bar2;
     TimeStamp check_diff = 0;
     
@@ -111,6 +112,7 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node, 
     }
     bar2.finish();
     myfile << "Average time to check one point: " << (float) check_diff / n_lines << std::endl;
+
 
     auto *start_range = new data_point();
     auto *end_range = new data_point();
@@ -207,11 +209,21 @@ int main() {
     TRIE_DEPTH = 6;
     myfile.open("osm_benchmark_" + std::to_string(DATA_DIMENSION) + "_" + std::to_string(TRIE_DEPTH) + "_" + std::to_string(TREEBLOCK_SIZE) + ".txt", std::ios_base::app);
     // std::vector<level_t> dimension_bits = {8, 8, 24, 16, 32, 32}; // 6 Dimensions
-    std::vector<level_t> dimension_bits = {16, 8, 8, 8, 8, 16, 32, 32}; // 8 Dimensions
+    // std::vector<level_t> dimension_bits = {16, 8, 8, 8, 8, 16, 32, 32}; // 8 Dimensions
     // std::vector<level_t> dimension_bits = {16, 8, 8, 8, 8, 16, 64, 64}; // 8 Dimensions
-    // std::vector<level_t> dimension_bits = {16, 16, 8, 8, 24, 24, 32, 32}; // 8 Dimensions
 
-    // std::vector<level_t> dimension_bits = {8, 8, 8, 24, 16, 32, 32}; // 7 Dimensions
+    // std::vector<level_t> dimension_bits = {16, 16, 8, 8, 24, 24, 32, 32}; // 8 Dimensions
+    // std::vector<level_t> new_start_dimension_bits = {0, 8, 0, 0, 16, 8, 0, 0}; // 8 Dimensions
+    // start_dimension_bits = new_start_dimension_bits;
+
+    // std::vector<level_t> dimension_bits = {8, 8, 16, 24, 16, 32, 32}; // 7 Dimensions
+    // std::vector<level_t> new_start_dimension_bits = {0, 0, 8, 16, 0, 0, 0}; // 7 Dimensions
+    // start_dimension_bits = new_start_dimension_bits;    
+
+    std::vector<level_t> dimension_bits = {8, 8, 24, 16, 32, 32}; // 6 Dimensions
+    std::vector<level_t> new_start_dimension_bits = {0, 0, 16, 0, 0, 0};
+    start_dimension_bits = new_start_dimension_bits;  
+
     // std::vector<level_t> dimension_bits = {8, 8, 16, 32, 32}; // 5 Dimensions
     // std::vector<level_t> dimension_bits = {8, 16, 32, 32}; // 4 Dimensions
     // std::vector<level_t> dimension_bits = {16, 32, 32}; // 3 Dimensions
