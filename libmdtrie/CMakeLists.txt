@@ -63,12 +63,14 @@ add_executable(trie_one_dimension_bench
 add_executable(self_index_bench
         bench/self_index_bench.cpp)
 
-
 add_executable(sample_dataset_bench
         bench/sample_dataset_bench.cpp)
 
 add_executable(osm_dataset_bench
         bench/osm_dataset_bench.cpp)
+
+add_executable(tpch_bench
+        bench/tpch_bench.cpp)
 
 target_link_libraries(mdtrie_bench ${MDTRIE_LIBS})
 target_link_libraries(range_search_bench ${MDTRIE_LIBS})
@@ -76,3 +78,4 @@ target_link_libraries(concurrency_bench ${MDTRIE_LIBS})
 target_link_libraries(self_index_bench ${MDTRIE_LIBS})
 target_link_libraries(sample_dataset_bench ${MDTRIE_LIBS})
 target_link_libraries(osm_dataset_bench ${MDTRIE_LIBS})
+target_link_libraries(tpch_bench ${MDTRIE_LIBS})

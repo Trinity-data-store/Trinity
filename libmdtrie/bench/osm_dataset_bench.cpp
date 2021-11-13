@@ -24,7 +24,7 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node, 
     char *line = nullptr;
     size_t len = 0;
     ssize_t read;
-    FILE *fp = fopen("../libmdtrie/bench/data/osm_combined_updated.csv", "r");
+    FILE *fp = fopen("../libmdtrie/bench/data/osm_us_northeast_long_lat.csv", "r");
 
     // If the file cannot be open
     if (fp == nullptr)
@@ -36,27 +36,29 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node, 
     n_leaves_t n_points = 0;
     uint64_t max[DATA_DIMENSION];
     uint64_t min[DATA_DIMENSION];
-    n_leaves_t n_lines = 14252681;
+    // n_leaves_t n_lines = 14252681;
+    n_leaves_t n_lines = 152806265;
     total_points_count = n_lines;
 
     tqdm bar;
     TimeStamp start, diff;
 
     diff = 0;
+    read = getline(&line, &len, fp);
 
     while ((read = getline(&line, &len, fp)) != -1)
     {
         bar.progress(n_points, n_lines);
-        char *token = strtok(line, ",");
+        char *token = strtok(line, ","); // id
         char *ptr;
       
         for (dimension_t i = 0; i < 8; i++){
 
-            if (i == 1){
-                // Remove 2 all-zero column 
-                token = strtok(nullptr, ",");
-                token = strtok(nullptr, ",");
-            }
+            // if (i == 1){
+            //     // Remove 2 all-zero column 
+            //     token = strtok(nullptr, ",");
+            //     token = strtok(nullptr, ",");
+            // }
             token = strtok(nullptr, ",");
             if (i < 8 - DATA_DIMENSION)
                 continue;
@@ -86,7 +88,7 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node, 
         n_points ++;
     }
     bar.finish();
-    
+
     myfile << "Insertion Latency: " << (float) diff / n_lines << std::endl;
     myfile << "mdtrie storage: " << mdtrie->size() << std::endl;
     myfile << "trie_size: " << trie_size << std::endl;
@@ -97,6 +99,10 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node, 
     myfile << "treeblock_nodes_size: " << treeblock_nodes_size << std::endl;
     myfile << "collapsed_node_num: " << collapsed_node_num << std::endl;
 
+    raise(SIGINT);
+    // for (int i = 1; i <= DATA_DIMENSION; i++){
+    //     std::cout << "active dimensions: " << i << ", branching factor: " << (float) active_dimension_to_num_children[i] / active_dimension_to_num_nodes[i] << std::endl;
+    // }
 
     tqdm bar2;
     TimeStamp check_diff = 0;
@@ -207,26 +213,15 @@ int main() {
 
     TREEBLOCK_SIZE = 512;
     TRIE_DEPTH = 6;
-    myfile.open("osm_benchmark_" + std::to_string(DATA_DIMENSION) + "_" + std::to_string(TRIE_DEPTH) + "_" + std::to_string(TREEBLOCK_SIZE) + ".txt", std::ios_base::app);
-    // std::vector<level_t> dimension_bits = {8, 8, 24, 16, 32, 32}; // 6 Dimensions
-    // std::vector<level_t> dimension_bits = {16, 8, 8, 8, 8, 16, 32, 32}; // 8 Dimensions
-    // std::vector<level_t> dimension_bits = {16, 8, 8, 8, 8, 16, 64, 64}; // 8 Dimensions
+    myfile.open("osm_benchmark_northeast_" + std::to_string(DATA_DIMENSION) + "_" + std::to_string(TRIE_DEPTH) + "_" + std::to_string(TREEBLOCK_SIZE) + ".txt", std::ios_base::app);
 
-    // std::vector<level_t> dimension_bits = {16, 16, 8, 8, 24, 24, 32, 32}; // 8 Dimensions
-    // std::vector<level_t> new_start_dimension_bits = {0, 8, 0, 0, 16, 8, 0, 0}; // 8 Dimensions
-    // start_dimension_bits = new_start_dimension_bits;
+    //  max: {183, 59, 23, 31, 12, 2021, 834785061, 498730330}
+    //  min: {1, 0, 0, 1, 1, 2006, 95434670, 384409862}
 
-    // std::vector<level_t> dimension_bits = {8, 8, 16, 24, 16, 32, 32}; // 7 Dimensions
-    // std::vector<level_t> new_start_dimension_bits = {0, 0, 8, 16, 0, 0, 0}; // 7 Dimensions
-    // start_dimension_bits = new_start_dimension_bits;    
+    std::vector<level_t> dimension_bits = {24, 16, 8, 32, 24, 16, 32, 32}; // 8 Dimensions
+    std::vector<level_t> new_start_dimension_bits = {16, 8, 0, 24, 16, 0, 0, 0}; // 8 Dimensions
 
-    std::vector<level_t> dimension_bits = {8, 8, 24, 16, 32, 32}; // 6 Dimensions
-    std::vector<level_t> new_start_dimension_bits = {0, 0, 16, 0, 0, 0};
-    start_dimension_bits = new_start_dimension_bits;  
-
-    // std::vector<level_t> dimension_bits = {8, 8, 16, 32, 32}; // 5 Dimensions
-    // std::vector<level_t> dimension_bits = {8, 16, 32, 32}; // 4 Dimensions
-    // std::vector<level_t> dimension_bits = {16, 32, 32}; // 3 Dimensions
+    start_dimension_bits = new_start_dimension_bits;
 
     myfile << std::endl << "dimension_bits: ";
     for (uint8_t i = 0; i < dimension_bits.size(); i++){
@@ -239,7 +234,6 @@ int main() {
     myfile << "dimension: " << DATA_DIMENSION << std::endl;
     myfile << "trie depth: " << TRIE_DEPTH << std::endl;
     myfile << "treeblock sizes: " << TREEBLOCK_SIZE << std::endl;
-    // run_bench(32, TRIE_DEPTH, TREEBLOCK_SIZE, dimension_bits);
     run_bench(32, TRIE_DEPTH, TREEBLOCK_SIZE, dimension_bits);
     myfile << std::endl;
 
