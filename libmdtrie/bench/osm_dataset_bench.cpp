@@ -38,6 +38,7 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node, 
     uint64_t min[DATA_DIMENSION];
     // n_leaves_t n_lines = 14252681;
     n_leaves_t n_lines = 152806265;
+    n_lines = 30000000;
     total_points_count = n_lines;
 
     tqdm bar;
@@ -79,6 +80,10 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node, 
                 }
             }            
         }
+
+        if (n_points == n_lines)
+            break;
+            
         (*all_points).push_back((*leaf_point));
 
         start = GetTimestamp();
