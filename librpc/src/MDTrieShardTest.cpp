@@ -349,7 +349,7 @@ int main(int argc, char *argv[]){
 
   cout << "client number: " << client_number << endl;
   auto client = MDTrieClient();
-
+  client.ping();
   vector<vector <int32_t>> *data_vector = get_data_vector();
  
 /** 
