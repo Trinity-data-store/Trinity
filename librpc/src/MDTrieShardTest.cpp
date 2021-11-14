@@ -32,12 +32,6 @@ vector<vector <int32_t>> *get_data_vector(){
     Get data from the OSM dataset stored in a vector
 */
 
-  std::vector<level_t> dimension_bits = {24, 16, 8, 32, 24, 16, 32, 32}; // 8 Dimensions
-  std::vector<level_t> new_start_dimension_bits = {16, 8, 0, 24, 16, 0, 0, 0}; // 8 Dimensions
-
-  start_dimension_bits = new_start_dimension_bits;  
-  create_level_to_num_children(dimension_bits, 32);
-
   FILE *fp = fopen("../libmdtrie/bench/data/osm_us_northeast_long_lat.csv", "r");
   char *line = nullptr;
   size_t len = 0;

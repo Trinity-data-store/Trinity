@@ -37,7 +37,14 @@ class MDTrieHandler : public MDTrieShardIf {
 public:
 
   MDTrieHandler(){
+    
     mdtrie_ = new md_trie(max_depth, trie_depth, max_tree_node);
+    std::vector<level_t> dimension_bits = {24, 16, 8, 32, 24, 16, 32, 32}; // 8 Dimensions
+    std::vector<level_t> new_start_dimension_bits = {16, 8, 0, 24, 16, 0, 0, 0}; // 8 Dimensions
+
+    start_dimension_bits = new_start_dimension_bits;  
+    create_level_to_num_children(dimension_bits, 32);
+
   };
 
   void ping() { cout << "ping()" << endl; }
