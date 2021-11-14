@@ -42,7 +42,8 @@ public:
 
   static MDTrieShardClient launch_port(int port_num) {
     
-    return connect("172.29.249.44", port_num);
+    // return connect("172.29.249.44", port_num);
+    return connect("172.29.249.30", port_num);
   }
 
   void ping(){
