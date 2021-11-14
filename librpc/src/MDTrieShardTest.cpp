@@ -364,7 +364,7 @@ int main(int argc, char *argv[]){
   cout << "Latency (us): " << latency << endl;
   cout << "Inserted Points: " << client.get_count() << endl;
   
-
+  return 0;
 
 /**  Range Search Obtain Search Range
 
