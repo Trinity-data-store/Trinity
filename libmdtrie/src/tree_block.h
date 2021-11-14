@@ -1379,7 +1379,7 @@ public:
             if (dfuds_->is_collapse(i))
                 collapsed_node_num ++;
         }
-
+        raise(SIGINT);
 
         total_treeblock_num ++; // For primary key -> treeblock index -> treeblock pointer
         

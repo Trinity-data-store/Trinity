@@ -99,7 +99,7 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node, 
     myfile << "treeblock_nodes_size: " << treeblock_nodes_size << std::endl;
     myfile << "collapsed_node_num: " << collapsed_node_num << std::endl;
 
-    raise(SIGINT);
+    // raise(SIGINT);
     // for (int i = 1; i <= DATA_DIMENSION; i++){
     //     std::cout << "active dimensions: " << i << ", branching factor: " << (float) active_dimension_to_num_children[i] / active_dimension_to_num_nodes[i] << std::endl;
     // }
