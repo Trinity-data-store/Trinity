@@ -29,9 +29,8 @@ using namespace apache::thrift::transport;
 using namespace apache::thrift::server;
 
 // const int DIMENSION = 6; 
-const symbol_t NUM_BRANCHES = pow(2, DATA_DIMENSION);
 const level_t max_depth = 32;
-const level_t trie_depth = 10;
+const level_t trie_depth = 6;
 const preorder_t max_tree_node = 512;
 
 class MDTrieHandler : public MDTrieShardIf {
