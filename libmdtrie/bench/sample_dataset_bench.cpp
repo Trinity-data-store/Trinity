@@ -7,7 +7,7 @@
 #include <iostream>
 #include <fstream>
 
-const int DIMENSION = 5; // Max: 6
+const int DIMENSION = 6; // Max: 6
 level_t TRIE_DEPTH = 10;
 uint32_t TREEBLOCK_SIZE = 1024;
 std::ofstream myfile;
@@ -18,7 +18,6 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node, 
     auto *found_points = new point_array();
     auto *all_points = new std::vector<data_point>();
     all_points_ptr = all_points;
-
 
     auto *mdtrie = new md_trie(max_depth, trie_depth, max_tree_node);
     auto *leaf_point = new data_point();
@@ -39,6 +38,7 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node, 
     uint64_t max[DIMENSION];
     uint64_t min[DIMENSION];
     n_leaves_t n_lines = 14583357;
+    total_points_count = n_lines;
 
     tqdm bar;
     TimeStamp start, diff;
@@ -93,7 +93,6 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node, 
     myfile << "treeblock_primary_size: " << treeblock_primary_size << std::endl;
     myfile << "treeblock_nodes_size: " << treeblock_nodes_size << std::endl;
 
-/*
     tqdm bar2;
     TimeStamp check_diff = 0;
     
@@ -108,15 +107,12 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node, 
     }
     bar2.finish();
     myfile << "Average time to check one point: " << (float) check_diff / n_lines << std::endl;
-    
-*/
+
     auto *start_range = new data_point();
     auto *end_range = new data_point();
 
-/*
     int itr = 0;
     std::ofstream file("range_search_filesystem.csv");
-    uint64_t search_volume = 1;
     srand(time(NULL));
 
     tqdm bar3;
@@ -124,9 +120,8 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node, 
         bar3.progress(itr, 300);
 
         for (int j = 0; j < DIMENSION; j++){
-            start_range->set_coordinate(j, min[j] + (max[j] - min[j] + 1) / 5 * (rand() % 5));
-            end_range->set_coordinate(j, start_range->get_coordinate(j) + (max[j] - start_range->get_coordinate(j) + 1) / 5 * (rand() % 5));
-            search_volume *= start_range->get_coordinate(j) - end_range->get_coordinate(j) + 1;
+            start_range->set_coordinate(j, min[j] + (max[j] - min[j] + 1) / 10 * (rand() % 10));
+            end_range->set_coordinate(j, start_range->get_coordinate(j) + (max[j] - start_range->get_coordinate(j) + 1) / 10 * (rand() % 10));
         }
 
         auto *found_points_temp = new point_array();
@@ -134,16 +129,13 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node, 
         mdtrie->range_search_trie(start_range, end_range, mdtrie->root(), 0, found_points_temp);
         diff = GetTimestamp() - start;
 
-        // if (found_points_temp->size() > 0){
-        //     file << found_points_temp->size() << "," << diff << "," << search_volume << std::endl;
-        //     itr ++;
-        // }
-        std::cout << found_points_temp->size() << "," << diff << "," << search_volume << std::endl;
+        if (found_points_temp->size() == 0)
+            continue;
+
+        file << found_points_temp->size() << "," << diff << std::endl;
         itr ++;
-        search_volume = 1;
     }
     bar3.finish();
-*/
 
     for (dimension_t i = 0; i < DIMENSION; i++){
         start_range->set_coordinate(i, min[i]);
@@ -188,19 +180,16 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node, 
                 raise(SIGINT);
             }
         }    
-
         auto correct_point = (* all_points)[returned_primary_key];
         for (dimension_t j = 0; j < DIMENSION; j++){
             if (returned_coordinates->get_coordinate(j) != correct_point.get_coordinate(j)){
                 raise(SIGINT);
             }
         }           
-
         free(node_path_from_primary);
     }
     bar4.finish();
     myfile << "Lookup Latency: " << (float) diff_primary / checked_points_size << std::endl;
-     
 }
 
 int main() {
@@ -208,11 +197,9 @@ int main() {
     TREEBLOCK_SIZE = 512;
     TRIE_DEPTH = 10;
     myfile.open("filesystem_benchmark_" + std::to_string(DIMENSION) + "_" + std::to_string(TRIE_DEPTH) + "_" + std::to_string(TREEBLOCK_SIZE) + ".txt");
-    // std::vector<level_t> dimension_bits = {32, 32, 32, 32, 24, 24};
-    std::vector<level_t> dimension_bits = {32, 32, 32, 32, 24}; //5 dimensions
+    std::vector<level_t> dimension_bits = {32, 32, 32, 32, 24, 24};
 
     is_osm = false;
-
     myfile << "dimension: " << DIMENSION << std::endl;
     myfile << "trie depth: " << TRIE_DEPTH << std::endl;
     myfile << "treeblock sizes: " << TREEBLOCK_SIZE << std::endl;

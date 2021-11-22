@@ -36,9 +36,7 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node, 
     n_leaves_t n_points = 0;
     uint64_t max[DATA_DIMENSION];
     uint64_t min[DATA_DIMENSION];
-    // n_leaves_t n_lines = 14252681;
     n_leaves_t n_lines = 152806265;
-    n_lines = 30000000;
     total_points_count = n_lines;
 
     tqdm bar;
@@ -55,11 +53,6 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node, 
       
         for (dimension_t i = 0; i < 8; i++){
 
-            // if (i == 1){
-            //     // Remove 2 all-zero column 
-            //     token = strtok(nullptr, ",");
-            //     token = strtok(nullptr, ",");
-            // }
             token = strtok(nullptr, ",");
             if (i < 8 - DATA_DIMENSION)
                 continue;
@@ -81,9 +74,6 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node, 
             }            
         }
 
-        if (n_points == n_lines)
-            break;
-            
         (*all_points).push_back((*leaf_point));
 
         start = GetTimestamp();
@@ -104,11 +94,6 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node, 
     myfile << "treeblock_nodes_size: " << treeblock_nodes_size << std::endl;
     myfile << "collapsed_node_num: " << collapsed_node_num << std::endl;
 
-    // raise(SIGINT);
-    // for (int i = 1; i <= DATA_DIMENSION; i++){
-    //     std::cout << "active dimensions: " << i << ", branching factor: " << (float) active_dimension_to_num_children[i] / active_dimension_to_num_nodes[i] << std::endl;
-    // }
-
     tqdm bar2;
     TimeStamp check_diff = 0;
     
@@ -127,20 +112,18 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node, 
 
     auto *start_range = new data_point();
     auto *end_range = new data_point();
-/*
+
     int itr = 0;
     std::ofstream file("range_search_osm.csv");
-    uint64_t search_volume = 1;
     srand(time(NULL));
 
     tqdm bar3;
     while (itr < 300){
         bar3.progress(itr, 300);
 
-        for (int j = 0; j < DATA_DIMENSION; j++){
-            start_range->set_coordinate(j, min[j] + (max[j] - min[j] + 1) / 5 * (rand() % 5));
-            end_range->set_coordinate(j, start_range->get_coordinate(j) + (max[j] - start_range->get_coordinate(j) + 1) / 5 * (rand() % 5));
-            search_volume *= start_range->get_coordinate(j) - end_range->get_coordinate(j) + 1;
+        for (uint8_t j = 0; j < DATA_DIMENSION; j++){
+            start_range->set_coordinate(j, min[j] + (max[j] - min[j] + 1) / 10 * (rand() % 10));
+            end_range->set_coordinate(j, start_range->get_coordinate(j) + (max[j] - start_range->get_coordinate(j) + 1) / 10 * (rand() % 10));
         }
 
         auto *found_points_temp = new point_array();
@@ -148,14 +131,13 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node, 
         mdtrie->range_search_trie(start_range, end_range, mdtrie->root(), 0, found_points_temp);
         diff = GetTimestamp() - start;
 
-        if (found_points_temp->size() > 1000){
-            file << found_points_temp->size() << "," << diff << "," << search_volume << std::endl;
+        if (found_points_temp->size() > 0){
+            file << found_points_temp->size() << "," << diff << "," << std::endl;
             itr ++;
         }
-        search_volume = 1;
     }
     bar3.finish();
-*/
+
 
     for (dimension_t i = 0; i < DATA_DIMENSION; i++){
         start_range->set_coordinate(i, min[i]);

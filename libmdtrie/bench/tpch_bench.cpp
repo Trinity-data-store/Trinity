@@ -32,8 +32,6 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node, 
     n_leaves_t n_points = 0;
     n_leaves_t n_lines = total_points_count;
 
-    // n_lines = 60000000;
-
     tqdm bar;
     TimeStamp start, diff;
     diff = 0;
@@ -47,6 +45,10 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node, 
         // Parse string by ","
         int leaf_point_index = 0;
         int index = -1;
+
+        // Kept indexes: 
+        // [3, 4, 5, 6, 7, 10, 11, 12, 16, 17]
+        // [LINENUMBER, QUANTITY, EXTENDEDPRICE, DISCOUNT, TAX, SHIPDATE, COMMITDATE, RECEIPTDATE, TOTALPRICE, ORDERDATE]
         while (ss.good())
         {
             index ++;
@@ -94,6 +96,8 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node, 
         diff += GetTimestamp() - start;
 
         n_points ++;
+        if (n_points % (total_points_count / 10) == 0)
+            myfile << n_points << " finished!" << std::endl;
 
     }
     bar.finish();
@@ -108,6 +112,7 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node, 
     myfile << "treeblock_nodes_size: " << treeblock_nodes_size << std::endl;
     myfile << "collapsed_node_num: " << collapsed_node_num << std::endl;
 
+/*
     tqdm bar2;
     TimeStamp check_diff = 0;
     
@@ -124,15 +129,42 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node, 
     }
 
     bar2.finish();
-    myfile << "Average time to check one point: " << (float) check_diff / n_lines << std::endl;
 
+    myfile << "Average time to check one point: " << (float) check_diff / n_lines << std::endl;
+*/
+
+
+    tqdm bar5;
+    
+    uint64_t correct_range_search_count = 0;
+    for (uint64_t i = 0; i < n_points; i++){
+        bar5.progress(i, n_points);
+        auto check_point = (*all_points)[i];
+        if (check_point.get_coordinate(1) >= 20 && check_point.get_coordinate(8) >= 1000000 && check_point.get_coordinate(3) >= 1)
+            correct_range_search_count ++;
+
+    }
+    bar5.finish();
+    myfile << "correct_range_search_count: " << correct_range_search_count << std::endl;
+    std::cout << "correct_range_search_count: " << correct_range_search_count << std::endl;
 
     auto *start_range = new data_point();
     auto *end_range = new data_point();
 
+    // [LINENUMBER, QUANTITY, EXTENDEDPRICE, DISCOUNT, TAX, SHIPDATE, COMMITDATE, RECEIPTDATE, TOTALPRICE, ORDERDATE]
     for (dimension_t i = 0; i < DATA_DIMENSION; i++){
         start_range->set_coordinate(i, min_values[i]);
         end_range->set_coordinate(i, max_values[i]);
+
+        if (i == 1)
+            start_range->set_coordinate(i, 20);  //QUANTITY >= 20
+        if (i == 8)
+        {
+            start_range->set_coordinate(i, 1000000);   // TOTALPRICE >= 10000 (2dp)
+            // end_range->set_coordinate(i, 5000000);  // TOTALPRICE <= 50000 (2dp)
+        }
+        if (i == 3)
+            start_range->set_coordinate(i, 1);  // DISCOUNT >= 0.01
     }
 
     start = GetTimestamp();
@@ -140,8 +172,13 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node, 
     diff = GetTimestamp() - start;
 
     myfile << "found_pts size: " << found_points->size() << std::endl;
+    std::cout << found_points->size() << std::endl;
     myfile << "Range Search Latency: " << (float) diff / found_points->size() << std::endl;
+    std::cout << (float) diff / found_points->size() << std::endl;
+    myfile << "end to end latency: " << diff << std::endl;
 
+
+    exit(0);
 
     n_leaves_t found_points_size = found_points->size();
     TimeStamp diff_primary = 0;
@@ -212,11 +249,12 @@ int main() {
     TRIE_DEPTH = 6;
     is_osm = true;
 
-    myfile.open("tpch_benchmark_" + std::to_string(DATA_DIMENSION) + "_" + std::to_string(TRIE_DEPTH) + "_" + std::to_string(TREEBLOCK_SIZE) + ".txt", std::ios_base::app);
+    myfile.open("tpch_benchmark_" + std::to_string(DATA_DIMENSION) + "_" + std::to_string(TRIE_DEPTH) + "_" + std::to_string(TREEBLOCK_SIZE) + "_mysql_q2.txt", std::ios_base::app);
     std::vector<level_t> dimension_bits;
     std::vector<level_t> new_start_dimension_bits;
 
-
+    myfile << std::endl << std::endl;
+    myfile << "test for WHERE L_QUANTITY >= 20 and O_TOTALPRICE >= 10000 and L_DISCOUNT >= 0.01;" << std::endl;
     myfile << "dimension: " << DATA_DIMENSION << std::endl;
     myfile << "trie depth: " << TRIE_DEPTH << std::endl;
     myfile << "treeblock sizes: " << TREEBLOCK_SIZE << std::endl;
@@ -227,40 +265,40 @@ int main() {
     print_dimension_bits(dimension_bits, new_start_dimension_bits);
 
     run_bench(32, TRIE_DEPTH, TREEBLOCK_SIZE, dimension_bits);
-    myfile << std::endl;
-
-
-    
-// *****************************************
-    
-    dimension_bits = {8, 16, 32, 24, 32, 64, 64, 32, 64, 32}; // 10 Dimensions
-    new_start_dimension_bits = {0, 8, 0, 16, 24, 32, 32, 0, 32, 0}; // 10 Dimensions
-    print_dimension_bits(dimension_bits, new_start_dimension_bits);
-
-    run_bench(64, TRIE_DEPTH, TREEBLOCK_SIZE, dimension_bits);
     myfile << std::endl;
     exit(0);
 
-// *****************************************
-    TREEBLOCK_SIZE = 1024;
-    myfile << "dimension: " << DATA_DIMENSION << std::endl;
-    myfile << "trie depth: " << TRIE_DEPTH << std::endl;
-    myfile << "treeblock sizes: " << TREEBLOCK_SIZE << std::endl;
+    
+// // *****************************************
+    
+//     dimension_bits = {8, 16, 32, 24, 32, 64, 64, 32, 64, 32}; // 10 Dimensions
+//     new_start_dimension_bits = {0, 8, 0, 16, 24, 32, 32, 0, 32, 0}; // 10 Dimensions
+//     print_dimension_bits(dimension_bits, new_start_dimension_bits);
 
-    dimension_bits = {8, 16, 32, 24, 32, 64, 64, 32, 64, 32}; // 10 Dimensions
-    new_start_dimension_bits = {0, 8, 0, 16, 24, 32, 32, 0, 32, 0}; // 10 Dimensions
-    print_dimension_bits(dimension_bits, new_start_dimension_bits);
+//     run_bench(64, TRIE_DEPTH, TREEBLOCK_SIZE, dimension_bits);
+//     myfile << std::endl;
+//     exit(0);
 
-    run_bench(64, TRIE_DEPTH, TREEBLOCK_SIZE, dimension_bits);
-    myfile << std::endl;
+// // *****************************************
+//     TREEBLOCK_SIZE = 1024;
+//     myfile << "dimension: " << DATA_DIMENSION << std::endl;
+//     myfile << "trie depth: " << TRIE_DEPTH << std::endl;
+//     myfile << "treeblock sizes: " << TREEBLOCK_SIZE << std::endl;
 
-// *****************************************
+//     dimension_bits = {8, 16, 32, 24, 32, 64, 64, 32, 64, 32}; // 10 Dimensions
+//     new_start_dimension_bits = {0, 8, 0, 16, 24, 32, 32, 0, 32, 0}; // 10 Dimensions
+//     print_dimension_bits(dimension_bits, new_start_dimension_bits);
 
-    dimension_bits = {8, 16, 32, 24, 32, 32, 32, 32, 32, 32}; // 10 Dimensions
-    new_start_dimension_bits = {0, 8, 0, 16, 24, 0, 0, 0, 0, 0}; // 10 Dimensions
-    print_dimension_bits(dimension_bits, new_start_dimension_bits);
+//     run_bench(64, TRIE_DEPTH, TREEBLOCK_SIZE, dimension_bits);
+//     myfile << std::endl;
 
-    run_bench(32, TRIE_DEPTH, TREEBLOCK_SIZE, dimension_bits);
-    myfile << std::endl;
+// // *****************************************
+
+//     dimension_bits = {8, 16, 32, 24, 32, 32, 32, 32, 32, 32}; // 10 Dimensions
+//     new_start_dimension_bits = {0, 8, 0, 16, 24, 0, 0, 0, 0, 0}; // 10 Dimensions
+//     print_dimension_bits(dimension_bits, new_start_dimension_bits);
+
+//     run_bench(32, TRIE_DEPTH, TREEBLOCK_SIZE, dimension_bits);
+//     myfile << std::endl;
 
 }

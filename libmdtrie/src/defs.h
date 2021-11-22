@@ -72,9 +72,7 @@ uint64_t max_count = 0;
 TimeStamp vector_time = 0;
 uint64_t vect_opt_count = 0;
 std::shared_mutex mutex_p_key;
-// n_leaves_t total_points_count = 30000000;
 n_leaves_t total_points_count = 152806265;
-// n_leaves_t total_points_count = 30000000;
 
 
 bitmap::CompactPtrVector p_key_to_treeblock_compact(total_points_count);
