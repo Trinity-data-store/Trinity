@@ -75,6 +75,7 @@ public:
 
   int32_t insert_trie(const std::vector<int32_t> & point, int32_t primary_key){
 
+    std::cout << "insert request received!" << std::endl;
     inserted_points_ ++;
     TimeStamp start = GetTimestamp();
     auto *leaf_point = new data_point();
