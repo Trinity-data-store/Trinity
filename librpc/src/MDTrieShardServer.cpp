@@ -39,10 +39,12 @@ public:
   MDTrieHandler(){
     
     mdtrie_ = new md_trie(max_depth, trie_depth, max_tree_node);
+    std::vector<level_t> dimension_bits;
+    std::vector<level_t> new_start_dimension_bits;
     dimension_bits = {8, 32, 16, 24, 32, 32, 32, 32, 32}; // 9 Dimensions
     new_start_dimension_bits = {0, 0, 8, 16, 0, 0, 0, 0, 0}; // 9 Dimensions
     is_osm = true;
-    
+
     start_dimension_bits = new_start_dimension_bits;  
     create_level_to_num_children(dimension_bits, 32);
 
