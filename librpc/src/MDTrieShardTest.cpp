@@ -65,6 +65,77 @@ vector<vector <int32_t>> *get_data_vector(){
   return data_vector;
 }
 
+vector<vector <int32_t>> *get_data_vector_tpch(){
+
+/** 
+    Get data from the OSM dataset stored in a vector
+*/
+
+  std::ifstream infile("/home/ziming/tpch-dbgen/data/orders_lineitem_merged.csv");
+
+  std::string line;
+  std::getline(infile, line);
+
+  tqdm bar;
+  n_leaves_t n_points = 0;
+  n_lines = 300005812;
+  auto data_vector = new vector<vector <int32_t>>;
+
+  while (std::getline(infile, line))
+  {
+      bar.progress(n_points, n_lines);
+      std::stringstream ss(line);
+      vector <int32_t> point(DATA_DIMENSION, 0);
+
+      // Parse string by ","
+      int leaf_point_index = 0;
+      int index = -1;
+
+      // Kept indexes: 
+      // [3, 4, 5, 6, 7, 10, 11, 12, 16, 17]
+      // [LINENUMBER, QUANTITY, EXTENDEDPRICE, DISCOUNT, TAX, SHIPDATE, COMMITDATE, RECEIPTDATE, TOTALPRICE, ORDERDATE]
+      while (ss.good())
+      {
+          index ++;
+          std::string substr;
+          std::getline(ss, substr, ',');
+      
+          uint32_t num;
+          if (index == 5 || index == 6 || index == 7 || index == 16) // float with 2dp
+          {
+              num = static_cast<uint32_t>(std::stof(substr) * 100);
+          }
+          else if (index == 10 || index == 11 || index == 12 || index == 17) //yy-mm-dd
+          {
+              substr.erase(std::remove(substr.begin(), substr.end(), '-'), substr.end());
+              num = static_cast<uint32_t>(std::stoul(substr));
+          }
+          else if (index == 8 || index == 9 || index == 13 || index == 15 || index == 18) //skip text
+              continue;
+          else if (index == 0 || index == 1 || index == 2 || index == 14) // secondary keys
+              continue;
+          else if (index == 19) // all 0
+              continue;
+          else if (index == 3) // lineitem
+              continue;
+          else
+              num = static_cast<uint32_t>(std::stoul(substr));
+
+          point[leaf_point_index] = num;
+          leaf_point_index++;
+      }
+      
+      if (n_points == n_lines)
+          break;
+
+      data_vector->push_back(point);
+      n_points ++;
+      if (n_points % (total_points_count / 10) == 0)
+          std::cout << n_points << " finished!" << std::endl;
+  }
+  bar.finish();
+  return data_vector;
+}
 
 std::tuple<uint32_t, uint32_t, uint32_t> insert_each_client(vector<vector <int32_t>> *data_vector, int client_number, int client_index){
 
@@ -332,10 +403,15 @@ int main(int argc, char *argv[]){
 /** 
     Join table Test
 */  
-  
+  vector<vector <int32_t>> *data_vector_join_table = get_data_vector_tpch();
+
   std::vector<std::string> server_ips = {"172.28.229.152", "172.28.229.153"};
   auto client_join_table = MDTrieClient(server_ips);
   client_join_table.ping();
+  TimeStamp start = GetTimestamp();
+  insert_each_client(data_vector_join_table, 1, 0);
+  TimeStamp diff = GetTimestamp() - start;
+  std::cout << "end-to-end latency: " << diff << std::endl;
 
   return 0;
   
