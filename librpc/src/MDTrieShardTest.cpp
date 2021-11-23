@@ -19,7 +19,7 @@ using namespace apache::thrift::protocol;
 using namespace apache::thrift::transport;
 
 n_leaves_t n_lines = 152806265;
-const int BATCH_SIZE = 128;
+const int BATCH_SIZE = 32;
 std::atomic<int> active_thread_num {0};
 std::atomic<int> finished_thread_num {0};
 
@@ -79,6 +79,7 @@ vector<vector <int32_t>> *get_data_vector_tpch(){
   tqdm bar;
   n_leaves_t n_points = 0;
   n_lines = 300005812;
+  n_lines = 10000;
   auto data_vector = new vector<vector <int32_t>>;
 
   while (std::getline(infile, line))
@@ -406,7 +407,7 @@ int main(int argc, char *argv[]){
 
   std::vector<std::string> server_ips = {"172.28.229.152", "172.28.229.153"};
   auto client_join_table = MDTrieClient(server_ips);
-  
+
   client_join_table.ping();
   vector<vector <int32_t>> *data_vector_join_table = get_data_vector_tpch();
 
