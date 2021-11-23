@@ -194,7 +194,11 @@ class MDTrieServerCoordinator {
 public:
     MDTrieServerCoordinator(int port_num) {
 
-      start_server(port_num);
+      start_server(port_num, "172.29.249.30");
+    }
+
+    MDTrieServerCoordinator(std::string ip_address, int port_num){
+      start_server(port_num, ip_address);
     }
 
     MDTrieServerCoordinator(int port_num, int server_count) {
@@ -202,7 +206,7 @@ public:
         std::vector<std::future<void>> futures;
 
         for(int i = 0; i < server_count; ++i) {
-          futures.push_back(std::async(start_server, port_num + i));
+          futures.push_back(std::async(start_server, port_num + i, "172.29.249.44"));
         }
 
         for(auto &e : futures) {
@@ -210,12 +214,12 @@ public:
         }
     }
 
-    static void start_server(int port_num){
+    static void start_server(int port_num, std::string ip_address){
 
         auto handler = std::make_shared<MDTrieHandler>();
         auto processor = std::make_shared<MDTrieShardProcessor>(handler);
         // auto socket = std::make_shared<TNonblockingServerSocket>("172.29.249.44", port_num);
-        auto socket = std::make_shared<TNonblockingServerSocket>("172.29.249.30", port_num);
+        auto socket = std::make_shared<TNonblockingServerSocket>(ip_address, port_num);
         auto server = std::make_shared<TNonblockingServer>(processor, socket);
 
         cout << "Starting the server..." << endl;
@@ -231,7 +235,7 @@ private:
 int main(int argc, char *argv[]){
 
   if (argc == 2){
-    MDTrieServerCoordinator(atoi(argv[1]));
+      MDTrieServerCoordinator(argv[1], 9090);
     return 0;
   }
 

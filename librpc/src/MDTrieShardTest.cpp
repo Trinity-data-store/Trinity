@@ -329,6 +329,16 @@ std::tuple<uint32_t, float> total_client_range_search(vector<vector <int32_t>> *
 
 int main(int argc, char *argv[]){
   
+/** 
+    Join table Test
+*/  
+  
+  std::vector<std::string> server_ips = {"172.28.229.152", "172.28.229.153"};
+  auto client_join_table = MDTrieClient(server_ips);
+  client_join_table.ping();
+
+  return 0;
+  
   if (argc != 2 && argc != 3){
     cout << "wrong number of arguments" << endl;
     return 0;

@@ -25,9 +25,19 @@ public:
     shard_vector_.reserve(NUM_SERVERS);
 
     for (int i = 0; i < NUM_SERVERS; ++i) {
-      shard_vector_.push_back(launch_port(START_PORT_NUMBER + i));
+      shard_vector_.push_back(launch_port(START_PORT_NUMBER + i, "172.29.249.30"));
     }
   }
+
+  MDTrieClient(std::vector<std::string> server_ips){
+
+    shard_vector_.reserve(server_ips.size());
+
+    for (unsigned int i = 0; i < server_ips.size(); ++i) {
+      shard_vector_.push_back(launch_port(9090, server_ips[i]));
+    }
+  }
+
 
   static MDTrieShardClient connect(const std::string &host, int port) {
 
@@ -40,10 +50,9 @@ public:
     return client;
   }
 
-  static MDTrieShardClient launch_port(int port_num) {
+  static MDTrieShardClient launch_port(int port_num, std::string ip_address) {
     
-    // return connect("172.29.249.44", port_num);
-    return connect("172.29.249.30", port_num);
+    return connect(ip_address, port_num);
   }
 
   void ping(){
