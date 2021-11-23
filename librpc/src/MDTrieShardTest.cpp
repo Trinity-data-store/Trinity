@@ -403,11 +403,11 @@ int main(int argc, char *argv[]){
 /** 
     Join table Test
 */  
+  client_join_table.ping();
   vector<vector <int32_t>> *data_vector_join_table = get_data_vector_tpch();
 
   std::vector<std::string> server_ips = {"172.28.229.152", "172.28.229.153"};
   auto client_join_table = MDTrieClient(server_ips);
-  client_join_table.ping();
   TimeStamp start = GetTimestamp();
   insert_each_client(data_vector_join_table, 1, 0);
   TimeStamp diff = GetTimestamp() - start;
