@@ -36,7 +36,7 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node, 
     n_leaves_t n_points = 0;
     uint64_t max[DATA_DIMENSION];
     uint64_t min[DATA_DIMENSION];
-    n_leaves_t n_lines = 152806265;
+    n_leaves_t n_lines = 152806264;
     total_points_count = n_lines;
 
     tqdm bar;
@@ -94,6 +94,7 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node, 
     myfile << "treeblock_nodes_size: " << treeblock_nodes_size << std::endl;
     myfile << "collapsed_node_num: " << collapsed_node_num << std::endl;
 
+/*
     tqdm bar2;
     TimeStamp check_diff = 0;
     
@@ -108,7 +109,7 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node, 
     }
     bar2.finish();
     myfile << "Average time to check one point: " << (float) check_diff / n_lines << std::endl;
-
+*/
 
     auto *start_range = new data_point();
     auto *end_range = new data_point();
@@ -123,7 +124,7 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node, 
 
         for (uint8_t j = 0; j < DATA_DIMENSION; j++){
             start_range->set_coordinate(j, min[j] + (max[j] - min[j] + 1) / 10 * (rand() % 10));
-            end_range->set_coordinate(j, start_range->get_coordinate(j) + (max[j] - start_range->get_coordinate(j) + 1) / 10 * (rand() % 10));
+            end_range->set_coordinate(j, start_range->get_coordinate(j) + (max[j] - start_range->get_coordinate(j) + 1) / 3 * (rand() % 3));
         }
 
         auto *found_points_temp = new point_array();
@@ -131,14 +132,14 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node, 
         mdtrie->range_search_trie(start_range, end_range, mdtrie->root(), 0, found_points_temp);
         diff = GetTimestamp() - start;
 
-        if (found_points_temp->size() > 0){
+        if (found_points_temp->size() >= 0.0005 * n_lines && found_points_temp->size() <= 0.0015 * n_lines){
             file << found_points_temp->size() << "," << diff << "," << std::endl;
             itr ++;
         }
     }
     bar3.finish();
 
-
+    exit(0);
     for (dimension_t i = 0; i < DATA_DIMENSION; i++){
         start_range->set_coordinate(i, min[i]);
         end_range->set_coordinate(i, max[i]);
