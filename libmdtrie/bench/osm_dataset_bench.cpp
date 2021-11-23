@@ -24,7 +24,7 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node, 
     char *line = nullptr;
     size_t len = 0;
     ssize_t read;
-    FILE *fp = fopen("../libmdtrie/bench/data/osm_us_northeast_long_lat.csv", "r");
+    FILE *fp = fopen("/home/ziming/osm/osm_us_northeast_timestamp.csv", "r");
 
     // If the file cannot be open
     if (fp == nullptr)
@@ -51,12 +51,10 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node, 
         char *token = strtok(line, ","); // id
         char *ptr;
       
-        for (dimension_t i = 0; i < 8; i++){
+        for (dimension_t i = 0; i < DATA_DIMENSION; i++){
 
             token = strtok(nullptr, ",");
-            if (i < 8 - DATA_DIMENSION)
-                continue;
-            leaf_point->set_coordinate(i - (8 - DATA_DIMENSION), strtoul(token, &ptr, 10));
+            leaf_point->set_coordinate(i, strtoul(token, &ptr, 10));
         }
 
         for (dimension_t i = 0; i < DATA_DIMENSION; i++){
@@ -94,7 +92,7 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node, 
     myfile << "treeblock_nodes_size: " << treeblock_nodes_size << std::endl;
     myfile << "collapsed_node_num: " << collapsed_node_num << std::endl;
 
-/*
+
     tqdm bar2;
     TimeStamp check_diff = 0;
     
@@ -109,7 +107,7 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node, 
     }
     bar2.finish();
     myfile << "Average time to check one point: " << (float) check_diff / n_lines << std::endl;
-*/
+
 
     auto *start_range = new data_point();
     auto *end_range = new data_point();
@@ -132,7 +130,8 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node, 
         mdtrie->range_search_trie(start_range, end_range, mdtrie->root(), 0, found_points_temp);
         diff = GetTimestamp() - start;
 
-        if (found_points_temp->size() >= 0.0005 * n_lines && found_points_temp->size() <= 0.0015 * n_lines){
+        // if (found_points_temp->size() >= 0.0005 * n_lines && found_points_temp->size() <= 0.0015 * n_lines){
+        if (found_points_temp->size() >= 1000){
             file << found_points_temp->size() << "," << diff << "," << std::endl;
             itr ++;
         }
@@ -206,8 +205,8 @@ int main() {
     //  max: {183, 59, 23, 31, 12, 2021, 834785061, 498730330}
     //  min: {1, 0, 0, 1, 1, 2006, 95434670, 384409862}
 
-    std::vector<level_t> dimension_bits = {24, 16, 8, 32, 24, 16, 32, 32}; // 8 Dimensions
-    std::vector<level_t> new_start_dimension_bits = {16, 8, 0, 24, 16, 0, 0, 0}; // 8 Dimensions
+    std::vector<level_t> dimension_bits = {8, 32, 32, 32}; // 8 Dimensions
+    std::vector<level_t> new_start_dimension_bits = {0, 0, 0, 0}; // 8 Dimensions
 
     start_dimension_bits = new_start_dimension_bits;
 
