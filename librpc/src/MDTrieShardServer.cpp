@@ -28,17 +28,23 @@ using namespace apache::thrift::protocol;
 using namespace apache::thrift::transport;
 using namespace apache::thrift::server;
 
-const int DIMENSION = 6; 
-const symbol_t NUM_BRANCHES = pow(2, DIMENSION);
+// const int DIMENSION = 6; 
 const level_t max_depth = 32;
-const level_t trie_depth = 10;
+const level_t trie_depth = 6;
 const preorder_t max_tree_node = 512;
 
 class MDTrieHandler : public MDTrieShardIf {
 public:
 
   MDTrieHandler(){
+    
     mdtrie_ = new md_trie(max_depth, trie_depth, max_tree_node);
+    std::vector<level_t> dimension_bits = {24, 16, 8, 32, 24, 16, 32, 32}; // 8 Dimensions
+    std::vector<level_t> new_start_dimension_bits = {16, 8, 0, 24, 16, 0, 0, 0}; // 8 Dimensions
+
+    start_dimension_bits = new_start_dimension_bits;  
+    create_level_to_num_children(dimension_bits, 32);
+
   };
 
   void ping() { cout << "ping()" << endl; }
@@ -53,7 +59,7 @@ public:
     TimeStamp start = GetTimestamp();
     auto *leaf_point = new data_point();
 
-    for (uint8_t i = 0; i < DIMENSION; i++)
+    for (uint8_t i = 0; i < DATA_DIMENSION; i++)
       leaf_point->set_coordinate(i, point[i]);
     thrift_vector_time += GetTimestamp() - start;
 
@@ -70,7 +76,7 @@ public:
     TimeStamp start = GetTimestamp();
     auto *leaf_point = new data_point();
 
-    for (uint8_t i = 0; i < DIMENSION; i++)
+    for (uint8_t i = 0; i < DATA_DIMENSION; i++)
       leaf_point->set_coordinate(i, point[i]);
     
     thrift_vector_time += GetTimestamp() - start;
@@ -89,12 +95,12 @@ public:
     start = GetTimestamp();
     auto *start_range_point = new data_point();
 
-    for (uint8_t i = 0; i < DIMENSION; i++)
+    for (uint8_t i = 0; i < DATA_DIMENSION; i++)
       start_range_point->set_coordinate(i, start_range[i]);    
 
     auto *end_range_point = new data_point();
 
-    for (uint8_t i = 0; i < DIMENSION; i++)
+    for (uint8_t i = 0; i < DATA_DIMENSION; i++)
       end_range_point->set_coordinate(i, end_range[i]);     
 
     auto *found_points = new point_array();
@@ -118,7 +124,7 @@ public:
 
   void primary_key_lookup(std::vector<int32_t> & _return, const int32_t primary_key){
 
-    _return.reserve(DIMENSION);
+    _return.reserve(DATA_DIMENSION);
 
     TimeStamp start = GetTimestamp();
     symbol_t *node_path_from_primary = (symbol_t *)malloc((max_depth + 1) * sizeof(symbol_t));
@@ -127,12 +133,12 @@ public:
     symbol_t parent_symbol_from_primary = t_ptr->get_node_path_primary_key(primary_key, node_path_from_primary);
     node_path_from_primary[max_depth - 1] = parent_symbol_from_primary;
 
-    auto returned_coordinates = t_ptr->node_path_to_coordinates(node_path_from_primary, DIMENSION);  
+    auto returned_coordinates = t_ptr->node_path_to_coordinates(node_path_from_primary, DATA_DIMENSION);  
 
     thrift_inner_function_time += GetTimestamp() - start;
     
     start = GetTimestamp();
-    for (uint8_t i = 0; i < DIMENSION; i++){
+    for (uint8_t i = 0; i < DATA_DIMENSION; i++){
       _return.emplace_back(returned_coordinates->get_coordinate(i));
     }      
     thrift_vector_time += GetTimestamp() - start;
@@ -208,7 +214,8 @@ public:
 
         auto handler = std::make_shared<MDTrieHandler>();
         auto processor = std::make_shared<MDTrieShardProcessor>(handler);
-        auto socket = std::make_shared<TNonblockingServerSocket>("172.29.249.44", port_num);
+        // auto socket = std::make_shared<TNonblockingServerSocket>("172.29.249.44", port_num);
+        auto socket = std::make_shared<TNonblockingServerSocket>("172.29.249.30", port_num);
         auto server = std::make_shared<TNonblockingServer>(processor, socket);
 
         cout << "Starting the server..." << endl;

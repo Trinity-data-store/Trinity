@@ -91,19 +91,17 @@ public:
 
     uint64_t size() {
 
+        uint64_t total_size = sizeof(uint64_t); // root_ is will be counted later
+        total_size += sizeof(uint8_t) * 2; // max_depth_ & trie_depth_
+        total_size += sizeof(uint16_t); // max_tree_nodes_
+        total_size += sizeof(uint16_t); // initial_tree_capacity_;
 
-        uint64_t total_size = sizeof(trie_node *) /*root_*/ + sizeof(uint8_t) * 2 /* level_t*/+  sizeof(uint16_t) /* preorder_t*/+ sizeof(uint16_t) /*node_n_t*/;
-
-        // Include primary key size:
-        p_key_to_treeblock_compact_size += sizeof(p_key_to_treeblock_compact) + (44 * total_points_count / 64 + 1) * 8;
-        total_size += sizeof(p_key_to_treeblock_compact) + (44 * total_points_count / 64 + 1) * 8;
-        
-        // p_key_to_treeblock_compact_size += sizeof(p_key_to_treeblock_compact) + total_points_count * sizeof(uint16_t);
-        // total_size += sizeof(p_key_to_treeblock_compact) + total_points_count * sizeof(uint16_t);
+        // Primary Key to Treeblock Index    
+        p_key_to_treeblock_compact_size += sizeof(uint64_t) + total_points_count * sizeof(uint32_t);
+        total_size += sizeof(uint64_t) + total_points_count * sizeof(uint32_t);
 
         std::queue<trie_node *> trie_node_queue;
         trie_node_queue.push(root_);
-        num_trie_nodes ++;
 
         while (!trie_node_queue.empty()){
 
@@ -117,7 +115,6 @@ public:
                 {
                     if (current_node->get_child(i)) {
                         trie_node_queue.push(current_node->get_child(i));
-                        num_trie_nodes++;
                     }
                 }
             }
@@ -125,11 +122,11 @@ public:
                 total_size += current_node->get_block()->size();
             }
         }
-        // total_size += sizeof(uint64_t) + (44 * total_treeblock_num / 64 + 1) * 8;
-        // p_key_to_treeblock_compact_size += sizeof(uint64_t) + (44 * total_treeblock_num / 64 + 1) * 8;
+
+        p_key_to_treeblock_compact_size += sizeof(uint64_t) + (44 * total_treeblock_num / 64 + 1) * 8;
+        total_size += sizeof(uint64_t) + (44 * total_treeblock_num / 64 + 1) * 8;
         return total_size;
     }
-
 
     void range_search_trie(data_point *start_range, data_point *end_range, trie_node *current_trie_node,
                                     level_t level, point_array *found_points) {

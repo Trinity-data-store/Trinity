@@ -18,8 +18,7 @@ using namespace apache::thrift;
 using namespace apache::thrift::protocol;
 using namespace apache::thrift::transport;
 
-const int DIMENSION = 6; 
-n_leaves_t n_lines = 14252681;
+n_leaves_t n_lines = 152806265;
 const int BATCH_SIZE = 128;
 std::atomic<int> active_thread_num {0};
 std::atomic<int> finished_thread_num {0};
@@ -33,7 +32,7 @@ vector<vector <int32_t>> *get_data_vector(){
     Get data from the OSM dataset stored in a vector
 */
 
-  FILE *fp = fopen("../libmdtrie/bench/data/osm_combined_updated.csv", "r");
+  FILE *fp = fopen("../libmdtrie/bench/data/osm_us_northeast_long_lat.csv", "r");
   char *line = nullptr;
   size_t len = 0;
   ssize_t read;
@@ -41,12 +40,6 @@ vector<vector <int32_t>> *get_data_vector(){
   if (fp == nullptr)
   {
       fprintf(stderr, "file not found\n");
-      char cwd[PATH_MAX];
-      if (getcwd(cwd, sizeof(cwd)) != nullptr) {
-          printf("Current working dir: %s\n", cwd);
-      } else {
-          perror("getcwd() error");
-      }
       exit(EXIT_FAILURE);
   }  
 
@@ -56,25 +49,17 @@ vector<vector <int32_t>> *get_data_vector(){
   while ((read = getline(&line, &len, fp)) != -1)
   {
       bar.progress(n_points, n_lines);
-      vector<int32_t> point;
+      vector<int32_t> point(DATA_DIMENSION, 0);
       char *token = strtok(line, ",");
       char *ptr;
       for (dimension_t i = 0; i < 8; i++){
-
-          if (i == 1){
-              token = strtok(nullptr, ",");
-              token = strtok(nullptr, ",");
-          }
           token = strtok(nullptr, ",");
-          if (i < 8 - DIMENSION)
+          if (i < 8 - DATA_DIMENSION)
               continue;
-
-          point.push_back(strtoul(token, &ptr, 10));
+          point[i - (8 - DATA_DIMENSION)] = strtoul(token, &ptr, 10);
       }
       data_vector->push_back(point);
       n_points ++;
-      // if (n_points == n_lines / 2)
-      //   break;
   }  
   bar.finish();
   return data_vector;
@@ -358,7 +343,7 @@ int main(int argc, char *argv[]){
 
   cout << "client number: " << client_number << endl;
   auto client = MDTrieClient();
-
+  client.ping();
   vector<vector <int32_t>> *data_vector = get_data_vector();
  
 /** 
@@ -373,21 +358,21 @@ int main(int argc, char *argv[]){
   cout << "Latency (us): " << latency << endl;
   cout << "Inserted Points: " << client.get_count() << endl;
   
-
+  return 0;
 
 /**  Range Search Obtain Search Range
 
 */
   int32_t max_range = 1 << 31;
-  auto start_range = vector <int32_t>(DIMENSION, 0);
-  auto end_range = vector <int32_t>(DIMENSION, max_range);
+  auto start_range = vector <int32_t>(DATA_DIMENSION, 0);
+  auto end_range = vector <int32_t>(DATA_DIMENSION, max_range);
 
-  int32_t max[DIMENSION];
-  int32_t min[DIMENSION];
+  int32_t max[DATA_DIMENSION];
+  int32_t min[DATA_DIMENSION];
 
   for (n_leaves_t itr = 0; itr < n_lines; itr++) {
 
-      for (dimension_t i = 0; i < DIMENSION; i++) {
+      for (dimension_t i = 0; i < DATA_DIMENSION; i++) {
 
           if (itr == 1) {
               max[i] = (*data_vector)[itr][i];
@@ -415,7 +400,7 @@ int main(int argc, char *argv[]){
     if (i % 100 == 0)
       cout << "finished: " << i << endl;
       
-    for (int j = 0; j < DIMENSION; j++){
+    for (unsigned int j = 0; j < DATA_DIMENSION; j++){
 
       // start_range[j] = min[j] + (max[j] - min[j] + 1) / 10 * (rand() % 10);
       // end_range[j] = start_range[j] + (max[j] - start_range[j] + 1) / 10 * (rand() % 10);

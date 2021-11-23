@@ -126,8 +126,8 @@ static const uint64_t low_bits_unset[65] = { 0xFFFFFFFFFFFFFFFFULL,
 class compressed_bitmap {
  public:
 
-  typedef size_t pos_type;
-  typedef size_t size_type;
+  typedef uint64_t pos_type;
+  typedef uint64_t size_type;
   typedef uint64_t data_type;
   typedef uint64_t width_type;
 
@@ -336,7 +336,7 @@ class compressed_bitmap {
     size_type orig_flag_size = flag_size_;
     
     increase_bits(data_bits, true);
-    increase_bits(flag_bits, false);    
+    increase_bits(flag_bits, false);    // not sure if we should increase bits
 
     bulkcopy_backward(orig_data_size, data_size_,  orig_data_size - node_pos, true);
     bulkcopy_backward(orig_flag_size, flag_size_, orig_flag_size - node, false);    
