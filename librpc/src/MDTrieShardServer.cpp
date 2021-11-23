@@ -221,7 +221,6 @@ public:
 
         auto handler = std::make_shared<MDTrieHandler>();
         auto processor = std::make_shared<MDTrieShardProcessor>(handler);
-        // auto socket = std::make_shared<TNonblockingServerSocket>("172.29.249.44", port_num);
         auto socket = std::make_shared<TNonblockingServerSocket>(ip_address, port_num);
         auto server = std::make_shared<TNonblockingServer>(processor, socket);
 
