@@ -93,6 +93,7 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node, 
     myfile << "treeblock_primary_size: " << treeblock_primary_size << std::endl;
     myfile << "treeblock_nodes_size: " << treeblock_nodes_size << std::endl;
 
+
     tqdm bar2;
     TimeStamp check_diff = 0;
     
@@ -112,12 +113,12 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node, 
     auto *end_range = new data_point();
 
     int itr = 0;
-    std::ofstream file("range_search_filesystem.csv");
+    std::ofstream file("range_search_filesystem.csv", std::ios_base::app);
     srand(time(NULL));
 
     tqdm bar3;
-    while (itr < 300){
-        bar3.progress(itr, 300);
+    while (itr < 600){
+        bar3.progress(itr, 600);
 
         for (int j = 0; j < DIMENSION; j++){
             start_range->set_coordinate(j, min[j] + (max[j] - min[j] + 1) / 10 * (rand() % 10));
@@ -129,11 +130,10 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node, 
         mdtrie->range_search_trie(start_range, end_range, mdtrie->root(), 0, found_points_temp);
         diff = GetTimestamp() - start;
 
-        if (found_points_temp->size() == 0)
-            continue;
-
-        file << found_points_temp->size() << "," << diff << std::endl;
-        itr ++;
+        if (found_points_temp->size() >= 1000){
+            file << found_points_temp->size() << "," << diff << "," << std::endl;
+            itr ++;
+        }
     }
     bar3.finish();
 

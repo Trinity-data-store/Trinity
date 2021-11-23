@@ -113,7 +113,7 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node, 
     auto *end_range = new data_point();
 
     int itr = 0;
-    std::ofstream file("range_search_osm.csv");
+    std::ofstream file("range_search_osm.csv", std::ios_base::app);
     srand(time(NULL));
 
     tqdm bar3;
@@ -138,7 +138,6 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node, 
     }
     bar3.finish();
 
-    exit(0);
     for (dimension_t i = 0; i < DATA_DIMENSION; i++){
         start_range->set_coordinate(i, min[i]);
         end_range->set_coordinate(i, max[i]);
