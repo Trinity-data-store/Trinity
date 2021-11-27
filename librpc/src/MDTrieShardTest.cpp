@@ -19,7 +19,7 @@ using namespace apache::thrift::protocol;
 using namespace apache::thrift::transport;
 
 n_leaves_t n_lines = 152806265;
-const int BATCH_SIZE = 4;
+const int BATCH_SIZE = 2;
 std::atomic<int> active_thread_num {0};
 std::atomic<int> finished_thread_num {0};
 
