@@ -71,7 +71,7 @@ vector<vector <int32_t>> *get_data_vector_tpch(std::vector<int32_t> max_values, 
     Get data from the OSM dataset stored in a vector
 */
 
-  std::ifstream infile("/home/ziming/tpch-dbgen/data/orders_lineitem_merged.csv");
+  std::ifstream infile("/home/ziming/tpch-dbgen/data/orders_lineitem_merged_inner.csv");
 
   std::string line;
   std::getline(infile, line);
@@ -180,6 +180,9 @@ std::tuple<uint32_t, uint32_t, uint32_t> insert_each_client(vector<vector <int32
     }
 
     vector<int32_t> data_point = (*data_vector)[current_pos];
+    if (current_pos == 19065010){
+      raise(SIGINT);
+    }
     client.insert_send(data_point, current_pos);
     sent_count ++;
   }

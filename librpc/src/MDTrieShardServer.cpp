@@ -60,14 +60,14 @@ public:
   bool check(const std::vector<int32_t> & point){
 
     TimeStamp start = GetTimestamp();
-    auto *leaf_point = new data_point();
+    data_point leaf_point;
 
     for (uint8_t i = 0; i < DATA_DIMENSION; i++)
-      leaf_point->set_coordinate(i, point[i]);
+      leaf_point.set_coordinate(i, point[i]);
     thrift_vector_time += GetTimestamp() - start;
 
     start = GetTimestamp();
-    bool result = mdtrie_->check(leaf_point);
+    bool result = mdtrie_->check(&leaf_point);
     thrift_inner_function_time += GetTimestamp() - start;
 
     return result;
@@ -77,18 +77,18 @@ public:
 
     inserted_points_ ++;
     TimeStamp start = GetTimestamp();
-    auto *leaf_point = new data_point();
+    data_point leaf_point;
 
     for (uint8_t i = 0; i < DATA_DIMENSION; i++)
-      leaf_point->set_coordinate(i, point[i]);
+      leaf_point.set_coordinate(i, point[i]);
     
     thrift_vector_time += GetTimestamp() - start;
 
     start = GetTimestamp();
-    mdtrie_->insert_trie(leaf_point, primary_key);
+    mdtrie_->insert_trie(&leaf_point, primary_key);
 
     thrift_inner_function_time += GetTimestamp() - start;
-
+    
     return primary_key;
   }
 
