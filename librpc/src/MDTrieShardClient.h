@@ -38,6 +38,16 @@ public:
     }
   }
 
+  MDTrieClient(std::vector<std::string> server_ips, int shard_count){
+
+    shard_vector_.reserve(server_ips.size());
+
+    for (unsigned int i = 0; i < server_ips.size(); ++i) {
+      for (int j = 0; j < shard_count; j++){
+        shard_vector_.push_back(launch_port(9090 + j, server_ips[i]));
+      }
+    }
+  }
 
   static MDTrieShardClient connect(const std::string &host, int port) {
 

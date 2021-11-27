@@ -19,7 +19,7 @@ using namespace apache::thrift::protocol;
 using namespace apache::thrift::transport;
 
 n_leaves_t n_lines = 152806265;
-const int BATCH_SIZE = 2;
+const int BATCH_SIZE = 8;
 std::atomic<int> active_thread_num {0};
 std::atomic<int> finished_thread_num {0};
 
@@ -201,7 +201,7 @@ std::tuple<uint32_t, uint32_t, uint32_t> insert_each_client(vector<vector <int32
 void insert_for_join_table(vector<vector <int32_t>> *data_vector, int client_number, int client_index){
 
   std::vector<std::string> server_ips = {"172.28.229.152", "172.28.229.153"};
-  auto client = MDTrieClient(server_ips);
+  auto client = MDTrieClient(server_ips, 8);
   uint32_t start_pos = data_vector->size() / client_number * client_index;
   uint32_t end_pos = data_vector->size() / client_number * (client_index + 1) - 1;
 
@@ -450,7 +450,7 @@ int main(int argc, char *argv[]){
 */  
 
   std::vector<std::string> server_ips = {"172.28.229.152", "172.28.229.153"};
-  auto client_join_table = MDTrieClient(server_ips);
+  auto client_join_table = MDTrieClient(server_ips, 8);
 
   client_join_table.ping();
   std::vector<int32_t> max_values(DATA_DIMENSION, 0);

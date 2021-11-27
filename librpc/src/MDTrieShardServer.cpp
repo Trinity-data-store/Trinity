@@ -204,11 +204,23 @@ public:
       start_server(port_num, ip_address);
     }
 
-    MDTrieServerCoordinator(int port_num, int server_count) {
+    MDTrieServerCoordinator(std::string ip_address, int port_num, int server_count){
+      std::vector<std::future<void>> futures;
+
+      for(int i = 0; i < server_count; ++i) {
+        futures.push_back(std::async(start_server, port_num + i, ip_address));
+      }
+
+      for(auto &e : futures) {
+        e.get();
+      }
+    }
+
+    MDTrieServerCoordinator(int port_num, int shard_count) {
 
         std::vector<std::future<void>> futures;
 
-        for(int i = 0; i < server_count; ++i) {
+        for(int i = 0; i < shard_count; ++i) {
           futures.push_back(std::async(start_server, port_num + i, "172.29.249.44"));
         }
 
@@ -237,7 +249,7 @@ private:
 int main(int argc, char *argv[]){
 
   if (argc == 2){
-      MDTrieServerCoordinator(argv[1], 9090);
+      MDTrieServerCoordinator(argv[1], 9090, 8);
     return 0;
   }
 
