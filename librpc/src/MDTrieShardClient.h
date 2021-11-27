@@ -41,7 +41,7 @@ public:
 
   static MDTrieShardClient connect(const std::string &host, int port) {
 
-    std::shared_ptr<TTransport> socket(new TSocket(host, port));
+    std::shared_ptr<TTransport> socket(new TSocket(host, port, std::make_shared<TConfiguration>(1000 * 1024 * 1024)));  // Set max message size
     std::shared_ptr<TTransport> transport(new TFramedTransport(socket));
     std::shared_ptr<TProtocol> protocol(new TBinaryProtocol(transport));
     MDTrieShardClient client(protocol);
