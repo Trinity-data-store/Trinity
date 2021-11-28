@@ -249,7 +249,7 @@ private:
 int main(int argc, char *argv[]){
 
   if (argc == 2){
-      MDTrieServerCoordinator(argv[1], 9090, 8);
+      MDTrieServerCoordinator(argv[1], 9090, 48);
     return 0;
   }
 

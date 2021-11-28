@@ -47,8 +47,8 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node, 
         int index = -1;
 
         // Kept indexes: 
-        // [3, 4, 5, 6, 7, 10, 11, 12, 16, 17]
-        // [LINENUMBER, QUANTITY, EXTENDEDPRICE, DISCOUNT, TAX, SHIPDATE, COMMITDATE, RECEIPTDATE, TOTALPRICE, ORDERDATE]
+        // [4, 5, 6, 7, 10, 11, 12, 16, 17]
+        // [QUANTITY, EXTENDEDPRICE, DISCOUNT, TAX, SHIPDATE, COMMITDATE, RECEIPTDATE, TOTALPRICE, ORDERDATE]
         while (ss.good())
         {
             index ++;

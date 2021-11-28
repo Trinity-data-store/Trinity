@@ -19,7 +19,7 @@ using namespace apache::thrift::protocol;
 using namespace apache::thrift::transport;
 
 n_leaves_t n_lines = 152806265;
-const int BATCH_SIZE = 8;
+const int BATCH_SIZE = 256;
 std::atomic<int> active_thread_num {0};
 std::atomic<int> finished_thread_num {0};
 
@@ -65,7 +65,7 @@ vector<vector <int32_t>> *get_data_vector(){
   return data_vector;
 }
 
-vector<vector <int32_t>> *get_data_vector_tpch(std::vector<int32_t> max_values, std::vector<int32_t> min_values){
+vector<vector <int32_t>> *get_data_vector_tpch(std::vector<int32_t> &max_values, std::vector<int32_t> &min_values){
 
 /** 
     Get data from the OSM dataset stored in a vector
@@ -93,8 +93,8 @@ vector<vector <int32_t>> *get_data_vector_tpch(std::vector<int32_t> max_values, 
       int index = -1;
 
       // Kept indexes: 
-      // [3, 4, 5, 6, 7, 10, 11, 12, 16, 17]
-      // [LINENUMBER, QUANTITY, EXTENDEDPRICE, DISCOUNT, TAX, SHIPDATE, COMMITDATE, RECEIPTDATE, TOTALPRICE, ORDERDATE]
+      // [4, 5, 6, 7, 10, 11, 12, 16, 17]
+      // [QUANTITY, EXTENDEDPRICE, DISCOUNT, TAX, SHIPDATE, COMMITDATE, RECEIPTDATE, TOTALPRICE, ORDERDATE]
       while (ss.good())
       {
           index ++;
@@ -450,21 +450,26 @@ int main(int argc, char *argv[]){
 */  
 
   std::vector<std::string> server_ips = {"172.28.229.152", "172.28.229.153"};
-  auto client_join_table = MDTrieClient(server_ips, 8);
+  auto client_join_table = MDTrieClient(server_ips, 48);
 
   client_join_table.ping();
   std::vector<int32_t> max_values(DATA_DIMENSION, 0);
   std::vector<int32_t> min_values(DATA_DIMENSION, 2147483647);
   vector<vector <int32_t>> *data_vector_join_table = get_data_vector_tpch(max_values, min_values);
 
-  TimeStamp start = GetTimestamp();
+  TimeStamp start, diff;
+
+  
+  start = GetTimestamp();
   insert_for_join_table(data_vector_join_table, 1, 0);
-  TimeStamp diff = GetTimestamp() - start;
-  std::cout << "end-to-end latency: " << diff << std::endl;
+  diff = GetTimestamp() - start;
+  std::cout << "Insertion end-to-end latency: " << diff << std::endl;
+  
 
   std::vector<int32_t>start_range_join(DATA_DIMENSION, 0);
   std::vector<int32_t>end_range_join(DATA_DIMENSION, 0);
   // [QUANTITY, EXTENDEDPRICE, DISCOUNT, TAX, SHIPDATE, COMMITDATE, RECEIPTDATE, TOTALPRICE, ORDERDATE]
+  // [4, 5, 6, 7, 10, 11, 12, 16, 17]
   for (dimension_t i = 0; i < DATA_DIMENSION; i++){
       start_range_join[i] = min_values[i];
       end_range_join[i] = max_values[i];
@@ -487,8 +492,7 @@ int main(int argc, char *argv[]){
 
   std::cout << found_points.size() << std::endl;
   std::cout << "Range Search Latency: " << (float) diff / found_points.size() << std::endl;
-  std::cout << "end to end latency: " << diff << std::endl;
-
+  std::cout << "Range Search end to end latency: " << diff << std::endl;
 
   return 0;
 
