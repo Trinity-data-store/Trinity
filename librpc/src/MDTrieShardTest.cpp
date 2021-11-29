@@ -464,7 +464,9 @@ int main(int argc, char *argv[]){
   insert_for_join_table(data_vector_join_table, 1, 0);
   diff = GetTimestamp() - start;
   std::cout << "Insertion end-to-end latency: " << diff << std::endl;
-  
+  std::cout << "Storage Overhead" << client_join_table.get_count() << std::endl;
+
+  exit(0);
 
   std::vector<int32_t>start_range_join(DATA_DIMENSION, 0);
   std::vector<int32_t>end_range_join(DATA_DIMENSION, 0);
