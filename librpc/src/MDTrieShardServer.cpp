@@ -164,7 +164,7 @@ public:
   }
 
   int32_t get_count(){
-    return inserted_points_;
+    return mdtrie_->size();
   }
 
 protected:
