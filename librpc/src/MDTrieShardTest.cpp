@@ -486,7 +486,22 @@ int main(int argc, char *argv[]){
       if (i == 2)
           start_range_join[i] = 1;  // DISCOUNT >= 0.01
   }
+/*
+  // [QUANTITY, EXTENDEDPRICE, DISCOUNT, TAX, SHIPDATE, COMMITDATE, RECEIPTDATE, TOTALPRICE, ORDERDATE]
+  for (dimension_t i = 0; i < DATA_DIMENSION; i++){
+      start_range_join[i] = min_values[i];
+      end_range_join[i] = max_values[i];
 
+      if (i == 1)
+          end_range_join[i] = 10000000;  //EXTENDEDPRICE <= 100000
+      if (i == 7)
+      {
+          start_range_join[i] = 5000000;  // TOTALPRICE >= 50000 (2dp)
+      }
+      if (i == 3)
+          start_range_join[i] = 5;  // DISCOUNT >= 0.05
+  }
+*/
   std::vector<int32_t> found_points;
   start = GetTimestamp();
   client_join_table.range_search_trie(found_points, start_range_join, end_range_join);
