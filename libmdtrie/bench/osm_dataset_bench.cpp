@@ -111,7 +111,7 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node, 
 
     line = nullptr;
     len = 0;
-    fp = fopen("/home/ziming/phtree-cpp/build/osm_phtree_queries.csv", "r");
+    fp = fopen("/home/ziming/phtree-cpp/build/osm_phtree_queries_1000.csv", "r");
     int count = 0;
     diff = 0;
     
@@ -156,6 +156,7 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node, 
         count ++;   
         std::cout << "found_points_temp.size: " << primary_key_vector.size() << std::endl; 
         std::cout << "diff: " << temp_diff << std::endl;
+        primary_key_vector.clear();
 
 
     }

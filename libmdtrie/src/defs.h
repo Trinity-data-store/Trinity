@@ -73,7 +73,8 @@ TimeStamp vector_time = 0;
 uint64_t vect_opt_count = 0;
 std::shared_mutex mutex_p_key;
 // n_leaves_t total_points_count = 152806264;
-n_leaves_t total_points_count = 14583357;
+n_leaves_t total_points_count = 300005812;
+// n_leaves_t total_points_count = 14583357;
 
 
 bitmap::CompactPtrVector p_key_to_treeblock_compact(total_points_count);
@@ -122,7 +123,7 @@ uint64_t copy_vect_time = 0;
 uint64_t update_symbol_time = 0;
 uint64_t range_search_child_time = 0;
 uint64_t collapsed_node_num = 0;
-const dimension_t DATA_DIMENSION = 6;
+const dimension_t DATA_DIMENSION = 9;
 
 int fd = open("mmap_file.txt", O_RDWR);
 off_t offset = 0;
