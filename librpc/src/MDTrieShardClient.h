@@ -220,9 +220,11 @@ public:
 
     int32_t count = 0;
     for (uint8_t i = 0; i < client_count; i++){
-      count += shard_vector_[i].get_count();
+      int32_t temp = shard_vector_[i].get_count();
+      count += temp;
+      std::cout << "bit per leaf: " << (float) temp / ( total_points_count/ client_count) << std::endl;
     }        
-    return count;
+    return count + total_points_count * sizeof(uint32_t);
   }
 
 private:

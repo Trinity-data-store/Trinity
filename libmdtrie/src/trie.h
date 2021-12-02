@@ -98,7 +98,8 @@ public:
 
         // Primary Key to Treeblock Index    
         p_key_to_treeblock_compact_size += sizeof(uint64_t) + total_points_count / 2 / 48 * sizeof(uint32_t);
-        total_size += sizeof(uint64_t) + total_points_count / 2 / 48 * sizeof(uint32_t);
+        // total_size += sizeof(uint64_t) + total_points_count / 2 / 48 * sizeof(uint32_t);
+        total_size += sizeof(uint64_t);
 
         std::queue<trie_node *> trie_node_queue;
         trie_node_queue.push(root_);
