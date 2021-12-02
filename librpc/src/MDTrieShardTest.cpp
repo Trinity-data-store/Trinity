@@ -79,7 +79,7 @@ vector<vector <int32_t>> *get_data_vector_tpch(std::vector<int32_t> &max_values,
   tqdm bar;
   n_leaves_t n_points = 0;
   n_lines = 300005812;
-  n_lines = 30000581;
+  // n_lines = 30000581;
   auto data_vector = new vector<vector <int32_t>>;
 
   while (std::getline(infile, line))
@@ -213,8 +213,8 @@ void insert_for_join_table(vector<vector <int32_t>> *data_vector, int client_num
 
   for (current_pos = start_pos; current_pos <= end_pos; current_pos++){
 
-    if ((current_pos - start_pos) % ((end_pos - start_pos) / 20) == 0)
-      std::cout << "finished: " << current_pos - start_pos << std::endl;
+    // if ((current_pos - start_pos) % ((end_pos - start_pos) / 20) == 0)
+    //   std::cout << "finished: " << current_pos - start_pos << std::endl;
 
     if (sent_count != 0 && sent_count % BATCH_SIZE == 0){
         for (uint32_t j = current_pos - sent_count; j < current_pos; j++){
