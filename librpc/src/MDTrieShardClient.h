@@ -143,9 +143,9 @@ public:
       std::vector<int32_t> return_vect_tmp;
       shard_vector_[i].recv_range_search_trie(return_vect_tmp);
 
-      TimeStamp start = GetTimestamp();
+      // TimeStamp start = GetTimestamp();
       return_vect.insert(return_vect.end(), return_vect_tmp.begin(), return_vect_tmp.end());
-      thrift_vector_time += GetTimestamp() - start;
+      // thrift_vector_time += GetTimestamp() - start;
     }    
 
   }
@@ -222,7 +222,7 @@ public:
     for (uint8_t i = 0; i < client_count; i++){
       int32_t temp = shard_vector_[i].get_count();
       count += temp;
-      std::cout << "bit per leaf: " << (float) temp / ( total_points_count/ client_count) << std::endl;
+      // std::cout << "bit per leaf: " << (float) temp / ( total_points_count/ client_count) << std::endl;
     }        
     return count + total_points_count * sizeof(uint32_t);
   }

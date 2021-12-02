@@ -110,13 +110,24 @@ public:
     thrift_vector_time += GetTimestamp() - start;
 
     // start = GetTimestamp();
+    for (uint8_t i = 0; i < DATA_DIMENSION; i++)
+    {
+      std::cout << start_range_point->get_coordinate(i) << " ";
+    }
+    std::cout << std::endl;
+    for (uint8_t i = 0; i < DATA_DIMENSION; i++)
+    {
+      std::cout << end_range_point->get_coordinate(i) << " ";
+    }
+    std::cout << std::endl;    
+    
     mdtrie_->range_search_trie(start_range_point, end_range_point, mdtrie_->root(), 0, found_points);
     // thrift_inner_function_time += GetTimestamp() - start;
 
     // n_leaves_t n_found_points = found_points->size();
     n_leaves_t n_found_points = primary_key_vector.size();
     std::cout << "n_found_points: " << n_found_points << std::endl;
-    // _return = primary_key_vector;
+
     _return.reserve(n_found_points);
     start = GetTimestamp();
     for (n_leaves_t i = 0; i < n_found_points; i++){
