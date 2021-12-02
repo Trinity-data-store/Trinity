@@ -128,7 +128,7 @@ const dimension_t DATA_DIMENSION = 9;
 int fd = open("mmap_file.txt", O_RDWR);
 off_t offset = 0;
 std::vector<level_t> start_dimension_bits(DATA_DIMENSION, 0);
-std::vector<n_leaves_t> primary_key_vector;
+std::vector<int32_t> primary_key_vector;
 
 
 void create_level_to_num_children(std::vector<level_t> dimension_bits, level_t max_level){
