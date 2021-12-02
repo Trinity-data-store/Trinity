@@ -47,8 +47,8 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node, 
         int index = -1;
 
         // Kept indexes: 
-        // [3, 4, 5, 6, 7, 10, 11, 12, 16, 17]
-        // [LINENUMBER, QUANTITY, EXTENDEDPRICE, DISCOUNT, TAX, SHIPDATE, COMMITDATE, RECEIPTDATE, TOTALPRICE, ORDERDATE]
+        // [4, 5, 6, 7, 10, 11, 12, 16, 17]
+        // [QUANTITY, EXTENDEDPRICE, DISCOUNT, TAX, SHIPDATE, COMMITDATE, RECEIPTDATE, TOTALPRICE, ORDERDATE]
         while (ss.good())
         {
             index ++;
@@ -113,7 +113,7 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node, 
     myfile << "treeblock_nodes_size: " << treeblock_nodes_size << std::endl;
     myfile << "collapsed_node_num: " << collapsed_node_num << std::endl;
 
-
+    /*
     tqdm bar2;
     TimeStamp check_diff = 0;
     
@@ -132,7 +132,7 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node, 
     bar2.finish();
 
     myfile << "Average time to check one point: " << (float) check_diff / n_lines << std::endl;
-
+    */
 
 
     // tqdm bar5;
@@ -182,6 +182,63 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node, 
     // exit(0);
 
 // ******************************************************************
+
+    char *line_range = nullptr;
+    size_t len = 0;
+    FILE *fp = fopen("/home/ziming/phtree-cpp/build/tpch_phtree_queries_1000.csv", "r");
+    int count = 0;
+    diff = 0;
+    ssize_t read;
+    std::ofstream range_myfile("tpch_mdtrie_range_queries.csv");
+
+    while ((read = getline(&line_range, &len, fp)) != -1)
+    {
+        data_point start_range;
+        data_point end_range;      
+        char *ptr;
+
+        char *token = strtok(line_range, ","); // id
+        token = strtok(nullptr, ",");
+        token = strtok(nullptr, ",");
+
+        for (dimension_t i = 0; i < DATA_DIMENSION; i++){
+            token = strtok(nullptr, ","); // id
+            start_range.set_coordinate(i, strtoul(token, &ptr, 10));
+            token = strtok(nullptr, ",");
+            end_range.set_coordinate(i, strtoul(token, &ptr, 10));
+        }
+
+        int present_pt_count = 0;
+        for (unsigned int i = 0; i < all_points->size(); i++){
+            bool match = true;
+            for (dimension_t j = 0; j < DATA_DIMENSION; j++){
+                if ( (*all_points)[i].get_coordinate(j) < start_range.get_coordinate(j) || (*all_points)[i].get_coordinate(j) > end_range.get_coordinate(j)){
+                    match = false;
+                    break;
+                }
+            }
+            if (match){
+                present_pt_count ++;
+            }
+        }   
+        std::cout << "present point count: " << present_pt_count << std::endl;
+
+        point_array found_points_temp;
+        start = GetTimestamp();
+        mdtrie->range_search_trie(&start_range, &end_range, mdtrie->root(), 0, &found_points_temp);
+        TimeStamp temp_diff =  GetTimestamp() - start; 
+        diff += temp_diff;
+
+        count ++;   
+        std::cout << "found_points_temp.size: " << primary_key_vector.size() << std::endl; 
+        std::cout << "diff: " << temp_diff << std::endl;
+        range_myfile << temp_diff << "," << primary_key_vector.size() << std::endl;
+        primary_key_vector.clear();
+
+    }
+    std::cout << "average query latency: " << (float) diff / count << std::endl;    
+
+    exit(0);
 
     auto *start_range = new data_point();
     auto *end_range = new data_point();

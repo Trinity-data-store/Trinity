@@ -25,13 +25,33 @@ public:
     shard_vector_.reserve(NUM_SERVERS);
 
     for (int i = 0; i < NUM_SERVERS; ++i) {
-      shard_vector_.push_back(launch_port(START_PORT_NUMBER + i));
+      shard_vector_.push_back(launch_port(START_PORT_NUMBER + i, "172.29.249.30"));
+    }
+  }
+
+  MDTrieClient(std::vector<std::string> server_ips){
+
+    shard_vector_.reserve(server_ips.size());
+
+    for (unsigned int i = 0; i < server_ips.size(); ++i) {
+      shard_vector_.push_back(launch_port(9090, server_ips[i]));
+    }
+  }
+
+  MDTrieClient(std::vector<std::string> server_ips, int shard_count){
+
+    shard_vector_.reserve(server_ips.size());
+
+    for (unsigned int i = 0; i < server_ips.size(); ++i) {
+      for (int j = 0; j < shard_count; j++){
+        shard_vector_.push_back(launch_port(9090 + j, server_ips[i]));
+      }
     }
   }
 
   static MDTrieShardClient connect(const std::string &host, int port) {
 
-    std::shared_ptr<TTransport> socket(new TSocket(host, port));
+    std::shared_ptr<TTransport> socket(new TSocket(host, port, std::make_shared<TConfiguration>(1000 * 1024 * 1024)));  // Set max message size
     std::shared_ptr<TTransport> transport(new TFramedTransport(socket));
     std::shared_ptr<TProtocol> protocol(new TBinaryProtocol(transport));
     MDTrieShardClient client(protocol);
@@ -40,10 +60,9 @@ public:
     return client;
   }
 
-  static MDTrieShardClient launch_port(int port_num) {
+  static MDTrieShardClient launch_port(int port_num, std::string ip_address) {
     
-    // return connect("172.29.249.44", port_num);
-    return connect("172.29.249.30", port_num);
+    return connect(ip_address, port_num);
   }
 
   void ping(){
