@@ -71,14 +71,14 @@ vector<vector <int32_t>> *get_data_vector_tpch(std::vector<int32_t> &max_values,
     Get data from the OSM dataset stored in a vector
 */
 
-  std::ifstream infile("/home/ziming/tpch-dbgen/data/orders_lineitem_merged_inner.csv");
+  std::ifstream infile("/home/ziming/tpch-dbgen/tpch_20/orders_lineitem_merged_inner.csv");
 
   std::string line;
   std::getline(infile, line);
 
   tqdm bar;
   n_leaves_t n_points = 0;
-  n_lines = 300005812;
+  n_lines = 110418170;
   // n_lines = 30000581;
   auto data_vector = new vector<vector <int32_t>>;
 
