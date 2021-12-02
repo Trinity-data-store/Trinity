@@ -73,7 +73,7 @@ TimeStamp vector_time = 0;
 uint64_t vect_opt_count = 0;
 std::shared_mutex mutex_p_key;
 // n_leaves_t total_points_count = 152806264;
-n_leaves_t total_points_count = 300005812;
+n_leaves_t total_points_count = 110418170;
 // n_leaves_t total_points_count = 14583357;
 
 
