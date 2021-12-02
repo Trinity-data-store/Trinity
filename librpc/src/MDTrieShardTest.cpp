@@ -79,7 +79,7 @@ vector<vector <int32_t>> *get_data_vector_tpch(std::vector<int32_t> &max_values,
   tqdm bar;
   n_leaves_t n_points = 0;
   n_lines = 110418170;
-  // n_lines = 30000581;
+  // n_lines = 50000581;
   auto data_vector = new vector<vector <int32_t>>;
 
   while (std::getline(infile, line))
@@ -200,7 +200,8 @@ std::tuple<uint32_t, uint32_t, uint32_t> insert_each_client(vector<vector <int32
 
 void insert_for_join_table(vector<vector <int32_t>> *data_vector, int client_number, int client_index){
 
-  std::vector<std::string> server_ips = {"172.28.229.152", "172.28.229.153"};
+  // std::vector<std::string> server_ips = {"172.28.229.152", "172.28.229.153"};
+  std::vector<std::string> server_ips = {"172.28.229.152"};
   auto client = MDTrieClient(server_ips, 48);
   uint32_t start_pos = data_vector->size() / client_number * client_index;
   uint32_t end_pos = data_vector->size() / client_number * (client_index + 1) - 1;
@@ -449,7 +450,8 @@ int main(int argc, char *argv[]){
     Join table Test
 */  
 
-  std::vector<std::string> server_ips = {"172.28.229.152", "172.28.229.153"};
+  // std::vector<std::string> server_ips = {"172.28.229.152", "172.28.229.153"};
+  std::vector<std::string> server_ips = {"172.28.229.152"};
   auto client_join_table = MDTrieClient(server_ips, 48);
 
   client_join_table.ping();
@@ -470,8 +472,8 @@ int main(int argc, char *argv[]){
 
   std::vector<int32_t>start_range_join(DATA_DIMENSION, 0);
   std::vector<int32_t>end_range_join(DATA_DIMENSION, 0);
+
   // [QUANTITY, EXTENDEDPRICE, DISCOUNT, TAX, SHIPDATE, COMMITDATE, RECEIPTDATE, TOTALPRICE, ORDERDATE]
-  // [4, 5, 6, 7, 10, 11, 12, 16, 17]
   for (dimension_t i = 0; i < DATA_DIMENSION; i++){
       start_range_join[i] = min_values[i];
       end_range_join[i] = max_values[i];
@@ -486,7 +488,15 @@ int main(int argc, char *argv[]){
       if (i == 2)
           start_range_join[i] = 1;  // DISCOUNT >= 0.01
   }
-/*
+  std::vector<int32_t> found_points;
+  start = GetTimestamp();
+  client_join_table.range_search_trie(found_points, start_range_join, end_range_join);
+  diff = GetTimestamp() - start;
+
+  std::cout << found_points.size() << std::endl;
+  std::cout << "Range Search Latency 1: " << (float) diff / found_points.size() << std::endl;
+  std::cout << "Range Search end to end latency 1: " << diff << std::endl;
+
   // [QUANTITY, EXTENDEDPRICE, DISCOUNT, TAX, SHIPDATE, COMMITDATE, RECEIPTDATE, TOTALPRICE, ORDERDATE]
   for (dimension_t i = 0; i < DATA_DIMENSION; i++){
       start_range_join[i] = min_values[i];
@@ -501,15 +511,41 @@ int main(int argc, char *argv[]){
       if (i == 3)
           start_range_join[i] = 5;  // DISCOUNT >= 0.05
   }
-*/
-  std::vector<int32_t> found_points;
+
+  found_points.clear();
   start = GetTimestamp();
   client_join_table.range_search_trie(found_points, start_range_join, end_range_join);
   diff = GetTimestamp() - start;
 
   std::cout << found_points.size() << std::endl;
-  std::cout << "Range Search Latency: " << (float) diff / found_points.size() << std::endl;
-  std::cout << "Range Search end to end latency: " << diff << std::endl;
+  std::cout << "Range Search Latency 2: " << (float) diff / found_points.size() << std::endl;
+  std::cout << "Range Search end to end latency 2: " << diff << std::endl;
+
+
+  // [QUANTITY, EXTENDEDPRICE, DISCOUNT, TAX, SHIPDATE, COMMITDATE, RECEIPTDATE, TOTALPRICE, ORDERDATE]
+  for (dimension_t i = 0; i < DATA_DIMENSION; i++){
+      start_range_join[i] = min_values[i];
+      end_range_join[i] = max_values[i];
+
+      if (i == 1)
+          end_range_join[i] = 5000000;  //EXTENDEDPRICE <= 50000
+      if (i == 7)
+      {
+          start_range_join[i] = 40000000;  // TOTALPRICE >= 400000 (2dp)
+      }
+      if (i == 3)
+          start_range_join[i] = 5;  // DISCOUNT >= 0.05
+  }
+
+  // std::vector<int32_t> found_points;
+  found_points.clear();
+  start = GetTimestamp();
+  client_join_table.range_search_trie(found_points, start_range_join, end_range_join);
+  diff = GetTimestamp() - start;
+
+  std::cout << found_points.size() << std::endl;
+  std::cout << "Range Search Latency 3: " << (float) diff / found_points.size() << std::endl;
+  std::cout << "Range Search end to end latency 3: " << diff << std::endl;
 
   return 0;
 
