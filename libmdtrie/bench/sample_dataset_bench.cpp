@@ -26,7 +26,8 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node, 
     size_t len = 0;
     ssize_t read;
     FILE *fp = fopen("../libmdtrie/bench/data/sample_shuf.txt", "r");
-
+    std::ofstream writefile;
+    writefile.open("filesystem.csv");
     // If the file cannot be open
     if (fp == nullptr)
     {
@@ -43,7 +44,7 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node, 
     tqdm bar;
     TimeStamp start, diff;
     diff = 0;
-
+    
     while ((read = getline(&line, &len, fp)) != -1)
     {
         bar.progress(n_points, n_lines);
@@ -56,6 +57,10 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node, 
 
         for (dimension_t i = 0; i < DIMENSION; i++){
             token = strtok(nullptr, " ");
+            if (i != DIMENSION - 1)
+                writefile << token << ",";
+            else
+                writefile << token << "\n";
             leaf_point->set_coordinate(i, strtoul(token, &ptr, 10));
         }
 
@@ -81,7 +86,8 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node, 
         diff += GetTimestamp() - start;
         n_points ++;
     }
-    
+    // raise(SIGINT);
+    exit(0);
     bar.finish();
 
     myfile << "Insertion Latency: " << (float) diff / n_lines << std::endl;
@@ -255,7 +261,7 @@ int main() {
     TREEBLOCK_SIZE = 512;
     TRIE_DEPTH = 10;
     myfile.open("filesystem_benchmark_" + std::to_string(DIMENSION) + "_" + std::to_string(TRIE_DEPTH) + "_" + std::to_string(TREEBLOCK_SIZE) + ".txt");
-    std::vector<level_t> dimension_bits = {32, 32, 32, 32, 24, 24};
+    std::vector<level_t> dimension_bits = {32, 32, 32, 32, 24, 24, 32};
 
     is_osm = false;
     myfile << "dimension: " << DIMENSION << std::endl;
