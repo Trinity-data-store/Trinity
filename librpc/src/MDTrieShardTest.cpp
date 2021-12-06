@@ -266,7 +266,7 @@ void insert_for_join_table(vector<vector <int32_t>> *data_vector, int client_num
 
   // std::vector<std::string> server_ips = {"172.28.229.152", "172.28.229.153"};
   // std::vector<std::string> server_ips = {"172.28.229.152"};
-  std::vector<std::string> server_ips = {"172.28.229.152", "172.28.229.153", "172.28.229.151", "172.28.229.149", "172.28.229.148"};
+  std::vector<std::string> server_ips = {"172.28.229.152", "172.28.229.153", "172.28.229.151", "172.28.229.149", "172.29.249.44"};
 
   // auto client = MDTrieClient(server_ips, 48);
   auto client = MDTrieClient(server_ips, 1);
@@ -518,7 +518,7 @@ int main(int argc, char *argv[]){
 
 
 
-  std::vector<std::string> server_ips = {"172.28.229.152", "172.28.229.153", "172.28.229.151", "172.28.229.149", "172.28.229.148"};
+  std::vector<std::string> server_ips = {"172.28.229.152", "172.28.229.153", "172.28.229.151", "172.28.229.149", "172.29.249.44"};
   // std::vector<std::string> server_ips = {"172.28.229.152", "172.28.229.153"};
   // std::vector<std::string> server_ips = {"172.28.229.152"};
   // auto client_join_table = MDTrieClient(server_ips, 48);
