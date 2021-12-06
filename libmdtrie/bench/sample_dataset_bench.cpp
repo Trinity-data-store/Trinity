@@ -87,7 +87,6 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node, 
         n_points ++;
     }
     // raise(SIGINT);
-    exit(0);
     bar.finish();
 
     myfile << "Insertion Latency: " << (float) diff / n_lines << std::endl;
@@ -99,24 +98,70 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node, 
     myfile << "treeblock_primary_size: " << treeblock_primary_size << std::endl;
     myfile << "treeblock_nodes_size: " << treeblock_nodes_size << std::endl;
 
-    /*
+    
     tqdm bar2;
     TimeStamp check_diff = 0;
-    
+    uint64_t count_matched = 0;
     for (uint64_t i = 0; i < n_lines; i++){
         bar2.progress(i, n_lines);
         auto check_point = (*all_points)[i];
-        start = GetTimestamp();
-        if (!mdtrie->check(&check_point)){
-            raise(SIGINT);
-        } 
-        check_diff += GetTimestamp() - start;  
+
+        bool found = true;
+        if (check_point.get_coordinate(1) > 1400000000 || check_point.get_coordinate(1) < 1399000000)
+            found  = false;
+        if (check_point.get_coordinate(0) > 1400000000 || check_point.get_coordinate(0) < 1000000000)
+            found  = false;
+        if (check_point.get_coordinate(4) > 100000 || check_point.get_coordinate(4) < 1000)
+            found = false;
+
+        if (found)
+            count_matched ++;
+        // start = GetTimestamp();
+        // if (!mdtrie->check(&check_point)){
+        //     raise(SIGINT);
+        // } 
+        // check_diff += GetTimestamp() - start;  
     }
     bar2.finish();
+    std::cout << "count: " << count_matched << std::endl;
     myfile << "Average time to check one point: " << (float) check_diff / n_lines << std::endl;
 
-    */
+    
 
+
+    data_point start_range_macro;
+    data_point end_range_macro;  
+    // [ "create_time,modify_time,access_time,change_time,owner_id,group_id"]
+
+    for (dimension_t i = 0; i < 6; i++){
+        start_range_macro.set_coordinate(i, min[i]);
+        end_range_macro.set_coordinate(i, max[i]);
+
+        if (i == 1){
+            start_range_macro.set_coordinate(i, 1399000000);  //EXTENDEDPRICE <= 100000
+            end_range_macro.set_coordinate(i, 1400000000);
+        }
+        if (i == 0)
+        {
+            start_range_macro.set_coordinate(i, 1000000000);  // TOTALPRICE >= 50000 (2dp)
+            end_range_macro.set_coordinate(i, 1400000000);
+        }
+        if (i == 4){
+            start_range_macro.set_coordinate(i, 1000);  // DISCOUNT >= 0.05
+            end_range_macro.set_coordinate(i, 100000);
+        }
+    }
+    point_array found_points_macro;
+    start = GetTimestamp();
+    mdtrie->range_search_trie(&start_range_macro, &end_range_macro, mdtrie->root(), 0, &found_points_macro);
+    diff = GetTimestamp() - start;
+
+    std::cout << "found points macro" << found_points_macro.size() << std::endl;
+    // std::cout << "found points size: " << found_points->size() << std::endl;
+    // std::cout << "Range Search Latency 1: " << (float) diff / found_points.size() << std::endl;
+    std::cout << "Range Search end to end latency 1: " << diff << std::endl;    
+
+    exit(0);
     line = nullptr;
     len = 0;
     fp = fopen("/home/ziming/phtree-cpp/build/filesys_phtree_queries_1000.csv", "r");
@@ -261,7 +306,7 @@ int main() {
     TREEBLOCK_SIZE = 512;
     TRIE_DEPTH = 10;
     myfile.open("filesystem_benchmark_" + std::to_string(DIMENSION) + "_" + std::to_string(TRIE_DEPTH) + "_" + std::to_string(TREEBLOCK_SIZE) + ".txt");
-    std::vector<level_t> dimension_bits = {32, 32, 32, 32, 24, 24, 32};
+    std::vector<level_t> dimension_bits = {32, 32, 32, 32, 24, 24};
 
     is_osm = false;
     myfile << "dimension: " << DIMENSION << std::endl;

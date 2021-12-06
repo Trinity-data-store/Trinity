@@ -538,6 +538,37 @@ int main(int argc, char *argv[]){
   std::cout << "Insertion end-to-end latency: " << diff << std::endl;
   std::cout << "Storage Overhead" << client_join_table.get_count()  << std::endl;
 
+  std::vector<int32_t>start_range_join(DATA_DIMENSION, 0);
+  std::vector<int32_t>end_range_join(DATA_DIMENSION, 0);
+  // [ "create_time,modify_time,access_time,change_time,owner_id,group_id"]
+  // raise(SIGINT);
+  for (dimension_t i = 0; i < 6; i++){
+      start_range_join[i] = min_values[i];
+      end_range_join[i] = max_values[i];
+
+      if (i == 1){
+          start_range_join[i] = 1399000000;  //EXTENDEDPRICE <= 100000
+          end_range_join[i] = 1400000000;
+      }
+      if (i == 0)
+      {
+          start_range_join[i] = 1000000000;  // TOTALPRICE >= 50000 (2dp)
+          end_range_join[i] = 1400000000;
+      }
+      if (i == 4){
+          start_range_join[i] = 100;  // DISCOUNT >= 0.05
+          end_range_join[i] = 100000;
+      }
+  }
+  std::vector<int32_t> found_points;
+  start = GetTimestamp();
+  client_join_table.range_search_trie(found_points, start_range_join, end_range_join);
+  diff = GetTimestamp() - start;
+
+  std::cout << found_points.size() << std::endl;
+  // std::cout << "Range Search Latency 1: " << (float) diff / found_points.size() << std::endl;
+  std::cout << "Range Search end to end latency 1: " << diff << std::endl;
+
   exit(0);
 
 /** 
