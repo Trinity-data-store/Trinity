@@ -25,13 +25,33 @@ public:
     shard_vector_.reserve(NUM_SERVERS);
 
     for (int i = 0; i < NUM_SERVERS; ++i) {
-      shard_vector_.push_back(launch_port(START_PORT_NUMBER + i));
+      shard_vector_.push_back(launch_port(START_PORT_NUMBER + i, "172.29.249.30"));
+    }
+  }
+
+  MDTrieClient(std::vector<std::string> server_ips){
+
+    shard_vector_.reserve(server_ips.size());
+
+    for (unsigned int i = 0; i < server_ips.size(); ++i) {
+      shard_vector_.push_back(launch_port(9090, server_ips[i]));
+    }
+  }
+
+  MDTrieClient(std::vector<std::string> server_ips, int shard_count){
+
+    shard_vector_.reserve(server_ips.size());
+
+    for (unsigned int i = 0; i < server_ips.size(); ++i) {
+      for (int j = 0; j < shard_count; j++){
+        shard_vector_.push_back(launch_port(9090 + j, server_ips[i]));
+      }
     }
   }
 
   static MDTrieShardClient connect(const std::string &host, int port) {
 
-    std::shared_ptr<TTransport> socket(new TSocket(host, port));
+    std::shared_ptr<TTransport> socket(new TSocket(host, port, std::make_shared<TConfiguration>(1000 * 1024 * 1024)));  // Set max message size
     std::shared_ptr<TTransport> transport(new TFramedTransport(socket));
     std::shared_ptr<TProtocol> protocol(new TBinaryProtocol(transport));
     MDTrieShardClient client(protocol);
@@ -40,10 +60,9 @@ public:
     return client;
   }
 
-  static MDTrieShardClient launch_port(int port_num) {
+  static MDTrieShardClient launch_port(int port_num, std::string ip_address) {
     
-    // return connect("172.29.249.44", port_num);
-    return connect("172.29.249.30", port_num);
+    return connect(ip_address, port_num);
   }
 
   void ping(){
@@ -124,9 +143,9 @@ public:
       std::vector<int32_t> return_vect_tmp;
       shard_vector_[i].recv_range_search_trie(return_vect_tmp);
 
-      TimeStamp start = GetTimestamp();
+      // TimeStamp start = GetTimestamp();
       return_vect.insert(return_vect.end(), return_vect_tmp.begin(), return_vect_tmp.end());
-      thrift_vector_time += GetTimestamp() - start;
+      // thrift_vector_time += GetTimestamp() - start;
     }    
 
   }
@@ -201,9 +220,11 @@ public:
 
     int32_t count = 0;
     for (uint8_t i = 0; i < client_count; i++){
-      count += shard_vector_[i].get_count();
+      int32_t temp = shard_vector_[i].get_count();
+      count += temp;
+      // std::cout << "bit per leaf: " << (float) temp / ( total_points_count/ client_count) << std::endl;
     }        
-    return count;
+    return count + total_points_count * sizeof(uint32_t);
   }
 
 private:

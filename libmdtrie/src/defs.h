@@ -72,6 +72,8 @@ uint64_t max_count = 0;
 TimeStamp vector_time = 0;
 uint64_t vect_opt_count = 0;
 std::shared_mutex mutex_p_key;
+// n_leaves_t total_points_count = 152806264;
+// n_leaves_t total_points_count = 110418170;
 n_leaves_t total_points_count = 14583357;
 
 
@@ -101,6 +103,7 @@ uint64_t primary_key_list_serialized_size = 0;
 TimeStamp primary_time = 0;
 class data_point;
 
+
 std::map<uint64_t, uint64_t> node_children_to_occurrences;
 bool is_osm = false;
 
@@ -125,6 +128,8 @@ const dimension_t DATA_DIMENSION = 6;
 int fd = open("mmap_file.txt", O_RDWR);
 off_t offset = 0;
 std::vector<level_t> start_dimension_bits(DATA_DIMENSION, 0);
+std::vector<int32_t> primary_key_vector;
+
 
 void create_level_to_num_children(std::vector<level_t> dimension_bits, level_t max_level){
 
@@ -161,6 +166,7 @@ void reset_values(){
     treeblock_ptr_size = 0;    
 }
 std::vector<data_point> *all_points_ptr;
+data_point *temp_point;
 
 bool toggle = false;
 

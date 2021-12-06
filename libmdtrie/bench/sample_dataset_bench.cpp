@@ -26,7 +26,8 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node, 
     size_t len = 0;
     ssize_t read;
     FILE *fp = fopen("../libmdtrie/bench/data/sample_shuf.txt", "r");
-
+    std::ofstream writefile;
+    writefile.open("filesystem.csv");
     // If the file cannot be open
     if (fp == nullptr)
     {
@@ -43,7 +44,7 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node, 
     tqdm bar;
     TimeStamp start, diff;
     diff = 0;
-
+    
     while ((read = getline(&line, &len, fp)) != -1)
     {
         bar.progress(n_points, n_lines);
@@ -56,6 +57,10 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node, 
 
         for (dimension_t i = 0; i < DIMENSION; i++){
             token = strtok(nullptr, " ");
+            if (i != DIMENSION - 1)
+                writefile << token << ",";
+            else
+                writefile << token << "\n";
             leaf_point->set_coordinate(i, strtoul(token, &ptr, 10));
         }
 
@@ -81,7 +86,7 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node, 
         diff += GetTimestamp() - start;
         n_points ++;
     }
-    
+    // raise(SIGINT);
     bar.finish();
 
     myfile << "Insertion Latency: " << (float) diff / n_lines << std::endl;
@@ -93,25 +98,129 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node, 
     myfile << "treeblock_primary_size: " << treeblock_primary_size << std::endl;
     myfile << "treeblock_nodes_size: " << treeblock_nodes_size << std::endl;
 
-
+    
     tqdm bar2;
     TimeStamp check_diff = 0;
-    
+    uint64_t count_matched = 0;
     for (uint64_t i = 0; i < n_lines; i++){
         bar2.progress(i, n_lines);
         auto check_point = (*all_points)[i];
-        start = GetTimestamp();
-        if (!mdtrie->check(&check_point)){
-            raise(SIGINT);
-        } 
-        check_diff += GetTimestamp() - start;  
+
+        bool found = true;
+        if (check_point.get_coordinate(1) > 1400000000 || check_point.get_coordinate(1) < 1399000000)
+            found  = false;
+        if (check_point.get_coordinate(0) > 1400000000 || check_point.get_coordinate(0) < 1000000000)
+            found  = false;
+        if (check_point.get_coordinate(4) > 100000 || check_point.get_coordinate(4) < 1000)
+            found = false;
+
+        if (found)
+            count_matched ++;
+        // start = GetTimestamp();
+        // if (!mdtrie->check(&check_point)){
+        //     raise(SIGINT);
+        // } 
+        // check_diff += GetTimestamp() - start;  
     }
     bar2.finish();
+    std::cout << "count: " << count_matched << std::endl;
     myfile << "Average time to check one point: " << (float) check_diff / n_lines << std::endl;
+
+    
+
+
+    data_point start_range_macro;
+    data_point end_range_macro;  
+    // [ "create_time,modify_time,access_time,change_time,owner_id,group_id"]
+
+    for (dimension_t i = 0; i < 6; i++){
+        start_range_macro.set_coordinate(i, min[i]);
+        end_range_macro.set_coordinate(i, max[i]);
+
+        if (i == 1){
+            start_range_macro.set_coordinate(i, 1399000000);  //EXTENDEDPRICE <= 100000
+            end_range_macro.set_coordinate(i, 1400000000);
+        }
+        if (i == 0)
+        {
+            start_range_macro.set_coordinate(i, 1000000000);  // TOTALPRICE >= 50000 (2dp)
+            end_range_macro.set_coordinate(i, 1400000000);
+        }
+        if (i == 4){
+            start_range_macro.set_coordinate(i, 1000);  // DISCOUNT >= 0.05
+            end_range_macro.set_coordinate(i, 100000);
+        }
+    }
+    point_array found_points_macro;
+    start = GetTimestamp();
+    mdtrie->range_search_trie(&start_range_macro, &end_range_macro, mdtrie->root(), 0, &found_points_macro);
+    diff = GetTimestamp() - start;
+
+    std::cout << "found points macro" << found_points_macro.size() << std::endl;
+    // std::cout << "found points size: " << found_points->size() << std::endl;
+    // std::cout << "Range Search Latency 1: " << (float) diff / found_points.size() << std::endl;
+    std::cout << "Range Search end to end latency 1: " << diff << std::endl;    
+
+    exit(0);
+    line = nullptr;
+    len = 0;
+    fp = fopen("/home/ziming/phtree-cpp/build/filesys_phtree_queries_1000.csv", "r");
+    int count = 0;
+    diff = 0;
+    std::ofstream file_range_search("filesys_mdtrie_queries_1000.csv");
+
+    while ((read = getline(&line, &len, fp)) != -1)
+    {
+        data_point start_range;
+        data_point end_range;      
+        char *ptr;
+
+        char *token = strtok(line, ","); // id
+        token = strtok(nullptr, ",");
+        token = strtok(nullptr, ",");
+
+        for (dimension_t i = 0; i < DATA_DIMENSION; i++){
+            token = strtok(nullptr, ","); // id
+            start_range.set_coordinate(i, strtoul(token, &ptr, 10));
+            token = strtok(nullptr, ",");
+            end_range.set_coordinate(i, strtoul(token, &ptr, 10));
+        }
+
+        int present_pt_count = 0;
+        for (unsigned int i = 0; i < all_points->size(); i++){
+            bool match = true;
+            for (dimension_t j = 0; j < DATA_DIMENSION; j++){
+                if ( (*all_points)[i].get_coordinate(j) < start_range.get_coordinate(j) || (*all_points)[i].get_coordinate(j) > end_range.get_coordinate(j)){
+                    match = false;
+                    break;
+                }
+            }
+            if (match){
+                present_pt_count ++;
+            }
+        }   
+        std::cout << "present point count: " << present_pt_count << std::endl;
+
+        point_array found_points_temp;
+        start = GetTimestamp();
+        mdtrie->range_search_trie(&start_range, &end_range, mdtrie->root(), 0, &found_points_temp);
+        TimeStamp temp_diff =  GetTimestamp() - start; 
+        diff += temp_diff;
+
+        count ++;   
+        std::cout << "found_points_temp.size: " << primary_key_vector.size() << std::endl; 
+        std::cout << "diff: " << temp_diff << std::endl;
+        file_range_search << primary_key_vector.size() << "," << temp_diff << std::endl; 
+        primary_key_vector.clear();
+    }
+    std::cout << "average query latency: " << (float) diff / count << std::endl;    
+
+    exit(0);
 
     auto *start_range = new data_point();
     auto *end_range = new data_point();
 
+    
     int itr = 0;
     std::ofstream file("range_search_filesystem.csv", std::ios_base::app);
     srand(time(NULL));

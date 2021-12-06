@@ -30,7 +30,7 @@ using namespace apache::thrift::server;
 
 // const int DIMENSION = 6; 
 const level_t max_depth = 32;
-const level_t trie_depth = 6;
+const level_t trie_depth = 10;
 const preorder_t max_tree_node = 512;
 
 class MDTrieHandler : public MDTrieShardIf {
@@ -39,8 +39,13 @@ public:
   MDTrieHandler(){
     
     mdtrie_ = new md_trie(max_depth, trie_depth, max_tree_node);
-    std::vector<level_t> dimension_bits = {24, 16, 8, 32, 24, 16, 32, 32}; // 8 Dimensions
-    std::vector<level_t> new_start_dimension_bits = {16, 8, 0, 24, 16, 0, 0, 0}; // 8 Dimensions
+    std::vector<level_t> dimension_bits;
+    std::vector<level_t> new_start_dimension_bits;
+    // dimension_bits = {8, 32, 16, 24, 32, 32, 32, 32, 32}; // 9 Dimensions
+    // new_start_dimension_bits = {0, 0, 8, 16, 0, 0, 0, 0, 0}; // 9 Dimensions
+    new_start_dimension_bits = {0, 0, 0, 0, 0, 0};
+    dimension_bits = {32, 32, 32, 32, 24, 24};
+    is_osm = false;
 
     start_dimension_bits = new_start_dimension_bits;  
     create_level_to_num_children(dimension_bits, 32);
@@ -57,14 +62,14 @@ public:
   bool check(const std::vector<int32_t> & point){
 
     TimeStamp start = GetTimestamp();
-    auto *leaf_point = new data_point();
+    data_point leaf_point;
 
     for (uint8_t i = 0; i < DATA_DIMENSION; i++)
-      leaf_point->set_coordinate(i, point[i]);
+      leaf_point.set_coordinate(i, point[i]);
     thrift_vector_time += GetTimestamp() - start;
 
     start = GetTimestamp();
-    bool result = mdtrie_->check(leaf_point);
+    bool result = mdtrie_->check(&leaf_point);
     thrift_inner_function_time += GetTimestamp() - start;
 
     return result;
@@ -74,18 +79,18 @@ public:
 
     inserted_points_ ++;
     TimeStamp start = GetTimestamp();
-    auto *leaf_point = new data_point();
+    data_point leaf_point;
 
     for (uint8_t i = 0; i < DATA_DIMENSION; i++)
-      leaf_point->set_coordinate(i, point[i]);
+      leaf_point.set_coordinate(i, point[i]);
     
     thrift_vector_time += GetTimestamp() - start;
 
     start = GetTimestamp();
-    mdtrie_->insert_trie(leaf_point, primary_key);
+    mdtrie_->insert_trie(&leaf_point, primary_key);
 
     thrift_inner_function_time += GetTimestamp() - start;
-
+    
     return primary_key;
   }
 
@@ -161,7 +166,7 @@ public:
   }
 
   int32_t get_count(){
-    return inserted_points_;
+    return mdtrie_->size();
   }
 
 protected:
@@ -194,15 +199,31 @@ class MDTrieServerCoordinator {
 public:
     MDTrieServerCoordinator(int port_num) {
 
-      start_server(port_num);
+      start_server(port_num, "172.29.249.30");
     }
 
-    MDTrieServerCoordinator(int port_num, int server_count) {
+    MDTrieServerCoordinator(std::string ip_address, int port_num){
+      start_server(port_num, ip_address);
+    }
+
+    MDTrieServerCoordinator(std::string ip_address, int port_num, int server_count){
+      std::vector<std::future<void>> futures;
+
+      for(int i = 0; i < server_count; ++i) {
+        futures.push_back(std::async(start_server, port_num + i, ip_address));
+      }
+
+      for(auto &e : futures) {
+        e.get();
+      }
+    }
+
+    MDTrieServerCoordinator(int port_num, int shard_count) {
 
         std::vector<std::future<void>> futures;
 
-        for(int i = 0; i < server_count; ++i) {
-          futures.push_back(std::async(start_server, port_num + i));
+        for(int i = 0; i < shard_count; ++i) {
+          futures.push_back(std::async(start_server, port_num + i, "172.29.249.44"));
         }
 
         for(auto &e : futures) {
@@ -210,12 +231,11 @@ public:
         }
     }
 
-    static void start_server(int port_num){
+    static void start_server(int port_num, std::string ip_address){
 
         auto handler = std::make_shared<MDTrieHandler>();
         auto processor = std::make_shared<MDTrieShardProcessor>(handler);
-        // auto socket = std::make_shared<TNonblockingServerSocket>("172.29.249.44", port_num);
-        auto socket = std::make_shared<TNonblockingServerSocket>("172.29.249.30", port_num);
+        auto socket = std::make_shared<TNonblockingServerSocket>(ip_address, port_num);
         auto server = std::make_shared<TNonblockingServer>(processor, socket);
 
         cout << "Starting the server..." << endl;
@@ -231,7 +251,8 @@ private:
 int main(int argc, char *argv[]){
 
   if (argc == 2){
-    MDTrieServerCoordinator(atoi(argv[1]));
+      // MDTrieServerCoordinator(argv[1], 9090, 48);
+      MDTrieServerCoordinator(argv[1], 9090, 1);
     return 0;
   }
 

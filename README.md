@@ -35,6 +35,7 @@ https://stackoverflow.com/questions/56941778/cmake-use-system-curl-is-on-but-a-c
 https://thrift.apache.org/docs/BuildingFromSource  
 https://stackoverflow.com/questions/59561902/boost-thread-hpp-no-such-file-or-directory/59563726  
 https://stackoverflow.com/questions/21530577/fatal-error-python-h-no-such-file-or-directory?rq=1  
+https://blog.csdn.net/m0_51560548/article/details/121574598  
 If redefinition bug, remove build
 ```  
 sudo apt-get install libboost-test-dev  
