@@ -8,7 +8,7 @@ For benchmarking files, please see: md-trie/libmdtrie/bench/osm_dataset_bench.cp
 
 The OSM and the TPCH datasets can be downloaded online.
 Click [here](https://docs.deistercloud.com/content/Databases.30/TPCH%20Benchmark.90/Data%20generation%20tool.30.xml?embedded=true) to download the TPCH datase. It is a synthetic dataset and you can adjust the scale factor.  
-We inner-joined the lineitem.tbl and orders.tbl. Any tbl files will do.  
+We inner-joined the lineitem.tbl and orders.tbl using pandas. Any tbl files will do.  
 Click [here](https://download.geofabrik.de/) to download the OSM dataset, though you have to use Python osmium package to extract the data.
 
 ### Building
