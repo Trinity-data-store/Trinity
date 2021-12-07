@@ -1,6 +1,6 @@
 # md-trie
 
-Note: this repo is still under development. I have not yet cleaned it or written documentation for function calls.  
+Note: this repo is still under development. I have not yet cleaned it or written documentation.  
 Some code might be outdated.  
 For queries, please see: md-trie/libmdtrie/bench/osm_dataset_bench.cpp  
 
