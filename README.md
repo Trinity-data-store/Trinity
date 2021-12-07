@@ -1,9 +1,8 @@
 # md-trie
 
-Note: this repo is still under development. I have not yet cleaned it yet and written documentation.  
+Note: this repo is still under development. I have not yet cleaned it or written documentation for function calls.  
 Some code might be outdated.  
-For sample queries, please see: md-trie/libmdtrie/bench/osm_dataset_bench.cpp  
-email ziming.mao@yale.edu if you have any questions.  
+For queries, please see: md-trie/libmdtrie/bench/osm_dataset_bench.cpp  
 
 ### Building
 
