@@ -542,7 +542,7 @@ int main(int argc, char *argv[]){
   std::vector<int32_t>end_range_join(DATA_DIMENSION, 0);
   // [ "create_time,modify_time,access_time,change_time,owner_id,group_id"]
   // raise(SIGINT);
-  for (dimension_t i = 0; i < 6; i++){
+  for (dimension_t i = 0; i < 7; i++){
       start_range_join[i] = min_values[i];
       end_range_join[i] = max_values[i];
 
