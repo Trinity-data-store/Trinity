@@ -128,10 +128,9 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node, 
     bar2.finish();
     // std::cout << "count: " << count_matched << std::endl;
     std::cout << "Average time to check one point: " << (float) check_diff / n_lines << std::endl;
-    */
-    
-/*
-
+   
+       */
+    /*
     data_point start_range_macro;
     data_point end_range_macro;  
     // [ "create_time,modify_time,access_time,change_time,owner_id,group_id"]
@@ -163,14 +162,16 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node, 
     // std::cout << "found points size: " << found_points->size() << std::endl;
     // std::cout << "Range Search Latency 1: " << (float) diff / found_points.size() << std::endl;
     std::cout << "Range Search end to end latency 1: " << diff << std::endl;    
+    */
+  
 
-    // exit(0);
+
     line = nullptr;
     len = 0;
     fp = fopen("/home/ziming/phtree-cpp/build/filesys_phtree_queries_1000.csv", "r");
     int count = 0;
     diff = 0;
-    std::ofstream file_range_search("filesys_mdtrie_queries_1000.csv");
+    std::ofstream file_range_search("filesys_mdtrie_queries_1000_7.csv");
 
     while ((read = getline(&line, &len, fp)) != -1)
     {
@@ -182,13 +183,14 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node, 
         token = strtok(nullptr, ",");
         token = strtok(nullptr, ",");
 
-        for (dimension_t i = 0; i < DATA_DIMENSION; i++){
+        for (dimension_t i = 0; i < DATA_DIMENSION - 1; i++){
             token = strtok(nullptr, ","); // id
             start_range.set_coordinate(i, strtoul(token, &ptr, 10));
             token = strtok(nullptr, ",");
             end_range.set_coordinate(i, strtoul(token, &ptr, 10));
         }
-
+        start_range.set_coordinate(6, min[6]);
+        end_range.set_coordinate(6, max[6]);
         int present_pt_count = 0;
         for (unsigned int i = 0; i < all_points->size(); i++){
             bool match = true;
@@ -211,14 +213,14 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node, 
         diff += temp_diff;
 
         count ++;   
-        std::cout << "found_points_temp.size: " << primary_key_vector.size() << std::endl; 
+        std::cout << "found_points_temp.size: " << found_points_temp.size() << std::endl; 
         std::cout << "diff: " << temp_diff << std::endl;
-        file_range_search << primary_key_vector.size() << "," << temp_diff << std::endl; 
+        file_range_search <<found_points_temp.size() << "," << temp_diff << std::endl; 
         primary_key_vector.clear();
     }
     std::cout << "average query latency: " << (float) diff / count << std::endl;    
 
-    // exit(0);
+    exit(0);
 
     auto *start_range = new data_point();
     auto *end_range = new data_point();
@@ -247,9 +249,9 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node, 
         }
     }
     bar3.finish();
-    */
-    auto *start_range = new data_point();
-    auto *end_range = new data_point();
+    
+    start_range = new data_point();
+    end_range = new data_point();
     for (dimension_t i = 0; i < DIMENSION; i++){
         start_range->set_coordinate(i, min[i]);
         end_range->set_coordinate(i, max[i]);
