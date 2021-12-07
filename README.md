@@ -2,7 +2,13 @@
 
 Note: this repo is still under development. I have not yet cleaned it or written documentation.  
 Some code might be outdated.  
-For queries, please see: md-trie/libmdtrie/bench/osm_dataset_bench.cpp  
+For benchmarking files, please see: md-trie/libmdtrie/bench/osm_dataset_bench.cpp and md-trie/blob/main/libmdtrie/bench/tpch_bench.cpp  
+
+### Datasets
+
+The OSM and the TPCH datasets can be downloaded online.
+Click [here](https://docs.deistercloud.com/content/Databases.30/TPCH%20Benchmark.90/Data%20generation%20tool.30.xml?embedded=true) to download the TPCH datase. It is a synthetic dataset and you can adjust the scale factor.  
+Click [here](https://download.geofabrik.de/) to download the OSM dataset, though you have to use Python osmium package to extract the data.
 
 ### Building
 
@@ -21,10 +27,15 @@ make test
 
 ### Benchmark
 
-Put the dataset under /libmdtrie/bench/data
-```bash
-./build/libmdtrie/mdtrie_bench
+Put the dataset under /libmdtrie/bench/data  
+Note, before running, check the def.h, remember to set the number of dimension,
+In benchmark file, you will find: 
 ```
+    std::vector<level_t> dimension_bits = {8, 32, 32, 32}; // 4 Dimensions
+    std::vector<level_t> new_start_dimension_bits = {0, 0, 0, 0}; // 4 Dimensions
+```
+use create_level_to_num_children with these two vectors to set up.    
+The first vector sets the bit widths along each dimension. The second vector sets the level that a dimension first becomes "active".  
 
 ### Thrift
 
