@@ -351,7 +351,7 @@ void insert_for_join_table(vector<vector <int32_t>> *data_vector, int client_num
     }
     vector<int32_t> data_point = (*data_vector)[current_pos];
     client.insert_send(data_point, current_pos);
-    if (current_pos % (data_vector->size() / 10) == 0)
+    if (current_pos % (data_vector->size() / 50) == 0)
       std::cout << "inserted: " << current_pos << std::endl;
     sent_count ++;
   }
