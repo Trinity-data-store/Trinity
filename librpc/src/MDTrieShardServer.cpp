@@ -255,7 +255,7 @@ int main(int argc, char *argv[]){
 
   if (argc == 2){
       // MDTrieServerCoordinator(argv[1], 9090, 48);
-      MDTrieServerCoordinator(argv[1], 9090, 48);
+      MDTrieServerCoordinator(argv[1], 9090, 20);
     return 0;
   }
 

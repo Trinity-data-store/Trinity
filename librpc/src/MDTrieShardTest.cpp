@@ -330,7 +330,7 @@ void insert_for_join_table(vector<vector <int32_t>> *data_vector, int client_num
   std::vector<std::string> server_ips = {"172.28.229.152", "172.28.229.153", "172.28.229.151", "172.28.229.149", "172.28.229.148"};
 
   // auto client = MDTrieClient(server_ips, 48);
-  auto client = MDTrieClient(server_ips, 1);
+  auto client = MDTrieClient(server_ips, 20);
 
   uint32_t start_pos = data_vector->size() / client_number * client_index;
   uint32_t end_pos = data_vector->size() / client_number * (client_index + 1) - 1;
@@ -580,7 +580,7 @@ int main(int argc, char *argv[]){
   // std::vector<std::string> server_ips = {"172.28.229.152", "172.28.229.153"};
   // std::vector<std::string> server_ips = {"172.28.229.152"};
   // auto client_join_table = MDTrieClient(server_ips, 48);
-  auto client_osm = MDTrieClient(server_ips, 1);
+  auto client_osm = MDTrieClient(server_ips, 20);
 
 
   client_osm.ping();
