@@ -19,7 +19,7 @@ using namespace apache::thrift::protocol;
 using namespace apache::thrift::transport;
 
 n_leaves_t n_lines = 152806265;
-const int BATCH_SIZE = 4096;
+const int BATCH_SIZE = 512;
 std::atomic<int> active_thread_num {0};
 std::atomic<int> finished_thread_num {0};
 
@@ -327,7 +327,7 @@ void insert_for_join_table(vector<vector <int32_t>> *data_vector, int client_num
 
   // std::vector<std::string> server_ips = {"172.28.229.152", "172.28.229.153"};
   // std::vector<std::string> server_ips = {"172.28.229.152"};
-  std::vector<std::string> server_ips = {"172.28.229.152", "172.28.229.153", "172.28.229.151", "172.28.229.149", "172.29.249.44"};
+  std::vector<std::string> server_ips = {"172.28.229.152", "172.28.229.153", "172.28.229.151", "172.28.229.149", "172.28.229.148"};
 
   // auto client = MDTrieClient(server_ips, 48);
   auto client = MDTrieClient(server_ips, 1);
@@ -342,9 +342,6 @@ void insert_for_join_table(vector<vector <int32_t>> *data_vector, int client_num
   uint32_t current_pos;
 
   for (current_pos = start_pos; current_pos <= end_pos; current_pos++){
-
-    // if ((current_pos - start_pos) % ((end_pos - start_pos) / 20) == 0)
-    //   std::cout << "finished: " << current_pos - start_pos << std::endl;
 
     if (sent_count != 0 && sent_count % BATCH_SIZE == 0){
         for (uint32_t j = current_pos - sent_count; j < current_pos; j++){
@@ -579,7 +576,7 @@ int main(int argc, char *argv[]){
 
 
 
-  std::vector<std::string> server_ips = {"172.28.229.152", "172.28.229.153", "172.28.229.151", "172.28.229.149", "172.29.249.44"};
+  std::vector<std::string> server_ips = {"172.28.229.152", "172.28.229.153", "172.28.229.151", "172.28.229.149", "172.28.229.148"};
   // std::vector<std::string> server_ips = {"172.28.229.152", "172.28.229.153"};
   // std::vector<std::string> server_ips = {"172.28.229.152"};
   // auto client_join_table = MDTrieClient(server_ips, 48);
@@ -600,6 +597,86 @@ int main(int argc, char *argv[]){
   std::cout << "Storage Overhead" << client_osm.get_count()  << std::endl;
   
 
+//  ********* OSM QUERY 1:
+
+
+  std::vector<int32_t>start_range_join(DATA_DIMENSION, 0);
+  std::vector<int32_t>end_range_join(DATA_DIMENSION, 0);
+
+  for (dimension_t i = 0; i < 4; i++){
+      start_range_join[i] = min_values[i];
+      end_range_join[i] = max_values[i];
+
+      if (i == 0){
+          start_range_join[i] = 1;  
+          end_range_join[i] = 2;
+      }
+      if (i == 1)
+      {
+          start_range_join[i] = 20200600;  
+          end_range_join[i] = 20200700;
+      }
+  }
+  std::vector<int32_t> found_points;
+  start = GetTimestamp();
+  client_osm.range_search_trie(found_points, start_range_join, end_range_join);
+  diff = GetTimestamp() - start;
+
+  std::cout << found_points.size() << std::endl;
+  std::cout << "Range Search end to end latency 1: " << diff << std::endl;
+
+//  ********* OSM QUERY 2:
+
+  for (dimension_t i = 0; i < 4; i++){
+      start_range_join[i] = min_values[i];
+      end_range_join[i] = max_values[i];
+
+      if (i == 2){
+          start_range_join[i] = 715000010;  
+          end_range_join[i] = 720000010;
+      }
+      if (i == 3)
+      {
+          start_range_join[i] = 419000000;  
+          end_range_join[i] = 420000000;
+      }
+  }
+  found_points.clear();
+  start = GetTimestamp();
+  client_osm.range_search_trie(found_points, start_range_join, end_range_join);
+  diff = GetTimestamp() - start;
+
+  std::cout << found_points.size() << std::endl;
+  std::cout << "Range Search end to end latency 2: " << diff << std::endl;
+
+
+//  ********* OSM QUERY 3:
+
+  for (dimension_t i = 0; i < 4; i++){
+      start_range_join[i] = min_values[i];
+      end_range_join[i] = max_values[i];
+      if (i == 1){
+          start_range_join[i] = 20200000;
+          end_range_join[i] = max_values[i];
+      }
+      if (i == 2){
+          start_range_join[i] = 719500010;  
+          end_range_join[i] = 720000010;
+      }
+      if (i == 3)
+      {
+          start_range_join[i] = 419500000;  
+          end_range_join[i] = 420000000;
+      }
+  }
+  found_points.clear();
+  start = GetTimestamp();
+  client_osm.range_search_trie(found_points, start_range_join, end_range_join);
+  diff = GetTimestamp() - start;
+
+  std::cout << found_points.size() << std::endl;
+  std::cout << "Range Search end to end latency 2: " << diff << std::endl;
+
   exit(0);
 
   vector<vector <int32_t>> *data_vector_filesystem = get_data_vector_filesystem(max_values, min_values);
@@ -611,8 +688,8 @@ int main(int argc, char *argv[]){
   std::cout << "Insertion end-to-end latency: " << diff << std::endl;
   std::cout << "Storage Overhead" << client_join_table.get_count()  << std::endl;
 
-  std::vector<int32_t>start_range_join(DATA_DIMENSION, 0);
-  std::vector<int32_t>end_range_join(DATA_DIMENSION, 0);
+  // std::vector<int32_t>start_range_join(DATA_DIMENSION, 0);
+  // std::vector<int32_t>end_range_join(DATA_DIMENSION, 0);
   // [ "create_time,modify_time,access_time,change_time,owner_id,group_id"]
   // raise(SIGINT);
   for (dimension_t i = 0; i < 7; i++){
@@ -633,14 +710,19 @@ int main(int argc, char *argv[]){
           end_range_join[i] = 100000;
       }
   }
-  std::vector<int32_t> found_points;
+  // std::vector<int32_t> found_points;
+  found_points.clear();
   start = GetTimestamp();
   client_join_table.range_search_trie(found_points, start_range_join, end_range_join);
   diff = GetTimestamp() - start;
 
   std::cout << found_points.size() << std::endl;
-  // std::cout << "Range Search Latency 1: " << (float) diff / found_points.size() << std::endl;
   std::cout << "Range Search end to end latency 1: " << diff << std::endl;
+
+
+
+
+
 
   exit(0);
 
