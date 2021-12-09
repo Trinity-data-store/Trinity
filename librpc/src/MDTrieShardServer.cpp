@@ -43,8 +43,11 @@ public:
     std::vector<level_t> new_start_dimension_bits;
     // dimension_bits = {8, 32, 16, 24, 32, 32, 32, 32, 32}; // 9 Dimensions
     // new_start_dimension_bits = {0, 0, 8, 16, 0, 0, 0, 0, 0}; // 9 Dimensions
-    new_start_dimension_bits = {0, 0, 0, 0, 0, 0, 0};
-    dimension_bits = {32, 32, 32, 32, 24, 24, 32};
+    // new_start_dimension_bits = {0, 0, 0, 0, 0, 0, 0};
+    // dimension_bits = {32, 32, 32, 32, 24, 24, 32};
+    dimension_bits = {8, 32, 32, 32}; // 4 Dimensions
+    new_start_dimension_bits = {0, 0, 0, 0}; // 4 Dimensions
+
     is_osm = false;
 
     start_dimension_bits = new_start_dimension_bits;  

@@ -66,6 +66,67 @@ vector<vector <int32_t>> *get_data_vector(){
 }
 
 
+
+vector<vector <int32_t>> *get_data_vector_osm(std::vector<int32_t> &max_values, std::vector<int32_t> &min_values){
+
+
+  char *line = nullptr;
+  size_t len = 0;
+  ssize_t read;
+  FILE *fp = fopen("/home/ziming/osm/osm_us_northeast_timestamp.csv", "r");
+  if (fp == nullptr)
+  {
+      fprintf(stderr, "file not found\n");
+      exit(EXIT_FAILURE);
+  }
+
+  n_leaves_t n_points = 0;
+  n_leaves_t n_lines = 152806264;
+  total_points_count = n_lines;
+  auto data_vector = new vector<vector <int32_t>>;
+
+  tqdm bar;
+  read = getline(&line, &len, fp);
+
+  while ((read = getline(&line, &len, fp)) != -1)
+  {
+      vector <int32_t> point(DATA_DIMENSION, 0);
+      bar.progress(n_points, n_lines);
+      char *token = strtok(line, ",");
+      char *ptr;
+
+      for (dimension_t i = 0; i < DATA_DIMENSION; i++){
+          token = strtok(nullptr, ",");
+          point[i] = strtoul(token, &ptr, 10);
+      }
+
+      for (dimension_t i = 0; i < DATA_DIMENSION; i++){
+          
+          if (n_points == 0){
+              max_values[i] = point[i];
+              min_values[i] = point[i];
+          }
+          else {
+              if (point[i] > max_values[i]){
+                  max_values[i] = point[i];
+              }
+              if (point[i] < min_values[i]){
+                  min_values[i] = point[i];
+              }
+          }          
+      }
+
+      if (n_points == n_lines)
+          break;
+
+      data_vector->push_back(point);
+      n_points ++;
+  }
+  bar.finish();
+  return data_vector;
+}
+
+
 vector<vector <int32_t>> *get_data_vector_filesystem(std::vector<int32_t> &max_values, std::vector<int32_t> &min_values){
 
 
@@ -522,15 +583,27 @@ int main(int argc, char *argv[]){
   // std::vector<std::string> server_ips = {"172.28.229.152", "172.28.229.153"};
   // std::vector<std::string> server_ips = {"172.28.229.152"};
   // auto client_join_table = MDTrieClient(server_ips, 48);
-  auto client_join_table = MDTrieClient(server_ips, 1);
+  auto client_osm = MDTrieClient(server_ips, 1);
 
 
-  client_join_table.ping();
+  client_osm.ping();
   std::vector<int32_t> max_values(DATA_DIMENSION, 0);
   std::vector<int32_t> min_values(DATA_DIMENSION, 2147483647);
-  vector<vector <int32_t>> *data_vector_filesystem = get_data_vector_filesystem(max_values, min_values);
 
+  vector<vector <int32_t>> *data_vector_osm = get_data_vector_osm(max_values, min_values);
   TimeStamp start, diff;
+
+  start = GetTimestamp();
+  insert_for_join_table(data_vector_osm, 1, 0);
+  diff = GetTimestamp() - start;
+  std::cout << "Insertion end-to-end latency: " << diff << std::endl;
+  std::cout << "Storage Overhead" << client_osm.get_count()  << std::endl;
+  
+
+  exit(0);
+
+  vector<vector <int32_t>> *data_vector_filesystem = get_data_vector_filesystem(max_values, min_values);
+  auto client_join_table = MDTrieClient(server_ips, 1);
 
   start = GetTimestamp();
   insert_for_join_table(data_vector_filesystem, 1, 0);
