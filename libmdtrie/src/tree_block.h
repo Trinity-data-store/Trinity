@@ -1042,7 +1042,7 @@ public:
                 leaf->set_primary(primary_key);
 
                 found_points->add_leaf(leaf);
-                // primary_key_vector.push_back(primary_key);
+                primary_key_vector.push_back(primary_key);
             }
             return;
         }

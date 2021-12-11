@@ -30,7 +30,7 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node, 
     std::vector<uint32_t> min_values(DATA_DIMENSION, 4294967295);
 
     n_leaves_t n_points = 0;
-    n_leaves_t n_lines = total_points_count;
+    n_leaves_t n_lines = total_points_count / discount_factor;
 
     tqdm bar;
     TimeStamp start, diff;
@@ -99,7 +99,7 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node, 
 
         n_points ++;
         if (n_points % (total_points_count / 10) == 0)
-            myfile << n_points << " finished!" << std::endl;
+            std::cout << n_points << " finished!" << std::endl;
     }
     bar.finish();
 
@@ -183,6 +183,7 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node, 
 
 // ******************************************************************
 
+    /*
     char *line_range = nullptr;
     size_t len = 0;
     FILE *fp = fopen("/home/ziming/phtree-cpp/build/tpch_phtree_queries_1000.csv", "r");
@@ -239,20 +240,24 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node, 
     std::cout << "average query latency: " << (float) diff / count << std::endl;    
 
     exit(0);
+    */
+
 
     auto *start_range = new data_point();
     auto *end_range = new data_point();
 
+
     int itr = 0;
-    std::ofstream file("range_search_tpch.csv");
+    std::ofstream file("range_search_tpch_discount_" + std::to_string(discount_factor) + ".csv", std::ios_base::app);
     srand(time(NULL));
 
     tqdm bar3;
-    while (itr < 300){
-        bar3.progress(itr, 300);
+    TimeStamp total_latency = 0;
+    while (itr < 1000){
+        bar3.progress(itr, 1000);
 
         for (uint8_t j = 0; j < DATA_DIMENSION; j++){
-            start_range->set_coordinate(j, min_values[j] + (max_values[j] - min_values[j] + 1) / 10 * (rand() % 10));
+            start_range->set_coordinate(j, min_values[j] + (max_values[j] - min_values[j] + 1) / 20 * (rand() % 20));
             end_range->set_coordinate(j, start_range->get_coordinate(j) + (max_values[j] - start_range->get_coordinate(j) + 1) / 3 * (rand() % 3));
         }
 
@@ -260,14 +265,15 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node, 
         start = GetTimestamp();
         mdtrie->range_search_trie(start_range, end_range, mdtrie->root(), 0, found_points_temp);
         diff = GetTimestamp() - start;
-
-        // if (found_points_temp->size() >= 0.0005 * n_lines && found_points_temp->size() <= 0.0015 * n_lines){
-        if (found_points_temp->size() > 1000){
+        total_latency += diff;
+        if (found_points_temp->size() >= 1000 && found_points_temp->size() <= 2000){
             file << found_points_temp->size() << "," << diff << "," << std::endl;
             itr ++;
         }
     }
     bar3.finish();
+    myfile << "Range Search (1000-2000) average latency: " << (float) total_latency / 1000 << std::endl;
+
 
 
     for (dimension_t i = 0; i < DATA_DIMENSION; i++){
@@ -352,9 +358,12 @@ int main() {
 
     TREEBLOCK_SIZE = 512;
     TRIE_DEPTH = 6;
+    discount_factor = 16;
     is_osm = true;
 
-    myfile.open("tpch_benchmark_" + std::to_string(DATA_DIMENSION) + "_" + std::to_string(TRIE_DEPTH) + "_" + std::to_string(TREEBLOCK_SIZE) + ".txt", std::ios_base::app);
+    // myfile.open("tpch_benchmark_" + std::to_string(DATA_DIMENSION) + "_" + std::to_string(TRIE_DEPTH) + "_" + std::to_string(TREEBLOCK_SIZE) + ".txt", std::ios_base::app);
+    myfile.open("tpch_benchmark_discount_" + std::to_string(discount_factor) + ".txt", std::ios_base::app);
+
     std::vector<level_t> dimension_bits;
     std::vector<level_t> new_start_dimension_bits;
 

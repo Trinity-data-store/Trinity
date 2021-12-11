@@ -97,7 +97,7 @@ public:
         total_size += sizeof(uint16_t); // initial_tree_capacity_;
 
         // Primary Key to Treeblock Index    
-        p_key_to_treeblock_compact_size += sizeof(uint64_t) + total_points_count / 2 / 48 * sizeof(uint32_t);
+        p_key_to_treeblock_compact_size += sizeof(uint64_t) + total_points_count / discount_factor * sizeof(uint32_t);
         // total_size += sizeof(uint64_t) + total_points_count / 2 / 48 * sizeof(uint32_t);
         total_size += sizeof(uint64_t);
 
