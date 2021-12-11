@@ -266,7 +266,7 @@ void insert_for_join_table(vector<vector <int32_t>> *data_vector, int client_num
 
   // std::vector<std::string> server_ips = {"172.28.229.152", "172.28.229.153"};
   // std::vector<std::string> server_ips = {"172.28.229.152"};
-  std::vector<std::string> server_ips = {"172.28.229.152", "172.28.229.153", "172.28.229.151", "172.28.229.149", "172.29.249.44"};
+  std::vector<std::string> server_ips = {"172.28.229.152", "172.28.229.153", "172.28.229.151", "172.28.229.149", "172.28.229.148"};
 
   // auto client = MDTrieClient(server_ips, 48);
   auto client = MDTrieClient(server_ips, 1);
@@ -518,7 +518,7 @@ int main(int argc, char *argv[]){
 
 
 
-  std::vector<std::string> server_ips = {"172.28.229.152", "172.28.229.153", "172.28.229.151", "172.28.229.149", "172.29.249.44"};
+  std::vector<std::string> server_ips = {"172.28.229.152", "172.28.229.153", "172.28.229.151", "172.28.229.149", "172.28.229.148"};
   // std::vector<std::string> server_ips = {"172.28.229.152", "172.28.229.153"};
   // std::vector<std::string> server_ips = {"172.28.229.152"};
   // auto client_join_table = MDTrieClient(server_ips, 48);
@@ -540,24 +540,29 @@ int main(int argc, char *argv[]){
 
   std::vector<int32_t>start_range_join(DATA_DIMENSION, 0);
   std::vector<int32_t>end_range_join(DATA_DIMENSION, 0);
-  // [ "create_time,modify_time,access_time,change_time,owner_id,group_id"]
+  // [ "create_time,modify_time,access_time,change_time,owner_id,group_id, file size"]
   // raise(SIGINT);
   for (dimension_t i = 0; i < 7; i++){
       start_range_join[i] = min_values[i];
       end_range_join[i] = max_values[i];
 
       if (i == 1){
-          start_range_join[i] = 1399000000;  //EXTENDEDPRICE <= 100000
+          start_range_join[i] = 1399000000;  
           end_range_join[i] = 1400000000;
       }
       if (i == 0)
       {
-          start_range_join[i] = 1000000000;  // TOTALPRICE >= 50000 (2dp)
+          start_range_join[i] = 1300000000;  
           end_range_join[i] = 1400000000;
       }
-      if (i == 4){
-          start_range_join[i] = 100;  // DISCOUNT >= 0.05
-          end_range_join[i] = 100000;
+      // if (i == 4){
+      //     start_range_join[i] = 100;  
+      //     end_range_join[i] = 100000;
+      // }
+      if (i == 6)
+      {
+        start_range_join[i] = 0;
+        end_range_join[i] = 2147483647;
       }
   }
   std::vector<int32_t> found_points;
@@ -566,8 +571,131 @@ int main(int argc, char *argv[]){
   diff = GetTimestamp() - start;
 
   std::cout << found_points.size() << std::endl;
-  // std::cout << "Range Search Latency 1: " << (float) diff / found_points.size() << std::endl;
-  std::cout << "Range Search end to end latency 1: " << diff << std::endl;
+  std::cout << "Range Search end to end latency 1 (part 1): " << diff << std::endl;
+
+  // (1) Find the top 5 users who created OR modified a certain file in this time window. (top by number of files created)
+/*
+  for (dimension_t i = 0; i < 7; i++){
+      start_range_join[i] = min_values[i];
+      end_range_join[i] = max_values[i];
+
+      if (i == 0)
+      {
+          start_range_join[i] = 1000000000;  
+          end_range_join[i] = 1400000000;
+      }
+      if (i == 1){
+          start_range_join[i] = 1399000000;  
+          end_range_join[i] = 1400000000;
+      }
+      if (i == 6)
+      {
+        start_range_join[i] = 0;
+        end_range_join[i] = 2147483647;
+      }
+  }
+  found_points.clear();
+  start = GetTimestamp();
+  client_join_table.range_search_trie(found_points, start_range_join, end_range_join);
+  diff = GetTimestamp() - start;
+
+  std::cout << found_points.size() << std::endl;
+  std::cout << "Range Search end to end latency 2 (part 1): " << diff << std::endl;
+*/
+
+  // (2) Include file size: top 5 file by file size created AND modified within this time window
+
+
+
+  start = GetTimestamp();
+  int sent_count = 0;
+  std::vector<int32_t> file_size_vect(found_points.size(), 0);
+  for (unsigned i = 0; i < found_points.size(); i++){
+
+    if (sent_count != 0 && sent_count % 20 == 0){
+      for (uint32_t j = i - sent_count; j < i; j++){
+        std::vector<int32_t> rec_vect;
+        client_join_table.primary_key_lookup_rec(rec_vect, found_points[j]);
+        file_size_vect[j] = rec_vect[6];
+      }
+      sent_count = 0;
+    }
+    client_join_table.primary_key_lookup_send(found_points[i]);
+    sent_count ++;
+  }
+  for (uint32_t j = found_points.size() - sent_count; j < found_points.size(); j++){
+      std::vector<int32_t> rec_vect;
+      client_join_table.primary_key_lookup_rec(rec_vect, found_points[j]);
+      file_size_vect[j] = rec_vect[6];
+  }
+  diff = GetTimestamp() - start;
+  std::cout << "Range Search end to end latency 1 (part 2): " << diff << std::endl << std::endl;
+  start = GetTimestamp();
+  sort(file_size_vect.begin(), file_size_vect.end());
+  diff = GetTimestamp() - start;
+  std::cout << "Range Search end to end latency 1 (part 3): " << diff << std::endl << std::endl;
+  exit(0);
+
+  // (3) Average, Min, Max file size by given time window per hour (16 windows)  
+
+  TimeStamp total_diff = 0;
+  for (int j = 1000000000; j <= 1800000000; j += 50000000){
+
+    for (dimension_t i = 0; i < 7; i++){
+        start_range_join[i] = min_values[i];
+        end_range_join[i] = max_values[i];
+
+        if (i == 1){
+            start_range_join[i] = j;  
+            end_range_join[i] = j + 50000000;
+        }
+        if (i == 0)
+        {
+            start_range_join[i] = j;  
+            end_range_join[i] = j + 50000000;
+        }
+        if (i == 6)
+        {
+          start_range_join[i] = 0;
+          end_range_join[i] = 2147483647;
+        }
+    }
+  
+    std::vector<int32_t> found_points;
+    start = GetTimestamp();
+    client_join_table.range_search_trie(found_points, start_range_join, end_range_join);
+    diff = GetTimestamp() - start;
+
+    std::cout << found_points.size() << std::endl;
+    std::cout << "Range Search end to end latency 1 (part 1): " << diff << std::endl;
+    total_diff += diff;
+    start = GetTimestamp();
+
+    /*
+    int sent_count = 0;
+    for (unsigned i = 0; i < found_points.size(); i++){
+
+      if (sent_count != 0 && sent_count % 4096 == 0){
+        for (uint32_t j = i - sent_count; j < i; j++){
+          std::vector<int32_t> rec_vect;
+          client_join_table.primary_key_lookup_rec(rec_vect, found_points[j]);
+        }
+        sent_count = 0;
+      }
+      client_join_table.primary_key_lookup_send(found_points[i]);
+      sent_count ++;
+    }
+    
+    for (uint32_t j = found_points.size() - sent_count; j < found_points.size(); j++){
+        std::vector<int32_t> rec_vect;
+        client_join_table.primary_key_lookup_rec(rec_vect, found_points[j]);
+    }
+    diff = GetTimestamp() - start;
+    */
+    // total_diff += diff;
+    // std::cout << "Range Search end to end latency 1 (part 2): " << diff << std::endl;
+  }
+  std::cout << "Total diff: " << total_diff << std::endl;
 
   exit(0);
 
