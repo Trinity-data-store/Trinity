@@ -22,7 +22,7 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node, 
     auto *mdtrie = new md_trie(max_depth, trie_depth, max_tree_node);
     auto *leaf_point = new data_point();
 
-    std::ifstream infile("/home/ziming/tpch-dbgen/data/orders_lineitem_merged.csv");
+    std::ifstream infile("/home/ziming/tpch-dbgen/data/orders_lineitem_merged_inner.csv");
 
     std::string line;
     std::getline(infile, line);
@@ -248,17 +248,17 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node, 
 
 
     int itr = 0;
-    std::ofstream file("range_search_tpch_discount_" + std::to_string(discount_factor) + ".csv", std::ios_base::app);
+    std::ofstream file("range_search_tpch_sensitivity.csv", std::ios_base::app);
     srand(time(NULL));
 
     tqdm bar3;
     TimeStamp total_latency = 0;
-    while (itr < 1000){
-        bar3.progress(itr, 1000);
+    while (itr < 3000){
+        bar3.progress(itr, 3000);
 
         for (uint8_t j = 0; j < DATA_DIMENSION; j++){
             start_range->set_coordinate(j, min_values[j] + (max_values[j] - min_values[j] + 1) / 20 * (rand() % 20));
-            end_range->set_coordinate(j, start_range->get_coordinate(j) + (max_values[j] - start_range->get_coordinate(j) + 1) / 3 * (rand() % 3));
+            end_range->set_coordinate(j, start_range->get_coordinate(j) + (max_values[j] - start_range->get_coordinate(j) + 1) / 5 * (rand() % 5));
         }
 
         auto *found_points_temp = new point_array();
@@ -266,7 +266,7 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node, 
         mdtrie->range_search_trie(start_range, end_range, mdtrie->root(), 0, found_points_temp);
         diff = GetTimestamp() - start;
         total_latency += diff;
-        if (found_points_temp->size() >= 1000 && found_points_temp->size() <= 2000){
+        if (found_points_temp->size() >= 1000){
             file << found_points_temp->size() << "," << diff << "," << std::endl;
             itr ++;
         }
@@ -358,7 +358,7 @@ int main() {
 
     TREEBLOCK_SIZE = 512;
     TRIE_DEPTH = 6;
-    discount_factor = 16;
+    discount_factor = 1;
     is_osm = true;
 
     // myfile.open("tpch_benchmark_" + std::to_string(DATA_DIMENSION) + "_" + std::to_string(TRIE_DEPTH) + "_" + std::to_string(TREEBLOCK_SIZE) + ".txt", std::ios_base::app);

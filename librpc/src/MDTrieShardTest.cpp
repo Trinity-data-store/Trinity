@@ -579,11 +579,10 @@ int main(int argc, char *argv[]){
   std::vector<std::string> server_ips = {"172.28.229.152", "172.28.229.153", "172.28.229.151", "172.28.229.149", "172.28.229.148"};
   // std::vector<std::string> server_ips = {"172.28.229.152", "172.28.229.153"};
   // std::vector<std::string> server_ips = {"172.28.229.152"};
-  // auto client_join_table = MDTrieClient(server_ips, 48);
-  auto client_osm = MDTrieClient(server_ips, 12);
+  auto client_join_table = MDTrieClient(server_ips, 12);
 
 
-  client_osm.ping();
+  client_join_table.ping();
   std::vector<int32_t> max_values(DATA_DIMENSION, 0);
   std::vector<int32_t> min_values(DATA_DIMENSION, 2147483647);
 
@@ -594,7 +593,7 @@ int main(int argc, char *argv[]){
   insert_for_join_table(data_vector_osm, 1, 0);
   diff = GetTimestamp() - start;
   std::cout << "Insertion end-to-end latency: " << diff << std::endl;
-  std::cout << "Storage Overhead" << client_osm.get_count()  << std::endl;
+  std::cout << "Storage Overhead" << client_join_table.get_count()  << std::endl;
   
 
 //  ********* OSM QUERY 1:
@@ -627,7 +626,7 @@ int main(int argc, char *argv[]){
         end_range_join[i] = 2147483647;
       }
   }
-  // std::vector<int32_t> found_points;
+  std::vector<int32_t> found_points;
   found_points.clear();
   start = GetTimestamp();
   client_join_table.range_search_trie(found_points, start_range_join, end_range_join);
@@ -669,6 +668,7 @@ int main(int argc, char *argv[]){
   // (2) Include file size: top 5 file by file size created AND modified within this time window
 
 
+  // auto client_join_table = MDTrieClient(server_ips, 48);
 
   start = GetTimestamp();
   int sent_count = 0;
