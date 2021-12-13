@@ -271,7 +271,8 @@ vector<vector <int32_t>> *get_data_vector_tpch(std::vector<int32_t> &max_values,
 
 std::tuple<uint32_t, uint32_t, uint32_t> insert_each_client(vector<vector <int32_t>> *data_vector, int client_number, int client_index){
 
-  auto client = MDTrieClient();
+  std::vector<std::string> server_ips = {"172.28.229.152", "172.28.229.153", "172.28.229.151", "172.28.229.149", "172.28.229.148"};
+  auto client = MDTrieClient(server_ips, 12);
   uint32_t start_pos = data_vector->size() / client_number * client_index;
   uint32_t end_pos = data_vector->size() / client_number * (client_index + 1) - 1;
 
@@ -279,7 +280,7 @@ std::tuple<uint32_t, uint32_t, uint32_t> insert_each_client(vector<vector <int32
     end_pos = data_vector->size() - 1;
 
   uint32_t total_points_to_insert = end_pos - start_pos + 1;
-  uint32_t warmup_cooldown_points = total_points_to_insert / 3;
+  uint32_t warmup_cooldown_points = total_points_to_insert / 5;
 
   int sent_count = 0;
   uint32_t current_pos;
@@ -305,9 +306,6 @@ std::tuple<uint32_t, uint32_t, uint32_t> insert_each_client(vector<vector <int32
     }
 
     vector<int32_t> data_point = (*data_vector)[current_pos];
-    if (current_pos == 19065010){
-      raise(SIGINT);
-    }
     client.insert_send(data_point, current_pos);
     sent_count ++;
   }
@@ -315,7 +313,6 @@ std::tuple<uint32_t, uint32_t, uint32_t> insert_each_client(vector<vector <int32
   for (uint32_t j = end_pos - sent_count + 1; j <= end_pos; j++){
       client.insert_rec(j);
       if (j == end_pos - warmup_cooldown_points){
-
         diff = GetTimestamp() - start;
       }
   }
@@ -580,6 +577,25 @@ int main(int argc, char *argv[]){
   // std::vector<std::string> server_ips = {"172.28.229.152", "172.28.229.153"};
   // std::vector<std::string> server_ips = {"172.28.229.152"};
   auto client_join_table = MDTrieClient(server_ips, 12);
+
+/** 
+    Insert all points from the OSM dataset
+*/
+
+  client_join_table.ping();
+
+  std::vector<int32_t> max_values_filesys(DATA_DIMENSION, 0);
+  std::vector<int32_t> min_values_filesys(DATA_DIMENSION, 2147483647);
+  vector<vector <int32_t>> *data_vector_filesys = get_data_vector_filesystem(max_values_filesys, min_values_filesys);
+
+  std::tuple<uint32_t, float> return_tuple = total_client_insert(data_vector_filesys, 12);
+  uint32_t throughput = std::get<0>(return_tuple);
+  float latency = std::get<1>(return_tuple);
+
+  cout << "Insertion Throughput add thread (pt / seconds): " << throughput << endl;
+  cout << "Latency (us): " << latency << endl;
+
+  return 0;
 
 
   client_join_table.ping();
@@ -889,19 +905,7 @@ int main(int argc, char *argv[]){
   client.ping();
   vector<vector <int32_t>> *data_vector = get_data_vector();
  
-/** 
-    Insert all points from the OSM dataset
-*/
 
-  std::tuple<uint32_t, float> return_tuple = total_client_insert(data_vector, client_number);
-  uint32_t throughput = std::get<0>(return_tuple);
-  float latency = std::get<1>(return_tuple);
-
-  cout << "Insertion Throughput add thread (pt / seconds): " << throughput << endl;
-  cout << "Latency (us): " << latency << endl;
-  cout << "Inserted Points: " << client.get_count() << endl;
-
-  return 0;
 
 /**  Range Search Obtain Search Range
 
