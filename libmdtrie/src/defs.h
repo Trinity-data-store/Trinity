@@ -126,7 +126,7 @@ uint64_t copy_vect_time = 0;
 uint64_t update_symbol_time = 0;
 uint64_t range_search_child_time = 0;
 uint64_t collapsed_node_num = 0;
-const dimension_t DATA_DIMENSION = 7;
+const dimension_t DATA_DIMENSION = 6;
 
 int fd = open("mmap_file.txt", O_RDWR);
 off_t offset = 0;

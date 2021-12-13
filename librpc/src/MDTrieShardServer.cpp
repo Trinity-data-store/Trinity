@@ -48,8 +48,8 @@ public:
     // dimension_bits = {8, 32, 32, 32}; // 4 Dimensions
     // new_start_dimension_bits = {0, 0, 0, 0}; // 4 Dimensions
 
-    dimension_bits = {32, 32, 32, 32, 24, 24, 32};
-    new_start_dimension_bits = {0, 0, 0, 0, 0, 0, 0};
+    dimension_bits = {32, 32, 32, 32, 24, 24};
+    new_start_dimension_bits = {0, 0, 0, 0, 0, 0};
 
     is_osm = false;
 

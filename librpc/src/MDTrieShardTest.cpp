@@ -390,7 +390,9 @@ std::tuple<uint32_t, float> total_client_insert(vector<vector <int32_t>> *data_v
 
 std::tuple<uint32_t, uint32_t, uint32_t> lookup_each_client(vector<vector <int32_t>> *data_vector, int client_number, int client_index){
 
-  auto client = MDTrieClient();
+  std::vector<std::string> server_ips = {"172.28.229.152", "172.28.229.153", "172.28.229.151", "172.28.229.149", "172.29.249.30"};
+  auto client = MDTrieClient(server_ips, 12);
+
   uint32_t start_pos = data_vector->size() / client_number * client_index;
   uint32_t end_pos = data_vector->size() / client_number * (client_index + 1) - 1;
 
@@ -398,7 +400,7 @@ std::tuple<uint32_t, uint32_t, uint32_t> lookup_each_client(vector<vector <int32
     end_pos = data_vector->size() - 1;
 
   uint32_t total_points_to_lookup = end_pos - start_pos + 1;
-  uint32_t warmup_cooldown_points = total_points_to_lookup / 3;
+  uint32_t warmup_cooldown_points = total_points_to_lookup / 5;
 
   int sent_count = 0;
   uint32_t current_pos;
@@ -574,28 +576,53 @@ int main(int argc, char *argv[]){
 
 
   std::vector<std::string> server_ips = {"172.28.229.152", "172.28.229.153", "172.28.229.151", "172.28.229.149", "172.29.249.30"};
-  // std::vector<std::string> server_ips = {"172.28.229.152", "172.28.229.153"};
-  // std::vector<std::string> server_ips = {"172.28.229.152"};
   auto client_join_table = MDTrieClient(server_ips, 12);
-
+  int client_number_throughput = 24;
 /** 
     Insert all points from the OSM dataset
 */
-
+  
   client_join_table.ping();
 
   std::vector<int32_t> max_values_filesys(DATA_DIMENSION, 0);
   std::vector<int32_t> min_values_filesys(DATA_DIMENSION, 2147483647);
-  vector<vector <int32_t>> *data_vector_filesys = get_data_vector_filesystem(max_values_filesys, min_values_filesys);
+  vector<vector <int32_t>> *data_vector_throughput = get_data_vector_filesystem(max_values_filesys, min_values_filesys);
 
-  std::tuple<uint32_t, float> return_tuple = total_client_insert(data_vector_filesys, 12);
+  std::tuple<uint32_t, float> return_tuple = total_client_insert(data_vector_throughput, client_number_throughput);
   uint32_t throughput = std::get<0>(return_tuple);
   float latency = std::get<1>(return_tuple);
 
   cout << "Insertion Throughput add thread (pt / seconds): " << throughput << endl;
   cout << "Latency (us): " << latency << endl;
 
+/** 
+    Point Lookup from the OSM dataset
+*/
+
+  return_tuple = total_client_lookup(data_vector_throughput, client_number_throughput);
+  throughput = std::get<0>(return_tuple);
+  latency = std::get<1>(return_tuple);
+
+  cout << "Primary Key Lookup Throughput add thread (pt / seconds): " << throughput << endl;
+  cout << "Latency (us): " << latency << endl;
+
+  // int sent_count_tmp = 0;
+  // for (unsigned i = 0; i < data_vector_throughput->size(); i++){
+
+  //   if (sent_count_tmp != 0 && sent_count_tmp % 20 == 0){
+  //     for (uint32_t j = i - sent_count_tmp; j < i; j++){
+  //       std::vector<int32_t> rec_vect;
+  //       client_join_table.primary_key_lookup_rec(rec_vect, i);
+  //     }
+  //     sent_count_tmp = 0;
+  //   }
+  //   client_join_table.primary_key_lookup_send(i);
+  //   sent_count_tmp ++;
+  // }
+
   return 0;
+
+
 
 
   client_join_table.ping();
@@ -1052,17 +1079,6 @@ int main(int argc, char *argv[]){
 
 */
 
-/** 
-    Point Lookup from the OSM dataset
-*/
 
-  return_tuple = total_client_lookup(data_vector, client_number);
-  throughput = std::get<0>(return_tuple);
-  latency = std::get<1>(return_tuple);
-
-  cout << "Primary Key Lookup Throughput add thread (pt / seconds): " << throughput << endl;
-  cout << "Latency (us): " << latency << endl;
-
-  return 0;
 
 }
