@@ -19,7 +19,7 @@ using namespace apache::thrift::protocol;
 using namespace apache::thrift::transport;
 
 n_leaves_t n_lines = 152806265;
-const int BATCH_SIZE = 4096;
+int BATCH_SIZE = 4096;
 std::atomic<int> active_thread_num {0};
 std::atomic<int> finished_thread_num {0};
 
@@ -578,31 +578,36 @@ int main(int argc, char *argv[]){
 
   std::vector<std::string> server_ips = {"172.28.229.152", "172.28.229.153", "172.28.229.151", "172.28.229.149", "172.29.249.44"};
   shard_num = 48;
+  // BATCH_SIZE = 48;
   auto client_join_table = MDTrieClient(server_ips, shard_num);
-  int client_number_throughput = 24;
+  int client_number_throughput = 512;
+  // int client_number_throughput = 1;
   TimeStamp start, diff;
 /** 
     Insert all points from the OSM dataset
 */
-  
+  std::tuple<uint32_t, float> return_tuple;
+  uint32_t throughput;
+  float latency;
   client_join_table.ping();
 
   std::vector<int32_t> max_values_filesys(DATA_DIMENSION, 0);
   std::vector<int32_t> min_values_filesys(DATA_DIMENSION, 2147483647);
   // vector<vector <int32_t>> *data_vector_throughput = get_data_vector_filesystem(max_values_filesys, min_values_filesys);
-  vector<vector <int32_t>> *data_vector_throughput = get_data_vector_filesystem(max_values_filesys, min_values_filesys);
+  vector<vector <int32_t>> *data_vector_throughput = get_data_vector_osm(max_values_filesys, min_values_filesys);
 
 
   start = GetTimestamp();
-  std::tuple<uint32_t, float> return_tuple = total_client_insert(data_vector_throughput, client_number_throughput);
-  uint32_t throughput = std::get<0>(return_tuple);
-  float latency = std::get<1>(return_tuple);
+  return_tuple = total_client_insert(data_vector_throughput, client_number_throughput);
+  throughput = std::get<0>(return_tuple);
+  latency = std::get<1>(return_tuple);
   diff = GetTimestamp() - start;
 
   cout << "Insertion Throughput add thread (pt / seconds): " << throughput << endl;
-  cout << "Another throughput measure: " << total_points_count / diff * 1000000 << endl;
+  cout << "Another throughput measure: " << ((float) total_points_count / diff) * 1000000 << endl;
   cout << "Latency (us): " << latency << endl;
   return 0;
+
 /**   
     Point Lookup from the OSM dataset
 */
@@ -613,7 +618,7 @@ int main(int argc, char *argv[]){
   diff = GetTimestamp() - start;
   cout << "Primary Key Lookup Throughput add thread (pt / seconds): " << throughput << endl;
   cout << "Latency (us): " << latency << endl;
-  cout << "Another throughput measure: " << total_points_count / diff * 1000000 << endl;
+  cout << "Another throughput measure: " << ((float) total_points_count / diff) * 1000000 << endl;
 
   // int sent_count_tmp = 0;
   // for (unsigned i = 0; i < data_vector_throughput->size(); i++){
