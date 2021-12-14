@@ -41,10 +41,16 @@ public:
     mdtrie_ = new md_trie(max_depth, trie_depth, max_tree_node);
     std::vector<level_t> dimension_bits;
     std::vector<level_t> new_start_dimension_bits;
-    // dimension_bits = {8, 32, 16, 24, 32, 32, 32, 32, 32}; // 9 Dimensions
-    // new_start_dimension_bits = {0, 0, 8, 16, 0, 0, 0, 0, 0}; // 9 Dimensions
-    new_start_dimension_bits = {0, 0, 0, 0, 0, 0};
-    dimension_bits = {32, 32, 32, 32, 24, 24};
+    dimension_bits = {8, 32, 16, 24, 32, 32, 32, 32, 32}; // 9 Dimensions
+    new_start_dimension_bits = {0, 0, 8, 16, 0, 0, 0, 0, 0}; // 9 Dimensions
+    // new_start_dimension_bits = {0, 0, 0, 0, 0, 0, 0};
+    // dimension_bits = {32, 32, 32, 32, 24, 24, 32};
+    // dimension_bits = {8, 32, 32, 32}; // 4 Dimensions
+    // new_start_dimension_bits = {0, 0, 0, 0}; // 4 Dimensions
+
+    // dimension_bits = {32, 32, 32, 32, 24, 24};
+    // new_start_dimension_bits = {0, 0, 0, 0, 0, 0};
+
     is_osm = false;
 
     start_dimension_bits = new_start_dimension_bits;  
@@ -252,7 +258,7 @@ int main(int argc, char *argv[]){
 
   if (argc == 2){
       // MDTrieServerCoordinator(argv[1], 9090, 48);
-      MDTrieServerCoordinator(argv[1], 9090, 1);
+      MDTrieServerCoordinator(argv[1], 9090, 12);
     return 0;
   }
 

@@ -66,6 +66,67 @@ vector<vector <int32_t>> *get_data_vector(){
 }
 
 
+
+vector<vector <int32_t>> *get_data_vector_osm(std::vector<int32_t> &max_values, std::vector<int32_t> &min_values){
+
+
+  char *line = nullptr;
+  size_t len = 0;
+  ssize_t read;
+  FILE *fp = fopen("/home/ziming/osm/osm_us_northeast_timestamp.csv", "r");
+  if (fp == nullptr)
+  {
+      fprintf(stderr, "file not found\n");
+      exit(EXIT_FAILURE);
+  }
+
+  n_leaves_t n_points = 0;
+  n_leaves_t n_lines = 152806264;
+  total_points_count = n_lines;
+  auto data_vector = new vector<vector <int32_t>>;
+
+  tqdm bar;
+  read = getline(&line, &len, fp);
+
+  while ((read = getline(&line, &len, fp)) != -1)
+  {
+      vector <int32_t> point(DATA_DIMENSION, 0);
+      bar.progress(n_points, n_lines);
+      char *token = strtok(line, ",");
+      char *ptr;
+
+      for (dimension_t i = 0; i < DATA_DIMENSION; i++){
+          token = strtok(nullptr, ",");
+          point[i] = strtoul(token, &ptr, 10);
+      }
+
+      for (dimension_t i = 0; i < DATA_DIMENSION; i++){
+          
+          if (n_points == 0){
+              max_values[i] = point[i];
+              min_values[i] = point[i];
+          }
+          else {
+              if (point[i] > max_values[i]){
+                  max_values[i] = point[i];
+              }
+              if (point[i] < min_values[i]){
+                  min_values[i] = point[i];
+              }
+          }          
+      }
+
+      if (n_points == n_lines)
+          break;
+
+      data_vector->push_back(point);
+      n_points ++;
+  }
+  bar.finish();
+  return data_vector;
+}
+
+
 vector<vector <int32_t>> *get_data_vector_filesystem(std::vector<int32_t> &max_values, std::vector<int32_t> &min_values){
 
 
@@ -210,7 +271,8 @@ vector<vector <int32_t>> *get_data_vector_tpch(std::vector<int32_t> &max_values,
 
 std::tuple<uint32_t, uint32_t, uint32_t> insert_each_client(vector<vector <int32_t>> *data_vector, int client_number, int client_index){
 
-  auto client = MDTrieClient();
+  std::vector<std::string> server_ips = {"172.28.229.152", "172.28.229.153", "172.28.229.151", "172.28.229.149", "172.29.249.44"};
+  auto client = MDTrieClient(server_ips, 12);
   uint32_t start_pos = data_vector->size() / client_number * client_index;
   uint32_t end_pos = data_vector->size() / client_number * (client_index + 1) - 1;
 
@@ -218,7 +280,7 @@ std::tuple<uint32_t, uint32_t, uint32_t> insert_each_client(vector<vector <int32
     end_pos = data_vector->size() - 1;
 
   uint32_t total_points_to_insert = end_pos - start_pos + 1;
-  uint32_t warmup_cooldown_points = total_points_to_insert / 3;
+  uint32_t warmup_cooldown_points = total_points_to_insert / 5;
 
   int sent_count = 0;
   uint32_t current_pos;
@@ -244,9 +306,6 @@ std::tuple<uint32_t, uint32_t, uint32_t> insert_each_client(vector<vector <int32
     }
 
     vector<int32_t> data_point = (*data_vector)[current_pos];
-    if (current_pos == 19065010){
-      raise(SIGINT);
-    }
     client.insert_send(data_point, current_pos);
     sent_count ++;
   }
@@ -254,7 +313,6 @@ std::tuple<uint32_t, uint32_t, uint32_t> insert_each_client(vector<vector <int32
   for (uint32_t j = end_pos - sent_count + 1; j <= end_pos; j++){
       client.insert_rec(j);
       if (j == end_pos - warmup_cooldown_points){
-
         diff = GetTimestamp() - start;
       }
   }
@@ -269,7 +327,7 @@ void insert_for_join_table(vector<vector <int32_t>> *data_vector, int client_num
   std::vector<std::string> server_ips = {"172.28.229.152", "172.28.229.153", "172.28.229.151", "172.28.229.149", "172.29.249.44"};
 
   // auto client = MDTrieClient(server_ips, 48);
-  auto client = MDTrieClient(server_ips, 1);
+  auto client = MDTrieClient(server_ips, 12);
 
   uint32_t start_pos = data_vector->size() / client_number * client_index;
   uint32_t end_pos = data_vector->size() / client_number * (client_index + 1) - 1;
@@ -282,9 +340,6 @@ void insert_for_join_table(vector<vector <int32_t>> *data_vector, int client_num
 
   for (current_pos = start_pos; current_pos <= end_pos; current_pos++){
 
-    // if ((current_pos - start_pos) % ((end_pos - start_pos) / 20) == 0)
-    //   std::cout << "finished: " << current_pos - start_pos << std::endl;
-
     if (sent_count != 0 && sent_count % BATCH_SIZE == 0){
         for (uint32_t j = current_pos - sent_count; j < current_pos; j++){
             client.insert_rec(j);
@@ -293,7 +348,7 @@ void insert_for_join_table(vector<vector <int32_t>> *data_vector, int client_num
     }
     vector<int32_t> data_point = (*data_vector)[current_pos];
     client.insert_send(data_point, current_pos);
-    if (current_pos % (data_vector->size() / 10) == 0)
+    if (current_pos % (data_vector->size() / 50) == 0)
       std::cout << "inserted: " << current_pos << std::endl;
     sent_count ++;
   }
@@ -335,7 +390,9 @@ std::tuple<uint32_t, float> total_client_insert(vector<vector <int32_t>> *data_v
 
 std::tuple<uint32_t, uint32_t, uint32_t> lookup_each_client(vector<vector <int32_t>> *data_vector, int client_number, int client_index){
 
-  auto client = MDTrieClient();
+  std::vector<std::string> server_ips = {"172.28.229.152", "172.28.229.153", "172.28.229.151", "172.28.229.149", "172.29.249.44"};
+  auto client = MDTrieClient(server_ips, 12);
+
   uint32_t start_pos = data_vector->size() / client_number * client_index;
   uint32_t end_pos = data_vector->size() / client_number * (client_index + 1) - 1;
 
@@ -343,7 +400,7 @@ std::tuple<uint32_t, uint32_t, uint32_t> lookup_each_client(vector<vector <int32
     end_pos = data_vector->size() - 1;
 
   uint32_t total_points_to_lookup = end_pos - start_pos + 1;
-  uint32_t warmup_cooldown_points = total_points_to_lookup / 3;
+  uint32_t warmup_cooldown_points = total_points_to_lookup / 5;
 
   int sent_count = 0;
   uint32_t current_pos;
@@ -519,55 +576,243 @@ int main(int argc, char *argv[]){
 
 
   std::vector<std::string> server_ips = {"172.28.229.152", "172.28.229.153", "172.28.229.151", "172.28.229.149", "172.29.249.44"};
-  // std::vector<std::string> server_ips = {"172.28.229.152", "172.28.229.153"};
-  // std::vector<std::string> server_ips = {"172.28.229.152"};
-  // auto client_join_table = MDTrieClient(server_ips, 48);
-  auto client_join_table = MDTrieClient(server_ips, 1);
+  auto client_join_table = MDTrieClient(server_ips, 12);
+  int client_number_throughput = 24;
+  TimeStamp start, diff;
+/** 
+    Insert all points from the OSM dataset
+*/
+  
+  client_join_table.ping();
+
+  std::vector<int32_t> max_values_filesys(DATA_DIMENSION, 0);
+  std::vector<int32_t> min_values_filesys(DATA_DIMENSION, 2147483647);
+  // vector<vector <int32_t>> *data_vector_throughput = get_data_vector_filesystem(max_values_filesys, min_values_filesys);
+  vector<vector <int32_t>> *data_vector_throughput = get_data_vector_tpch(max_values_filesys, min_values_filesys);
+
+
+  start = GetTimestamp();
+  std::tuple<uint32_t, float> return_tuple = total_client_insert(data_vector_throughput, client_number_throughput);
+  uint32_t throughput = std::get<0>(return_tuple);
+  float latency = std::get<1>(return_tuple);
+  diff = GetTimestamp() - start;
+
+  cout << "Insertion Throughput add thread (pt / seconds): " << throughput << endl;
+  cout << "Another throughput measure: " << total_points_count / diff * 1000000 << endl;
+  cout << "Latency (us): " << latency << endl;
+
+/** 
+    Point Lookup from the OSM dataset
+*/
+  start = GetTimestamp();
+  return_tuple = total_client_lookup(data_vector_throughput, client_number_throughput);
+  throughput = std::get<0>(return_tuple);
+  latency = std::get<1>(return_tuple);
+  diff = GetTimestamp() - start;
+  cout << "Primary Key Lookup Throughput add thread (pt / seconds): " << throughput << endl;
+  cout << "Latency (us): " << latency << endl;
+  cout << "Another throughput measure: " << total_points_count / diff * 1000000 << endl;
+
+  // int sent_count_tmp = 0;
+  // for (unsigned i = 0; i < data_vector_throughput->size(); i++){
+
+  //   if (sent_count_tmp != 0 && sent_count_tmp % 20 == 0){
+  //     for (uint32_t j = i - sent_count_tmp; j < i; j++){
+  //       std::vector<int32_t> rec_vect;
+  //       client_join_table.primary_key_lookup_rec(rec_vect, i);
+  //     }
+  //     sent_count_tmp = 0;
+  //   }
+  //   client_join_table.primary_key_lookup_send(i);
+  //   sent_count_tmp ++;
+  // }
+
+  return 0;
+
+
 
 
   client_join_table.ping();
   std::vector<int32_t> max_values(DATA_DIMENSION, 0);
   std::vector<int32_t> min_values(DATA_DIMENSION, 2147483647);
-  vector<vector <int32_t>> *data_vector_filesystem = get_data_vector_filesystem(max_values, min_values);
 
-  TimeStamp start, diff;
+  vector<vector <int32_t>> *data_vector_osm = get_data_vector_osm(max_values, min_values);
 
   start = GetTimestamp();
-  insert_for_join_table(data_vector_filesystem, 1, 0);
+  insert_for_join_table(data_vector_osm, 1, 0);
   diff = GetTimestamp() - start;
   std::cout << "Insertion end-to-end latency: " << diff << std::endl;
   std::cout << "Storage Overhead" << client_join_table.get_count()  << std::endl;
+  
+
+//  ********* OSM QUERY 1:
+
 
   std::vector<int32_t>start_range_join(DATA_DIMENSION, 0);
   std::vector<int32_t>end_range_join(DATA_DIMENSION, 0);
-  // [ "create_time,modify_time,access_time,change_time,owner_id,group_id"]
+  // [ "create_time,modify_time,access_time,change_time,owner_id,group_id, file size"]
   // raise(SIGINT);
-  for (dimension_t i = 0; i < 6; i++){
+  for (dimension_t i = 0; i < 7; i++){
       start_range_join[i] = min_values[i];
       end_range_join[i] = max_values[i];
 
       if (i == 1){
-          start_range_join[i] = 1399000000;  //EXTENDEDPRICE <= 100000
+          start_range_join[i] = 1399000000;  
           end_range_join[i] = 1400000000;
       }
       if (i == 0)
       {
-          start_range_join[i] = 1000000000;  // TOTALPRICE >= 50000 (2dp)
+          start_range_join[i] = 1300000000;  
           end_range_join[i] = 1400000000;
       }
-      if (i == 4){
-          start_range_join[i] = 100;  // DISCOUNT >= 0.05
-          end_range_join[i] = 100000;
+      // if (i == 4){
+      //     start_range_join[i] = 100;  
+      //     end_range_join[i] = 100000;
+      // }
+      if (i == 6)
+      {
+        start_range_join[i] = 0;
+        end_range_join[i] = 2147483647;
       }
   }
   std::vector<int32_t> found_points;
+  found_points.clear();
   start = GetTimestamp();
   client_join_table.range_search_trie(found_points, start_range_join, end_range_join);
   diff = GetTimestamp() - start;
 
   std::cout << found_points.size() << std::endl;
-  // std::cout << "Range Search Latency 1: " << (float) diff / found_points.size() << std::endl;
-  std::cout << "Range Search end to end latency 1: " << diff << std::endl;
+  std::cout << "Range Search end to end latency 1 (part 1): " << diff << std::endl;
+
+  // (1) Find the top 5 users who created OR modified a certain file in this time window. (top by number of files created)
+/*
+  for (dimension_t i = 0; i < 7; i++){
+      start_range_join[i] = min_values[i];
+      end_range_join[i] = max_values[i];
+
+      if (i == 0)
+      {
+          start_range_join[i] = 1000000000;  
+          end_range_join[i] = 1400000000;
+      }
+      if (i == 1){
+          start_range_join[i] = 1399000000;  
+          end_range_join[i] = 1400000000;
+      }
+      if (i == 6)
+      {
+        start_range_join[i] = 0;
+        end_range_join[i] = 2147483647;
+      }
+  }
+  found_points.clear();
+  start = GetTimestamp();
+  client_join_table.range_search_trie(found_points, start_range_join, end_range_join);
+  diff = GetTimestamp() - start;
+
+  std::cout << found_points.size() << std::endl;
+  std::cout << "Range Search end to end latency 2 (part 1): " << diff << std::endl;
+*/
+
+  // (2) Include file size: top 5 file by file size created AND modified within this time window
+
+
+  // auto client_join_table = MDTrieClient(server_ips, 48);
+
+  start = GetTimestamp();
+  int sent_count = 0;
+  std::vector<int32_t> file_size_vect(found_points.size(), 0);
+  for (unsigned i = 0; i < found_points.size(); i++){
+
+    if (sent_count != 0 && sent_count % 20 == 0){
+      for (uint32_t j = i - sent_count; j < i; j++){
+        std::vector<int32_t> rec_vect;
+        client_join_table.primary_key_lookup_rec(rec_vect, found_points[j]);
+        file_size_vect[j] = rec_vect[6];
+      }
+      sent_count = 0;
+    }
+    client_join_table.primary_key_lookup_send(found_points[i]);
+    sent_count ++;
+  }
+  for (uint32_t j = found_points.size() - sent_count; j < found_points.size(); j++){
+      std::vector<int32_t> rec_vect;
+      client_join_table.primary_key_lookup_rec(rec_vect, found_points[j]);
+      file_size_vect[j] = rec_vect[6];
+  }
+  diff = GetTimestamp() - start;
+  std::cout << "Range Search end to end latency 1 (part 2): " << diff << std::endl << std::endl;
+  start = GetTimestamp();
+  sort(file_size_vect.begin(), file_size_vect.end());
+  diff = GetTimestamp() - start;
+  std::cout << "Range Search end to end latency 1 (part 3): " << diff << std::endl << std::endl;
+  exit(0);
+
+  // (3) Average, Min, Max file size by given time window per hour (16 windows)  
+
+  TimeStamp total_diff = 0;
+  for (int j = 1000000000; j <= 1800000000; j += 50000000){
+
+    for (dimension_t i = 0; i < 7; i++){
+        start_range_join[i] = min_values[i];
+        end_range_join[i] = max_values[i];
+
+        if (i == 1){
+            start_range_join[i] = j;  
+            end_range_join[i] = j + 50000000;
+        }
+        if (i == 0)
+        {
+            start_range_join[i] = j;  
+            end_range_join[i] = j + 50000000;
+        }
+        if (i == 6)
+        {
+          start_range_join[i] = 0;
+          end_range_join[i] = 2147483647;
+        }
+    }
+  
+    std::vector<int32_t> found_points;
+    start = GetTimestamp();
+    client_join_table.range_search_trie(found_points, start_range_join, end_range_join);
+    diff = GetTimestamp() - start;
+
+    std::cout << found_points.size() << std::endl;
+    std::cout << "Range Search end to end latency 1 (part 1): " << diff << std::endl;
+    total_diff += diff;
+    start = GetTimestamp();
+
+    /*
+    int sent_count = 0;
+    for (unsigned i = 0; i < found_points.size(); i++){
+
+      if (sent_count != 0 && sent_count % 4096 == 0){
+        for (uint32_t j = i - sent_count; j < i; j++){
+          std::vector<int32_t> rec_vect;
+          client_join_table.primary_key_lookup_rec(rec_vect, found_points[j]);
+        }
+        sent_count = 0;
+      }
+      client_join_table.primary_key_lookup_send(found_points[i]);
+      sent_count ++;
+    }
+    
+    for (uint32_t j = found_points.size() - sent_count; j < found_points.size(); j++){
+        std::vector<int32_t> rec_vect;
+        client_join_table.primary_key_lookup_rec(rec_vect, found_points[j]);
+    }
+    diff = GetTimestamp() - start;
+    */
+    // total_diff += diff;
+    // std::cout << "Range Search end to end latency 1 (part 2): " << diff << std::endl;
+  }
+  std::cout << "Total diff: " << total_diff << std::endl;
+
+
+
+
+
 
   exit(0);
 
@@ -693,19 +938,7 @@ int main(int argc, char *argv[]){
   client.ping();
   vector<vector <int32_t>> *data_vector = get_data_vector();
  
-/** 
-    Insert all points from the OSM dataset
-*/
 
-  std::tuple<uint32_t, float> return_tuple = total_client_insert(data_vector, client_number);
-  uint32_t throughput = std::get<0>(return_tuple);
-  float latency = std::get<1>(return_tuple);
-
-  cout << "Insertion Throughput add thread (pt / seconds): " << throughput << endl;
-  cout << "Latency (us): " << latency << endl;
-  cout << "Inserted Points: " << client.get_count() << endl;
-
-  return 0;
 
 /**  Range Search Obtain Search Range
 
@@ -852,17 +1085,6 @@ int main(int argc, char *argv[]){
 
 */
 
-/** 
-    Point Lookup from the OSM dataset
-*/
 
-  return_tuple = total_client_lookup(data_vector, client_number);
-  throughput = std::get<0>(return_tuple);
-  latency = std::get<1>(return_tuple);
-
-  cout << "Primary Key Lookup Throughput add thread (pt / seconds): " << throughput << endl;
-  cout << "Latency (us): " << latency << endl;
-
-  return 0;
 
 }

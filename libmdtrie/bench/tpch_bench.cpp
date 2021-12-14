@@ -16,7 +16,7 @@ std::ofstream myfile;
 void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node, std::vector<level_t> dimension_bits){
     
     create_level_to_num_children(dimension_bits, max_depth);
-    auto *found_points = new point_array();
+    // auto *found_points = new point_array();
     auto *all_points = new std::vector<data_point>;
 
     auto *mdtrie = new md_trie(max_depth, trie_depth, max_tree_node);
@@ -30,7 +30,7 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node, 
     std::vector<uint32_t> min_values(DATA_DIMENSION, 4294967295);
 
     n_leaves_t n_points = 0;
-    n_leaves_t n_lines = total_points_count;
+    n_leaves_t n_lines = total_points_count / discount_factor;
 
     tqdm bar;
     TimeStamp start, diff;
@@ -78,6 +78,8 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node, 
 
             leaf_point->set_coordinate(leaf_point_index, num);
             leaf_point_index++;
+            if (leaf_point_index == DATA_DIMENSION)
+                break;
         }
         
 
@@ -99,7 +101,7 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node, 
 
         n_points ++;
         if (n_points % (total_points_count / 10) == 0)
-            myfile << n_points << " finished!" << std::endl;
+            std::cout << n_points << " finished!" << std::endl;
     }
     bar.finish();
 
@@ -183,6 +185,7 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node, 
 
 // ******************************************************************
 
+    /*
     char *line_range = nullptr;
     size_t len = 0;
     FILE *fp = fopen("/home/ziming/phtree-cpp/build/tpch_phtree_queries_1000.csv", "r");
@@ -239,37 +242,14 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node, 
     std::cout << "average query latency: " << (float) diff / count << std::endl;    
 
     exit(0);
+    */
+
 
     auto *start_range = new data_point();
     auto *end_range = new data_point();
 
-    int itr = 0;
-    std::ofstream file("range_search_tpch.csv");
-    srand(time(NULL));
 
-    tqdm bar3;
-    while (itr < 300){
-        bar3.progress(itr, 300);
-
-        for (uint8_t j = 0; j < DATA_DIMENSION; j++){
-            start_range->set_coordinate(j, min_values[j] + (max_values[j] - min_values[j] + 1) / 10 * (rand() % 10));
-            end_range->set_coordinate(j, start_range->get_coordinate(j) + (max_values[j] - start_range->get_coordinate(j) + 1) / 3 * (rand() % 3));
-        }
-
-        auto *found_points_temp = new point_array();
-        start = GetTimestamp();
-        mdtrie->range_search_trie(start_range, end_range, mdtrie->root(), 0, found_points_temp);
-        diff = GetTimestamp() - start;
-
-        // if (found_points_temp->size() >= 0.0005 * n_lines && found_points_temp->size() <= 0.0015 * n_lines){
-        if (found_points_temp->size() > 1000){
-            file << found_points_temp->size() << "," << diff << "," << std::endl;
-            itr ++;
-        }
-    }
-    bar3.finish();
-
-
+    /*
     for (dimension_t i = 0; i < DATA_DIMENSION; i++){
         start_range->set_coordinate(i, min_values[i]);
         end_range->set_coordinate(i, max_values[i]);
@@ -327,6 +307,38 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node, 
     }
     bar4.finish();
     myfile << "Lookup Latency: " << (float) diff_primary / checked_points_size << std::endl;    
+    std::cout << "Lookup Latency: " << (float) diff_primary / checked_points_size << std::endl;   
+
+    */
+    int itr = 0;
+    std::ofstream file("range_search_tpch_queryselectivity_dimension" + std::to_string(DATA_DIMENSION) + ".csv", std::ios_base::app);
+
+    // std::ofstream file("range_search_tpch_sensitivity.csv", std::ios_base::app);
+    srand(time(NULL));
+
+    tqdm bar3;
+    TimeStamp total_latency = 0;
+    while (itr < 5000){
+        bar3.progress(itr, 5000);
+
+        for (uint8_t j = 0; j < DATA_DIMENSION; j++){
+            start_range->set_coordinate(j, min_values[j] + (max_values[j] - min_values[j] + 1) / 50 * (rand() % 50));
+            end_range->set_coordinate(j, start_range->get_coordinate(j) + (max_values[j] - start_range->get_coordinate(j) + 1) / 50 * (rand() % 50));
+        }
+
+        auto *found_points_temp = new point_array();
+        start = GetTimestamp();
+        mdtrie->range_search_trie(start_range, end_range, mdtrie->root(), 0, found_points_temp);
+        diff = GetTimestamp() - start;
+        total_latency += diff;
+        if (found_points_temp->size() >= 1000){
+        // if (found_points_temp->size() >= 1000 && found_points_temp->size() <= 2000){
+            file << found_points_temp->size() << "," << diff << "," << std::endl;
+            itr ++;
+        }
+    }
+    bar3.finish();
+    // myfile << "Range Search (1000 - 2000) average latency: " << (float) total_latency / 1000 << std::endl;
 
 
 }
@@ -352,9 +364,14 @@ int main() {
 
     TREEBLOCK_SIZE = 512;
     TRIE_DEPTH = 6;
+    discount_factor = 1;
     is_osm = true;
+    // std::cout << "discount factor: " << discount_factor << std::endl;
+    std::cout << "Data Dimension: " << DATA_DIMENSION << std::endl;
+    // myfile.open("tpch_benchmark_" + std::to_string(DATA_DIMENSION) + "_" + std::to_string(TRIE_DEPTH) + "_" + std::to_string(TREEBLOCK_SIZE) + ".txt", std::ios_base::app);
+    // myfile.open("tpch_benchmark_discount_" + std::to_string(discount_factor) + ".txt", std::ios_base::app);
+    myfile.open("tpch_benchmark_data_dimension_" + std::to_string(DATA_DIMENSION) + ".txt", std::ios_base::app);
 
-    myfile.open("tpch_benchmark_" + std::to_string(DATA_DIMENSION) + "_" + std::to_string(TRIE_DEPTH) + "_" + std::to_string(TREEBLOCK_SIZE) + ".txt", std::ios_base::app);
     std::vector<level_t> dimension_bits;
     std::vector<level_t> new_start_dimension_bits;
 
@@ -365,6 +382,32 @@ int main() {
 
     dimension_bits = {8, 32, 16, 24, 32, 32, 32, 32, 32}; // 9 Dimensions
     new_start_dimension_bits = {0, 0, 8, 16, 0, 0, 0, 0, 0}; // 9 Dimensions
+    // dimension_bits = {8, 32, 16, 24, 32, 32, 32, 32}; // 8 Dimensions
+    // new_start_dimension_bits = {0, 0, 8, 16, 0, 0, 0, 0}; // 8 Dimensions
+
+    // dimension_bits = {8, 32, 16, 24, 32, 32, 32}; // 7 Dimensions
+    // new_start_dimension_bits = {0, 0, 8, 16, 0, 0, 0}; // 7 Dimensions
+
+    // dimension_bits = {8, 32, 16, 24, 32, 32}; // 6 Dimensions
+    // new_start_dimension_bits = {0, 0, 8, 16, 0, 0}; // 6 Dimensions
+
+    // dimension_bits = {8, 32, 16, 24, 32}; // 5 Dimensions
+    // new_start_dimension_bits = {0, 0, 8, 16, 0}; // 5 Dimensions
+
+    // dimension_bits = {8, 32, 16, 24}; // 4 Dimensions
+    // new_start_dimension_bits = {0, 0, 8, 16}; // 4 Dimensions
+
+    // dimension_bits = {8, 32, 16}; // 3 Dimensions
+    // new_start_dimension_bits = {0, 0, 8}; // 3 Dimensions
+
+    // dimension_bits = {8, 32}; // 2 Dimensions
+    // new_start_dimension_bits = {0, 0}; // 2 Dimensions
+
+    // dimension_bits = {8, 32}; // 2 Dimensions
+    // new_start_dimension_bits = {0, 0}; // 2 Dimensions
+
+    std::cout << "size of dimension_bits: " << dimension_bits.size() << " start bits: " << new_start_dimension_bits.size() << std::endl;
+    
     print_dimension_bits(dimension_bits, new_start_dimension_bits);
 
     run_bench(32, TRIE_DEPTH, TREEBLOCK_SIZE, dimension_bits);

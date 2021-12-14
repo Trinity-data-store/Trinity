@@ -114,7 +114,8 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node, 
     fp = fopen("/home/ziming/phtree-cpp/build/osm_phtree_queries_1000.csv", "r");
     int count = 0;
     diff = 0;
-    
+    std::ofstream range_myfile("osm_mdtrie_range_queries.csv");
+
     while ((read = getline(&line, &len, fp)) != -1)
     {
         data_point start_range;
@@ -155,6 +156,7 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node, 
 
         count ++;   
         std::cout << "found_points_temp.size: " << primary_key_vector.size() << std::endl; 
+        range_myfile << primary_key_vector.size() << "," << temp_diff << std::endl;
         std::cout << "diff: " << temp_diff << std::endl;
         primary_key_vector.clear();
 
@@ -270,7 +272,7 @@ int main() {
     std::vector<level_t> dimension_bits = {8, 32, 32, 32}; // 8 Dimensions
     std::vector<level_t> new_start_dimension_bits = {0, 0, 0, 0}; // 8 Dimensions
 
-    start_dimension_bits = new_start_dimension_bits;
+    start_dimension_bits = new_start_dimension_bits;   
 
     myfile << std::endl << "dimension_bits: ";
     for (uint8_t i = 0; i < dimension_bits.size(); i++){
