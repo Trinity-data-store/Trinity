@@ -75,8 +75,11 @@ public:
   void insert(vector<int32_t> point, int32_t p_key){
 
     // int shard_index = p_key % shard_vector_.size();
-    int shard_index = p_key / (total_points_count / shard_vector_.size());
-
+    unsigned int shard_index = p_key / (total_points_count / shard_vector_.size() + 1);
+    if (shard_index >= shard_vector_.size()){
+      std::cout << "shard_index: " << shard_index << " p_key: " << p_key << std::endl;
+      exit(0);
+    }
     shard_vector_[shard_index].send_insert_trie(point, p_key);
     shard_vector_[shard_index].recv_insert_trie();
   }
@@ -84,7 +87,11 @@ public:
   void insert_send(vector<int32_t> point, int32_t p_key){
 
     // int shard_index = p_key % shard_vector_.size();
-    int shard_index = p_key / (total_points_count / shard_vector_.size());
+    unsigned int shard_index = p_key / (total_points_count / shard_vector_.size() + 1);
+    if (shard_index >= shard_vector_.size()){
+      std::cout << "shard_index: " << shard_index << " p_key: " << p_key << std::endl;
+      exit(0);
+    }
 
     shard_vector_[shard_index].send_insert_trie(point, p_key);
   }
@@ -92,7 +99,7 @@ public:
   void insert_rec(int32_t p_key){
 
     // int shard_index = p_key % shard_vector_.size();
-    int shard_index = p_key / (total_points_count / shard_vector_.size());
+    unsigned int shard_index = p_key / (total_points_count / shard_vector_.size() + 1);
 
     shard_vector_[shard_index].recv_insert_trie();
   }
@@ -100,7 +107,7 @@ public:
   bool check(vector<int32_t> point, int32_t p_key){
 
     // int shard_index = p_key % shard_vector_.size();
-    int shard_index = p_key / (total_points_count / shard_vector_.size());
+    unsigned int shard_index = p_key / (total_points_count / shard_vector_.size() + 1);
 
     shard_vector_[shard_index].send_check(point);
     return shard_vector_[shard_index].recv_check();
@@ -109,7 +116,7 @@ public:
   void check_send(vector<int32_t> point, int32_t p_key){
 
     // int shard_index = p_key % shard_vector_.size();
-    int shard_index = p_key / (total_points_count / shard_vector_.size());
+    unsigned int shard_index = p_key / (total_points_count / shard_vector_.size() + 1);
 
     shard_vector_[shard_index].send_check(point);
   }  
@@ -117,7 +124,7 @@ public:
   bool check_rec(int32_t p_key){
     
     // int shard_index = p_key % shard_vector_.size();
-    int shard_index = p_key / (total_points_count / shard_vector_.size());
+    unsigned int shard_index = p_key / (total_points_count / shard_vector_.size() + 1);
 
     return shard_vector_[shard_index].recv_check();
   }
@@ -125,7 +132,7 @@ public:
   void primary_key_lookup(std::vector<int32_t> & return_vect, const int32_t p_key){
 
     // int shard_index = p_key % shard_vector_.size();
-    int shard_index = p_key / (total_points_count / shard_vector_.size());
+    unsigned int shard_index = p_key / (total_points_count / shard_vector_.size() + 1);
 
     shard_vector_[shard_index].send_primary_key_lookup(p_key);
     shard_vector_[shard_index].recv_primary_key_lookup(return_vect);
@@ -135,7 +142,7 @@ public:
   void primary_key_lookup_send(const int32_t p_key){
 
     // int shard_index = p_key % shard_vector_.size();
-    int shard_index = p_key / (total_points_count / shard_vector_.size());
+    unsigned int shard_index = p_key / (total_points_count / shard_vector_.size() + 1);
 
     shard_vector_[shard_index].send_primary_key_lookup(p_key);
   }
@@ -144,7 +151,7 @@ public:
   void primary_key_lookup_rec(std::vector<int32_t> & return_vect, const int32_t p_key){
 
     // int shard_index = p_key % shard_vector_.size();
-    int shard_index = p_key / (total_points_count / shard_vector_.size());
+    unsigned int shard_index = p_key / (total_points_count / shard_vector_.size() + 1);
 
     shard_vector_[shard_index].recv_primary_key_lookup(return_vect);
   }
