@@ -588,7 +588,7 @@ int main(int argc, char *argv[]){
   std::vector<int32_t> max_values_filesys(DATA_DIMENSION, 0);
   std::vector<int32_t> min_values_filesys(DATA_DIMENSION, 2147483647);
   // vector<vector <int32_t>> *data_vector_throughput = get_data_vector_filesystem(max_values_filesys, min_values_filesys);
-  vector<vector <int32_t>> *data_vector_throughput = get_data_vector_tpch(max_values_filesys, min_values_filesys);
+  vector<vector <int32_t>> *data_vector_throughput = get_data_vector_filesystem(max_values_filesys, min_values_filesys);
 
 
   start = GetTimestamp();
@@ -600,8 +600,8 @@ int main(int argc, char *argv[]){
   cout << "Insertion Throughput add thread (pt / seconds): " << throughput << endl;
   cout << "Another throughput measure: " << total_points_count / diff * 1000000 << endl;
   cout << "Latency (us): " << latency << endl;
-
-/** 
+  return 0;
+/**   
     Point Lookup from the OSM dataset
 */
   start = GetTimestamp();
