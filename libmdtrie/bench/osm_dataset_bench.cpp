@@ -36,7 +36,7 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node, 
     n_leaves_t n_points = 0;
     uint64_t max[DATA_DIMENSION];
     uint64_t min[DATA_DIMENSION];
-    n_leaves_t n_lines = 152806264;
+    n_leaves_t n_lines = 152806264 / 10;
     total_points_count = n_lines;
 
     tqdm bar;
@@ -77,13 +77,17 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node, 
         start = GetTimestamp();
         mdtrie->insert_trie(leaf_point, n_points);
         diff += GetTimestamp() - start;
- 
+
         n_points ++;
+        if (n_points == n_lines)
+            break;
     }
     bar.finish();
 
     myfile << "Insertion Latency: " << (float) diff / n_lines << std::endl;
     myfile << "mdtrie storage: " << mdtrie->size() << std::endl;
+    std::cout << "mdtrie storage: " << mdtrie->size() << std::endl;
+    exit(0);
     myfile << "trie_size: " << trie_size << std::endl;
     myfile << "p_key_to_treeblock_compact_size: " << p_key_to_treeblock_compact_size << std::endl;
     myfile << "total_treeblock_num: " << total_treeblock_num << std::endl;
@@ -269,8 +273,10 @@ int main() {
     //  max: {183, 59, 23, 31, 12, 2021, 834785061, 498730330}
     //  min: {1, 0, 0, 1, 1, 2006, 95434670, 384409862}
 
-    std::vector<level_t> dimension_bits = {8, 32, 32, 32}; // 8 Dimensions
-    std::vector<level_t> new_start_dimension_bits = {0, 0, 0, 0}; // 8 Dimensions
+    // std::vector<level_t> dimension_bits = {8, 32, 32, 32}; // 8 Dimensions
+    // std::vector<level_t> new_start_dimension_bits = {0, 0, 0, 0}; // 8 Dimensions
+    std::vector<level_t> dimension_bits = {32, 32, 32, 32}; // 8 Dimensions
+    std::vector<level_t> new_start_dimension_bits = {0, 0, 0, 0}; // 8 Dimensions    
 
     start_dimension_bits = new_start_dimension_bits;   
 

@@ -141,7 +141,7 @@ class compressed_bitmap {
   }
 
   inline uint64_t size() const {
-
+    
     return (data_size_ + flag_size_) / 8 + sizeof(size_type) /* data_size_ */ + 2 * sizeof(data_type *) /* two data arrays */;
   }
 

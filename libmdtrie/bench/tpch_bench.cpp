@@ -107,6 +107,8 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node, 
 
     myfile << "Insertion Latency: " << (float) diff / n_lines << std::endl;
     myfile << "mdtrie storage: " << mdtrie->size() << std::endl;
+    std::cout << "mdtrie storage: " << mdtrie->size() << std::endl;
+    exit(0);
     myfile << "trie_size: " << trie_size << std::endl;
     myfile << "p_key_to_treeblock_compact_size: " << p_key_to_treeblock_compact_size << std::endl;
     myfile << "total_treeblock_num: " << total_treeblock_num << std::endl;
@@ -364,7 +366,7 @@ int main() {
 
     TREEBLOCK_SIZE = 512;
     TRIE_DEPTH = 6;
-    discount_factor = 1;
+    discount_factor = 30;
     is_osm = true;
     // std::cout << "discount factor: " << discount_factor << std::endl;
     std::cout << "Data Dimension: " << DATA_DIMENSION << std::endl;
@@ -382,6 +384,9 @@ int main() {
 
     dimension_bits = {8, 32, 16, 24, 32, 32, 32, 32, 32}; // 9 Dimensions
     new_start_dimension_bits = {0, 0, 8, 16, 0, 0, 0, 0, 0}; // 9 Dimensions
+    new_start_dimension_bits = {0, 0, 0, 0, 0, 0, 0, 0, 0};
+    dimension_bits = {32, 32, 32, 32, 32, 32, 32, 32, 32};
+
     // dimension_bits = {8, 32, 16, 24, 32, 32, 32, 32}; // 8 Dimensions
     // new_start_dimension_bits = {0, 0, 8, 16, 0, 0, 0, 0}; // 8 Dimensions
 

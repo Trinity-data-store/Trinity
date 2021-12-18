@@ -94,6 +94,8 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node, 
 
     std::cout << "Insertion Latency: " << (float) diff / n_lines << std::endl;
     std::cout << "mdtrie storage: " << mdtrie->size() << std::endl;
+
+    exit(0);
     myfile << "trie_size: " << trie_size << std::endl;
     myfile << "p_key_to_treeblock_compact_size: " << p_key_to_treeblock_compact_size << std::endl;
     myfile << "total_treeblock_num: " << total_treeblock_num << std::endl;
@@ -312,7 +314,8 @@ int main() {
     TREEBLOCK_SIZE = 512;
     TRIE_DEPTH = 10;
     myfile.open("filesystem_benchmark_" + std::to_string(DIMENSION) + "_" + std::to_string(TRIE_DEPTH) + "_" + std::to_string(TREEBLOCK_SIZE) + ".txt");
-    std::vector<level_t> dimension_bits = {32, 32, 32, 32, 24, 24, 32};
+    // std::vector<level_t> dimension_bits = {32, 32, 32, 32, 24, 24, 32};
+    std::vector<level_t> dimension_bits = {32, 32, 32, 32, 32, 32, 32};
 
     is_osm = false;
     myfile << "dimension: " << DIMENSION << std::endl;
