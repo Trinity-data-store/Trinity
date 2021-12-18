@@ -1,22 +1,22 @@
 # md-trie
 
-### Datasets
-
-File System (FS) Dataset, a private dataset comprising representative metadata collected from a distributed file system at a large enterprise storage vendor. This dataset contains $14$ million data points, each with 7 attributes.   
-
-OpenStreetMap (OSM) Dataset, comprising 153 million records corresponding to the North America region catalogued by the OpenStreetMap project. [Link](https://download.geofabrik.de/)   
-To extract the data, use Python Osmium package and a sample script is provided [here](data/OSM/process_osm.py)  
-
-TPC-H Dataset, a synthetic business dataset comprising of 300 million points. We coalesce its lineitem and orders tables on the orderkey attribute, resulting in a single table with 300 million records, each containing 9 attributes. [Link](https://docs.deistercloud.com/content/Databases.30/TPCH%20Benchmark.90/Data%20generation%20tool.30.xml?embedded=true/) to download the OSM dataset, though you have to use Python osmium package to extract the data.  
-
 ### Building
 
 ```bash
-mkdir build
+mkdir -p build
 cd build
 cmake ..
 make
 ```
+
+### Datasets
+
+**File System (FS) Dataset**, a private dataset of metadata collected from a distributed file system. 
+
+**OpenStreetMap (OSM) Dataset**, geographical records catalogued by the OpenStreetMap project. [Link](https://download.geofabrik.de/)   
+To extract the data, use Python Osmium package and a sample script is provided. [Here](data/OSM/process_osm.py)  
+
+**TPC-H Dataset**, a synthetic business dataset. We coalesce its lineitem and orders tables. [Link](https://docs.deistercloud.com/content/Databases.30/TPCH%20Benchmark.90/Data%20generation%20tool.30.xml?embedded=true/)
 
 ### Tests
 
