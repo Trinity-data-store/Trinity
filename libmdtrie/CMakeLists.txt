@@ -41,41 +41,15 @@ if (BUILD_TESTS)
 
 endif ()
 
-add_executable(mdtrie_bench
-        bench/mdtrie_bench.cpp)
+add_executable(fs_bench
+        bench/fs_bench.cpp)
 
-add_executable(orig_bench
-        bench/treeBlock_orig.h
-        bench/treeBlock_orig.cpp)
-
-add_executable(orig_bench_no_table
-        bench/treeBlock_no_table.cpp)
-
-add_executable(range_search_bench
-        bench/range_search_bench.cpp)
-
-add_executable(concurrency_bench
-        bench/concurrency_bench.cpp)
-
-add_executable(trie_one_dimension_bench
-        bench/trie_one_dimension_bench.cpp)
-
-add_executable(self_index_bench
-        bench/self_index_bench.cpp)
-
-add_executable(sample_dataset_bench
-        bench/sample_dataset_bench.cpp)
-
-add_executable(osm_dataset_bench
-        bench/osm_dataset_bench.cpp)
+add_executable(osm_bench
+        bench/osm_bench.cpp)
 
 add_executable(tpch_bench
         bench/tpch_bench.cpp)
 
-target_link_libraries(mdtrie_bench ${MDTRIE_LIBS})
-target_link_libraries(range_search_bench ${MDTRIE_LIBS})
-target_link_libraries(concurrency_bench ${MDTRIE_LIBS})
-target_link_libraries(self_index_bench ${MDTRIE_LIBS})
-target_link_libraries(sample_dataset_bench ${MDTRIE_LIBS})
-target_link_libraries(osm_dataset_bench ${MDTRIE_LIBS})
+target_link_libraries(fs_bench ${MDTRIE_LIBS})
+target_link_libraries(osm_bench ${MDTRIE_LIBS})
 target_link_libraries(tpch_bench ${MDTRIE_LIBS})

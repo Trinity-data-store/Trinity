@@ -37,6 +37,7 @@ javaclient/core/target
 javaclient/hadoop/target
 build
 libmdtrie/bench/data
+data
 
 # Eclipse files
 .settings
