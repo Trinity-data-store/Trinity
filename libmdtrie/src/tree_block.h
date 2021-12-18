@@ -1042,7 +1042,7 @@ public:
                 leaf->set_primary(primary_key);
 
                 found_points->add_leaf(leaf);
-                // primary_key_vector.push_back(primary_key);
+                primary_key_vector.push_back(primary_key);
             }
             return;
         }
@@ -1400,6 +1400,9 @@ public:
 
         treeblock_nodes_size += dfuds_->size();
         total_size += dfuds_->size() /*+ sizeof(dfuds_)*/;
+
+        // treeblock_nodes_size += num_nodes_ * 16 / 8;
+        // total_size += num_nodes_ * 16 / 8;
         total_size += num_frontiers_ * sizeof(tree_block *) /*Use compact pointer representation*/ + sizeof(frontiers_) /*pointer*/;
 
         for (uint16_t i = 0; i < num_frontiers_; i++){
