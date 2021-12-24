@@ -18,6 +18,8 @@ To extract the data, use Python Osmium package and a sample script is provided. 
 
 **TPC-H Dataset**, a synthetic business dataset. We coalesce its lineitem and orders tables. [Link](https://docs.deistercloud.com/content/Databases.30/TPCH%20Benchmark.90/Data%20generation%20tool.30.xml?embedded=true/)
 
+Put the dataset under /libmdtrie/bench/data
+
 ### Tests
 
 ```bash
@@ -26,21 +28,17 @@ make test
 
 ### Benchmark
 
-Put the dataset under /libmdtrie/bench/data  
-Note, before running, check the def.h, remember to set the number of dimension,
-In benchmark file, you will find: 
-```
-    std::vector<level_t> dimension_bits = {8, 32, 32, 32}; // 4 Dimensions
-    std::vector<level_t> new_start_dimension_bits = {0, 0, 0, 0}; // 4 Dimensions
-```
-use create_level_to_num_children with these two vectors to set up.    
-The first vector sets the bit widths along each dimension. The second vector sets the level that a dimension first becomes "active".  
+Remember to set the number of dimensions, bit widths, and starting level of each attribute.
+The benchmark file can be found in libmdtrie/bench
 
-### Thrift
+### File Structure
 
-```cd build
-cmake -DGENERATE_THRIFT=on ..
-```
+n the "md-trie/libmdtrie/src" folder,   
+trie.h defines the main function calls for the data structure, such as insert_trie and range_search_trie.  
+tree_block.h defines the function calls for each treeblock, including insert, child and range_search_treeblock, select_subtree selects a node and its subtree to turn into a frontier node.  
+This implementation includes a top-level pointer-based trie data structure, where each trie node, defined in trie_node.h, stores an array of pointers to children trie nodes. The size of this top-level trie could be adjusted. Its leaves point to child treeblocks.  
+compressed_bitmap.h defines the structure of the bit vector in the treeblocks and supports collapsed nodes.  
+compact_ptr.h implements how primary keys are stored at the leaf, either stored directly as value, in a vector, or a delta-encoded array (defined in delta_encoded_array.h)  
 
 ### Debug
 
