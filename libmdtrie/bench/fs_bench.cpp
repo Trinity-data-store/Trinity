@@ -20,8 +20,6 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node){
     size_t len = 0;
     ssize_t read;
     FILE *fp = fopen("../libmdtrie/bench/data/sample_shuf.txt", "r");
-    std::ofstream writefile;
-    writefile.open("filesystem_with_size.csv");
 
     // If the file cannot be open
     if (fp == nullptr)
