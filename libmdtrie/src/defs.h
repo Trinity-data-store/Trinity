@@ -108,7 +108,7 @@ class data_point;
 
 
 std::map<uint64_t, uint64_t> node_children_to_occurrences;
-bool is_osm = false;
+bool is_osm = true;
 
 uint64_t thrift_vector_time = 0;
 uint64_t thrift_inner_function_time = 0;
