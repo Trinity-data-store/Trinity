@@ -15,7 +15,7 @@ bool test_random_data(n_leaves_t n_points, level_t max_depth, level_t trie_depth
         Insert random points into the mdtrie
         Check whether the inserted points exist
     */     
-    create_level_to_num_children(std::vector<level_t>(DIMENSION, max_depth), max_depth);
+    create_level_to_num_children(std::vector<level_t>(DIMENSION, max_depth), std::vector<level_t>(DIMENSION, 0), max_depth);
     auto range = (n_leaves_t) pow(2, max_depth);
     auto *mdtrie = new md_trie(max_depth, trie_depth, max_tree_nodes);
     auto *leaf_point = new data_point();
@@ -40,7 +40,7 @@ bool test_contiguous_data(n_leaves_t n_points, level_t max_depth, level_t trie_d
         Insert random points that are close to each other into the mdtrie
         Check whether the inserted points exist
     */ 
-    create_level_to_num_children(std::vector<level_t>(DIMENSION, max_depth), max_depth);
+    create_level_to_num_children(std::vector<level_t>(DIMENSION, max_depth), std::vector<level_t>(DIMENSION, 0), max_depth);
     auto range = (n_leaves_t) pow(2, max_depth);
     auto *mdtrie = new md_trie(max_depth, trie_depth, max_tree_node);
     auto *leaf_point = new data_point();
@@ -73,7 +73,7 @@ bool test_nonexistent_data(n_leaves_t n_points, level_t max_depth, level_t trie_
         Pass the test if none of those points can be found
     */ 
 
-    create_level_to_num_children(std::vector<level_t>(DIMENSION, max_depth), max_depth);
+    create_level_to_num_children(std::vector<level_t>(DIMENSION, max_depth), std::vector<level_t>(DIMENSION, 0), max_depth);
     auto range = (n_leaves_t) pow(2, max_depth);
     auto *mdtrie = new md_trie(max_depth, trie_depth, max_tree_node);
     auto *leaf_point = new data_point();

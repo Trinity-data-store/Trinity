@@ -82,7 +82,7 @@ void insert_for_node_path(point_array *found_points, level_t max_depth, level_t 
 bool test_lookup(level_t max_depth, level_t trie_depth, preorder_t max_tree_node){
 
 
-    create_level_to_num_children(std::vector<level_t>(DIMENSION, max_depth), max_depth);
+    create_level_to_num_children(std::vector<level_t>(DIMENSION, max_depth), std::vector<level_t>(DIMENSION, 0), max_depth);
 
     auto *found_points = new point_array();
     auto *all_points = new std::vector<data_point>();

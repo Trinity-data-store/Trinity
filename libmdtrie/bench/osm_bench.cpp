@@ -206,17 +206,16 @@ int main() {
     uint32_t treeblock_size = 512;
 
     std::vector<level_t> bit_widths = {32, 32, 32, 32}; // 4 Dimensions
-    std::vector<level_t> new_start_dimension_bits = {0, 0, 0, 0}; // 4 Dimensions    
-    start_dimension_bits = new_start_dimension_bits;   
+    std::vector<level_t> start_bits = {0, 0, 0, 0}; // 4 Dimensions    
 
     std::cout << "dimension: " << DATA_DIMENSION << std::endl;
     std::cout << "trie depth: " << trie_depth << std::endl;
     std::cout << "treeblock sizes: " << treeblock_size << std::endl;
 
     level_t max_depth = 32;
-    create_level_to_num_children(bit_widths, max_depth);
+    create_level_to_num_children(bit_widths, start_bits, max_depth);
 
-    if (DATA_DIMENSION != bit_widths.size() || DATA_DIMENSION != new_start_dimension_bits.size()){
+    if (DATA_DIMENSION != bit_widths.size() || DATA_DIMENSION != start_bits.size()){
         std::cerr << "DATA DIMENSION does not match bit_widths vector!" << std::endl;
         exit(0);
     }

@@ -41,9 +41,8 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node){
         int leaf_point_index = 0;
         int index = -1;
 
-        // Kept indexes: 
-        // [4, 5, 6, 7, 10, 11, 12, 16, 17]
-        // [QUANTITY, EXTENDEDPRICE, DISCOUNT, TAX, SHIPDATE, COMMITDATE, RECEIPTDATE, TOTALPRICE, ORDERDATE]
+        //  Kept indexes: [4, 5, 6, 7, 10, 11, 12, 16, 17]
+        //  [QUANTITY, EXTENDEDPRICE, DISCOUNT, TAX, SHIPDATE, COMMITDATE, RECEIPTDATE, TOTALPRICE, ORDERDATE]
         while (ss.good())
         {
             index ++;
@@ -235,12 +234,12 @@ int main() {
     std::cout << "treeblock sizes: " << treeblock_size << std::endl;
 
     std::vector<level_t> bit_widths = {8, 32, 16, 24, 32, 32, 32, 32, 32}; // 9 Dimensions;
-    std::vector<level_t> new_start_dimension_bits = {0, 0, 8, 16, 0, 0, 0, 0, 0}; // 9 Dimensions;
+    std::vector<level_t> start_bits = {0, 0, 8, 16, 0, 0, 0, 0, 0}; // 9 Dimensions;
 
     level_t max_depth = 32;
-    create_level_to_num_children(bit_widths, max_depth);
+    create_level_to_num_children(bit_widths, start_bits, max_depth);
 
-    if (DATA_DIMENSION != bit_widths.size() || DATA_DIMENSION != new_start_dimension_bits.size()){
+    if (DATA_DIMENSION != bit_widths.size() || DATA_DIMENSION != start_bits.size()){
         std::cerr << "DATA DIMENSION does not match bit_widths vector!" << std::endl;
         exit(0);
     }

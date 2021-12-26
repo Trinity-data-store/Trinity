@@ -54,7 +54,7 @@ public:
     is_osm = false;
 
     start_dimension_bits = new_start_dimension_bits;  
-    create_level_to_num_children(dimension_bits, 32);
+    create_level_to_num_children(dimension_bits, new_start_dimension_bits, 32);
 
   };
 
