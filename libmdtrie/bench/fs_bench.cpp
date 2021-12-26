@@ -11,8 +11,6 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node){
 
     auto *found_points = new point_array();
     auto *all_points = new std::vector<data_point>();
-    all_points_ptr = all_points;
-
     auto *mdtrie = new md_trie(max_depth, trie_depth, max_tree_node);
     auto *leaf_point = new data_point();
 

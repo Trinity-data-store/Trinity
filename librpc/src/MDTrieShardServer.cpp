@@ -67,77 +67,53 @@ public:
 
   bool check(const std::vector<int32_t> & point){
 
-    TimeStamp start = GetTimestamp();
     data_point leaf_point;
 
     for (uint8_t i = 0; i < DATA_DIMENSION; i++)
       leaf_point.set_coordinate(i, point[i]);
-    thrift_vector_time += GetTimestamp() - start;
 
-    start = GetTimestamp();
     bool result = mdtrie_->check(&leaf_point);
-    thrift_inner_function_time += GetTimestamp() - start;
-
     return result;
   }
 
   int32_t insert_trie(const std::vector<int32_t> & point, int32_t primary_key){
 
-    inserted_points_ ++;
-    TimeStamp start = GetTimestamp();
     data_point leaf_point;
 
     for (uint8_t i = 0; i < DATA_DIMENSION; i++)
       leaf_point.set_coordinate(i, point[i]);
     
-    thrift_vector_time += GetTimestamp() - start;
-
-    start = GetTimestamp();
     mdtrie_->insert_trie(&leaf_point, primary_key);
-
-    thrift_inner_function_time += GetTimestamp() - start;
     
     return primary_key;
   }
 
   void range_search_trie(std::vector<int32_t> & _return, const std::vector<int32_t> & start_range, const std::vector<int32_t> & end_range){
     
-    TimeStamp start;
-    start = GetTimestamp();
     auto *start_range_point = new data_point();
-
     for (uint8_t i = 0; i < DATA_DIMENSION; i++)
       start_range_point->set_coordinate(i, start_range[i]);    
 
     auto *end_range_point = new data_point();
-
     for (uint8_t i = 0; i < DATA_DIMENSION; i++)
       end_range_point->set_coordinate(i, end_range[i]);     
 
     auto *found_points = new point_array();
-    thrift_vector_time += GetTimestamp() - start;
-
-    start = GetTimestamp();
     mdtrie_->range_search_trie(start_range_point, end_range_point, mdtrie_->root(), 0, found_points);
-    thrift_inner_function_time += GetTimestamp() - start;
 
     n_leaves_t n_found_points = found_points->size();
 
     _return.reserve(n_found_points);
-    start = GetTimestamp();
     for (n_leaves_t i = 0; i < n_found_points; i++){
       _return.emplace_back(found_points->at(i)->read_primary());
     }
-    thrift_vector_time += GetTimestamp() - start;
 
-    // get_throughput(n_found_points);
   }
 
   void primary_key_lookup(std::vector<int32_t> & _return, const int32_t primary_key){
 
     _return.reserve(DATA_DIMENSION);
 
-    TimeStamp start = GetTimestamp();
     symbol_t *node_path_from_primary = (symbol_t *)malloc((max_depth + 1) * sizeof(symbol_t));
     tree_block *t_ptr = (tree_block *) (p_key_to_treeblock_compact.At(primary_key));
 
@@ -145,30 +121,20 @@ public:
     node_path_from_primary[max_depth - 1] = parent_symbol_from_primary;
 
     auto returned_coordinates = t_ptr->node_path_to_coordinates(node_path_from_primary, DATA_DIMENSION);  
-
-    thrift_inner_function_time += GetTimestamp() - start;
     
-    start = GetTimestamp();
     for (uint8_t i = 0; i < DATA_DIMENSION; i++){
       _return.emplace_back(returned_coordinates->get_coordinate(i));
     }      
-    thrift_vector_time += GetTimestamp() - start;
   }
 
   void get_throughput(uint32_t count){
 
-    cout << "Throughput: " << ((float) count / thrift_inner_function_time) * 1000000  << endl;    
-    thrift_vector_time = 0;
-    thrift_inner_function_time = 0;    
+    cout << "pass" << count << endl;    
   }
 
   void get_time(){
 
-    cout << "vector time: " << (float) thrift_vector_time  << endl;
-    cout << "inner function time: " << (float) thrift_inner_function_time  << endl;
-    thrift_vector_time = 0;
-    thrift_inner_function_time = 0;
-
+    cout << "pass" << endl;    
   }
 
   int32_t get_count(){

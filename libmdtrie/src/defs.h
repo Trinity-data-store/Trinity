@@ -17,9 +17,7 @@
 #include <fcntl.h>
 #include <unistd.h>
 
-// Maximum number of bits for node configuration
 typedef uint64_t node_t;
-// Maximum number of nodes/preorder numbers
 typedef uint64_t preorder_t;
 typedef uint64_t n_leaves_t;
 typedef uint64_t node_n_t;
@@ -67,69 +65,18 @@ TimeStamp GetTimestamp() {
   return now.tv_usec + (TimeStamp) now.tv_sec * 1000000;
 }
 
-n_leaves_t current_leaves_inserted = 0;
-uint64_t max_count = 0;
-TimeStamp vector_time = 0;
-uint64_t vect_opt_count = 0;
-std::shared_mutex mutex_p_key;
-n_leaves_t total_points_count = 152806264;
-// n_leaves_t total_points_count = 110418170;
-// n_leaves_t total_points_count = 300005812;
-// n_leaves_t total_points_count = 14583357;
-
-int discount_factor = 1;
-
-
-bitmap::CompactPtrVector p_key_to_treeblock_compact(total_points_count);
-
-uint64_t treeblock_nodes_size = 0;
-uint64_t treeblock_frontier_size = 0;
-uint64_t treeblock_primary_size = 0;
-uint64_t treeblock_variable_storage = 0;
-uint64_t p_key_to_treeblock_compact_size = 0;
-uint64_t treeblock_primary_pointer_size = 0;
-uint64_t total_treeblock_num = 0;
-uint64_t single_leaf_count = 0;
-
-uint64_t trie_size = 0;
-uint64_t vector_size = 0;
-uint64_t total_leaf_number = 0;
-uint64_t treeblock_ptr_size = 0;
-
-uint64_t trie_node_serialized_size = 0;
-uint64_t blocks_serialized_size = 0;
-uint64_t treeblock_nodes_serialized_size = 0;
-uint64_t p_key_treeblock_compact_serialized_size = 0;
-uint64_t primary_key_ptr_vector_serialized_size = 0;
-uint64_t primary_key_list_serialized_size = 0;
-
-TimeStamp primary_time = 0;
 class data_point;
 
-
-std::map<uint64_t, uint64_t> node_children_to_occurrences;
 bool is_osm = true;
 
-uint64_t thrift_vector_time = 0;
-uint64_t thrift_inner_function_time = 0;
-uint64_t top_trie_range_search_latency = 0;
-uint64_t treeblock_range_search_latency = 0;
-uint64_t update_range_latency = 0;
-uint64_t child_latency = 0;
-uint64_t num_trie_nodes = 0;
-
-symbol_t level_to_num_children[64] = {0};
-
-uint64_t add_primary_time = 0;
-uint64_t copy_vect_time = 0;
-uint64_t update_symbol_time = 0;
-uint64_t range_search_child_time = 0;
-uint64_t collapsed_node_num = 0;
+symbol_t level_to_num_children[128] = {0};
+int discount_factor = 1;
 
 const dimension_t DATA_DIMENSION = 4;
+n_leaves_t total_points_count = 152806264;
+n_leaves_t total_treeblock_num = 0;
 
-int fd = open("mmap_file.txt", O_RDWR);
-off_t offset = 0;
+bitmap::CompactPtrVector p_key_to_treeblock_compact(total_points_count);
 
 std::vector<symbol_t> dimension_to_num_bits;
 std::vector<level_t> start_dimension_bits(DATA_DIMENSION, 0);
@@ -152,30 +99,5 @@ void create_level_to_num_children(std::vector<level_t> bit_widths, std::vector<l
         level_to_num_children[level] = dimension_left;
     }
 }
-
-
-void reset_values(){
-
-    treeblock_nodes_size = 0;
-    treeblock_frontier_size = 0;
-    treeblock_primary_size = 0;
-    treeblock_variable_storage = 0;
-    p_key_to_treeblock_compact_size = 0;
-    treeblock_primary_pointer_size = 0;
-    total_treeblock_num = 0;
-    single_leaf_count = 0;
-    trie_size = 0;
-    vector_size = 0;
-    total_leaf_number = 0;
-    treeblock_ptr_size = 0;    
-}
-std::vector<data_point> *all_points_ptr;
-data_point *temp_point;
-
-bool toggle = false;
-
-std::vector<uint64_t> active_dimension_to_num_children(10, 0);
-std::vector<uint64_t> active_dimension_to_num_nodes(10, 0);
-
 
 #endif //MD_TRIE_DEFS_H
