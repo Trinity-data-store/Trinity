@@ -22,7 +22,7 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node){
     std::vector<uint32_t> min_values(DATA_DIMENSION, 4294967295);
 
     n_leaves_t n_points = 0;
-    n_leaves_t n_lines = total_points_count / discount_factor;
+    total_points_count = total_points_count / discount_factor;
 
     tqdm bar;
     TimeStamp start, diff;
@@ -34,7 +34,7 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node){
 
     while (std::getline(infile, line))
     {
-        bar.progress(n_points, n_lines);
+        bar.progress(n_points, total_points_count);
         std::stringstream ss(line);
         std::vector<std::string> string_result;
 
@@ -85,7 +85,7 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node){
 
         (*all_points).push_back((*leaf_point));
 
-        if (n_points == n_lines)
+        if (n_points == total_points_count)
             break;
 
         start = GetTimestamp();
@@ -96,7 +96,7 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node){
     }
     bar.finish();
 
-    std::cout << "Insertion Latency: " << (float) diff / n_lines << std::endl;
+    std::cout << "Insertion Latency: " << (float) diff / total_points_count << std::endl;
     std::cout << "mdtrie storage: " << mdtrie->size() << std::endl;
 
     /**
@@ -119,7 +119,7 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node){
     }
 
     bar2.finish();
-    std::cout << "Average time to check one point: " << (float) check_diff / n_lines << std::endl;
+    std::cout << "Average time to check one point: " << (float) check_diff / total_points_count << std::endl;
 
     /**
      * Benchmark range search given a query selectivity
@@ -241,6 +241,11 @@ int main() {
 
     if (DATA_DIMENSION != bit_widths.size() || DATA_DIMENSION != start_bits.size()){
         std::cerr << "DATA DIMENSION does not match bit_widths vector!" << std::endl;
+        exit(0);
+    }
+
+    if (total_points_count != 300005812){
+        std::cerr << "total_points_count does not match" << std::endl;
         exit(0);
     }
 

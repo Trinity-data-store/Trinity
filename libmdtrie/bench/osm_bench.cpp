@@ -30,8 +30,6 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node){
     n_leaves_t n_points = 0;
     uint64_t max[DATA_DIMENSION];
     uint64_t min[DATA_DIMENSION];
-    n_leaves_t n_lines = 152806264;
-    total_points_count = n_lines;
 
     tqdm bar;
     TimeStamp start, diff;
@@ -45,7 +43,7 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node){
 
     while ((read = getline(&line, &len, fp)) != -1)
     {
-        bar.progress(n_points, n_lines);
+        bar.progress(n_points, total_points_count);
         char *token = strtok(line, ","); 
         char *ptr;
       
@@ -80,7 +78,7 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node){
     }
     bar.finish();
 
-    std::cout << "Insertion Latency: " << (float) diff / n_lines << std::endl;
+    std::cout << "Insertion Latency: " << (float) diff / total_points_count << std::endl;
     std::cout << "mdtrie storage: " << mdtrie->size() << std::endl;
 
     /**
@@ -90,8 +88,8 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node){
     tqdm bar2;
     TimeStamp check_diff = 0;
     
-    for (uint64_t i = 0; i < n_lines; i++){
-        bar2.progress(i, n_lines);
+    for (uint64_t i = 0; i < total_points_count; i++){
+        bar2.progress(i, total_points_count);
         auto check_point = (*all_points)[i];
         start = GetTimestamp();
         if (!mdtrie->check(&check_point)){
@@ -100,7 +98,7 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node){
         check_diff += GetTimestamp() - start;  
     }
     bar2.finish();
-    std::cout << "Average time to check one point: " << (float) check_diff / n_lines << std::endl;
+    std::cout << "Average time to check one point: " << (float) check_diff / total_points_count << std::endl;
 
     /**
      * Benchmark range search given a query selectivity
@@ -217,6 +215,11 @@ int main() {
 
     if (DATA_DIMENSION != bit_widths.size() || DATA_DIMENSION != start_bits.size()){
         std::cerr << "DATA DIMENSION does not match bit_widths vector!" << std::endl;
+        exit(0);
+    }
+
+    if (total_points_count != 152806264){
+        std::cerr << "total_points_count does not match" << std::endl;
         exit(0);
     }
 

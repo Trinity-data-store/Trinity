@@ -25,14 +25,7 @@ typedef uint64_t morton_t;
 typedef uint64_t dimension_t;
 typedef uint64_t point_t;
 
-extern uint64_t dfuds_size;
 const preorder_t null_node = -1;
-
-extern uint64_t get_bit_count;
-extern uint64_t v2_storage_save_pos;
-extern uint64_t v2_storage_save_neg;
-extern uint64_t single_node_count;
-extern uint64_t total_number_nodes; 
 
 class tree_block;
 
