@@ -196,23 +196,23 @@ int main() {
      * treeblock_size: maximum number of nodes a treeblock can hode
      * trie_depth: the maximum level of the top-level pointer-based trie structure
      * max_depth: the depth of whole data structure
-     * dimension_bits: the bit widths of each column, with default start-level all set to 0.
+     * bit_widths: the bit widths of each column, with default start-level all set to 0.
      */
 
     level_t treeblock_size = 512;
     uint32_t trie_depth = 10;
     level_t max_depth = 32;
 
-    std::vector<level_t> dimension_bits = {32, 32, 32, 32, 24, 24, 32}; // 7 Dimensions    
+    std::vector<level_t> bit_widths = {32, 32, 32, 32, 24, 24, 32}; // 7 Dimensions    
     std::vector<level_t> new_start_dimension_bits = {0, 0, 0, 0, 0, 0, 0}; // 7 Dimensions    
 
     std::cout << "dimension: " << DATA_DIMENSION << std::endl;
     std::cout << "trie depth: " << trie_depth << std::endl;
     std::cout << "treeblock sizes: " << treeblock_size << std::endl;
-    create_level_to_num_children(dimension_bits, max_depth);
+    create_level_to_num_children(bit_widths, max_depth);
 
-    if (DATA_DIMENSION != dimension_bits.size() || DATA_DIMENSION != new_start_dimension_bits.size()){
-        std::cerr << "DATA DIMENSION does not match dimension_bits vector!" << std::endl;
+    if (DATA_DIMENSION != bit_widths.size() || DATA_DIMENSION != new_start_dimension_bits.size()){
+        std::cerr << "DATA DIMENSION does not match bit_widths vector!" << std::endl;
         exit(0);
     }
 

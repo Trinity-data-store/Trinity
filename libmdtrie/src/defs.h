@@ -136,18 +136,17 @@ std::vector<level_t> start_dimension_bits(DATA_DIMENSION, 0);
 std::vector<int32_t> primary_key_vector;
 
 
-void create_level_to_num_children(std::vector<level_t> dimension_bits, level_t max_level){
+void create_level_to_num_children(std::vector<level_t> bit_widths, level_t max_level){
 
-    dimension_to_num_bits = dimension_bits;
-    dimension_t num_dimensions = dimension_bits.size();
+    dimension_to_num_bits = bit_widths;
+    dimension_t num_dimensions = bit_widths.size();
 
     for (level_t level = 0; level < max_level; level++){
 
         dimension_t dimension_left = num_dimensions;
         for (dimension_t j = 0; j < num_dimensions; j++){
             
-            // if (level + 1 > dimension_bits[j])
-            if (level + 1 > dimension_bits[j] || level < start_dimension_bits[j])
+            if (level + 1 > bit_widths[j] || level < start_dimension_bits[j])
                 dimension_left --;
         }
         level_to_num_children[level] = dimension_left;
