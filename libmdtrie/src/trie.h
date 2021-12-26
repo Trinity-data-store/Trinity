@@ -39,7 +39,7 @@ public:
 
     tree_block *walk_trie(trie_node *current_trie_node, data_point *leaf_point, level_t &level) const {
 
-        symbol_t current_symbol;
+        morton_t current_symbol;
 
         while (level < trie_depth_ && current_trie_node->get_child(leaf_point->leaf_to_symbol(level))){
             
@@ -110,7 +110,7 @@ public:
             total_size += current_node->size();
             
             if (!current_node->is_leaf()) {
-                for (symbol_t i = 0; i < current_node->get_num_children(); i++)
+                for (morton_t i = 0; i < current_node->get_num_children(); i++)
                 {
                     if (current_node->get_child(i)) {
                         trie_node_queue.push(current_node->get_child(i));
@@ -137,15 +137,15 @@ public:
             return;
         }
         
-        symbol_t start_symbol = start_range->leaf_to_symbol(level);
-        symbol_t end_symbol = end_range->leaf_to_symbol(level);
-        symbol_t representation = start_symbol ^ end_symbol;
-        symbol_t neg_representation = ~representation;
+        morton_t start_symbol = start_range->leaf_to_symbol(level);
+        morton_t end_symbol = end_range->leaf_to_symbol(level);
+        morton_t representation = start_symbol ^ end_symbol;
+        morton_t neg_representation = ~representation;
 
         struct data_point original_start_range = (*start_range);
         struct data_point original_end_range = (*end_range); 
 
-        for (symbol_t current_symbol = start_symbol; current_symbol <= end_symbol; current_symbol++){
+        for (morton_t current_symbol = start_symbol; current_symbol <= end_symbol; current_symbol++){
 
             if ((start_symbol & neg_representation) != (current_symbol & neg_representation)){
                 continue;
@@ -170,7 +170,7 @@ private:
     trie_node *root_ = nullptr;
     level_t max_depth_;
     level_t trie_depth_;
-    node_n_t initial_tree_capacity_;
+    preorder_t initial_tree_capacity_;
     preorder_t max_tree_nodes_;
 };
 

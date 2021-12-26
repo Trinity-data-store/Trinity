@@ -114,10 +114,10 @@ public:
 
     _return.reserve(DATA_DIMENSION);
 
-    symbol_t *node_path_from_primary = (symbol_t *)malloc((max_depth + 1) * sizeof(symbol_t));
+    morton_t *node_path_from_primary = (morton_t *)malloc((max_depth + 1) * sizeof(morton_t));
     tree_block *t_ptr = (tree_block *) (p_key_to_treeblock_compact.At(primary_key));
 
-    symbol_t parent_symbol_from_primary = t_ptr->get_node_path_primary_key(primary_key, node_path_from_primary);
+    morton_t parent_symbol_from_primary = t_ptr->get_node_path_primary_key(primary_key, node_path_from_primary);
     node_path_from_primary[max_depth - 1] = parent_symbol_from_primary;
 
     auto returned_coordinates = t_ptr->node_path_to_coordinates(node_path_from_primary, DATA_DIMENSION);  

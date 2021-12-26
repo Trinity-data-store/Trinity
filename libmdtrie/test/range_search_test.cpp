@@ -2,9 +2,9 @@
 #include "trie.h"
 
 const int DIMENSION_EXACT = 3;
-const symbol_t NUM_BRANCHES_EXACT = pow(2, DIMENSION_EXACT);
+const morton_t NUM_BRANCHES_EXACT = pow(2, DIMENSION_EXACT);
 const int DIMENSION_RANGE = 8;
-const symbol_t NUM_BRANCHES_RANGE = pow(2, DIMENSION_RANGE);
+const morton_t NUM_BRANCHES_RANGE = pow(2, DIMENSION_RANGE);
 
 bool test_range_search(n_leaves_t n_points, level_t max_depth, level_t trie_depth,
                        preorder_t max_tree_nodes, uint32_t n_itr,
@@ -19,7 +19,7 @@ bool test_range_search(n_leaves_t n_points, level_t max_depth, level_t trie_dept
 
     create_level_to_num_children(std::vector<level_t>(DIMENSION_RANGE, max_depth), std::vector<level_t>(DIMENSION_RANGE, 0), max_depth);
 
-    auto range = (symbol_t) pow(2, max_depth);
+    auto range = (morton_t) pow(2, max_depth);
     auto *mdtrie = new md_trie(max_depth, trie_depth, max_tree_nodes);
     auto *leaf_point = new data_point();
     uint64_t max[DIMENSION_RANGE];
@@ -119,7 +119,7 @@ bool test_range_search_exact(n_leaves_t n_points, level_t max_depth, level_t tri
 
     create_level_to_num_children(std::vector<level_t>(DIMENSION_EXACT, max_depth), std::vector<level_t>(DIMENSION_EXACT, 0), max_depth);
 
-    auto range = (symbol_t) pow(2, max_depth);
+    auto range = (morton_t) pow(2, max_depth);
     auto *mdtrie = new md_trie(max_depth, trie_depth, max_tree_nodes);
     auto *leaf_point = new data_point();
     uint64_t max[DIMENSION_EXACT];

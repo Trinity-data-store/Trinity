@@ -165,12 +165,12 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node){
         bar4.progress(i, found_points_size);
         data_point *point = found_points->at(i);
         n_leaves_t returned_primary_key = point->read_primary();
-        symbol_t *node_path_from_primary = (symbol_t *)malloc((max_depth + 1) * sizeof(symbol_t));
+        morton_t *node_path_from_primary = (morton_t *)malloc((max_depth + 1) * sizeof(morton_t));
 
         tree_block *t_ptr = (tree_block *) (p_key_to_treeblock_compact.At(returned_primary_key));
         
         start = GetTimestamp();
-        symbol_t parent_symbol_from_primary = t_ptr->get_node_path_primary_key(returned_primary_key, node_path_from_primary);
+        morton_t parent_symbol_from_primary = t_ptr->get_node_path_primary_key(returned_primary_key, node_path_from_primary);
         node_path_from_primary[max_depth - 1] = parent_symbol_from_primary;
         data_point *returned_coordinates = t_ptr->node_path_to_coordinates(node_path_from_primary, DATA_DIMENSION);
         diff_primary += GetTimestamp() - start;

@@ -20,13 +20,13 @@ public:
         num_children_ = 1 << num_dimensions;
     }
 
-    inline trie_node *get_child(symbol_t symbol) {
+    inline trie_node *get_child(morton_t symbol) {
 
         auto trie_ptr = (trie_node **) trie_or_treeblock_ptr_;
         return trie_ptr[symbol];
     }
 
-    inline void set_child(symbol_t symbol, trie_node *node) {
+    inline void set_child(morton_t symbol, trie_node *node) {
 
         auto trie_ptr = (trie_node **) trie_or_treeblock_ptr_;
         trie_ptr[symbol] = node;
@@ -57,7 +57,7 @@ public:
         return total_size;
     }
 
-    void get_node_path(level_t level, symbol_t *node_path){
+    void get_node_path(level_t level, morton_t *node_path){
 
         if (parent_trie_node_){
             node_path[level - 1] = parent_symbol_;
@@ -70,7 +70,7 @@ public:
         return parent_trie_node_;
     }
 
-    symbol_t get_parent_symbol(){
+    morton_t get_parent_symbol(){
         return parent_symbol_;
     }
 
@@ -79,7 +79,7 @@ public:
         parent_trie_node_ = node;
     }
 
-    void set_parent_symbol(symbol_t symbol){
+    void set_parent_symbol(morton_t symbol){
 
         parent_symbol_ = symbol;
     }
@@ -108,9 +108,9 @@ public:
         out.write(reinterpret_cast<const char *>(&parent_trie_node_), sizeof(trie_node *));
         out_size += sizeof(trie_node *);
 
-        // symbol_t parent_symbol_ = 0; 
-        out.write(reinterpret_cast<const char *>(&parent_symbol_), sizeof(symbol_t));
-        out_size += sizeof(symbol_t);           
+        // morton_t parent_symbol_ = 0; 
+        out.write(reinterpret_cast<const char *>(&parent_symbol_), sizeof(morton_t));
+        out_size += sizeof(morton_t);           
 
         // dimension_t num_children_ = 0;
         out.write(reinterpret_cast<const char *>(&num_children_), sizeof(dimension_t));
@@ -135,9 +135,9 @@ public:
         in.read(reinterpret_cast<char *>(&parent_trie_node_), sizeof(trie_node *));
         in_size += sizeof(trie_node *);
 
-        // symbol_t parent_symbol_ = 0; 
-        in.read(reinterpret_cast<char *>(&parent_symbol_), sizeof(symbol_t));
-        in_size += sizeof(symbol_t);           
+        // morton_t parent_symbol_ = 0; 
+        in.read(reinterpret_cast<char *>(&parent_symbol_), sizeof(morton_t));
+        in_size += sizeof(morton_t);           
 
         // dimension_t num_children_ = 0;
         in.read(reinterpret_cast<char *>(&num_children_), sizeof(dimension_t));
@@ -151,7 +151,7 @@ private:
     bool is_leaf_ = false;
     void *trie_or_treeblock_ptr_ = NULL;
     trie_node *parent_trie_node_ = NULL; 
-    symbol_t parent_symbol_ = 0; 
+    morton_t parent_symbol_ = 0; 
     dimension_t num_children_ = 0;
 };
 

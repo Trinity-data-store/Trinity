@@ -2,7 +2,7 @@
 #include "trie.h"
 
 const int DIMENSION = 2;
-const symbol_t NUM_BRANCHES = pow(2, DIMENSION);
+const morton_t NUM_BRANCHES = pow(2, DIMENSION);
 
 void insert_for_node_path(point_array *found_points, level_t max_depth, level_t trie_depth, preorder_t max_tree_node, std::vector<data_point> *all_points){
 
@@ -101,7 +101,7 @@ bool test_lookup(level_t max_depth, level_t trie_depth, preorder_t max_tree_node
 
     for (n_leaves_t i = 0; i < found_points_size; i++){
         // raise(SIGINT);
-        symbol_t *node_path = (symbol_t *)malloc((max_depth + 1) * sizeof(symbol_t));
+        morton_t *node_path = (morton_t *)malloc((max_depth + 1) * sizeof(morton_t));
         data_point *point = found_points->at(i);
         n_leaves_t returned_primary_key = point->read_primary();
 
@@ -112,11 +112,11 @@ bool test_lookup(level_t max_depth, level_t trie_depth, preorder_t max_tree_node
             and check if coordinates match with the returned points
         */
 
-        symbol_t *node_path_from_primary = (symbol_t *)malloc((max_depth + 1) * sizeof(symbol_t));
+        morton_t *node_path_from_primary = (morton_t *)malloc((max_depth + 1) * sizeof(morton_t));
 
         tree_block *t_ptr = (tree_block *) (p_key_to_treeblock_compact.At(returned_primary_key));
         
-        symbol_t parent_symbol_from_primary = t_ptr->get_node_path_primary_key(returned_primary_key, node_path_from_primary);
+        morton_t parent_symbol_from_primary = t_ptr->get_node_path_primary_key(returned_primary_key, node_path_from_primary);
         node_path_from_primary[max_depth - 1] = parent_symbol_from_primary;
 
         auto returned_coordinates = t_ptr->node_path_to_coordinates(node_path_from_primary, DIMENSION);

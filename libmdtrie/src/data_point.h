@@ -43,9 +43,9 @@ public:
         return primary_key_;
     }
 
-    inline symbol_t leaf_to_symbol(level_t level) {
+    inline morton_t leaf_to_symbol(level_t level) {
         
-        symbol_t result = 0;
+        morton_t result = 0;
         dimension_t dimension = DATA_DIMENSION;
 
         for (size_t i = 0; i < dimension; i++) 
@@ -62,7 +62,7 @@ public:
         return result;
     }    
 
-    inline void update_symbol(data_point *end_range, symbol_t current_symbol, level_t level) {
+    inline void update_symbol(data_point *end_range, morton_t current_symbol, level_t level) {
         
         dimension_t dimension = DATA_DIMENSION;
         size_t visited_ct = 0;

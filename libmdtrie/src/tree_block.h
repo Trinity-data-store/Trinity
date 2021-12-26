@@ -11,8 +11,8 @@
 class tree_block {
 public:
 
-    explicit tree_block(level_t root_depth, node_n_t node_capacity, node_n_t bit_capacity, node_n_t num_nodes,
-                        level_t max_depth, node_n_t max_tree_nodes, trie_node *parent_trie_node) {
+    explicit tree_block(level_t root_depth, preorder_t node_capacity, node_pos_t bit_capacity, preorder_t num_nodes,
+                        level_t max_depth, preorder_t max_tree_nodes, trie_node *parent_trie_node) {
 
         root_depth_ = root_depth;
         node_capacity_ = node_capacity;
@@ -25,7 +25,7 @@ public:
         parent_trie_node_ = parent_trie_node;
     }
 
-    inline node_n_t num_frontiers() {
+    inline preorder_t num_frontiers() {
 
         return num_frontiers_;
     }
@@ -52,7 +52,7 @@ public:
         pointer->treeblock_frontier_num_ = get_preorder(current_frontier);
     }
 
-    node_t select_subtree(preorder_t &subtree_size, preorder_t &selected_node_depth, preorder_t &selected_node_pos, preorder_t &num_primary, preorder_t &selected_primary_index, preorder_t *node_to_primary, preorder_t *node_to_depth) {
+    preorder_t select_subtree(preorder_t &subtree_size, preorder_t &selected_node_depth, preorder_t &selected_node_pos, preorder_t &num_primary, preorder_t &selected_primary_index, preorder_t *node_to_primary, preorder_t *node_to_depth) {
 
         // index -> Number of children & preorder
         node_info index_to_node[4096];
@@ -69,7 +69,7 @@ public:
         preorder_t current_frontier = 0;
         selected_primary_index = 0;
 
-        node_n_t current_node_pos = 0;
+        node_pos_t current_node_pos = 0;
         index_to_node[node_stack_top].preorder_ = 0;
         index_to_node[node_stack_top].n_children_ = dfuds_->get_num_children(0, 0, level_to_num_children[root_depth_]);
 
@@ -190,7 +190,7 @@ public:
 
     // This function takes in a node (in preorder) and a symbol (branch index)
     // Return the child node (in preorder) designated by that symbol
-    node_t skip_children_subtree(node_t node, preorder_t &node_pos, symbol_t symbol, level_t current_level,
+    preorder_t skip_children_subtree(preorder_t node, preorder_t &node_pos, morton_t symbol, level_t current_level,
                                             preorder_t &current_frontier, preorder_t &current_primary)  {
 
         if (current_level == max_depth_){
@@ -206,7 +206,7 @@ public:
         stack[sTop] = n_children;
 
         preorder_t current_node_pos = node_pos + dfuds_->get_num_bits(node, current_level); //TODO
-        node_t current_node = node + 1;
+        preorder_t current_node = node + 1;
 
         if (frontiers_ != nullptr && current_frontier < num_frontiers_ && current_node > get_preorder(current_frontier))
             ++current_frontier;
@@ -262,7 +262,7 @@ public:
     // This function takes in a node (in preorder) and a symbol (branch index)
     // Return the child node (in preorder) designated by that symbol
     // This function differs from skip_children_subtree as it checks if that child node is present
-    node_t child(tree_block *&p, node_t node, preorder_t &node_pos, symbol_t symbol, level_t &current_level,
+    preorder_t child(tree_block *&p, preorder_t node, preorder_t &node_pos, morton_t symbol, level_t &current_level,
                             preorder_t &current_frontier, preorder_t &current_primary) {
 
         if (node >= num_nodes_)
@@ -275,14 +275,14 @@ public:
         if (current_level == max_depth_ - 1)
             return node;
 
-        node_t current_node;
+        preorder_t current_node;
 
         if (frontiers_ != nullptr && current_frontier < num_frontiers_ && node == get_preorder(current_frontier)) {
 
             p = get_pointer(current_frontier);
             current_frontier = 0;
             current_primary = 0;
-            node_t temp_node = 0;
+            preorder_t temp_node = 0;
             preorder_t temp_node_pos = 0;
 
             current_node = p->skip_children_subtree(temp_node, temp_node_pos, symbol, current_level, current_frontier, current_primary);
@@ -294,17 +294,17 @@ public:
         return current_node;
     }
 
-    void insert(node_t node, node_t node_pos, data_point *leaf_point, level_t level,
+    void insert(preorder_t node, preorder_t node_pos, data_point *leaf_point, level_t level,
                             preorder_t current_frontier, preorder_t current_primary, n_leaves_t primary_key) {
         
-        symbol_t current_num_children = level_to_num_children[level];
+        morton_t current_num_children = level_to_num_children[level];
 
         if (level == max_depth_) {
             
             current_num_children = level_to_num_children[level - 1];
 
-            symbol_t parent_symbol = leaf_point->leaf_to_symbol(max_depth_ - 1);
-            symbol_t tmp_symbol = dfuds_->next_symbol(0, node, node_pos, (1 << current_num_children) - 1, current_num_children);
+            morton_t parent_symbol = leaf_point->leaf_to_symbol(max_depth_ - 1);
+            morton_t tmp_symbol = dfuds_->next_symbol(0, node, node_pos, (1 << current_num_children) - 1, current_num_children);
             
             while (tmp_symbol != parent_symbol){    
                 tmp_symbol = dfuds_->next_symbol(tmp_symbol + 1, node, node_pos, (1 << current_num_children) - 1, current_num_children);
@@ -316,9 +316,9 @@ public:
             return;
         }
 
-        node_t original_node = node;
-        node_n_t original_node_pos = node_pos;
-        node_n_t max_tree_nodes;
+        preorder_t original_node = node;
+        node_pos_t original_node_pos = node_pos;
+        preorder_t max_tree_nodes;
 
         if (root_depth_ <= max_depth_ / 2) max_tree_nodes = max_tree_nodes_ / 4;
         else if (root_depth_ <= max_depth_ / 4 * 3) max_tree_nodes = max_tree_nodes_ / 2;
@@ -349,13 +349,13 @@ public:
 
         else if (level + 1 == max_depth_) {
 
-            symbol_t next_symbol = leaf_point->leaf_to_symbol(level);
+            morton_t next_symbol = leaf_point->leaf_to_symbol(level);
 
             preorder_t original_node_previous_bits = dfuds_->get_num_bits(original_node, level);            
             dfuds_->set_symbol(original_node, original_node_pos, next_symbol, false, level_to_num_children[level]);
             total_nodes_bits_ += dfuds_->get_num_bits(original_node, level) - original_node_previous_bits;
 
-            symbol_t tmp_symbol = dfuds_->next_symbol(0, node, node_pos, (1 << current_num_children) - 1, current_num_children);
+            morton_t tmp_symbol = dfuds_->next_symbol(0, node, node_pos, (1 << current_num_children) - 1, current_num_children);
             
             while (tmp_symbol != next_symbol){
 
@@ -370,7 +370,7 @@ public:
 
         else if (num_nodes_ + (max_depth_ - level) - 1 <= node_capacity_) {
             
-            symbol_t current_symbol = leaf_point->leaf_to_symbol(level);
+            morton_t current_symbol = leaf_point->leaf_to_symbol(level);
             node = skip_children_subtree(node, node_pos, current_symbol, level, current_frontier, current_primary);
 
             preorder_t original_node_previous_bits = dfuds_->get_num_bits(original_node, level);
@@ -379,14 +379,14 @@ public:
             node_pos += dfuds_->get_num_bits(original_node, level) - original_node_previous_bits;
             total_nodes_bits_ += dfuds_->get_num_bits(original_node, level) - original_node_previous_bits;
 
-            node_t from_node = num_nodes_ - 1;
-            node_t from_node_pos = total_nodes_bits_;
+            preorder_t from_node = num_nodes_ - 1;
+            preorder_t from_node_pos = total_nodes_bits_;
 
             bool shifted = false;
             if (from_node >= node) {
             
                 shifted = true;
-                symbol_t total_bits_to_shift = 0;
+                morton_t total_bits_to_shift = 0;
                 for (level_t i = level + 1; i < max_depth_; i++) {
                     total_bits_to_shift += level_to_num_children[i];    // Compressed Node Representation
                 }
@@ -408,7 +408,7 @@ public:
                     dfuds_->ClearWidth(from_node_pos, level_to_num_children[current_level], true);
                     dfuds_->ClearWidth(from_node, 1, false);
                 }
-                symbol_t next_symbol = leaf_point->leaf_to_symbol(current_level);
+                morton_t next_symbol = leaf_point->leaf_to_symbol(current_level);
                 dfuds_->set_symbol(from_node, from_node_pos, next_symbol, true, level_to_num_children[current_level]);                
 
                 num_nodes_++;
@@ -464,9 +464,9 @@ public:
             preorder_t node_to_primary[4096] = {0};
             preorder_t node_to_depth[4096] = {0};
 
-            node_t selected_node = select_subtree(subtree_size, selected_node_depth, selected_node_pos, num_primary, selected_primary_index, node_to_primary, node_to_depth);
+            preorder_t selected_node = select_subtree(subtree_size, selected_node_depth, selected_node_pos, num_primary, selected_primary_index, node_to_primary, node_to_depth);
 
-            node_t orig_selected_node = selected_node;
+            preorder_t orig_selected_node = selected_node;
             preorder_t orig_selected_node_pos = selected_node_pos;
 
             auto *new_dfuds = new compressed_bitmap::compressed_bitmap(subtree_size + 1, total_nodes_bits_);
@@ -477,10 +477,10 @@ public:
                     break;
 
             preorder_t frontier_selected_node = frontier;
-            node_t insertion_node = node;
+            preorder_t insertion_node = node;
             preorder_t insertion_node_pos = node_pos;
 
-            node_t dest_node = 0;
+            preorder_t dest_node = 0;
             preorder_t dest_node_pos = 0;
             preorder_t n_nodes_copied = 0, copied_frontier = 0, copied_primary = 0;
 
@@ -672,12 +672,12 @@ public:
     // Until it cannot traverse further and calls insertion
     void insert_remaining(data_point *leaf_point, level_t level, n_leaves_t primary_key) {
         
-        node_t current_node = 0;
+        preorder_t current_node = 0;
         preorder_t current_node_pos = 0;
         preorder_t current_frontier = 0;
         preorder_t current_primary = 0;
 
-        node_t temp_node = 0;
+        preorder_t temp_node = 0;
         preorder_t temp_node_pos = 0;
 
         while (level < max_depth_) {
@@ -686,7 +686,7 @@ public:
             temp_node = child(current_treeblock, current_node, temp_node_pos,
                                             leaf_point->leaf_to_symbol(level), level,
                                             current_frontier, current_primary);
-            if (temp_node == (node_t) -1)
+            if (temp_node == (preorder_t) -1)
                 break;
 
             current_node = temp_node;
@@ -718,18 +718,18 @@ public:
         
         preorder_t current_frontier = 0;
         preorder_t current_primary = 0;
-        node_t current_node = 0;
-        node_t temp_node = 0;
+        preorder_t current_node = 0;
+        preorder_t temp_node = 0;
         preorder_t temp_node_pos = 0;
 
         while (level < max_depth_) {
-            symbol_t current_symbol = leaf_point->leaf_to_symbol(level);
+            morton_t current_symbol = leaf_point->leaf_to_symbol(level);
 
             tree_block *current_treeblock = this;
             temp_node = child(current_treeblock, current_node, temp_node_pos, current_symbol, level,
                                             current_frontier, current_primary);
 
-            if (temp_node == (node_t) -1){
+            if (temp_node == (preorder_t) -1){
                 return false;
             }
             current_node = temp_node;
@@ -745,7 +745,7 @@ public:
         return true;
     }
 
-    void get_node_path(node_t node, symbol_t *node_path) {
+    void get_node_path(preorder_t node, morton_t *node_path) {
 
         if (node == 0){
             node_path[root_depth_] = dfuds_->next_symbol(0, 0, 0, (1 << level_to_num_children[root_depth_]) - 1, level_to_num_children[root_depth_]);
@@ -759,7 +759,7 @@ public:
         }
 
         preorder_t stack[64] = {};
-        node_t path[64] = {};
+        preorder_t path[64] = {};
         uint64_t symbol[64];
         level_t sTop_to_level[64] = {};
 
@@ -771,7 +771,7 @@ public:
         preorder_t current_frontier = 0;
         int sTop = 0;
 
-        node_t top_node = 0;
+        preorder_t top_node = 0;
         preorder_t top_node_pos = 0;
 
         symbol[sTop] = dfuds_->next_symbol(symbol[sTop] + 1, top_node, top_node_pos, (1 << level_to_num_children[root_depth_]) - 1, level_to_num_children[root_depth_]);
@@ -780,7 +780,7 @@ public:
         sTop_to_level[sTop] = root_depth_;
         
         level_t current_level = root_depth_ + 1;
-        node_t current_node = 1;
+        preorder_t current_node = 1;
         preorder_t current_node_pos = dfuds_->get_num_bits(0, root_depth_);        
 
         if (frontiers_ != nullptr && current_frontier < num_frontiers_ && current_node > get_preorder(current_frontier))
@@ -867,10 +867,10 @@ public:
         }
     }
 
-    symbol_t get_node_path_primary_key(n_leaves_t primary_key, symbol_t *node_path) {
+    morton_t get_node_path_primary_key(n_leaves_t primary_key, morton_t *node_path) {
 
         preorder_t stack[64] = {};
-        node_t path[64] = {};
+        preorder_t path[64] = {};
         int symbol[64];
         level_t sTop_to_level[64] = {};
 
@@ -880,13 +880,13 @@ public:
         size_t node_positions[2048];  
         node_positions[0] = 0;
         int sTop = 0;
-        node_t top_node = 0;
+        preorder_t top_node = 0;
         symbol[sTop] = dfuds_->next_symbol(symbol[sTop] + 1, 0, 0, (1 << level_to_num_children[root_depth_]) - 1, level_to_num_children[root_depth_]);
         stack[sTop] = dfuds_->get_num_children(0, 0, level_to_num_children[root_depth_]);
         sTop_to_level[sTop] = root_depth_;
 
         level_t current_level = root_depth_ + 1;
-        node_t current_node = 1;
+        preorder_t current_node = 1;
         preorder_t current_node_pos = dfuds_->get_num_bits(0, root_depth_);
 
         preorder_t current_frontier = 0;
@@ -895,7 +895,7 @@ public:
         if (frontiers_ != nullptr && current_frontier < num_frontiers_ && current_node > get_preorder(current_frontier))
             ++current_frontier;
         preorder_t next_frontier_preorder;
-        symbol_t parent_symbol = -1;
+        morton_t parent_symbol = -1;
         if (num_frontiers_ == 0 || current_frontier >= num_frontiers_)
             next_frontier_preorder = -1;
         else
@@ -991,13 +991,13 @@ public:
         return parent_symbol;
     }
 
-    data_point *node_path_to_coordinates(symbol_t *node_path, dimension_t dimension) const{
+    data_point *node_path_to_coordinates(morton_t *node_path, dimension_t dimension) const{
 
         auto coordinates = new data_point();
 
         for (level_t i = 0; i < max_depth_; i++){
-            symbol_t current_symbol = node_path[i];
-            symbol_t current_symbol_pos = level_to_num_children[i] - 1;
+            morton_t current_symbol = node_path[i];
+            morton_t current_symbol_pos = level_to_num_children[i] - 1;
 
             for (dimension_t j = 0; j < dimension; j++){
 
@@ -1018,12 +1018,12 @@ public:
     void range_search_treeblock(data_point *start_range, data_point *end_range, tree_block *current_block, level_t level, 
                                             preorder_t current_node, preorder_t current_node_pos,
                                             preorder_t prev_node, preorder_t prev_node_pos,
-                                            node_t current_frontier, preorder_t current_primary, point_array *found_points) {
+                                            preorder_t current_frontier, preorder_t current_primary, point_array *found_points) {
 
         if (level == max_depth_) {
             
-            symbol_t parent_symbol = start_range->leaf_to_symbol(max_depth_ - 1);
-            symbol_t tmp_symbol = dfuds_->next_symbol(0, prev_node, prev_node_pos, (1 << level_to_num_children[level - 1]) - 1, level_to_num_children[level - 1]);
+            morton_t parent_symbol = start_range->leaf_to_symbol(max_depth_ - 1);
+            morton_t tmp_symbol = dfuds_->next_symbol(0, prev_node, prev_node_pos, (1 << level_to_num_children[level - 1]) - 1, level_to_num_children[level - 1]);
 
             while (tmp_symbol != parent_symbol){    
                 tmp_symbol = dfuds_->next_symbol(tmp_symbol + 1, prev_node, prev_node_pos, (1 << level_to_num_children[level - 1]) - 1, level_to_num_children[level - 1]);
@@ -1053,14 +1053,14 @@ public:
             current_node == get_preorder(current_frontier)) {
             
             tree_block *new_current_block = get_pointer(current_frontier);
-            node_t new_current_frontier = 0;
+            preorder_t new_current_frontier = 0;
             preorder_t new_current_primary = 0;
             new_current_block->range_search_treeblock(start_range, end_range, new_current_block, level, 0, 0,0,0, new_current_frontier, new_current_primary, found_points); 
             return;
         }
         
-        symbol_t start_range_symbol = start_range->leaf_to_symbol(level);
-        symbol_t end_range_symbol = end_range->leaf_to_symbol(level);
+        morton_t start_range_symbol = start_range->leaf_to_symbol(level);
+        morton_t end_range_symbol = end_range->leaf_to_symbol(level);
         representation_t representation = start_range_symbol ^ end_range_symbol;
         representation_t neg_representation = ~representation;
 
@@ -1073,7 +1073,7 @@ public:
         preorder_t new_current_frontier;
         preorder_t new_current_primary;
 
-        symbol_t current_symbol = dfuds_->next_symbol(start_range_symbol, current_node, current_node_pos, end_range_symbol, level_to_num_children[level]);       
+        morton_t current_symbol = dfuds_->next_symbol(start_range_symbol, current_node, current_node_pos, end_range_symbol, level_to_num_children[level]);       
 
         while (current_symbol <= end_range_symbol){
             
@@ -1154,16 +1154,16 @@ public:
 
 private:
 
-    node_n_t max_tree_nodes_;
+    preorder_t max_tree_nodes_;
     level_t root_depth_;
-    node_n_t num_nodes_;
+    preorder_t num_nodes_;
     preorder_t total_nodes_bits_;
-    node_n_t node_capacity_;
-    node_n_t bit_capacity_;
+    preorder_t node_capacity_;
+    node_pos_t bit_capacity_;
     level_t max_depth_;
     compressed_bitmap::compressed_bitmap *dfuds_{};
     frontier_node *frontiers_ = nullptr; 
-    node_n_t num_frontiers_ = 0;
+    preorder_t num_frontiers_ = 0;
     preorder_t previous_p_key_ = 0;
 
     // TODO: parent_tree_block & parent_trie_node pointer can be combined

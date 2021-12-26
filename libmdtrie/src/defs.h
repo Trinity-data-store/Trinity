@@ -17,12 +17,11 @@
 #include <fcntl.h>
 #include <unistd.h>
 
-typedef uint64_t node_t;
 typedef uint64_t preorder_t;
 typedef uint64_t n_leaves_t;
-typedef uint64_t node_n_t;
+typedef uint64_t node_pos_t;
 typedef uint64_t level_t;
-typedef uint64_t symbol_t;
+typedef uint64_t morton_t;
 typedef uint64_t dimension_t;
 typedef uint64_t point_t;
 typedef uint64_t representation_t;
@@ -69,7 +68,7 @@ class data_point;
 
 bool is_osm = true;
 
-symbol_t level_to_num_children[128] = {0};
+morton_t level_to_num_children[128] = {0};
 int discount_factor = 1;
 
 const dimension_t DATA_DIMENSION = 4;
@@ -78,7 +77,7 @@ n_leaves_t total_treeblock_num = 0;
 
 bitmap::CompactPtrVector p_key_to_treeblock_compact(total_points_count);
 
-std::vector<symbol_t> dimension_to_num_bits;
+std::vector<morton_t> dimension_to_num_bits;
 std::vector<level_t> start_dimension_bits(DATA_DIMENSION, 0);
 std::vector<int32_t> primary_key_vector;
 

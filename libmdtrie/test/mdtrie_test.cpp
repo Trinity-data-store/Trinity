@@ -3,7 +3,7 @@
 
 // const int DIMENSION_RANDOM = 8;
 const int DIMENSION = 10;
-const symbol_t NUM_BRANCHES = pow(2, DIMENSION);
+const morton_t NUM_BRANCHES = pow(2, DIMENSION);
 
 // const int DIMENSION_NONEXISTENT = 10;
 // const int DIMENSION_CONTIGUOUS = 10;
@@ -47,11 +47,11 @@ bool test_contiguous_data(n_leaves_t n_points, level_t max_depth, level_t trie_d
 
     for (n_leaves_t itr = 1; itr <= n_points; itr++) {
 
-        auto first_half_value = (symbol_t) rand() % range;
+        auto first_half_value = (morton_t) rand() % range;
         for (dimension_t i = 0; i < DIMENSION / 2; i++) {
             leaf_point->set_coordinate(i, first_half_value);
         }
-        auto second_half_value = (symbol_t) rand() % range;
+        auto second_half_value = (morton_t) rand() % range;
         for (dimension_t i = DIMENSION / 2; i < DIMENSION; i++) {
             leaf_point->set_coordinate(i, second_half_value);
         }

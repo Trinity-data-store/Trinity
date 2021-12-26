@@ -6,7 +6,7 @@
 #include <vector>
 
 const int DIMENSION = 2;
-const symbol_t NUM_BRANCHES = pow(2, DIMENSION);
+const morton_t NUM_BRANCHES = pow(2, DIMENSION);
 
 level_t max_depth = 32;
 level_t trie_depth = 10;
@@ -18,7 +18,7 @@ const uint32_t read_number_count = 10000000;
 void test_random_insert(md_trie *mdtrie){
 
     auto *leaf_point = new data_point();
-    symbol_t range = pow(2, max_depth);
+    morton_t range = pow(2, max_depth);
     auto *rand_generator = new utils::rand_utils();
 
     for (n_leaves_t itr = 1; itr <= n_points; itr++) {
@@ -36,7 +36,7 @@ void test_random_insert(md_trie *mdtrie){
 void test_random_read(md_trie *mdtrie){
 
     auto *leaf_point = new data_point();
-    symbol_t range = pow(2, max_depth);
+    morton_t range = pow(2, max_depth);
     auto *rand_generator = new utils::rand_utils();
 
     for (n_leaves_t itr = 1; itr <= n_points; itr++) {
