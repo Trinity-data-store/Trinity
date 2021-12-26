@@ -5,9 +5,6 @@
 #include <cstdlib>
 #include <cstring>
 #include "compressed_bitmap.h"
-// #include <bit>
-#include <bitset>
-#include <array>
 
 class data_point {
 public:

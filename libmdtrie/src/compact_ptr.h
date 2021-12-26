@@ -6,8 +6,7 @@
 #include <vector>
 #include "delta_encoded_array.h"
 
-// const uint64_t compact_pointer_vector_size_limit = 1000; // TODO: bug
-const uint64_t compact_pointer_vector_size_limit = 14252681;
+const uint64_t compact_pointer_vector_size_limit = 2000;
 
 namespace bits {
 
@@ -49,6 +48,7 @@ class compact_ptr {
       }
       return false;
   }
+  
   uint64_t size_overhead(){
 
     if (flag_ == 0){
