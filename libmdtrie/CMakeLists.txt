@@ -19,25 +19,18 @@ if (BUILD_TESTS)
           test/test_main.cpp
           test/mdtrie_lookup_test.cpp)
 
-  add_executable(mdtrie_concurrency_tests
-          test/test_main.cpp
-          test/mdtrie_concurrency_test.cpp)
-
   target_link_libraries(mdtrie_tests ${MDTRIE_LIBS})
   target_link_libraries(range_search_tests ${MDTRIE_LIBS})
   target_link_libraries(mdtrie_lookup_tests ${MDTRIE_LIBS})
-  target_link_libraries(mdtrie_concurrency_tests ${MDTRIE_LIBS})
 
   add_dependencies(mdtrie_tests catch_ep)
   add_dependencies(range_search_tests catch_ep)
   add_dependencies(mdtrie_lookup_tests catch_ep)
-  add_dependencies(mdtrie_concurrency_tests catch_ep)
 
   # Register test
   add_test(MdTrieTest mdtrie_tests)
   add_test(MdTrieLookupTest mdtrie_lookup_tests)
   add_test(RangeSearchTest range_search_tests)
-  add_test(MdTrieConcurrencyTest mdtrie_concurrency_tests)
 
 endif ()
 
