@@ -24,9 +24,6 @@ typedef uint64_t level_t;
 typedef uint64_t morton_t;
 typedef uint64_t dimension_t;
 typedef uint64_t point_t;
-typedef uint64_t representation_t;
-typedef point_t * coordinates_t;
-typedef std::vector<uint64_t> density_array;
 
 extern uint64_t dfuds_size;
 const preorder_t null_node = -1;

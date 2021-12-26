@@ -1061,8 +1061,8 @@ public:
         
         morton_t start_range_symbol = start_range->leaf_to_symbol(level);
         morton_t end_range_symbol = end_range->leaf_to_symbol(level);
-        representation_t representation = start_range_symbol ^ end_range_symbol;
-        representation_t neg_representation = ~representation;
+        morton_t representation = start_range_symbol ^ end_range_symbol;
+        morton_t neg_representation = ~representation;
 
         struct data_point original_start_range = (*start_range);
         struct data_point original_end_range = (*end_range); 
