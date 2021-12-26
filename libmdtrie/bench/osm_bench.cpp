@@ -110,7 +110,7 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node){
     auto *end_range = new data_point();
 
     int itr = 0;
-    std::ofstream file("range_search_osm_only_primary_key.csv", std::ios_base::app);
+    std::ofstream file("range_search_osm.csv", std::ios_base::app);
     srand(time(NULL));
 
     tqdm bar3;
@@ -194,6 +194,14 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node){
 
 int main() {
 
+    /**
+     * Set hyperparameters
+     * treeblock_size: maximum number of nodes a treeblock can hode
+     * trie_depth: the maximum level of the top-level pointer-based trie structure
+     * max_depth: the depth of whole data structure
+     * dimension_bits: the bit widths of each column, with default start-level all set to 0.
+     */
+    
     level_t trie_depth = 6;
     uint32_t treeblock_size = 512;
 
@@ -207,6 +215,11 @@ int main() {
 
     level_t max_depth = 32;
     create_level_to_num_children(dimension_bits, max_depth);
+
+    if (DATA_DIMENSION != dimension_bits.size() || DATA_DIMENSION != new_start_dimension_bits.size()){
+        std::cerr << "DATA DIMENSION does not match dimension_bits vector!" << std::endl;
+        exit(0);
+    }
 
     run_bench(max_depth, trie_depth, treeblock_size);
     std::cout << std::endl;

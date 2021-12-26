@@ -203,12 +203,18 @@ int main() {
     uint32_t trie_depth = 10;
     level_t max_depth = 32;
 
-    std::vector<level_t> dimension_bits = {32, 32, 32, 32, 24, 24, 32};
+    std::vector<level_t> dimension_bits = {32, 32, 32, 32, 24, 24, 32}; // 7 Dimensions    
+    std::vector<level_t> new_start_dimension_bits = {0, 0, 0, 0, 0, 0, 0}; // 7 Dimensions    
 
     std::cout << "dimension: " << DATA_DIMENSION << std::endl;
     std::cout << "trie depth: " << trie_depth << std::endl;
     std::cout << "treeblock sizes: " << treeblock_size << std::endl;
     create_level_to_num_children(dimension_bits, max_depth);
+
+    if (DATA_DIMENSION != dimension_bits.size() || DATA_DIMENSION != new_start_dimension_bits.size()){
+        std::cerr << "DATA DIMENSION does not match dimension_bits vector!" << std::endl;
+        exit(0);
+    }
 
     run_bench(max_depth, trie_depth, treeblock_size);
     std::cout << std::endl;
