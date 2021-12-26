@@ -29,7 +29,12 @@ const preorder_t null_node = -1;
 
 class tree_block;
 
-// node_info and subtree info are used to obtain subtree size when splitting the treeblock
+/**
+ * node_info and subtree info are used when splitting the treeblock to create a new frontier node
+ * node_info stores the additional information of number of children each node has
+ * subtree_info stores the additional information of the subtree size of that node
+ */
+
 struct node_info {
     preorder_t preorder_ = 0;
     preorder_t n_children_ = 0;
@@ -56,20 +61,33 @@ TimeStamp GetTimestamp() {
 
 class data_point;
 
-bool is_osm = true;
-
-morton_t level_to_num_children[128] = {0};
-int discount_factor = 1;
+/**
+ * DATA_DIMENSION: number of dimension for the data points
+ * total_points_count: total number of points in the data set
+ * discount_factor: only consider total_points_count/discount_factor number of points
+ * total_treeblock_num: total number of treeblocks in MdTrie. Used for size calculation
+ * level_to_num_children: maps level to number of children a node has at that level
+ */
 
 const dimension_t DATA_DIMENSION = 4;
 n_leaves_t total_points_count = 152806264;
+int discount_factor = 1;
 n_leaves_t total_treeblock_num = 0;
+morton_t level_to_num_children[128] = {0};
+
+/**
+ * p_key_to_treeblock_compact: maps primary key to treeblock pointers in a compact pointer vector
+ * dimension_to_num_bits: maps the attribute index to bit widths of that attribute
+ * start_dimension_bits: the level to which we start considering bits from that attribute
+ * primary_key_vector: stores found primary keys when doing range search
+ * no_dynamic_sizing: flag to indicate whether we set the treeblock size to the same value.
+ */
 
 bitmap::CompactPtrVector p_key_to_treeblock_compact(total_points_count);
-
 std::vector<morton_t> dimension_to_num_bits;
 std::vector<level_t> start_dimension_bits(DATA_DIMENSION, 0);
 std::vector<int32_t> primary_key_vector;
+bool no_dynamic_sizing = true;
 
 void create_level_to_num_children(std::vector<level_t> bit_widths, std::vector<level_t> start_bits, level_t max_level){
 

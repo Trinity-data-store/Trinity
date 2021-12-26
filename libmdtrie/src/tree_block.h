@@ -324,7 +324,7 @@ public:
         else if (root_depth_ <= max_depth_ / 4 * 3) max_tree_nodes = max_tree_nodes_ / 2;
         else max_tree_nodes = max_tree_nodes_;
 
-        if (is_osm)
+        if (no_dynamic_sizing)
             max_tree_nodes = max_tree_nodes_;
 
         if (frontiers_ != nullptr && current_frontier < num_frontiers_ && node == get_preorder(current_frontier)) {
