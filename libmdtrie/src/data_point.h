@@ -6,6 +6,7 @@
 #include <cstring>
 #include "compressed_bitmap.h"
 
+template<dimension_t DIMENSION>
 class data_point {
 public:
     
@@ -17,7 +18,7 @@ public:
 
     inline void set(point_t *coordinates){
 
-        memcpy(coordinates_, coordinates, sizeof(point_t) * DATA_DIMENSION);
+        memcpy(coordinates_, coordinates, sizeof(point_t) * DIMENSION);
     }
 
     inline point_t get_coordinate(dimension_t index){
@@ -43,7 +44,7 @@ public:
     inline morton_t leaf_to_symbol(level_t level) {
         
         morton_t result = 0;
-        dimension_t dimension = DATA_DIMENSION;
+        dimension_t dimension = DIMENSION;
 
         for (size_t i = 0; i < dimension; i++) 
         {
@@ -61,7 +62,7 @@ public:
 
     inline void update_symbol(data_point *end_range, morton_t current_symbol, level_t level) {
         
-        dimension_t dimension = DATA_DIMENSION;
+        dimension_t dimension = DIMENSION;
         size_t visited_ct = 0;
         for (size_t j = 0; j < dimension; j++) {
             
@@ -98,7 +99,7 @@ public:
     }
 
 private:
-    point_t coordinates_[DATA_DIMENSION] = {0};
+    point_t coordinates_[DIMENSION] = {0};
     n_leaves_t primary_key_ = 0;
 };
 

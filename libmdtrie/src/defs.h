@@ -27,7 +27,11 @@ typedef uint64_t point_t;
 
 const preorder_t null_node = -1;
 
+template<dimension_t DIMENSION>
 class tree_block;
+
+template<dimension_t DIMENSION>
+class data_point;
 
 /**
  * node_info and subtree info are used when splitting the treeblock to create a new frontier node
@@ -45,9 +49,10 @@ struct subtree_info {
     preorder_t subtree_size_ = 0;
 };
 
+template<dimension_t DIMENSION>
 struct frontier_node {
     preorder_t preorder_;
-    tree_block *pointer_;
+    tree_block<DIMENSION> *pointer_;
 };
 
 typedef unsigned long long int TimeStamp;
@@ -59,17 +64,14 @@ TimeStamp GetTimestamp() {
   return now.tv_usec + (TimeStamp) now.tv_sec * 1000000;
 }
 
-class data_point;
 
 /**
- * DATA_DIMENSION: number of dimension for the data points
  * total_points_count: total number of points in the data set
  * discount_factor: only consider total_points_count/discount_factor number of points
  * total_treeblock_num: total number of treeblocks in MdTrie. Used for size calculation
  * level_to_num_children: maps level to number of children a node has at that level
  */
 
-const dimension_t DATA_DIMENSION = 9;
 n_leaves_t total_points_count = 300005812;
 int discount_factor = 1;
 n_leaves_t total_treeblock_num = 0;
@@ -85,7 +87,7 @@ morton_t level_to_num_children[128] = {0};
 
 bitmap::CompactPtrVector p_key_to_treeblock_compact(total_points_count);
 std::vector<morton_t> dimension_to_num_bits;
-std::vector<level_t> start_dimension_bits(DATA_DIMENSION, 0);
+std::vector<level_t> start_dimension_bits;
 std::vector<int32_t> primary_key_vector;
 bool no_dynamic_sizing = true;
 

@@ -32,13 +32,14 @@ using namespace apache::thrift::server;
 const level_t max_depth = 32;
 const level_t trie_depth = 10;
 const preorder_t max_tree_node = 512;
+const dimension_t DIMENSION = 4;
 
 class MDTrieHandler : public MDTrieShardIf {
 public:
 
   MDTrieHandler(){
     
-    mdtrie_ = new md_trie(max_depth, trie_depth, max_tree_node);
+    mdtrie_ = new md_trie<DIMENSION>(max_depth, trie_depth, max_tree_node);
     std::vector<level_t> dimension_bits;
     std::vector<level_t> new_start_dimension_bits;
  
@@ -59,9 +60,9 @@ public:
 
   bool check(const std::vector<int32_t> & point){
 
-    data_point leaf_point;
+    data_point<DIMENSION> leaf_point;
 
-    for (uint8_t i = 0; i < DATA_DIMENSION; i++)
+    for (uint8_t i = 0; i < DIMENSION; i++)
       leaf_point.set_coordinate(i, point[i]);
 
     bool result = mdtrie_->check(&leaf_point);
@@ -70,9 +71,9 @@ public:
 
   int32_t insert_trie(const std::vector<int32_t> & point, int32_t primary_key){
 
-    data_point leaf_point;
+    data_point<DIMENSION> leaf_point;
 
-    for (uint8_t i = 0; i < DATA_DIMENSION; i++)
+    for (uint8_t i = 0; i < DIMENSION; i++)
       leaf_point.set_coordinate(i, point[i]);
     
     mdtrie_->insert_trie(&leaf_point, primary_key);
@@ -82,15 +83,15 @@ public:
 
   void range_search_trie(std::vector<int32_t> & _return, const std::vector<int32_t> & start_range, const std::vector<int32_t> & end_range){
     
-    auto *start_range_point = new data_point();
-    for (uint8_t i = 0; i < DATA_DIMENSION; i++)
+    auto *start_range_point = new data_point<DIMENSION>();
+    for (uint8_t i = 0; i < DIMENSION; i++)
       start_range_point->set_coordinate(i, start_range[i]);    
 
-    auto *end_range_point = new data_point();
-    for (uint8_t i = 0; i < DATA_DIMENSION; i++)
+    auto *end_range_point = new data_point<DIMENSION>();
+    for (uint8_t i = 0; i < DIMENSION; i++)
       end_range_point->set_coordinate(i, end_range[i]);     
 
-    auto *found_points = new point_array();
+    auto *found_points = new point_array<DIMENSION>();
     mdtrie_->range_search_trie(start_range_point, end_range_point, mdtrie_->root(), 0, found_points);
 
     n_leaves_t n_found_points = found_points->size();
@@ -104,17 +105,17 @@ public:
 
   void primary_key_lookup(std::vector<int32_t> & _return, const int32_t primary_key){
 
-    _return.reserve(DATA_DIMENSION);
+    _return.reserve(DIMENSION);
 
     morton_t *node_path_from_primary = (morton_t *)malloc((max_depth + 1) * sizeof(morton_t));
-    tree_block *t_ptr = (tree_block *) (p_key_to_treeblock_compact.At(primary_key));
+    tree_block<DIMENSION> *t_ptr = (tree_block<DIMENSION> *) (p_key_to_treeblock_compact.At(primary_key));
 
     morton_t parent_symbol_from_primary = t_ptr->get_node_path_primary_key(primary_key, node_path_from_primary);
     node_path_from_primary[max_depth - 1] = parent_symbol_from_primary;
 
-    auto returned_coordinates = t_ptr->node_path_to_coordinates(node_path_from_primary, DATA_DIMENSION);  
+    auto returned_coordinates = t_ptr->node_path_to_coordinates(node_path_from_primary, DIMENSION);  
     
-    for (uint8_t i = 0; i < DATA_DIMENSION; i++){
+    for (uint8_t i = 0; i < DIMENSION; i++){
       _return.emplace_back(returned_coordinates->get_coordinate(i));
     }      
   }
@@ -135,7 +136,7 @@ public:
 
 protected:
 
-  md_trie *mdtrie_; 
+  md_trie<DIMENSION> *mdtrie_; 
   uint64_t inserted_points_ = 0;
 };
 
@@ -215,7 +216,6 @@ private:
 int main(int argc, char *argv[]){
 
   if (argc == 2){
-      // MDTrieServerCoordinator(argv[1], 9090, 48);
       MDTrieServerCoordinator(argv[1], 9090, 48);
     return 0;
   }

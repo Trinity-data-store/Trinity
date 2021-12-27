@@ -18,6 +18,7 @@ using namespace apache::thrift;
 using namespace apache::thrift::protocol;
 using namespace apache::thrift::transport;
 
+const dimension_t DIMENSION = 4;
 n_leaves_t n_lines = 152806265;
 int BATCH_SIZE = 1024;
 std::atomic<int> active_thread_num {0};
@@ -50,14 +51,14 @@ vector<vector <int32_t>> *get_data_vector(){
   while ((read = getline(&line, &len, fp)) != -1)
   {
       bar.progress(n_points, n_lines);
-      vector<int32_t> point(DATA_DIMENSION, 0);
+      vector<int32_t> point(DIMENSION, 0);
       char *token = strtok(line, ",");
       char *ptr;
       for (dimension_t i = 0; i < 8; i++){
           token = strtok(nullptr, ",");
-          if (i < 8 - DATA_DIMENSION)
+          if (i < 8 - DIMENSION)
               continue;
-          point[i - (8 - DATA_DIMENSION)] = strtoul(token, &ptr, 10);
+          point[i - (8 - DIMENSION)] = strtoul(token, &ptr, 10);
       }
       data_vector->push_back(point);
       n_points ++;
@@ -91,17 +92,17 @@ vector<vector <int32_t>> *get_data_vector_osm(std::vector<int32_t> &max_values, 
 
   while ((read = getline(&line, &len, fp)) != -1)
   {
-      vector <int32_t> point(DATA_DIMENSION, 0);
+      vector <int32_t> point(DIMENSION, 0);
       bar.progress(n_points, n_lines);
       char *token = strtok(line, ",");
       char *ptr;
 
-      for (dimension_t i = 0; i < DATA_DIMENSION; i++){
+      for (dimension_t i = 0; i < DIMENSION; i++){
           token = strtok(nullptr, ",");
           point[i] = strtoul(token, &ptr, 10);
       }
 
-      for (dimension_t i = 0; i < DATA_DIMENSION; i++){
+      for (dimension_t i = 0; i < DIMENSION; i++){
           
           if (n_points == 0){
               max_values[i] = point[i];
@@ -150,7 +151,7 @@ vector<vector <int32_t>> *get_data_vector_filesystem(std::vector<int32_t> &max_v
 
   while ((read = getline(&line, &len, fp)) != -1)
   {
-      vector <int32_t> point(DATA_DIMENSION, 0);
+      vector <int32_t> point(DIMENSION, 0);
       bar.progress(n_points, n_lines);
       char *token = strtok(line, " ");
       char *ptr;
@@ -159,12 +160,12 @@ vector<vector <int32_t>> *get_data_vector_filesystem(std::vector<int32_t> &max_v
           token = strtok(nullptr, " ");
       }
 
-      for (dimension_t i = 0; i < DATA_DIMENSION; i++){
+      for (dimension_t i = 0; i < DIMENSION; i++){
           token = strtok(nullptr, " ");
           point[i] = strtoul(token, &ptr, 10);
       }
 
-      for (dimension_t i = 0; i < DATA_DIMENSION; i++){
+      for (dimension_t i = 0; i < DIMENSION; i++){
           
           if (n_points == 0){
               max_values[i] = point[i];
@@ -212,7 +213,7 @@ vector<vector <int32_t>> *get_data_vector_tpch(std::vector<int32_t> &max_values,
   {
       bar.progress(n_points, n_lines);
       std::stringstream ss(line);
-      vector <int32_t> point(DATA_DIMENSION, 0);
+      vector <int32_t> point(DIMENSION, 0);
 
       // Parse string by ","
       int leaf_point_index = 0;
@@ -258,7 +259,7 @@ vector<vector <int32_t>> *get_data_vector_tpch(std::vector<int32_t> &max_values,
 
       data_vector->push_back(point);
 
-      for (dimension_t i = 0; i < DATA_DIMENSION; i++){
+      for (dimension_t i = 0; i < DIMENSION; i++){
           if (point[i] > max_values[i])
               max_values[i] = point[i];
           if (point[i] < min_values[i])
@@ -591,8 +592,8 @@ int main(int argc, char *argv[]){
   float latency;
   client_join_table.ping();
 
-  std::vector<int32_t> max_values_filesys(DATA_DIMENSION, 0);
-  std::vector<int32_t> min_values_filesys(DATA_DIMENSION, 2147483647);
+  std::vector<int32_t> max_values_filesys(DIMENSION, 0);
+  std::vector<int32_t> min_values_filesys(DIMENSION, 2147483647);
   // vector<vector <int32_t>> *data_vector_throughput = get_data_vector_filesystem(max_values_filesys, min_values_filesys);
   vector<vector <int32_t>> *data_vector_throughput = get_data_vector_osm(max_values_filesys, min_values_filesys);
 
@@ -640,8 +641,8 @@ int main(int argc, char *argv[]){
 
 
   client_join_table.ping();
-  std::vector<int32_t> max_values(DATA_DIMENSION, 0);
-  std::vector<int32_t> min_values(DATA_DIMENSION, 2147483647);
+  std::vector<int32_t> max_values(DIMENSION, 0);
+  std::vector<int32_t> min_values(DIMENSION, 2147483647);
 
   vector<vector <int32_t>> *data_vector_osm = get_data_vector_osm(max_values, min_values);
 
@@ -655,8 +656,8 @@ int main(int argc, char *argv[]){
 //  ********* OSM QUERY 1:
 
 
-  std::vector<int32_t>start_range_join(DATA_DIMENSION, 0);
-  std::vector<int32_t>end_range_join(DATA_DIMENSION, 0);
+  std::vector<int32_t>start_range_join(DIMENSION, 0);
+  std::vector<int32_t>end_range_join(DIMENSION, 0);
   // [ "create_time,modify_time,access_time,change_time,owner_id,group_id, file size"]
   // raise(SIGINT);
   for (dimension_t i = 0; i < 7; i++){
@@ -833,8 +834,8 @@ int main(int argc, char *argv[]){
   auto client_join_table = MDTrieClient(server_ips, 48);
 
   client_join_table.ping();
-  std::vector<int32_t> max_values(DATA_DIMENSION, 0);
-  std::vector<int32_t> min_values(DATA_DIMENSION, 2147483647);
+  std::vector<int32_t> max_values(DIMENSION, 0);
+  std::vector<int32_t> min_values(DIMENSION, 2147483647);
   vector<vector <int32_t>> *data_vector_join_table = get_data_vector_tpch(max_values, min_values);
 
   TimeStamp start, diff;
@@ -848,11 +849,11 @@ int main(int argc, char *argv[]){
 
   // exit(0);
 
-  std::vector<int32_t>start_range_join(DATA_DIMENSION, 0);
-  std::vector<int32_t>end_range_join(DATA_DIMENSION, 0);
+  std::vector<int32_t>start_range_join(DIMENSION, 0);
+  std::vector<int32_t>end_range_join(DIMENSION, 0);
 
   // [QUANTITY, EXTENDEDPRICE, DISCOUNT, TAX, SHIPDATE, COMMITDATE, RECEIPTDATE, TOTALPRICE, ORDERDATE]
-  for (dimension_t i = 0; i < DATA_DIMENSION; i++){
+  for (dimension_t i = 0; i < DIMENSION; i++){
       start_range_join[i] = min_values[i];
       end_range_join[i] = max_values[i];
 
@@ -876,7 +877,7 @@ int main(int argc, char *argv[]){
   std::cout << "Range Search end to end latency 1: " << diff << std::endl;
 
   // [QUANTITY, EXTENDEDPRICE, DISCOUNT, TAX, SHIPDATE, COMMITDATE, RECEIPTDATE, TOTALPRICE, ORDERDATE]
-  for (dimension_t i = 0; i < DATA_DIMENSION; i++){
+  for (dimension_t i = 0; i < DIMENSION; i++){
       start_range_join[i] = min_values[i];
       end_range_join[i] = max_values[i];
 
@@ -901,7 +902,7 @@ int main(int argc, char *argv[]){
 
 
   // [QUANTITY, EXTENDEDPRICE, DISCOUNT, TAX, SHIPDATE, COMMITDATE, RECEIPTDATE, TOTALPRICE, ORDERDATE]
-  for (dimension_t i = 0; i < DATA_DIMENSION; i++){
+  for (dimension_t i = 0; i < DIMENSION; i++){
       start_range_join[i] = min_values[i];
       end_range_join[i] = max_values[i];
 
@@ -951,15 +952,15 @@ int main(int argc, char *argv[]){
 
 */
   int32_t max_range = 1 << 31;
-  auto start_range = vector <int32_t>(DATA_DIMENSION, 0);
-  auto end_range = vector <int32_t>(DATA_DIMENSION, max_range);
+  auto start_range = vector <int32_t>(DIMENSION, 0);
+  auto end_range = vector <int32_t>(DIMENSION, max_range);
 
-  int32_t max[DATA_DIMENSION];
-  int32_t min[DATA_DIMENSION];
+  int32_t max[DIMENSION];
+  int32_t min[DIMENSION];
 
   for (n_leaves_t itr = 0; itr < n_lines; itr++) {
 
-      for (dimension_t i = 0; i < DATA_DIMENSION; i++) {
+      for (dimension_t i = 0; i < DIMENSION; i++) {
 
           if (itr == 1) {
               max[i] = (*data_vector)[itr][i];
@@ -987,7 +988,7 @@ int main(int argc, char *argv[]){
     if (i % 100 == 0)
       cout << "finished: " << i << endl;
       
-    for (unsigned int j = 0; j < DATA_DIMENSION; j++){
+    for (unsigned int j = 0; j < DIMENSION; j++){
 
       // start_range[j] = min[j] + (max[j] - min[j] + 1) / 10 * (rand() % 10);
       // end_range[j] = start_range[j] + (max[j] - start_range[j] + 1) / 10 * (rand() % 10);
