@@ -1,7 +1,6 @@
 # Trinity
 
 This repository is the official implementation of [Trinity: A Fast and Space-efficient Multi-attribute Data Store]().  
-The paper is in submission.
 
 ## Install Dependencies
 
@@ -37,28 +36,14 @@ cmake -DGENERATE_THRIFT=on ..
 make
 ```
 
-## Datasets
-
-**File System (FS)**, a private dataset of metadata collected from a distributed file system. 
-
-**OpenStreetMap (OSM)**, geographical records catalogued by the OpenStreetMap project. [Link](https://download.geofabrik.de/)   
-To extract the data, use Python Osmium package and a sample script is provided. [Here](data/OSM/process_osm.py)  
-
-**TPC-H**, a synthetic business dataset. We coalesce its lineitem and orders tables. [Link](https://docs.deistercloud.com/content/Databases.30/TPCH%20Benchmark.90/Data%20generation%20tool.30.xml?embedded=true/)
-
-Place the datasets under /libmdtrie/bench/data
-
-
 ## Run Unit Tests
     make test
 
-
 ## Simple Example
-A simple example can be found [here](https://github.com/MaoZiming/md-trie). 
+A simple example can be found [here](libmdtrie/bench/tpch_bench.cpp). 
 
 ### File Structure
 
-n the "md-trie/libmdtrie/src" folder,   
 trie.h defines the main function calls for the data structure, such as insert_trie and range_search_trie.  
 tree_block.h defines the function calls for each treeblock, including insert, child and range_search_treeblock, select_subtree selects a node and its subtree to turn into a frontier node.  
 This implementation includes a top-level pointer-based trie data structure, where each trie node, defined in trie_node.h, stores an array of pointers to children trie nodes. The size of this top-level trie could be adjusted. Its leaves point to child treeblocks.  
@@ -67,4 +52,5 @@ compact_ptr.h implements how primary keys are stored at the leaf, either stored 
 
 ## Contributing
 
-MIT License
+### The MIT License
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)  
