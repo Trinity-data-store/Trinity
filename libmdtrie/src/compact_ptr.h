@@ -19,7 +19,6 @@ class compact_ptr {
     flag_ = 0;
   }
 
-  // Doesn't do anything, only for deserialization
   compact_ptr(){}
 
   std::vector<uint64_t> *get_vector_pointer(){

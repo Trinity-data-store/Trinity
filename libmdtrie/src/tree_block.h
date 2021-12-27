@@ -340,10 +340,6 @@ public:
 
             total_nodes_bits_ += dfuds_->get_num_bits(node, level) - node_previous_bits;
             get_pointer(current_frontier)->insert(0, 0, leaf_point, level, 0, 0, primary_key);
-            
-
-            // if (get_pointer(current_frontier)->num_frontiers_ && get_pointer(current_frontier)->get_preorder(0) > 512)
-            //     raise(SIGINT);
 
             return;
         }
@@ -427,14 +423,10 @@ public:
 
             insert_primary_key_at_index(current_primary, primary_key);
 
-            // if (num_frontiers_ && get_preorder(0) > 512)
-            //     raise(SIGINT);
-
             return;
         } 
         else if (num_nodes_ + (max_depth_ - level) - 1 <= max_tree_nodes) 
         {
-            // It is going to allocate more, but that's fine...
             uint64_t total_extra_bits = 0;
             for (unsigned int i = level; i < max_depth_; i++){
                 total_extra_bits += level_to_num_children[i];
@@ -467,7 +459,7 @@ public:
 
             auto *new_dfuds = new compressed_bitmap::compressed_bitmap(subtree_size + 1, total_nodes_bits_);
             preorder_t frontier;
-            //  Find the first frontier node > selected_node
+
             for (frontier = 0; frontier < num_frontiers_; frontier++)
                 if (get_preorder(frontier) > selected_node)
                     break;
@@ -654,6 +646,7 @@ public:
             return;
         }
     }
+
     // Traverse the current TreeBlock, going into frontier nodes as needed
     // Until it cannot traverse further and calls insertion
     void insert_remaining(data_point<DIMENSION> *leaf_point, level_t level, n_leaves_t primary_key) {
@@ -1127,9 +1120,7 @@ public:
         {
             total_size += primary_key_list[i].size_overhead();
         }
-
         total_size += dfuds_->size() /*+ sizeof(dfuds_)*/;
-
         total_size += num_frontiers_ * sizeof(tree_block<DIMENSION> *) /*Use compact pointer representation*/ + sizeof(frontiers_) /*pointer*/;
 
         for (uint16_t i = 0; i < num_frontiers_; i++){
@@ -1151,7 +1142,7 @@ private:
     frontier_node<DIMENSION> *frontiers_ = nullptr; 
     preorder_t num_frontiers_ = 0;
     preorder_t previous_p_key_ = 0;
-
+    
     // TODO: parent_tree_block & parent_trie_node pointer can be combined
     tree_block<DIMENSION> *parent_tree_block_ = NULL;
     trie_node<DIMENSION> *parent_trie_node_ = NULL;

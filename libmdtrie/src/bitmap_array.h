@@ -368,37 +368,6 @@ class BitmapArray : public Bitmap {
     return num_elements_ == 0;
   }
 
-  // Serialization and De-serialization
-  // virtual size_type Serialize(std::ostream& out) override {
-  //   size_t out_size = 0;
-
-  //   out.write(reinterpret_cast<const char *>(&this->num_elements_),
-  //             sizeof(size_type));
-  //   out_size += sizeof(size_type);
-
-  //   out.write(reinterpret_cast<const char *>(&this->bit_width_),
-  //             sizeof(width_type));
-  //   out_size += sizeof(width_type);
-
-  //   out_size += Bitmap::Serialize(out);
-
-  //   return out_size;
-  // }
-
-  // virtual size_type Deserialize(std::istream& in) override {
-  //   size_t in_size = 0;
-
-  //   in.read(reinterpret_cast<char *>(&this->num_elements_), sizeof(size_type));
-  //   in_size += sizeof(size_type);
-
-  //   in.read(reinterpret_cast<char *>(&this->bit_width_), sizeof(width_type));
-  //   in_size += sizeof(width_type);
-
-  //   in_size += Bitmap::Deserialize(in);
-
-  //   return in_size;
-  // }
-
  protected:
   // Data members
   size_type num_elements_;
@@ -422,18 +391,10 @@ class UnsizedBitmapArray : public Bitmap {
   // Constructors and destructors
   UnsizedBitmapArray()
       : Bitmap() {
-    // bit_width_ = 0;
   }
-
-  // UnsizedBitmapArray(const UnsizedBitmapArray& array) {
-  //   data_ = array.data_;
-  //   size_ = array.size_;
-  //   bit_width_ = array.bit_width_;
-  // }
 
   UnsizedBitmapArray(size_type num_elements)
       : Bitmap(num_elements * bit_width_) {
-    // bit_width_ = bit_width;
   }
 
   UnsizedBitmapArray(T *elements, size_type num_elements)
@@ -445,10 +406,9 @@ class UnsizedBitmapArray : public Bitmap {
   }
 
   void Init(T *elements, size_type num_elements){
-    // BitmapInit
 
     Bitmap_Init(num_elements * bit_width_);
-    // bit_width_ = bit_width;
+
     for (uint64_t i = 0; i < num_elements; i++) {
       Set(i, elements[i]);
     }
@@ -456,7 +416,7 @@ class UnsizedBitmapArray : public Bitmap {
   }
 
   void Push(T element){
-    // raise(SIGINT);
+
     size_type num_elements = this->size_ / bit_width_;
     this->Realloc_increase(bit_width_);
     Set(num_elements, element);
@@ -480,32 +440,7 @@ class UnsizedBitmapArray : public Bitmap {
     return reference(this, i);
   }
 
-  // Serialization and De-serialization
-  // virtual size_type Serialize(std::ostream& out) override {
-  //   size_t out_size = 0;
-
-  //   out.write(reinterpret_cast<const char *>(&this->bit_width_),
-  //             sizeof(width_type));
-  //   out_size += sizeof(width_type);
-
-  //   out_size += Bitmap::Serialize(out);
-
-  //   return out_size;
-  // }
-
-  // virtual size_type Deserialize(std::istream& in) override {
-  //   size_t in_size = 0;
-
-  //   in.read(reinterpret_cast<char *>(&this->bit_width_), sizeof(width_type));
-  //   in_size += sizeof(width_type);
-
-  //   in_size += Bitmap::Deserialize(in);
-
-  //   return in_size;
-  // }
  private:
-  // Data members
-  // width_type bit_width_;
 };
 
 template<typename T>
@@ -648,7 +583,6 @@ class SignedBitmapArray : public BitmapArray<T> {
     T value = this->GetValPos(i * this->bit_width_, this->bit_width_);
     bool negate = (value & 1);
     return ((value >> 1) ^ -negate) + negate;
-    // return (value & 1) ? -(value >> 1) : (value >> 1);
   }
 
   // Operators, iterators

@@ -549,47 +549,6 @@ class compressed_bitmap {
     ClearWidth(start_node, end_node + 1 - start_node, false);
   }
 
-  virtual size_type Serialize(std::ostream& out) {
-    size_t out_size = 0;
-
-    out.write(reinterpret_cast<const char *>(&data_size_), sizeof(size_type));
-    out_size += sizeof(size_type);
-
-    out.write(reinterpret_cast<const char *>(data_),
-              sizeof(data_type) * BITS2BLOCKS(data_size_));
-    out_size += (BITS2BLOCKS(data_size_) * sizeof(uint64_t));
-
-    out.write(reinterpret_cast<const char *>(&flag_size_), sizeof(size_type));
-    out_size += sizeof(size_type);
-
-    out.write(reinterpret_cast<const char *>(flag_),
-              sizeof(data_type) * BITS2BLOCKS(flag_size_));
-    out_size += (BITS2BLOCKS(flag_size_) * sizeof(uint64_t));
-
-    return out_size;
-  }
-
-  virtual size_type Deserialize(std::istream& in) {
-    size_t in_size = 0;
-
-    in.read(reinterpret_cast<char *>(&data_size_), sizeof(size_type));
-    in_size += sizeof(size_type);
-
-    data_ = new data_type[BITS2BLOCKS(data_size_)];
-    in.read(reinterpret_cast<char *>(data_),
-    BITS2BLOCKS(data_size_) * sizeof(data_type));
-    in_size += (BITS2BLOCKS(data_size_) * sizeof(data_type));
-
-    in.read(reinterpret_cast<char *>(&flag_size_), sizeof(size_type));
-    in_size += sizeof(size_type);
-
-    flag_ = new data_type[BITS2BLOCKS(flag_size_)];
-    in.read(reinterpret_cast<char *>(flag_),
-    BITS2BLOCKS(flag_size_) * sizeof(data_type));
-    in_size += (BITS2BLOCKS(flag_size_) * sizeof(data_type));
-    return in_size;
-  }
-
   size_type get_flag_size(){
     return flag_size_;
   }

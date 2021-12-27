@@ -78,30 +78,6 @@ class value_reference_vector {
     return value_type(*this) < value_type(x);
   }
 
-  // friend void swap(reference &lhs, reference &rhs) {
-  //   value_type temp = value_type(lhs);
-  //   lhs = rhs;
-  //   rhs = temp;
-  // }
-
-  // friend void swap(reference lhs, reference rhs) {
-  //   value_type temp = value_type(lhs);
-  //   lhs = rhs;
-  //   rhs = temp;
-  // }
-
-  // friend void swap(reference lhs, value_type rhs) {
-  //   value_type temp = value_type(lhs);
-  //   lhs = rhs;
-  //   rhs = temp;
-  // }
-
-  // friend void swap(value_type lhs, reference rhs) {
-  //   value_type temp = value_type(rhs);
-  //   rhs = lhs;
-  //   lhs = temp;
-  // }
-
  private:
   VectorImpl *const array_;
   const pos_type pos_;
@@ -438,21 +414,6 @@ class CompactVector : public BitVector {
   const_iterator cend() const {
     return const_iterator(this, this->num_elements_);
   }
-
-  // void swap(const CompactVector<T, W> &other) {
-  //   using std::swap;
-  //   swap(this->data_, other.data_);
-  //   swap(this->size_, other.size_);
-  // }
-
-  // Serialization and De-serialization
-  size_type Serialize(std::ostream &out) override {
-    return BitVector::Serialize(out);
-  }
-
-  size_type Deserialize(std::istream &in) override {
-    return BitVector::Deserialize(in);
-  }
 };
 
 class CompactPtrVector : CompactVector<uint64_t, 44> {
@@ -479,16 +440,6 @@ class CompactPtrVector : CompactVector<uint64_t, 44> {
   void PushBack(void *val) {
     CompactVector<uint64_t, 44>::Append(reinterpret_cast<uint64_t>(val) >> 4ULL);
   }
-
-  // Serialization and De-serialization
-  size_type Serialize(std::ostream &out) {
-    return CompactVector<uint64_t, 44>::Serialize(out);
-  }
-
-  size_type Deserialize(std::istream &in) {
-    return CompactVector<uint64_t, 44>::Deserialize(in);
-  }
-
 };
 
 class CompactPrimaryVector : CompactVector<uint64_t, 46> {
@@ -515,15 +466,6 @@ class CompactPrimaryVector : CompactVector<uint64_t, 46> {
 
   void PushBack(uint64_t val) {
     CompactVector<uint64_t, 46>::Append(reinterpret_cast<uint64_t>(val) >> 20ULL);
-  }
-
-  // Serialization and De-serialization
-  size_type Serialize(std::ostream &out) {
-    return CompactVector<uint64_t, 46>::Serialize(out);
-  }
-
-  size_type Deserialize(std::istream &in) {
-    return CompactVector<uint64_t, 46>::Deserialize(in);
   }
 
   uintptr_t ptr(pos_type idx){

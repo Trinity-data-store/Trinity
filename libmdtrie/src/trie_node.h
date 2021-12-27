@@ -53,7 +53,6 @@ public:
 
         if (!is_leaf_)
             total_size += sizeof(trie_node<DIMENSION> *) * num_children_; // Array of Trie node ptrs
-
         // is_leaf and num_children_ can be deduced from outside
         return total_size;
     }
