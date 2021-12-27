@@ -376,7 +376,7 @@ class compressed_bitmap {
     return !GETBITVAL(flag_, node);
   }
 
-  inline bool has_symbol(preorder_t node, pos_type node_pos, symbol_t symbol, width_type num_children){
+  inline bool has_symbol(preorder_t node, pos_type node_pos, morton_t symbol, width_type num_children){
 
     if (node >= flag_size_){
       return false;
@@ -390,7 +390,7 @@ class compressed_bitmap {
     }
   }
 
-  inline preorder_t get_num_children(node_t node, pos_type node_pos, width_type num_children)
+  inline preorder_t get_num_children(preorder_t node, pos_type node_pos, width_type num_children)
   {
     if (is_collapse(node)){
       return 1;
@@ -400,10 +400,10 @@ class compressed_bitmap {
     }
   }
 
-  inline preorder_t get_child_skip(node_t node, pos_type node_pos, symbol_t symbol, width_type num_children) 
+  inline preorder_t get_child_skip(preorder_t node, pos_type node_pos, morton_t symbol, width_type num_children) 
   {
     if (is_collapse(node)){
-      symbol_t only_symbol = GetValPos(node_pos, num_children, true);
+      morton_t only_symbol = GetValPos(node_pos, num_children, true);
       if (symbol > only_symbol)
         return 1;
       return 0;
@@ -417,18 +417,18 @@ class compressed_bitmap {
       return __builtin_ctzll(_pdep_u64(1ULL << n, x));
   }
 
-  symbol_t get_k_th_set_bit(preorder_t node, unsigned k /* 0-indexed */, pos_type node_pos, width_type num_children){
+  morton_t get_k_th_set_bit(preorder_t node, unsigned k /* 0-indexed */, pos_type node_pos, width_type num_children){
 
     if (is_collapse(node)){
       return GetValPos(node_pos, num_children, true);
     }
-    symbol_t pos_left = 1 << num_children;
-    symbol_t return_symbol = 0;
+    morton_t pos_left = 1 << num_children;
+    morton_t return_symbol = 0;
 
     while (pos_left > 64){
       uint64_t next_block = GetValPos(node_pos + return_symbol, 64, true);
       if (next_block){  
-        symbol_t set_bit_count = __builtin_popcountll(next_block);
+        morton_t set_bit_count = __builtin_popcountll(next_block);
         if (k >= set_bit_count){
           k -= set_bit_count;
         }
@@ -444,17 +444,17 @@ class compressed_bitmap {
     return return_symbol + nthset(next_block, k);
   }
 
-  inline symbol_t next_symbol(symbol_t symbol, preorder_t node, pos_type node_pos, symbol_t end_symbol_range, width_type num_children){
+  inline morton_t next_symbol(morton_t symbol, preorder_t node, pos_type node_pos, morton_t end_symbol_range, width_type num_children){
 
     if (is_collapse(node)){
-      symbol_t only_symbol = GetValPos(node_pos, num_children, true);
+      morton_t only_symbol = GetValPos(node_pos, num_children, true);
       if (symbol <= only_symbol)
         return only_symbol;
       
       return end_symbol_range + 1;
     }
 
-    symbol_t limit = end_symbol_range - symbol + 1;
+    morton_t limit = end_symbol_range - symbol + 1;
     bool over_64 = false;
     if (limit > 64){
         limit = 64;
@@ -473,7 +473,6 @@ class compressed_bitmap {
 
   }
 
-
   inline void shift_forward_to_collapse(preorder_t from_node, pos_type from_node_pos, width_type num_children)
   {
     if (is_collapse(from_node)){
@@ -489,12 +488,12 @@ class compressed_bitmap {
     CLRBITVAL(flag_, from_node);
   }
 
-  inline void set_symbol(preorder_t node, pos_type node_pos, symbol_t symbol, bool was_empty, width_type num_children){
+  inline void set_symbol(preorder_t node, pos_type node_pos, morton_t symbol, bool was_empty, width_type num_children){
     
     if (is_collapse(node))
     {
       if (!was_empty){
-        symbol_t only_symbol = GetValPos(node_pos, num_children, true);
+        morton_t only_symbol = GetValPos(node_pos, num_children, true);
         if (symbol == only_symbol){
           return;
         }
@@ -530,13 +529,13 @@ class compressed_bitmap {
       to_dfuds->shift_backward_to_uncollapse(to_node, to_node_pos, num_children);
       SETBITVAL(to_dfuds->flag_, to_node);
     }
-    symbol_t visited = 0;
+    morton_t visited = 0;
     while (visited < width) {
         if (width - visited > 64) {
             to_dfuds->SetValPos(to_node_pos + visited, GetValPos(from_node_pos + visited, 64, true), 64, true);
             visited += 64;
         } else {
-            symbol_t left = width - visited;
+            morton_t left = width - visited;
             to_dfuds->SetValPos(to_node_pos + visited, GetValPos(from_node_pos + visited, left, true), left, true);
             break;
         }
@@ -547,47 +546,6 @@ class compressed_bitmap {
   {
     ClearWidth(start_node_pos, end_node_pos - start_node_pos, true);
     ClearWidth(start_node, end_node + 1 - start_node, false);
-  }
-
-  virtual size_type Serialize(std::ostream& out) {
-    size_t out_size = 0;
-
-    out.write(reinterpret_cast<const char *>(&data_size_), sizeof(size_type));
-    out_size += sizeof(size_type);
-
-    out.write(reinterpret_cast<const char *>(data_),
-              sizeof(data_type) * BITS2BLOCKS(data_size_));
-    out_size += (BITS2BLOCKS(data_size_) * sizeof(uint64_t));
-
-    out.write(reinterpret_cast<const char *>(&flag_size_), sizeof(size_type));
-    out_size += sizeof(size_type);
-
-    out.write(reinterpret_cast<const char *>(flag_),
-              sizeof(data_type) * BITS2BLOCKS(flag_size_));
-    out_size += (BITS2BLOCKS(flag_size_) * sizeof(uint64_t));
-
-    return out_size;
-  }
-
-  virtual size_type Deserialize(std::istream& in) {
-    size_t in_size = 0;
-
-    in.read(reinterpret_cast<char *>(&data_size_), sizeof(size_type));
-    in_size += sizeof(size_type);
-
-    data_ = new data_type[BITS2BLOCKS(data_size_)];
-    in.read(reinterpret_cast<char *>(data_),
-    BITS2BLOCKS(data_size_) * sizeof(data_type));
-    in_size += (BITS2BLOCKS(data_size_) * sizeof(data_type));
-
-    in.read(reinterpret_cast<char *>(&flag_size_), sizeof(size_type));
-    in_size += sizeof(size_type);
-
-    flag_ = new data_type[BITS2BLOCKS(flag_size_)];
-    in.read(reinterpret_cast<char *>(flag_),
-    BITS2BLOCKS(flag_size_) * sizeof(data_type));
-    in_size += (BITS2BLOCKS(flag_size_) * sizeof(data_type));
-    return in_size;
   }
 
   size_type get_flag_size(){

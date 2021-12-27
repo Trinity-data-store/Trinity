@@ -1,52 +1,10 @@
-# md-trie
+# Trinity
 
-Note: this repo is still under development. I have not yet cleaned it or written documentation.  
-Some code might be outdated.  
-For benchmarking files, please see: md-trie/libmdtrie/bench/osm_dataset_bench.cpp and md-trie/blob/main/libmdtrie/bench/tpch_bench.cpp  
+This repository is the official implementation of [Trinity: A Fast and Space-efficient Multi-attribute Data Store]().  
+The paper is in submission.
 
-### Datasets
+## Install Dependencies
 
-The OSM and the TPCH datasets can be downloaded online.
-Click [here](https://docs.deistercloud.com/content/Databases.30/TPCH%20Benchmark.90/Data%20generation%20tool.30.xml?embedded=true) to download the TPCH datase. It is a synthetic dataset and you can adjust the scale factor.  
-We inner-joined the lineitem.tbl and orders.tbl using pandas. Any tbl files will do.  
-Click [here](https://download.geofabrik.de/) to download the OSM dataset, though you have to use Python osmium package to extract the data.
-
-### Building
-
-```bash
-mkdir build
-cd build
-cmake ..
-make
-```
-
-### Tests
-
-```bash
-make test
-```
-
-### Benchmark
-
-Put the dataset under /libmdtrie/bench/data  
-Note, before running, check the def.h, remember to set the number of dimension,
-In benchmark file, you will find: 
-```
-    std::vector<level_t> dimension_bits = {8, 32, 32, 32}; // 4 Dimensions
-    std::vector<level_t> new_start_dimension_bits = {0, 0, 0, 0}; // 4 Dimensions
-```
-use create_level_to_num_children with these two vectors to set up.    
-The first vector sets the bit widths along each dimension. The second vector sets the level that a dimension first becomes "active".  
-
-### Thrift
-
-```cd build
-cmake -DGENERATE_THRIFT=on ..
-```
-
-### Debug
-
-Install dependencies...
 ```
 sudo apt-get install libboost-test-dev  
 sudo apt-get install libboost-all-dev
@@ -70,18 +28,43 @@ make
 sudo make install
 ```
 
-https://stackoverflow.com/questions/44633043/cmake-libcurl-was-built-with-ssl-disabled-https-not-supported  
-https://stackoverflow.com/questions/56941778/cmake-use-system-curl-is-on-but-a-curl-is-not-found  
-https://thrift.apache.org/docs/BuildingFromSource  
-https://stackoverflow.com/questions/59561902/boost-thread-hpp-no-such-file-or-directory/59563726  
-https://stackoverflow.com/questions/21530577/fatal-error-python-h-no-such-file-or-directory?rq=1  
-https://blog.csdn.net/m0_51560548/article/details/121574598  
-If redefinition bug, remove build
-```  
-sudo apt-get install libboost-test-dev  
-sudo apt-get install libboost-all-dev
-```  
-reinstall everything and re-run 
+## Build
+
+```setup
+mkdir -p build
+cd build
+cmake -DGENERATE_THRIFT=on ..
+make
 ```
-Thrift Install  
-```
+
+## Datasets
+
+**File System (FS)**, a private dataset of metadata collected from a distributed file system. 
+
+**OpenStreetMap (OSM)**, geographical records catalogued by the OpenStreetMap project. [Link](https://download.geofabrik.de/)   
+To extract the data, use Python Osmium package and a sample script is provided. [Here](data/OSM/process_osm.py)  
+
+**TPC-H**, a synthetic business dataset. We coalesce its lineitem and orders tables. [Link](https://docs.deistercloud.com/content/Databases.30/TPCH%20Benchmark.90/Data%20generation%20tool.30.xml?embedded=true/)
+
+Place the datasets under /libmdtrie/bench/data
+
+
+## Run Unit Tests
+    make test
+
+
+## Simple Example
+A simple example can be found [here](https://github.com/MaoZiming/md-trie). 
+
+### File Structure
+
+n the "md-trie/libmdtrie/src" folder,   
+trie.h defines the main function calls for the data structure, such as insert_trie and range_search_trie.  
+tree_block.h defines the function calls for each treeblock, including insert, child and range_search_treeblock, select_subtree selects a node and its subtree to turn into a frontier node.  
+This implementation includes a top-level pointer-based trie data structure, where each trie node, defined in trie_node.h, stores an array of pointers to children trie nodes. The size of this top-level trie could be adjusted. Its leaves point to child treeblocks.  
+compressed_bitmap.h defines the structure of the bit vector in the treeblocks and supports collapsed nodes.  
+compact_ptr.h implements how primary keys are stored at the leaf, either stored directly as value, in a vector, or a delta-encoded array (defined in delta_encoded_array.h)  
+
+## Contributing
+
+MIT License

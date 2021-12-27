@@ -24,12 +24,11 @@ class MDTrieShardIf {
   virtual ~MDTrieShardIf() {}
   virtual void ping() = 0;
   virtual int32_t add(const int32_t num1, const int32_t num2) = 0;
-  virtual int32_t insert_trie(const std::vector<int32_t> & point, const int32_t primary_key) = 0;
+  virtual int32_t insert(const std::vector<int32_t> & point, const int32_t primary_key) = 0;
   virtual bool check(const std::vector<int32_t> & point) = 0;
-  virtual void range_search_trie(std::vector<int32_t> & _return, const std::vector<int32_t> & start_range, const std::vector<int32_t> & end_range) = 0;
+  virtual void range_search(std::vector<int32_t> & _return, const std::vector<int32_t> & start_range, const std::vector<int32_t> & end_range) = 0;
   virtual void primary_key_lookup(std::vector<int32_t> & _return, const int32_t primary_key) = 0;
-  virtual void get_time() = 0;
-  virtual int32_t get_count() = 0;
+  virtual int32_t get_size() = 0;
 };
 
 class MDTrieShardIfFactory {
@@ -66,7 +65,7 @@ class MDTrieShardNull : virtual public MDTrieShardIf {
     int32_t _return = 0;
     return _return;
   }
-  int32_t insert_trie(const std::vector<int32_t> & /* point */, const int32_t /* primary_key */) {
+  int32_t insert(const std::vector<int32_t> & /* point */, const int32_t /* primary_key */) {
     int32_t _return = 0;
     return _return;
   }
@@ -74,16 +73,13 @@ class MDTrieShardNull : virtual public MDTrieShardIf {
     bool _return = false;
     return _return;
   }
-  void range_search_trie(std::vector<int32_t> & /* _return */, const std::vector<int32_t> & /* start_range */, const std::vector<int32_t> & /* end_range */) {
+  void range_search(std::vector<int32_t> & /* _return */, const std::vector<int32_t> & /* start_range */, const std::vector<int32_t> & /* end_range */) {
     return;
   }
   void primary_key_lookup(std::vector<int32_t> & /* _return */, const int32_t /* primary_key */) {
     return;
   }
-  void get_time() {
-    return;
-  }
-  int32_t get_count() {
+  int32_t get_size() {
     int32_t _return = 0;
     return _return;
   }
@@ -286,31 +282,31 @@ class MDTrieShard_add_presult {
 
 };
 
-typedef struct _MDTrieShard_insert_trie_args__isset {
-  _MDTrieShard_insert_trie_args__isset() : point(false), primary_key(false) {}
+typedef struct _MDTrieShard_insert_args__isset {
+  _MDTrieShard_insert_args__isset() : point(false), primary_key(false) {}
   bool point :1;
   bool primary_key :1;
-} _MDTrieShard_insert_trie_args__isset;
+} _MDTrieShard_insert_args__isset;
 
-class MDTrieShard_insert_trie_args {
+class MDTrieShard_insert_args {
  public:
 
-  MDTrieShard_insert_trie_args(const MDTrieShard_insert_trie_args&);
-  MDTrieShard_insert_trie_args& operator=(const MDTrieShard_insert_trie_args&);
-  MDTrieShard_insert_trie_args() : primary_key(0) {
+  MDTrieShard_insert_args(const MDTrieShard_insert_args&);
+  MDTrieShard_insert_args& operator=(const MDTrieShard_insert_args&);
+  MDTrieShard_insert_args() : primary_key(0) {
   }
 
-  virtual ~MDTrieShard_insert_trie_args() noexcept;
+  virtual ~MDTrieShard_insert_args() noexcept;
   std::vector<int32_t>  point;
   int32_t primary_key;
 
-  _MDTrieShard_insert_trie_args__isset __isset;
+  _MDTrieShard_insert_args__isset __isset;
 
   void __set_point(const std::vector<int32_t> & val);
 
   void __set_primary_key(const int32_t val);
 
-  bool operator == (const MDTrieShard_insert_trie_args & rhs) const
+  bool operator == (const MDTrieShard_insert_args & rhs) const
   {
     if (!(point == rhs.point))
       return false;
@@ -318,11 +314,11 @@ class MDTrieShard_insert_trie_args {
       return false;
     return true;
   }
-  bool operator != (const MDTrieShard_insert_trie_args &rhs) const {
+  bool operator != (const MDTrieShard_insert_args &rhs) const {
     return !(*this == rhs);
   }
 
-  bool operator < (const MDTrieShard_insert_trie_args & ) const;
+  bool operator < (const MDTrieShard_insert_args & ) const;
 
   template <class Protocol_>
   uint32_t read(Protocol_* iprot);
@@ -332,11 +328,11 @@ class MDTrieShard_insert_trie_args {
 };
 
 
-class MDTrieShard_insert_trie_pargs {
+class MDTrieShard_insert_pargs {
  public:
 
 
-  virtual ~MDTrieShard_insert_trie_pargs() noexcept;
+  virtual ~MDTrieShard_insert_pargs() noexcept;
   const std::vector<int32_t> * point;
   const int32_t* primary_key;
 
@@ -345,37 +341,37 @@ class MDTrieShard_insert_trie_pargs {
 
 };
 
-typedef struct _MDTrieShard_insert_trie_result__isset {
-  _MDTrieShard_insert_trie_result__isset() : success(false) {}
+typedef struct _MDTrieShard_insert_result__isset {
+  _MDTrieShard_insert_result__isset() : success(false) {}
   bool success :1;
-} _MDTrieShard_insert_trie_result__isset;
+} _MDTrieShard_insert_result__isset;
 
-class MDTrieShard_insert_trie_result {
+class MDTrieShard_insert_result {
  public:
 
-  MDTrieShard_insert_trie_result(const MDTrieShard_insert_trie_result&);
-  MDTrieShard_insert_trie_result& operator=(const MDTrieShard_insert_trie_result&);
-  MDTrieShard_insert_trie_result() : success(0) {
+  MDTrieShard_insert_result(const MDTrieShard_insert_result&);
+  MDTrieShard_insert_result& operator=(const MDTrieShard_insert_result&);
+  MDTrieShard_insert_result() : success(0) {
   }
 
-  virtual ~MDTrieShard_insert_trie_result() noexcept;
+  virtual ~MDTrieShard_insert_result() noexcept;
   int32_t success;
 
-  _MDTrieShard_insert_trie_result__isset __isset;
+  _MDTrieShard_insert_result__isset __isset;
 
   void __set_success(const int32_t val);
 
-  bool operator == (const MDTrieShard_insert_trie_result & rhs) const
+  bool operator == (const MDTrieShard_insert_result & rhs) const
   {
     if (!(success == rhs.success))
       return false;
     return true;
   }
-  bool operator != (const MDTrieShard_insert_trie_result &rhs) const {
+  bool operator != (const MDTrieShard_insert_result &rhs) const {
     return !(*this == rhs);
   }
 
-  bool operator < (const MDTrieShard_insert_trie_result & ) const;
+  bool operator < (const MDTrieShard_insert_result & ) const;
 
   template <class Protocol_>
   uint32_t read(Protocol_* iprot);
@@ -384,19 +380,19 @@ class MDTrieShard_insert_trie_result {
 
 };
 
-typedef struct _MDTrieShard_insert_trie_presult__isset {
-  _MDTrieShard_insert_trie_presult__isset() : success(false) {}
+typedef struct _MDTrieShard_insert_presult__isset {
+  _MDTrieShard_insert_presult__isset() : success(false) {}
   bool success :1;
-} _MDTrieShard_insert_trie_presult__isset;
+} _MDTrieShard_insert_presult__isset;
 
-class MDTrieShard_insert_trie_presult {
+class MDTrieShard_insert_presult {
  public:
 
 
-  virtual ~MDTrieShard_insert_trie_presult() noexcept;
+  virtual ~MDTrieShard_insert_presult() noexcept;
   int32_t* success;
 
-  _MDTrieShard_insert_trie_presult__isset __isset;
+  _MDTrieShard_insert_presult__isset __isset;
 
   template <class Protocol_>
   uint32_t read(Protocol_* iprot);
@@ -513,31 +509,31 @@ class MDTrieShard_check_presult {
 
 };
 
-typedef struct _MDTrieShard_range_search_trie_args__isset {
-  _MDTrieShard_range_search_trie_args__isset() : start_range(false), end_range(false) {}
+typedef struct _MDTrieShard_range_search_args__isset {
+  _MDTrieShard_range_search_args__isset() : start_range(false), end_range(false) {}
   bool start_range :1;
   bool end_range :1;
-} _MDTrieShard_range_search_trie_args__isset;
+} _MDTrieShard_range_search_args__isset;
 
-class MDTrieShard_range_search_trie_args {
+class MDTrieShard_range_search_args {
  public:
 
-  MDTrieShard_range_search_trie_args(const MDTrieShard_range_search_trie_args&);
-  MDTrieShard_range_search_trie_args& operator=(const MDTrieShard_range_search_trie_args&);
-  MDTrieShard_range_search_trie_args() {
+  MDTrieShard_range_search_args(const MDTrieShard_range_search_args&);
+  MDTrieShard_range_search_args& operator=(const MDTrieShard_range_search_args&);
+  MDTrieShard_range_search_args() {
   }
 
-  virtual ~MDTrieShard_range_search_trie_args() noexcept;
+  virtual ~MDTrieShard_range_search_args() noexcept;
   std::vector<int32_t>  start_range;
   std::vector<int32_t>  end_range;
 
-  _MDTrieShard_range_search_trie_args__isset __isset;
+  _MDTrieShard_range_search_args__isset __isset;
 
   void __set_start_range(const std::vector<int32_t> & val);
 
   void __set_end_range(const std::vector<int32_t> & val);
 
-  bool operator == (const MDTrieShard_range_search_trie_args & rhs) const
+  bool operator == (const MDTrieShard_range_search_args & rhs) const
   {
     if (!(start_range == rhs.start_range))
       return false;
@@ -545,11 +541,11 @@ class MDTrieShard_range_search_trie_args {
       return false;
     return true;
   }
-  bool operator != (const MDTrieShard_range_search_trie_args &rhs) const {
+  bool operator != (const MDTrieShard_range_search_args &rhs) const {
     return !(*this == rhs);
   }
 
-  bool operator < (const MDTrieShard_range_search_trie_args & ) const;
+  bool operator < (const MDTrieShard_range_search_args & ) const;
 
   template <class Protocol_>
   uint32_t read(Protocol_* iprot);
@@ -559,11 +555,11 @@ class MDTrieShard_range_search_trie_args {
 };
 
 
-class MDTrieShard_range_search_trie_pargs {
+class MDTrieShard_range_search_pargs {
  public:
 
 
-  virtual ~MDTrieShard_range_search_trie_pargs() noexcept;
+  virtual ~MDTrieShard_range_search_pargs() noexcept;
   const std::vector<int32_t> * start_range;
   const std::vector<int32_t> * end_range;
 
@@ -572,37 +568,37 @@ class MDTrieShard_range_search_trie_pargs {
 
 };
 
-typedef struct _MDTrieShard_range_search_trie_result__isset {
-  _MDTrieShard_range_search_trie_result__isset() : success(false) {}
+typedef struct _MDTrieShard_range_search_result__isset {
+  _MDTrieShard_range_search_result__isset() : success(false) {}
   bool success :1;
-} _MDTrieShard_range_search_trie_result__isset;
+} _MDTrieShard_range_search_result__isset;
 
-class MDTrieShard_range_search_trie_result {
+class MDTrieShard_range_search_result {
  public:
 
-  MDTrieShard_range_search_trie_result(const MDTrieShard_range_search_trie_result&);
-  MDTrieShard_range_search_trie_result& operator=(const MDTrieShard_range_search_trie_result&);
-  MDTrieShard_range_search_trie_result() {
+  MDTrieShard_range_search_result(const MDTrieShard_range_search_result&);
+  MDTrieShard_range_search_result& operator=(const MDTrieShard_range_search_result&);
+  MDTrieShard_range_search_result() {
   }
 
-  virtual ~MDTrieShard_range_search_trie_result() noexcept;
+  virtual ~MDTrieShard_range_search_result() noexcept;
   std::vector<int32_t>  success;
 
-  _MDTrieShard_range_search_trie_result__isset __isset;
+  _MDTrieShard_range_search_result__isset __isset;
 
   void __set_success(const std::vector<int32_t> & val);
 
-  bool operator == (const MDTrieShard_range_search_trie_result & rhs) const
+  bool operator == (const MDTrieShard_range_search_result & rhs) const
   {
     if (!(success == rhs.success))
       return false;
     return true;
   }
-  bool operator != (const MDTrieShard_range_search_trie_result &rhs) const {
+  bool operator != (const MDTrieShard_range_search_result &rhs) const {
     return !(*this == rhs);
   }
 
-  bool operator < (const MDTrieShard_range_search_trie_result & ) const;
+  bool operator < (const MDTrieShard_range_search_result & ) const;
 
   template <class Protocol_>
   uint32_t read(Protocol_* iprot);
@@ -611,19 +607,19 @@ class MDTrieShard_range_search_trie_result {
 
 };
 
-typedef struct _MDTrieShard_range_search_trie_presult__isset {
-  _MDTrieShard_range_search_trie_presult__isset() : success(false) {}
+typedef struct _MDTrieShard_range_search_presult__isset {
+  _MDTrieShard_range_search_presult__isset() : success(false) {}
   bool success :1;
-} _MDTrieShard_range_search_trie_presult__isset;
+} _MDTrieShard_range_search_presult__isset;
 
-class MDTrieShard_range_search_trie_presult {
+class MDTrieShard_range_search_presult {
  public:
 
 
-  virtual ~MDTrieShard_range_search_trie_presult() noexcept;
+  virtual ~MDTrieShard_range_search_presult() noexcept;
   std::vector<int32_t> * success;
 
-  _MDTrieShard_range_search_trie_presult__isset __isset;
+  _MDTrieShard_range_search_presult__isset __isset;
 
   template <class Protocol_>
   uint32_t read(Protocol_* iprot);
@@ -741,25 +737,25 @@ class MDTrieShard_primary_key_lookup_presult {
 };
 
 
-class MDTrieShard_get_time_args {
+class MDTrieShard_get_size_args {
  public:
 
-  MDTrieShard_get_time_args(const MDTrieShard_get_time_args&);
-  MDTrieShard_get_time_args& operator=(const MDTrieShard_get_time_args&);
-  MDTrieShard_get_time_args() {
+  MDTrieShard_get_size_args(const MDTrieShard_get_size_args&);
+  MDTrieShard_get_size_args& operator=(const MDTrieShard_get_size_args&);
+  MDTrieShard_get_size_args() {
   }
 
-  virtual ~MDTrieShard_get_time_args() noexcept;
+  virtual ~MDTrieShard_get_size_args() noexcept;
 
-  bool operator == (const MDTrieShard_get_time_args & /* rhs */) const
+  bool operator == (const MDTrieShard_get_size_args & /* rhs */) const
   {
     return true;
   }
-  bool operator != (const MDTrieShard_get_time_args &rhs) const {
+  bool operator != (const MDTrieShard_get_size_args &rhs) const {
     return !(*this == rhs);
   }
 
-  bool operator < (const MDTrieShard_get_time_args & ) const;
+  bool operator < (const MDTrieShard_get_size_args & ) const;
 
   template <class Protocol_>
   uint32_t read(Protocol_* iprot);
@@ -769,128 +765,48 @@ class MDTrieShard_get_time_args {
 };
 
 
-class MDTrieShard_get_time_pargs {
+class MDTrieShard_get_size_pargs {
  public:
 
 
-  virtual ~MDTrieShard_get_time_pargs() noexcept;
+  virtual ~MDTrieShard_get_size_pargs() noexcept;
 
   template <class Protocol_>
   uint32_t write(Protocol_* oprot) const;
 
 };
 
-
-class MDTrieShard_get_time_result {
- public:
-
-  MDTrieShard_get_time_result(const MDTrieShard_get_time_result&);
-  MDTrieShard_get_time_result& operator=(const MDTrieShard_get_time_result&);
-  MDTrieShard_get_time_result() {
-  }
-
-  virtual ~MDTrieShard_get_time_result() noexcept;
-
-  bool operator == (const MDTrieShard_get_time_result & /* rhs */) const
-  {
-    return true;
-  }
-  bool operator != (const MDTrieShard_get_time_result &rhs) const {
-    return !(*this == rhs);
-  }
-
-  bool operator < (const MDTrieShard_get_time_result & ) const;
-
-  template <class Protocol_>
-  uint32_t read(Protocol_* iprot);
-  template <class Protocol_>
-  uint32_t write(Protocol_* oprot) const;
-
-};
-
-
-class MDTrieShard_get_time_presult {
- public:
-
-
-  virtual ~MDTrieShard_get_time_presult() noexcept;
-
-  template <class Protocol_>
-  uint32_t read(Protocol_* iprot);
-
-};
-
-
-class MDTrieShard_get_count_args {
- public:
-
-  MDTrieShard_get_count_args(const MDTrieShard_get_count_args&);
-  MDTrieShard_get_count_args& operator=(const MDTrieShard_get_count_args&);
-  MDTrieShard_get_count_args() {
-  }
-
-  virtual ~MDTrieShard_get_count_args() noexcept;
-
-  bool operator == (const MDTrieShard_get_count_args & /* rhs */) const
-  {
-    return true;
-  }
-  bool operator != (const MDTrieShard_get_count_args &rhs) const {
-    return !(*this == rhs);
-  }
-
-  bool operator < (const MDTrieShard_get_count_args & ) const;
-
-  template <class Protocol_>
-  uint32_t read(Protocol_* iprot);
-  template <class Protocol_>
-  uint32_t write(Protocol_* oprot) const;
-
-};
-
-
-class MDTrieShard_get_count_pargs {
- public:
-
-
-  virtual ~MDTrieShard_get_count_pargs() noexcept;
-
-  template <class Protocol_>
-  uint32_t write(Protocol_* oprot) const;
-
-};
-
-typedef struct _MDTrieShard_get_count_result__isset {
-  _MDTrieShard_get_count_result__isset() : success(false) {}
+typedef struct _MDTrieShard_get_size_result__isset {
+  _MDTrieShard_get_size_result__isset() : success(false) {}
   bool success :1;
-} _MDTrieShard_get_count_result__isset;
+} _MDTrieShard_get_size_result__isset;
 
-class MDTrieShard_get_count_result {
+class MDTrieShard_get_size_result {
  public:
 
-  MDTrieShard_get_count_result(const MDTrieShard_get_count_result&);
-  MDTrieShard_get_count_result& operator=(const MDTrieShard_get_count_result&);
-  MDTrieShard_get_count_result() : success(0) {
+  MDTrieShard_get_size_result(const MDTrieShard_get_size_result&);
+  MDTrieShard_get_size_result& operator=(const MDTrieShard_get_size_result&);
+  MDTrieShard_get_size_result() : success(0) {
   }
 
-  virtual ~MDTrieShard_get_count_result() noexcept;
+  virtual ~MDTrieShard_get_size_result() noexcept;
   int32_t success;
 
-  _MDTrieShard_get_count_result__isset __isset;
+  _MDTrieShard_get_size_result__isset __isset;
 
   void __set_success(const int32_t val);
 
-  bool operator == (const MDTrieShard_get_count_result & rhs) const
+  bool operator == (const MDTrieShard_get_size_result & rhs) const
   {
     if (!(success == rhs.success))
       return false;
     return true;
   }
-  bool operator != (const MDTrieShard_get_count_result &rhs) const {
+  bool operator != (const MDTrieShard_get_size_result &rhs) const {
     return !(*this == rhs);
   }
 
-  bool operator < (const MDTrieShard_get_count_result & ) const;
+  bool operator < (const MDTrieShard_get_size_result & ) const;
 
   template <class Protocol_>
   uint32_t read(Protocol_* iprot);
@@ -899,19 +815,19 @@ class MDTrieShard_get_count_result {
 
 };
 
-typedef struct _MDTrieShard_get_count_presult__isset {
-  _MDTrieShard_get_count_presult__isset() : success(false) {}
+typedef struct _MDTrieShard_get_size_presult__isset {
+  _MDTrieShard_get_size_presult__isset() : success(false) {}
   bool success :1;
-} _MDTrieShard_get_count_presult__isset;
+} _MDTrieShard_get_size_presult__isset;
 
-class MDTrieShard_get_count_presult {
+class MDTrieShard_get_size_presult {
  public:
 
 
-  virtual ~MDTrieShard_get_count_presult() noexcept;
+  virtual ~MDTrieShard_get_size_presult() noexcept;
   int32_t* success;
 
-  _MDTrieShard_get_count_presult__isset __isset;
+  _MDTrieShard_get_size_presult__isset __isset;
 
   template <class Protocol_>
   uint32_t read(Protocol_* iprot);
@@ -950,24 +866,21 @@ class MDTrieShardClientT : virtual public MDTrieShardIf {
   int32_t add(const int32_t num1, const int32_t num2);
   void send_add(const int32_t num1, const int32_t num2);
   int32_t recv_add();
-  int32_t insert_trie(const std::vector<int32_t> & point, const int32_t primary_key);
-  void send_insert_trie(const std::vector<int32_t> & point, const int32_t primary_key);
-  int32_t recv_insert_trie();
+  int32_t insert(const std::vector<int32_t> & point, const int32_t primary_key);
+  void send_insert(const std::vector<int32_t> & point, const int32_t primary_key);
+  int32_t recv_insert();
   bool check(const std::vector<int32_t> & point);
   void send_check(const std::vector<int32_t> & point);
   bool recv_check();
-  void range_search_trie(std::vector<int32_t> & _return, const std::vector<int32_t> & start_range, const std::vector<int32_t> & end_range);
-  void send_range_search_trie(const std::vector<int32_t> & start_range, const std::vector<int32_t> & end_range);
-  void recv_range_search_trie(std::vector<int32_t> & _return);
+  void range_search(std::vector<int32_t> & _return, const std::vector<int32_t> & start_range, const std::vector<int32_t> & end_range);
+  void send_range_search(const std::vector<int32_t> & start_range, const std::vector<int32_t> & end_range);
+  void recv_range_search(std::vector<int32_t> & _return);
   void primary_key_lookup(std::vector<int32_t> & _return, const int32_t primary_key);
   void send_primary_key_lookup(const int32_t primary_key);
   void recv_primary_key_lookup(std::vector<int32_t> & _return);
-  void get_time();
-  void send_get_time();
-  void recv_get_time();
-  int32_t get_count();
-  void send_get_count();
-  int32_t recv_get_count();
+  int32_t get_size();
+  void send_get_size();
+  int32_t recv_get_size();
  protected:
   std::shared_ptr< Protocol_> piprot_;
   std::shared_ptr< Protocol_> poprot_;
@@ -1000,18 +913,16 @@ class MDTrieShardProcessorT : public ::apache::thrift::TDispatchProcessorT<Proto
   void process_ping(int32_t seqid, Protocol_* iprot, Protocol_* oprot, void* callContext);
   void process_add(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
   void process_add(int32_t seqid, Protocol_* iprot, Protocol_* oprot, void* callContext);
-  void process_insert_trie(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
-  void process_insert_trie(int32_t seqid, Protocol_* iprot, Protocol_* oprot, void* callContext);
+  void process_insert(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
+  void process_insert(int32_t seqid, Protocol_* iprot, Protocol_* oprot, void* callContext);
   void process_check(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
   void process_check(int32_t seqid, Protocol_* iprot, Protocol_* oprot, void* callContext);
-  void process_range_search_trie(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
-  void process_range_search_trie(int32_t seqid, Protocol_* iprot, Protocol_* oprot, void* callContext);
+  void process_range_search(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
+  void process_range_search(int32_t seqid, Protocol_* iprot, Protocol_* oprot, void* callContext);
   void process_primary_key_lookup(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
   void process_primary_key_lookup(int32_t seqid, Protocol_* iprot, Protocol_* oprot, void* callContext);
-  void process_get_time(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
-  void process_get_time(int32_t seqid, Protocol_* iprot, Protocol_* oprot, void* callContext);
-  void process_get_count(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
-  void process_get_count(int32_t seqid, Protocol_* iprot, Protocol_* oprot, void* callContext);
+  void process_get_size(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
+  void process_get_size(int32_t seqid, Protocol_* iprot, Protocol_* oprot, void* callContext);
  public:
   MDTrieShardProcessorT(::std::shared_ptr<MDTrieShardIf> iface) :
     iface_(iface) {
@@ -1021,24 +932,21 @@ class MDTrieShardProcessorT : public ::apache::thrift::TDispatchProcessorT<Proto
     processMap_["add"] = ProcessFunctions(
       &MDTrieShardProcessorT::process_add,
       &MDTrieShardProcessorT::process_add);
-    processMap_["insert_trie"] = ProcessFunctions(
-      &MDTrieShardProcessorT::process_insert_trie,
-      &MDTrieShardProcessorT::process_insert_trie);
+    processMap_["insert"] = ProcessFunctions(
+      &MDTrieShardProcessorT::process_insert,
+      &MDTrieShardProcessorT::process_insert);
     processMap_["check"] = ProcessFunctions(
       &MDTrieShardProcessorT::process_check,
       &MDTrieShardProcessorT::process_check);
-    processMap_["range_search_trie"] = ProcessFunctions(
-      &MDTrieShardProcessorT::process_range_search_trie,
-      &MDTrieShardProcessorT::process_range_search_trie);
+    processMap_["range_search"] = ProcessFunctions(
+      &MDTrieShardProcessorT::process_range_search,
+      &MDTrieShardProcessorT::process_range_search);
     processMap_["primary_key_lookup"] = ProcessFunctions(
       &MDTrieShardProcessorT::process_primary_key_lookup,
       &MDTrieShardProcessorT::process_primary_key_lookup);
-    processMap_["get_time"] = ProcessFunctions(
-      &MDTrieShardProcessorT::process_get_time,
-      &MDTrieShardProcessorT::process_get_time);
-    processMap_["get_count"] = ProcessFunctions(
-      &MDTrieShardProcessorT::process_get_count,
-      &MDTrieShardProcessorT::process_get_count);
+    processMap_["get_size"] = ProcessFunctions(
+      &MDTrieShardProcessorT::process_get_size,
+      &MDTrieShardProcessorT::process_get_size);
   }
 
   virtual ~MDTrieShardProcessorT() {}
@@ -1090,13 +998,13 @@ class MDTrieShardMultiface : virtual public MDTrieShardIf {
     return ifaces_[i]->add(num1, num2);
   }
 
-  int32_t insert_trie(const std::vector<int32_t> & point, const int32_t primary_key) {
+  int32_t insert(const std::vector<int32_t> & point, const int32_t primary_key) {
     size_t sz = ifaces_.size();
     size_t i = 0;
     for (; i < (sz - 1); ++i) {
-      ifaces_[i]->insert_trie(point, primary_key);
+      ifaces_[i]->insert(point, primary_key);
     }
-    return ifaces_[i]->insert_trie(point, primary_key);
+    return ifaces_[i]->insert(point, primary_key);
   }
 
   bool check(const std::vector<int32_t> & point) {
@@ -1108,13 +1016,13 @@ class MDTrieShardMultiface : virtual public MDTrieShardIf {
     return ifaces_[i]->check(point);
   }
 
-  void range_search_trie(std::vector<int32_t> & _return, const std::vector<int32_t> & start_range, const std::vector<int32_t> & end_range) {
+  void range_search(std::vector<int32_t> & _return, const std::vector<int32_t> & start_range, const std::vector<int32_t> & end_range) {
     size_t sz = ifaces_.size();
     size_t i = 0;
     for (; i < (sz - 1); ++i) {
-      ifaces_[i]->range_search_trie(_return, start_range, end_range);
+      ifaces_[i]->range_search(_return, start_range, end_range);
     }
-    ifaces_[i]->range_search_trie(_return, start_range, end_range);
+    ifaces_[i]->range_search(_return, start_range, end_range);
     return;
   }
 
@@ -1128,22 +1036,13 @@ class MDTrieShardMultiface : virtual public MDTrieShardIf {
     return;
   }
 
-  void get_time() {
+  int32_t get_size() {
     size_t sz = ifaces_.size();
     size_t i = 0;
     for (; i < (sz - 1); ++i) {
-      ifaces_[i]->get_time();
+      ifaces_[i]->get_size();
     }
-    ifaces_[i]->get_time();
-  }
-
-  int32_t get_count() {
-    size_t sz = ifaces_.size();
-    size_t i = 0;
-    for (; i < (sz - 1); ++i) {
-      ifaces_[i]->get_count();
-    }
-    return ifaces_[i]->get_count();
+    return ifaces_[i]->get_size();
   }
 
 };
@@ -1185,24 +1084,21 @@ class MDTrieShardConcurrentClientT : virtual public MDTrieShardIf {
   int32_t add(const int32_t num1, const int32_t num2);
   int32_t send_add(const int32_t num1, const int32_t num2);
   int32_t recv_add(const int32_t seqid);
-  int32_t insert_trie(const std::vector<int32_t> & point, const int32_t primary_key);
-  int32_t send_insert_trie(const std::vector<int32_t> & point, const int32_t primary_key);
-  int32_t recv_insert_trie(const int32_t seqid);
+  int32_t insert(const std::vector<int32_t> & point, const int32_t primary_key);
+  int32_t send_insert(const std::vector<int32_t> & point, const int32_t primary_key);
+  int32_t recv_insert(const int32_t seqid);
   bool check(const std::vector<int32_t> & point);
   int32_t send_check(const std::vector<int32_t> & point);
   bool recv_check(const int32_t seqid);
-  void range_search_trie(std::vector<int32_t> & _return, const std::vector<int32_t> & start_range, const std::vector<int32_t> & end_range);
-  int32_t send_range_search_trie(const std::vector<int32_t> & start_range, const std::vector<int32_t> & end_range);
-  void recv_range_search_trie(std::vector<int32_t> & _return, const int32_t seqid);
+  void range_search(std::vector<int32_t> & _return, const std::vector<int32_t> & start_range, const std::vector<int32_t> & end_range);
+  int32_t send_range_search(const std::vector<int32_t> & start_range, const std::vector<int32_t> & end_range);
+  void recv_range_search(std::vector<int32_t> & _return, const int32_t seqid);
   void primary_key_lookup(std::vector<int32_t> & _return, const int32_t primary_key);
   int32_t send_primary_key_lookup(const int32_t primary_key);
   void recv_primary_key_lookup(std::vector<int32_t> & _return, const int32_t seqid);
-  void get_time();
-  int32_t send_get_time();
-  void recv_get_time(const int32_t seqid);
-  int32_t get_count();
-  int32_t send_get_count();
-  int32_t recv_get_count(const int32_t seqid);
+  int32_t get_size();
+  int32_t send_get_size();
+  int32_t recv_get_size(const int32_t seqid);
  protected:
   std::shared_ptr< Protocol_> piprot_;
   std::shared_ptr< Protocol_> poprot_;

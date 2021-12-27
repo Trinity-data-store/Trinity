@@ -37,6 +37,7 @@ javaclient/core/target
 javaclient/hadoop/target
 build
 libmdtrie/bench/data
+*.txt
 
 # Eclipse files
 .settings
@@ -84,4 +85,6 @@ target
 
 *.osm.pbf
 *.osm.csv
-
+*.csv
+*.txt
+build_*

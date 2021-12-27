@@ -132,7 +132,6 @@ class Bitmap {
 
   // Constructors and Destructors
   Bitmap() {
-    // data_ = NULL;
     size_ = 0;
   }
 

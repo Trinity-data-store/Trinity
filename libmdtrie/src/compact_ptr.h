@@ -6,8 +6,7 @@
 #include <vector>
 #include "delta_encoded_array.h"
 
-// const uint64_t compact_pointer_vector_size_limit = 1000; // TODO: bug
-const uint64_t compact_pointer_vector_size_limit = 14252681;
+const uint64_t compact_pointer_vector_size_limit = 2000;
 
 namespace bits {
 
@@ -20,7 +19,6 @@ class compact_ptr {
     flag_ = 0;
   }
 
-  // Doesn't do anything, only for deserialization
   compact_ptr(){}
 
   std::vector<uint64_t> *get_vector_pointer(){
@@ -49,6 +47,7 @@ class compact_ptr {
       }
       return false;
   }
+  
   uint64_t size_overhead(){
 
     if (flag_ == 0){
@@ -130,54 +129,6 @@ class compact_ptr {
     }
     return get_delta_encoded_array_pointer()->get_num_elements();
   }
-
-  size_t Serialize(std::ostream& out) {
-
-    size_t out_size = 0;
-
-    if (flag_ == 0){
-      return 0;
-    }
-    else if (flag_ == 1){
-
-      std::vector<uint64_t> *vect = get_vector_pointer();
-      uint32_t vect_size = vect->size();
-      out.write(reinterpret_cast<char const*>(&vect_size), sizeof(vect_size));
-      out_size += sizeof(vect_size);
-
-      out.write(reinterpret_cast<char const*>(vect->data()), vect_size * sizeof(uint64_t));
-      out_size += vect_size * sizeof(uint64_t);      
-      return out_size;
-    }
-    else {
-      return get_delta_encoded_array_pointer()->Serialize(out);
-    }  
-  } 
-
-  size_t Deserialize(std::istream& in) {
-
-    size_t in_size = 0;
-
-    if (flag_ == 0){
-      return 0;
-    }
-    else if (flag_ == 1){
-
-      std::vector<uint64_t> *vect = get_vector_pointer();
-      uint32_t vect_size;
-      in.read(reinterpret_cast<char *>(&vect_size), sizeof(vect_size));
-      in_size += sizeof(vect_size);
-
-      vect->resize(vect_size);
-      in.read(reinterpret_cast<char *>(vect->data()), vect_size * sizeof(uint64_t));
-      in_size += vect_size * sizeof(uint64_t);      
-      return in_size;
-    }
-    else {
-      return get_delta_encoded_array_pointer()->Deserialize(in);
-    }  
-
-  } 
 
  private:
   uintptr_t ptr_: 44;

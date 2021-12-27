@@ -5,10 +5,8 @@
 #include <cstdlib>
 #include <cstring>
 #include "compressed_bitmap.h"
-// #include <bit>
-#include <bitset>
-#include <array>
 
+template<dimension_t DIMENSION>
 class data_point {
 public:
     
@@ -20,7 +18,7 @@ public:
 
     inline void set(point_t *coordinates){
 
-        memcpy(coordinates_, coordinates, sizeof(point_t) * DATA_DIMENSION);
+        memcpy(coordinates_, coordinates, sizeof(point_t) * DIMENSION);
     }
 
     inline point_t get_coordinate(dimension_t index){
@@ -43,10 +41,10 @@ public:
         return primary_key_;
     }
 
-    inline symbol_t leaf_to_symbol(level_t level) {
+    inline morton_t leaf_to_symbol(level_t level) {
         
-        symbol_t result = 0;
-        dimension_t dimension = DATA_DIMENSION;
+        morton_t result = 0;
+        dimension_t dimension = DIMENSION;
 
         for (size_t i = 0; i < dimension; i++) 
         {
@@ -62,9 +60,9 @@ public:
         return result;
     }    
 
-    inline void update_symbol(data_point *end_range, symbol_t current_symbol, level_t level) {
+    inline void update_symbol(data_point *end_range, morton_t current_symbol, level_t level) {
         
-        dimension_t dimension = DATA_DIMENSION;
+        dimension_t dimension = DIMENSION;
         size_t visited_ct = 0;
         for (size_t j = 0; j < dimension; j++) {
             
@@ -101,8 +99,12 @@ public:
     }
 
 private:
-    point_t coordinates_[DATA_DIMENSION] = {0};
-    n_leaves_t primary_key_ = 0;
+    /**
+     * Data point struct is used both to represent a data point and the return "struct" for range search
+     * Range search can either return a vector of coordinates or a vector of primary keys
+     */
+    point_t coordinates_[DIMENSION] = {0};
+    n_leaves_t primary_key_ = 0; 
 };
 
 #endif //MD_TRIE_DATA_POINT_H
