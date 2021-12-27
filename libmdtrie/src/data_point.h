@@ -99,8 +99,12 @@ public:
     }
 
 private:
+    /**
+     * Data point struct is used both to represent a data point and the return "struct" for range search
+     * Range search can either return a vector of coordinates or a vector of primary keys
+     */
     point_t coordinates_[DIMENSION] = {0};
-    n_leaves_t primary_key_ = 0;
+    n_leaves_t primary_key_ = 0; 
 };
 
 #endif //MD_TRIE_DATA_POINT_H

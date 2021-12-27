@@ -68,7 +68,7 @@ public:
     return result;
   }
 
-  int32_t insert_trie(const std::vector<int32_t> & point, int32_t primary_key){
+  int32_t insert(const std::vector<int32_t> & point, int32_t primary_key){
 
     data_point<DIMENSION> leaf_point;
 
@@ -80,7 +80,7 @@ public:
     return primary_key;
   }
 
-  void range_search_trie(std::vector<int32_t> & _return, const std::vector<int32_t> & start_range, const std::vector<int32_t> & end_range){
+  void range_search(std::vector<int32_t> & _return, const std::vector<int32_t> & start_range, const std::vector<int32_t> & end_range){
     
     auto *start_range_point = new data_point<DIMENSION>();
     for (uint8_t i = 0; i < DIMENSION; i++)
@@ -119,17 +119,7 @@ public:
     }      
   }
 
-  void get_throughput(uint32_t count){
-
-    cout << "pass" << count << endl;    
-  }
-
-  void get_time(){
-
-    cout << "pass" << endl;    
-  }
-
-  int32_t get_count(){
+  int32_t get_size(){
     return mdtrie_->size();
   }
 

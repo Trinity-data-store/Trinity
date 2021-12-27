@@ -74,66 +74,45 @@ public:
 
   void insert(vector<int32_t> point, int32_t p_key){
 
-    // int shard_index = p_key % shard_vector_.size();
-    unsigned int shard_index = p_key / (total_points_count / shard_vector_.size() + 1);
-    if (shard_index >= shard_vector_.size()){
-      std::cout << "shard_index: " << shard_index << " p_key: " << p_key << std::endl;
-      exit(0);
-    }
-    shard_vector_[shard_index].send_insert_trie(point, p_key);
-    shard_vector_[shard_index].recv_insert_trie();
+    int shard_index = p_key % shard_vector_.size();
+    shard_vector_[shard_index].send_insert(point, p_key);
+    shard_vector_[shard_index].recv_insert();
   }
 
   void insert_send(vector<int32_t> point, int32_t p_key){
 
-    // int shard_index = p_key % shard_vector_.size();
-    unsigned int shard_index = p_key / (total_points_count / shard_vector_.size() + 1);
-    if (shard_index >= shard_vector_.size()){
-      std::cout << "shard_index: " << shard_index << " p_key: " << p_key << std::endl;
-      exit(0);
-    }
-
-    shard_vector_[shard_index].send_insert_trie(point, p_key);
+    int shard_index = p_key % shard_vector_.size();
+    shard_vector_[shard_index].send_insert(point, p_key);
   }
 
   void insert_rec(int32_t p_key){
 
-    // int shard_index = p_key % shard_vector_.size();
-    unsigned int shard_index = p_key / (total_points_count / shard_vector_.size() + 1);
-
-    shard_vector_[shard_index].recv_insert_trie();
+    int shard_index = p_key % shard_vector_.size();
+    shard_vector_[shard_index].recv_insert();
   }
 
   bool check(vector<int32_t> point, int32_t p_key){
 
-    // int shard_index = p_key % shard_vector_.size();
-    unsigned int shard_index = p_key / (total_points_count / shard_vector_.size() + 1);
-
+    int shard_index = p_key % shard_vector_.size();
     shard_vector_[shard_index].send_check(point);
     return shard_vector_[shard_index].recv_check();
   }
 
   void check_send(vector<int32_t> point, int32_t p_key){
 
-    // int shard_index = p_key % shard_vector_.size();
-    unsigned int shard_index = p_key / (total_points_count / shard_vector_.size() + 1);
-
+    int shard_index = p_key % shard_vector_.size();
     shard_vector_[shard_index].send_check(point);
   }  
 
   bool check_rec(int32_t p_key){
     
-    // int shard_index = p_key % shard_vector_.size();
-    unsigned int shard_index = p_key / (total_points_count / shard_vector_.size() + 1);
-
+    int shard_index = p_key % shard_vector_.size();
     return shard_vector_[shard_index].recv_check();
   }
 
   void primary_key_lookup(std::vector<int32_t> & return_vect, const int32_t p_key){
 
-    // int shard_index = p_key % shard_vector_.size();
-    unsigned int shard_index = p_key / (total_points_count / shard_vector_.size() + 1);
-
+    int shard_index = p_key % shard_vector_.size();
     shard_vector_[shard_index].send_primary_key_lookup(p_key);
     shard_vector_[shard_index].recv_primary_key_lookup(return_vect);
 
@@ -141,18 +120,14 @@ public:
 
   void primary_key_lookup_send(const int32_t p_key){
 
-    // int shard_index = p_key % shard_vector_.size();
-    unsigned int shard_index = p_key / (total_points_count / shard_vector_.size() + 1);
-
+    int shard_index = p_key % shard_vector_.size();
     shard_vector_[shard_index].send_primary_key_lookup(p_key);
   }
 
 
   void primary_key_lookup_rec(std::vector<int32_t> & return_vect, const int32_t p_key){
 
-    // int shard_index = p_key % shard_vector_.size();
-    unsigned int shard_index = p_key / (total_points_count / shard_vector_.size() + 1);
-
+    int shard_index = p_key % shard_vector_.size();
     shard_vector_[shard_index].recv_primary_key_lookup(return_vect);
   }
 
@@ -161,18 +136,14 @@ public:
     int client_count = shard_vector_.size();
 
     for (uint8_t i = 0; i < client_count; i++){
-      shard_vector_[i].send_range_search_trie(start_range, end_range);
+      shard_vector_[i].send_range_search(start_range, end_range);
     }     
 
     for (uint8_t i = 0; i < client_count; i++){
       std::vector<int32_t> return_vect_tmp;
-      shard_vector_[i].recv_range_search_trie(return_vect_tmp);
-
-      // TimeStamp start = GetTimestamp();
+      shard_vector_[i].recv_range_search(return_vect_tmp);
       return_vect.insert(return_vect.end(), return_vect_tmp.begin(), return_vect_tmp.end());
-      // thrift_vector_time += GetTimestamp() - start;
     }    
-
   }
 
   void range_search_trie_send(const std::vector<int32_t> & start_range, const std::vector<int32_t> & end_range){
@@ -180,74 +151,28 @@ public:
     int client_count = shard_vector_.size();
 
     for (uint8_t i = 0; i < client_count; i++){
-      shard_vector_[i].send_range_search_trie(start_range, end_range);
+      shard_vector_[i].send_range_search(start_range, end_range);
     }     
   }
-
-  // std::vector<int32_t> range_search_trie_each_rec(int index){
-    
-  //   std::vector<int32_t> return_vect_tmp;
-  //   shard_vector_[index].recv_range_search_trie(return_vect_tmp);
-  //   return return_vect_tmp;
-  // }
-
-  // void range_search_trie_rec(std::vector<int32_t> & return_vect){
-
-  //   int client_count = shard_vector_.size();
-  //   std::vector<std::future<std::vector<int32_t>>> threads; 
-
-  //   for (uint8_t i = 0; i < client_count; i++){
-  //     threads.push_back(std::async(range_search_trie_each_rec, i));
-  //   }
-
-  //   TimeStamp start = GetTimestamp();
-  //   for (int i = 0; i < client_count; i++){
-
-  //     std::vector<int32_t> return_vect_tmp = threads[i].get();
-  //     return_vect.insert(return_vect.end(), return_vect_tmp.begin(), return_vect_tmp.end());
-  //   }
-  //   cout << "Latency: " << GetTimestamp() - start << " for: " << return_vect.size() << endl;
-
-  // }
 
   void range_search_trie_rec(std::vector<int32_t> & return_vect){
 
     int client_count = shard_vector_.size();
     
-    TimeStamp diff_recv = 0;
-    TimeStamp diff_vect = 0;
-    TimeStamp start = 0;
-
     for (uint8_t i = 0; i < client_count; i++){
       std::vector<int32_t> return_vect_tmp;
-
-      start = GetTimestamp();
-      shard_vector_[i].recv_range_search_trie(return_vect_tmp);
-      diff_recv += GetTimestamp() - start;
-
-      start = GetTimestamp();
+      shard_vector_[i].recv_range_search(return_vect_tmp);
       return_vect.insert(return_vect.end(), return_vect_tmp.begin(), return_vect_tmp.end());
-      diff_vect += GetTimestamp() - start;
     }    
-
-    cout << "Time taken for recv: " << diff_recv << " time taken for vect: " << diff_vect << endl;
-    cout << "Throughput: " << ((float) return_vect.size() / diff_recv) * 1000000 << endl;
   }
 
-  void get_time(){
-
-    shard_vector_[0].get_time();
-  }
-
-  int32_t get_count(){
+  int32_t get_size(){
 
     int client_count = shard_vector_.size();
-
     int32_t count = 0;
     for (uint8_t i = 0; i < client_count; i++){
-      int32_t temp = shard_vector_[i].get_count();
+      int32_t temp = shard_vector_[i].get_size();
       count += temp;
-      // std::cout << "bit per leaf: " << (float) temp / ( total_points_count/ client_count) << std::endl;
     }        
     return count + total_points_count * sizeof(uint32_t);
   }

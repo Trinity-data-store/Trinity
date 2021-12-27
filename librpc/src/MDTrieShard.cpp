@@ -42,19 +42,19 @@ MDTrieShard_add_presult::~MDTrieShard_add_presult() noexcept {
 }
 
 
-MDTrieShard_insert_trie_args::~MDTrieShard_insert_trie_args() noexcept {
+MDTrieShard_insert_args::~MDTrieShard_insert_args() noexcept {
 }
 
 
-MDTrieShard_insert_trie_pargs::~MDTrieShard_insert_trie_pargs() noexcept {
+MDTrieShard_insert_pargs::~MDTrieShard_insert_pargs() noexcept {
 }
 
 
-MDTrieShard_insert_trie_result::~MDTrieShard_insert_trie_result() noexcept {
+MDTrieShard_insert_result::~MDTrieShard_insert_result() noexcept {
 }
 
 
-MDTrieShard_insert_trie_presult::~MDTrieShard_insert_trie_presult() noexcept {
+MDTrieShard_insert_presult::~MDTrieShard_insert_presult() noexcept {
 }
 
 
@@ -74,19 +74,19 @@ MDTrieShard_check_presult::~MDTrieShard_check_presult() noexcept {
 }
 
 
-MDTrieShard_range_search_trie_args::~MDTrieShard_range_search_trie_args() noexcept {
+MDTrieShard_range_search_args::~MDTrieShard_range_search_args() noexcept {
 }
 
 
-MDTrieShard_range_search_trie_pargs::~MDTrieShard_range_search_trie_pargs() noexcept {
+MDTrieShard_range_search_pargs::~MDTrieShard_range_search_pargs() noexcept {
 }
 
 
-MDTrieShard_range_search_trie_result::~MDTrieShard_range_search_trie_result() noexcept {
+MDTrieShard_range_search_result::~MDTrieShard_range_search_result() noexcept {
 }
 
 
-MDTrieShard_range_search_trie_presult::~MDTrieShard_range_search_trie_presult() noexcept {
+MDTrieShard_range_search_presult::~MDTrieShard_range_search_presult() noexcept {
 }
 
 
@@ -106,35 +106,19 @@ MDTrieShard_primary_key_lookup_presult::~MDTrieShard_primary_key_lookup_presult(
 }
 
 
-MDTrieShard_get_time_args::~MDTrieShard_get_time_args() noexcept {
+MDTrieShard_get_size_args::~MDTrieShard_get_size_args() noexcept {
 }
 
 
-MDTrieShard_get_time_pargs::~MDTrieShard_get_time_pargs() noexcept {
+MDTrieShard_get_size_pargs::~MDTrieShard_get_size_pargs() noexcept {
 }
 
 
-MDTrieShard_get_time_result::~MDTrieShard_get_time_result() noexcept {
+MDTrieShard_get_size_result::~MDTrieShard_get_size_result() noexcept {
 }
 
 
-MDTrieShard_get_time_presult::~MDTrieShard_get_time_presult() noexcept {
-}
-
-
-MDTrieShard_get_count_args::~MDTrieShard_get_count_args() noexcept {
-}
-
-
-MDTrieShard_get_count_pargs::~MDTrieShard_get_count_pargs() noexcept {
-}
-
-
-MDTrieShard_get_count_result::~MDTrieShard_get_count_result() noexcept {
-}
-
-
-MDTrieShard_get_count_presult::~MDTrieShard_get_count_presult() noexcept {
+MDTrieShard_get_size_presult::~MDTrieShard_get_size_presult() noexcept {
 }
 
 

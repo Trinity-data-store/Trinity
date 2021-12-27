@@ -93,7 +93,6 @@ public:
     }
 
 private:
-
     bool is_leaf_ = false;
     void *trie_or_treeblock_ptr_ = NULL;
     trie_node<DIMENSION> *parent_trie_node_ = NULL; 

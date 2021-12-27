@@ -473,7 +473,6 @@ class compressed_bitmap {
 
   }
 
-
   inline void shift_forward_to_collapse(preorder_t from_node, pos_type from_node_pos, width_type num_children)
   {
     if (is_collapse(from_node)){

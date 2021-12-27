@@ -650,7 +650,7 @@ int main(int argc, char *argv[]){
   insert_for_join_table(data_vector_osm, 1, 0);
   diff = GetTimestamp() - start;
   std::cout << "Insertion end-to-end latency: " << diff << std::endl;
-  std::cout << "Storage Overhead" << client_join_table.get_count()  << std::endl;
+  std::cout << "Storage Overhead" << client_join_table.get_size()  << std::endl;
   
 
 //  ********* OSM QUERY 1:

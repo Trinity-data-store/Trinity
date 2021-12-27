@@ -5,7 +5,7 @@
 ```bash
 mkdir -p build
 cd build
-cmake ..
+cmake -DGENERATE_THRIFT=on ..
 make
 ```
 

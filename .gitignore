@@ -87,3 +87,4 @@ target
 *.osm.csv
 *.csv
 *.txt
+build_*
