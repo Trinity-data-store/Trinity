@@ -18,7 +18,7 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node){
     char *line = nullptr;
     size_t len = 0;
     ssize_t read;
-    FILE *fp = fopen("/home/ziming/osm/osm_us_northeast_timestamp.csv", "r");
+    FILE *fp = fopen("../data/osm/osm.csv", "r");
 
     // If the file cannot be open
     if (fp == nullptr)
@@ -209,6 +209,7 @@ int main() {
     std::cout << "dimension: " << DATA_DIMENSION << std::endl;
     std::cout << "trie depth: " << trie_depth << std::endl;
     std::cout << "treeblock sizes: " << treeblock_size << std::endl;
+    std::cout << "discount factor: " << discount_factor << std::endl;
 
     level_t max_depth = 32;
     create_level_to_num_children(bit_widths, start_bits, max_depth);

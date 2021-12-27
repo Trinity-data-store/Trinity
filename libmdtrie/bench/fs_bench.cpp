@@ -17,7 +17,7 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node){
     char *line = nullptr;
     size_t len = 0;
     ssize_t read;
-    FILE *fp = fopen("../libmdtrie/bench/data/sample_shuf.txt", "r");
+    FILE *fp = fopen("../data/fs/fs_shuf.txt", "r");
 
     // If the file cannot be open
     if (fp == nullptr)
@@ -205,6 +205,8 @@ int main() {
     std::cout << "dimension: " << DATA_DIMENSION << std::endl;
     std::cout << "trie depth: " << trie_depth << std::endl;
     std::cout << "treeblock sizes: " << treeblock_size << std::endl;
+    std::cout << "discount factor: " << discount_factor << std::endl;
+
     create_level_to_num_children(bit_widths, start_bits, max_depth);
 
     if (DATA_DIMENSION != bit_widths.size() || DATA_DIMENSION != start_bits.size()){

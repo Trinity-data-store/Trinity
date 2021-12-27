@@ -69,8 +69,8 @@ class data_point;
  * level_to_num_children: maps level to number of children a node has at that level
  */
 
-const dimension_t DATA_DIMENSION = 4;
-n_leaves_t total_points_count = 152806264;
+const dimension_t DATA_DIMENSION = 9;
+n_leaves_t total_points_count = 300005812;
 int discount_factor = 1;
 n_leaves_t total_treeblock_num = 0;
 morton_t level_to_num_children[128] = {0};

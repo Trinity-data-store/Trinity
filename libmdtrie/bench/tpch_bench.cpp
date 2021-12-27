@@ -15,7 +15,8 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node){
     auto *mdtrie = new md_trie(max_depth, trie_depth, max_tree_node);
     auto *leaf_point = new data_point();
 
-    std::ifstream infile("/home/ziming/tpch-dbgen/data/orders_lineitem_merged.csv");
+    std::ifstream infile("../data/tpc-h/orders_lineitem_merged.csv");
+
     std::string line;
     std::getline(infile, line);
     std::vector<uint32_t> max_values(DATA_DIMENSION, 0);
@@ -232,6 +233,7 @@ int main() {
     std::cout << "Data Dimension: " << DATA_DIMENSION << std::endl;
     std::cout << "trie depth: " << trie_depth << std::endl;
     std::cout << "treeblock sizes: " << treeblock_size << std::endl;
+    std::cout << "discount factor: " << discount_factor << std::endl;
 
     std::vector<level_t> bit_widths = {8, 32, 16, 24, 32, 32, 32, 32, 32}; // 9 Dimensions;
     std::vector<level_t> start_bits = {0, 0, 8, 16, 0, 0, 0, 0, 0}; // 9 Dimensions;
