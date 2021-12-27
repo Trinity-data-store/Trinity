@@ -42,6 +42,9 @@ public:
     std::vector<level_t> dimension_bits;
     std::vector<level_t> new_start_dimension_bits;
  
+    total_points_count = 152806264;
+    bitmap::CompactPtrVector p_key_to_treeblock_compact(total_points_count);
+
     dimension_bits = {8, 32, 32, 32}; // 4 Dimensions
     new_start_dimension_bits = {0, 0, 0, 0}; // 4 Dimensions
 

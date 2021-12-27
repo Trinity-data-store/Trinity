@@ -72,7 +72,7 @@ TimeStamp GetTimestamp() {
  * level_to_num_children: maps level to number of children a node has at that level
  */
 
-n_leaves_t total_points_count = 300005812;
+n_leaves_t total_points_count = 0;
 int discount_factor = 1;
 n_leaves_t total_treeblock_num = 0;
 morton_t level_to_num_children[128] = {0};
@@ -85,7 +85,7 @@ morton_t level_to_num_children[128] = {0};
  * no_dynamic_sizing: flag to indicate whether we set the treeblock size to the same value.
  */
 
-bitmap::CompactPtrVector p_key_to_treeblock_compact(total_points_count);
+bitmap::CompactPtrVector p_key_to_treeblock_compact;
 std::vector<morton_t> dimension_to_num_bits;
 std::vector<level_t> start_dimension_bits;
 std::vector<int32_t> primary_key_vector;
