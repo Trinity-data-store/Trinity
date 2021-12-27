@@ -202,7 +202,7 @@ int main() {
     level_t max_depth = 32;
 
     total_points_count = 14583357;
-    bitmap::CompactPtrVector p_key_to_treeblock_compact(total_points_count);
+    // p_key_to_treeblock_compact(bitmap::CompactPtrVector(total_points_count));
 
     std::vector<level_t> bit_widths = {32, 32, 32, 32, 24, 24, 32}; // 7 Dimensions    
     std::vector<level_t> start_bits = {0, 0, 0, 0, 0, 0, 0}; // 7 Dimensions    
