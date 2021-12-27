@@ -102,24 +102,23 @@ public:
 
   void range_search(std::vector<int32_t> & _return, const std::vector<int32_t> & start_range, const std::vector<int32_t> & end_range){
     
-    auto *start_range_point = new data_point<DIMENSION>();
+    data_point<DIMENSION> start_range_point;
     for (uint8_t i = 0; i < DIMENSION; i++)
-      start_range_point->set_coordinate(i, start_range[i]);    
+      start_range_point.set_coordinate(i, start_range[i]);    
 
-    auto *end_range_point = new data_point<DIMENSION>();
+    data_point<DIMENSION> end_range_point;
     for (uint8_t i = 0; i < DIMENSION; i++)
-      end_range_point->set_coordinate(i, end_range[i]);     
+      end_range_point.set_coordinate(i, end_range[i]);     
 
-    auto *found_points = new point_array<DIMENSION>();
-    mdtrie_->range_search_trie(start_range_point, end_range_point, mdtrie_->root(), 0, found_points);
+    point_array<DIMENSION> found_points;
+    mdtrie_->range_search_trie(&start_range_point, &end_range_point, mdtrie_->root(), 0, &found_points);
 
-    n_leaves_t n_found_points = found_points->size();
+    n_leaves_t n_found_points = found_points.size();
 
     _return.reserve(n_found_points);
     for (n_leaves_t i = 0; i < n_found_points; i++){
-      _return.emplace_back(found_points->at(i)->read_primary());
+      _return.emplace_back(found_points.at(i)->read_primary());
     }
-
   }
 
   void primary_key_lookup(std::vector<int32_t> & _return, const int32_t primary_key){
@@ -137,6 +136,7 @@ public:
     for (uint8_t i = 0; i < DIMENSION; i++){
       _return.emplace_back(returned_coordinates->get_coordinate(i));
     }      
+    free(node_path_from_primary);
   }
 
   int32_t get_size(){

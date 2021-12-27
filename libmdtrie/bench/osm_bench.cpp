@@ -131,6 +131,7 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node){
         }
 
         primary_key_vector.clear();
+        delete found_points_temp;
     }
     bar3.finish();
 
@@ -190,6 +191,13 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node){
     }
     bar4.finish();
     std::cout << "Lookup Latency: " << (float) diff_primary / checked_points_size << std::endl;
+
+    delete found_points;
+    delete all_points;
+    delete mdtrie;
+    delete leaf_point;
+    delete start_range;
+    delete end_range;
 }
 
 int main() {

@@ -170,5 +170,6 @@ int main(){
     std::cout << found_points.size() << std::endl;
     std::cout << "Range Search end to end latency: " << diff << std::endl;   
 
+    delete data_vector;
     return 0; 
 }

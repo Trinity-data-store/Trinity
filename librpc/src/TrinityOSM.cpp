@@ -133,6 +133,7 @@ int main(){
     cout << "Latency (us): " << latency << endl;
     cout << "Throughput measured from end-to-end Laatency: " << ((float) total_points_count / diff) * 1000000 << endl;
 
+    delete data_vector;
     return 0;
 
 }
