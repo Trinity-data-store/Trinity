@@ -6,10 +6,12 @@ add_executable(MDTrieShardTest
         src/MDTrieShardTest.cpp
         src/MDTrieShardClient.h
         src/MDTrieShard.h
+        src/TrinityBenchShared.h
         src/MDTrieShard.cpp)
 
 add_executable(TrinityFS
         src/TrinityFS.cpp
+        src/TrinityBenchShared.h
         src/MDTrieShardClient.h
         src/MDTrieShard.h
         src/MDTrieShard.cpp)
@@ -18,12 +20,14 @@ add_executable(TrinityOSM
         src/TrinityOSM.cpp
         src/MDTrieShardClient.h
         src/MDTrieShard.h
+        src/TrinityBenchShared.h
         src/MDTrieShard.cpp)
 
 add_executable(TrinityTPCH
         src/TrinityTPCH.cpp
         src/MDTrieShardClient.h
         src/MDTrieShard.h
+        src/TrinityBenchShared.h
         src/MDTrieShard.cpp)
 
 add_executable(MDTrieShardServer
