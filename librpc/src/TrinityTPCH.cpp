@@ -107,7 +107,10 @@ int main(){
     int shard_num = 48;
     int client_num = 128;
     auto client = MDTrieClient(server_ips, shard_num);
-    client.ping();
+    if (!client.ping(2)){
+        std::cerr << "Server setting wrong!" << std::endl;
+        exit(-1);
+    }
 
     TimeStamp start, diff;
 

@@ -32,7 +32,20 @@ uint32_t MDTrieShard_ping_args::read(Protocol_* iprot) {
     if (ftype == ::apache::thrift::protocol::T_STOP) {
       break;
     }
-    xfer += iprot->skip(ftype);
+    switch (fid)
+    {
+      case 1:
+        if (ftype == ::apache::thrift::protocol::T_I32) {
+          xfer += iprot->readI32(this->dataset_idx);
+          this->__isset.dataset_idx = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      default:
+        xfer += iprot->skip(ftype);
+        break;
+    }
     xfer += iprot->readFieldEnd();
   }
 
@@ -47,6 +60,10 @@ uint32_t MDTrieShard_ping_args::write(Protocol_* oprot) const {
   ::apache::thrift::protocol::TOutputRecursionTracker tracker(*oprot);
   xfer += oprot->writeStructBegin("MDTrieShard_ping_args");
 
+  xfer += oprot->writeFieldBegin("dataset_idx", ::apache::thrift::protocol::T_I32, 1);
+  xfer += oprot->writeI32(this->dataset_idx);
+  xfer += oprot->writeFieldEnd();
+
   xfer += oprot->writeFieldStop();
   xfer += oprot->writeStructEnd();
   return xfer;
@@ -58,6 +75,10 @@ uint32_t MDTrieShard_ping_pargs::write(Protocol_* oprot) const {
   uint32_t xfer = 0;
   ::apache::thrift::protocol::TOutputRecursionTracker tracker(*oprot);
   xfer += oprot->writeStructBegin("MDTrieShard_ping_pargs");
+
+  xfer += oprot->writeFieldBegin("dataset_idx", ::apache::thrift::protocol::T_I32, 1);
+  xfer += oprot->writeI32((*(this->dataset_idx)));
+  xfer += oprot->writeFieldEnd();
 
   xfer += oprot->writeFieldStop();
   xfer += oprot->writeStructEnd();
@@ -85,7 +106,20 @@ uint32_t MDTrieShard_ping_result::read(Protocol_* iprot) {
     if (ftype == ::apache::thrift::protocol::T_STOP) {
       break;
     }
-    xfer += iprot->skip(ftype);
+    switch (fid)
+    {
+      case 0:
+        if (ftype == ::apache::thrift::protocol::T_BOOL) {
+          xfer += iprot->readBool(this->success);
+          this->__isset.success = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      default:
+        xfer += iprot->skip(ftype);
+        break;
+    }
     xfer += iprot->readFieldEnd();
   }
 
@@ -101,6 +135,11 @@ uint32_t MDTrieShard_ping_result::write(Protocol_* oprot) const {
 
   xfer += oprot->writeStructBegin("MDTrieShard_ping_result");
 
+  if (this->__isset.success) {
+    xfer += oprot->writeFieldBegin("success", ::apache::thrift::protocol::T_BOOL, 0);
+    xfer += oprot->writeBool(this->success);
+    xfer += oprot->writeFieldEnd();
+  }
   xfer += oprot->writeFieldStop();
   xfer += oprot->writeStructEnd();
   return xfer;
@@ -127,7 +166,20 @@ uint32_t MDTrieShard_ping_presult::read(Protocol_* iprot) {
     if (ftype == ::apache::thrift::protocol::T_STOP) {
       break;
     }
-    xfer += iprot->skip(ftype);
+    switch (fid)
+    {
+      case 0:
+        if (ftype == ::apache::thrift::protocol::T_BOOL) {
+          xfer += iprot->readBool((*(this->success)));
+          this->__isset.success = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      default:
+        xfer += iprot->skip(ftype);
+        break;
+    }
     xfer += iprot->readFieldEnd();
   }
 
@@ -1402,19 +1454,20 @@ uint32_t MDTrieShard_get_size_presult::read(Protocol_* iprot) {
 }
 
 template <class Protocol_>
-void MDTrieShardClientT<Protocol_>::ping()
+bool MDTrieShardClientT<Protocol_>::ping(const int32_t dataset_idx)
 {
-  send_ping();
-  recv_ping();
+  send_ping(dataset_idx);
+  return recv_ping();
 }
 
 template <class Protocol_>
-void MDTrieShardClientT<Protocol_>::send_ping()
+void MDTrieShardClientT<Protocol_>::send_ping(const int32_t dataset_idx)
 {
   int32_t cseqid = 0;
   this->oprot_->writeMessageBegin("ping", ::apache::thrift::protocol::T_CALL, cseqid);
 
   MDTrieShard_ping_pargs args;
+  args.dataset_idx = &dataset_idx;
   args.write(this->oprot_);
 
   this->oprot_->writeMessageEnd();
@@ -1423,7 +1476,7 @@ void MDTrieShardClientT<Protocol_>::send_ping()
 }
 
 template <class Protocol_>
-void MDTrieShardClientT<Protocol_>::recv_ping()
+bool MDTrieShardClientT<Protocol_>::recv_ping()
 {
 
   int32_t rseqid = 0;
@@ -1448,12 +1501,17 @@ void MDTrieShardClientT<Protocol_>::recv_ping()
     this->iprot_->readMessageEnd();
     this->iprot_->getTransport()->readEnd();
   }
+  bool _return;
   MDTrieShard_ping_presult result;
+  result.success = &_return;
   result.read(this->iprot_);
   this->iprot_->readMessageEnd();
   this->iprot_->getTransport()->readEnd();
 
-  return;
+  if (result.__isset.success) {
+    return _return;
+  }
+  throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "ping failed: unknown result");
 }
 
 template <class Protocol_>
@@ -1888,7 +1946,8 @@ void MDTrieShardProcessorT<Protocol_>::process_ping(int32_t seqid, ::apache::thr
 
   MDTrieShard_ping_result result;
   try {
-    iface_->ping();
+    result.success = iface_->ping(args.dataset_idx);
+    result.__isset.success = true;
   } catch (const std::exception& e) {
     if (this->eventHandler_.get() != nullptr) {
       this->eventHandler_->handlerError(ctx, "MDTrieShard.ping");
@@ -1942,7 +2001,8 @@ void MDTrieShardProcessorT<Protocol_>::process_ping(int32_t seqid, Protocol_* ip
 
   MDTrieShard_ping_result result;
   try {
-    iface_->ping();
+    result.success = iface_->ping(args.dataset_idx);
+    result.__isset.success = true;
   } catch (const std::exception& e) {
     if (this->eventHandler_.get() != nullptr) {
       this->eventHandler_->handlerError(ctx, "MDTrieShard.ping");
@@ -2641,20 +2701,21 @@ template <class Protocol_>
 }
 
 template <class Protocol_>
-void MDTrieShardConcurrentClientT<Protocol_>::ping()
+bool MDTrieShardConcurrentClientT<Protocol_>::ping(const int32_t dataset_idx)
 {
-  int32_t seqid = send_ping();
-  recv_ping(seqid);
+  int32_t seqid = send_ping(dataset_idx);
+  return recv_ping(seqid);
 }
 
 template <class Protocol_>
-int32_t MDTrieShardConcurrentClientT<Protocol_>::send_ping()
+int32_t MDTrieShardConcurrentClientT<Protocol_>::send_ping(const int32_t dataset_idx)
 {
   int32_t cseqid = this->sync_->generateSeqId();
   ::apache::thrift::async::TConcurrentSendSentry sentry(this->sync_.get());
   this->oprot_->writeMessageBegin("ping", ::apache::thrift::protocol::T_CALL, cseqid);
 
   MDTrieShard_ping_pargs args;
+  args.dataset_idx = &dataset_idx;
   args.write(this->oprot_);
 
   this->oprot_->writeMessageEnd();
@@ -2666,7 +2727,7 @@ int32_t MDTrieShardConcurrentClientT<Protocol_>::send_ping()
 }
 
 template <class Protocol_>
-void MDTrieShardConcurrentClientT<Protocol_>::recv_ping(const int32_t seqid)
+bool MDTrieShardConcurrentClientT<Protocol_>::recv_ping(const int32_t seqid)
 {
 
   int32_t rseqid = 0;
@@ -2704,13 +2765,19 @@ void MDTrieShardConcurrentClientT<Protocol_>::recv_ping(const int32_t seqid)
         using ::apache::thrift::protocol::TProtocolException;
         throw TProtocolException(TProtocolException::INVALID_DATA);
       }
+      bool _return;
       MDTrieShard_ping_presult result;
+      result.success = &_return;
       result.read(this->iprot_);
       this->iprot_->readMessageEnd();
       this->iprot_->getTransport()->readEnd();
 
-      sentry.commit();
-      return;
+      if (result.__isset.success) {
+        sentry.commit();
+        return _return;
+      }
+      // in a bad state, don't commit
+      throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "ping failed: unknown result");
     }
     // seqid != rseqid
     this->sync_->updatePending(fname, mtype, rseqid);

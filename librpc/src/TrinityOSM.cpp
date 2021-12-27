@@ -18,7 +18,7 @@ using namespace std;
 using namespace apache::thrift;
 using namespace apache::thrift::protocol;
 using namespace apache::thrift::transport;
-const int DIMENSION = 9;
+const int DIMENSION = 4;
 
 vector<vector <int32_t>> *get_data_vector(std::vector<int32_t> &max_values, std::vector<int32_t> &min_values){
 
@@ -90,7 +90,10 @@ int main(){
     int shard_num = 48;
     int client_num = 128;
     auto client = MDTrieClient(server_ips, shard_num);
-    client.ping();
+    if (!client.ping(1)){
+        std::cerr << "Server setting wrong!" << std::endl;
+        exit(-1);
+    }
 
     TimeStamp start, diff;
 

@@ -65,11 +65,14 @@ public:
     return connect(ip_address, port_num);
   }
 
-  void ping(){
+  bool ping(int32_t dataset_idx){
 
     int client_count = shard_vector_.size();
     for (uint8_t i = 0; i < client_count; i++)
-      shard_vector_[i].ping();
+      if (!shard_vector_[i].ping(dataset_idx)){
+        return false;
+      }
+    return true;
   }
 
   void insert(vector<int32_t> point, int32_t p_key){

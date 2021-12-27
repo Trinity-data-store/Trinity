@@ -22,7 +22,7 @@
 class MDTrieShardIf {
  public:
   virtual ~MDTrieShardIf() {}
-  virtual void ping() = 0;
+  virtual bool ping(const int32_t dataset_idx) = 0;
   virtual int32_t add(const int32_t num1, const int32_t num2) = 0;
   virtual int32_t insert(const std::vector<int32_t> & point, const int32_t primary_key) = 0;
   virtual bool check(const std::vector<int32_t> & point) = 0;
@@ -58,8 +58,9 @@ class MDTrieShardIfSingletonFactory : virtual public MDTrieShardIfFactory {
 class MDTrieShardNull : virtual public MDTrieShardIf {
  public:
   virtual ~MDTrieShardNull() {}
-  void ping() {
-    return;
+  bool ping(const int32_t /* dataset_idx */) {
+    bool _return = false;
+    return _return;
   }
   int32_t add(const int32_t /* num1 */, const int32_t /* num2 */) {
     int32_t _return = 0;
@@ -85,19 +86,30 @@ class MDTrieShardNull : virtual public MDTrieShardIf {
   }
 };
 
+typedef struct _MDTrieShard_ping_args__isset {
+  _MDTrieShard_ping_args__isset() : dataset_idx(false) {}
+  bool dataset_idx :1;
+} _MDTrieShard_ping_args__isset;
 
 class MDTrieShard_ping_args {
  public:
 
   MDTrieShard_ping_args(const MDTrieShard_ping_args&);
   MDTrieShard_ping_args& operator=(const MDTrieShard_ping_args&);
-  MDTrieShard_ping_args() {
+  MDTrieShard_ping_args() : dataset_idx(0) {
   }
 
   virtual ~MDTrieShard_ping_args() noexcept;
+  int32_t dataset_idx;
 
-  bool operator == (const MDTrieShard_ping_args & /* rhs */) const
+  _MDTrieShard_ping_args__isset __isset;
+
+  void __set_dataset_idx(const int32_t val);
+
+  bool operator == (const MDTrieShard_ping_args & rhs) const
   {
+    if (!(dataset_idx == rhs.dataset_idx))
+      return false;
     return true;
   }
   bool operator != (const MDTrieShard_ping_args &rhs) const {
@@ -119,25 +131,37 @@ class MDTrieShard_ping_pargs {
 
 
   virtual ~MDTrieShard_ping_pargs() noexcept;
+  const int32_t* dataset_idx;
 
   template <class Protocol_>
   uint32_t write(Protocol_* oprot) const;
 
 };
 
+typedef struct _MDTrieShard_ping_result__isset {
+  _MDTrieShard_ping_result__isset() : success(false) {}
+  bool success :1;
+} _MDTrieShard_ping_result__isset;
 
 class MDTrieShard_ping_result {
  public:
 
   MDTrieShard_ping_result(const MDTrieShard_ping_result&);
   MDTrieShard_ping_result& operator=(const MDTrieShard_ping_result&);
-  MDTrieShard_ping_result() {
+  MDTrieShard_ping_result() : success(0) {
   }
 
   virtual ~MDTrieShard_ping_result() noexcept;
+  bool success;
 
-  bool operator == (const MDTrieShard_ping_result & /* rhs */) const
+  _MDTrieShard_ping_result__isset __isset;
+
+  void __set_success(const bool val);
+
+  bool operator == (const MDTrieShard_ping_result & rhs) const
   {
+    if (!(success == rhs.success))
+      return false;
     return true;
   }
   bool operator != (const MDTrieShard_ping_result &rhs) const {
@@ -153,12 +177,19 @@ class MDTrieShard_ping_result {
 
 };
 
+typedef struct _MDTrieShard_ping_presult__isset {
+  _MDTrieShard_ping_presult__isset() : success(false) {}
+  bool success :1;
+} _MDTrieShard_ping_presult__isset;
 
 class MDTrieShard_ping_presult {
  public:
 
 
   virtual ~MDTrieShard_ping_presult() noexcept;
+  bool* success;
+
+  _MDTrieShard_ping_presult__isset __isset;
 
   template <class Protocol_>
   uint32_t read(Protocol_* iprot);
@@ -860,9 +891,9 @@ class MDTrieShardClientT : virtual public MDTrieShardIf {
   std::shared_ptr< ::apache::thrift::protocol::TProtocol> getOutputProtocol() {
     return this->poprot_;
   }
-  void ping();
-  void send_ping();
-  void recv_ping();
+  bool ping(const int32_t dataset_idx);
+  void send_ping(const int32_t dataset_idx);
+  bool recv_ping();
   int32_t add(const int32_t num1, const int32_t num2);
   void send_add(const int32_t num1, const int32_t num2);
   int32_t recv_add();
@@ -980,13 +1011,13 @@ class MDTrieShardMultiface : virtual public MDTrieShardIf {
     ifaces_.push_back(iface);
   }
  public:
-  void ping() {
+  bool ping(const int32_t dataset_idx) {
     size_t sz = ifaces_.size();
     size_t i = 0;
     for (; i < (sz - 1); ++i) {
-      ifaces_[i]->ping();
+      ifaces_[i]->ping(dataset_idx);
     }
-    ifaces_[i]->ping();
+    return ifaces_[i]->ping(dataset_idx);
   }
 
   int32_t add(const int32_t num1, const int32_t num2) {
@@ -1078,9 +1109,9 @@ class MDTrieShardConcurrentClientT : virtual public MDTrieShardIf {
   std::shared_ptr< ::apache::thrift::protocol::TProtocol> getOutputProtocol() {
     return this->poprot_;
   }
-  void ping();
-  int32_t send_ping();
-  void recv_ping(const int32_t seqid);
+  bool ping(const int32_t dataset_idx);
+  int32_t send_ping(const int32_t dataset_idx);
+  bool recv_ping(const int32_t seqid);
   int32_t add(const int32_t num1, const int32_t num2);
   int32_t send_add(const int32_t num1, const int32_t num2);
   int32_t recv_add(const int32_t seqid);
