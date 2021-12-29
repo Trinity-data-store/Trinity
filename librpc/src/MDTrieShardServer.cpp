@@ -167,7 +167,6 @@ class MDTrieCloneFactory : virtual public MDTrieShardIfFactory {
   }
 };
 
-
 class MDTrieServerCoordinator {
 
 public:

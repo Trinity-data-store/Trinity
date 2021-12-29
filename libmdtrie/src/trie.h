@@ -24,9 +24,8 @@ template<dimension_t DIMENSION>
 class md_trie {
 public:
     explicit md_trie(level_t max_depth, level_t trie_depth,
-                     preorder_t max_tree_nodes, uint8_t initial_capacity_nodes = 1){ 
+                     preorder_t max_tree_nodes){ 
     
-        initial_tree_capacity_ = initial_capacity_nodes;
         max_depth_ = max_depth;
         trie_depth_ = trie_depth;
         max_tree_nodes_ = max_tree_nodes;
@@ -64,7 +63,7 @@ public:
 
         tree_block<DIMENSION> *current_treeblock = nullptr;
         if (current_trie_node->get_block() == nullptr) {
-            current_treeblock = new tree_block<DIMENSION>(trie_depth_, initial_tree_capacity_ /*is 1*/, 1 << level_to_num_children[trie_depth_], 1, max_depth_, max_tree_nodes_, current_trie_node);
+            current_treeblock = new tree_block<DIMENSION>(trie_depth_, 1 /* initial_tree_capacity_ */, 1 << level_to_num_children[trie_depth_], 1, max_depth_, max_tree_nodes_, current_trie_node);
             current_trie_node->set_block(current_treeblock);
         } 
         else {
@@ -95,7 +94,6 @@ public:
         uint64_t total_size = sizeof(uint64_t); // root_ is will be counted later
         total_size += sizeof(uint8_t) * 2; // max_depth_ & trie_depth_
         total_size += sizeof(uint16_t); // max_tree_nodes_
-        total_size += sizeof(uint16_t); // initial_tree_capacity_;
 
         // Primary Key to Treeblock Index    
         total_size += sizeof(uint64_t) + total_points_count / discount_factor * sizeof(uint32_t);
@@ -171,7 +169,6 @@ private:
     trie_node<DIMENSION> *root_ = nullptr;
     level_t max_depth_;
     level_t trie_depth_;
-    preorder_t initial_tree_capacity_;
     preorder_t max_tree_nodes_;
 };
 
