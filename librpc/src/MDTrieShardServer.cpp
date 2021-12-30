@@ -170,38 +170,17 @@ class MDTrieCloneFactory : virtual public MDTrieShardIfFactory {
 class MDTrieServerCoordinator {
 
 public:
-    MDTrieServerCoordinator(int port_num) {
 
-      start_server(port_num, "172.29.249.30");
-    }
-
-    MDTrieServerCoordinator(std::string ip_address, int port_num){
-      start_server(port_num, ip_address);
-    }
-
-    MDTrieServerCoordinator(std::string ip_address, int port_num, int server_count){
+    MDTrieServerCoordinator(std::string ip_address, int port_num, int shard_count){
       std::vector<std::future<void>> futures;
 
-      for(int i = 0; i < server_count; ++i) {
+      for(int i = 0; i < shard_count; ++i) {
         futures.push_back(std::async(start_server, port_num + i, ip_address));
       }
 
       for(auto &e : futures) {
         e.get();
       }
-    }
-
-    MDTrieServerCoordinator(int port_num, int shard_count) {
-
-        std::vector<std::future<void>> futures;
-
-        for(int i = 0; i < shard_count; ++i) {
-          futures.push_back(std::async(start_server, port_num + i, "172.29.249.44"));
-        }
-
-        for(auto &e : futures) {
-          e.get();
-        }
     }
 
     static void start_server(int port_num, std::string ip_address){
@@ -219,7 +198,6 @@ public:
 private:
 
 };
-
 
 int main(int argc, char *argv[]){
 

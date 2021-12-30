@@ -20,24 +20,6 @@ class MDTrieClient {
 
 public:
 
-  MDTrieClient(){
-
-    shard_vector_.reserve(NUM_SERVERS);
-
-    for (int i = 0; i < NUM_SERVERS; ++i) {
-      shard_vector_.push_back(launch_port(START_PORT_NUMBER + i, "172.29.249.30"));
-    }
-  }
-
-  MDTrieClient(std::vector<std::string> server_ips){
-
-    shard_vector_.reserve(server_ips.size());
-
-    for (unsigned int i = 0; i < server_ips.size(); ++i) {
-      shard_vector_.push_back(launch_port(9090, server_ips[i]));
-    }
-  }
-
   MDTrieClient(std::vector<std::string> server_ips, int shard_count){
 
     shard_vector_.reserve(server_ips.size());
