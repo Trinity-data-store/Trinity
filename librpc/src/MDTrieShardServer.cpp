@@ -223,12 +223,12 @@ private:
 
 int main(int argc, char *argv[]){
 
-  if (argc == 2){
-      MDTrieServerCoordinator(argv[1], 9090, 48);
-    return 0;
+  if (argc == 3){
+      MDTrieServerCoordinator(argv[1], 9090, stoi(argv[2]));
   }
-
-  MDTrieServerCoordinator(9090, 72);
+  else {
+    std::cerr << "Wrong Input! ./MdTrieShardServer [IP Address] [Number of Shards]" << std::endl;
+    exit(-1);
+  }
   return 0;
-  
 }
