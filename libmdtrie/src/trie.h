@@ -162,7 +162,6 @@ public:
             (*start_range) = original_start_range;
             (*end_range) = original_end_range;                
         }
-
     }
     
 private:

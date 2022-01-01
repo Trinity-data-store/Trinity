@@ -15,7 +15,6 @@ public:
         
         is_leaf_ = is_leaf;
         if (!is_leaf){
-
             trie_or_treeblock_ptr_ = (trie_node<DIMENSION> **)calloc(sizeof(trie_node<DIMENSION> *), 1 << num_dimensions);
         }
         num_children_ = 1 << num_dimensions;
@@ -53,7 +52,8 @@ public:
 
         if (!is_leaf_)
             total_size += sizeof(trie_node<DIMENSION> *) * num_children_; // Array of Trie node ptrs
-        // is_leaf and num_children_ can be deduced from outside
+        // is_leaf and num_children_ can be deduced from outside and only used for size calculations
+
         return total_size;
     }
 
@@ -96,6 +96,8 @@ private:
     bool is_leaf_ = false;
     void *trie_or_treeblock_ptr_ = NULL;
     trie_node<DIMENSION> *parent_trie_node_ = NULL; 
+
+    // Only used for trie node size calculation
     morton_t parent_symbol_ = 0; 
     dimension_t num_children_ = 0;
 };

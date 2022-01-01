@@ -27,7 +27,7 @@ int WARMUP_FACTOR = 10;
  * Insertion
  */
 
-std::tuple<uint32_t, uint32_t, uint32_t> insert_each_client(vector<vector <int32_t>> *data_vector, int client_number, int client_index, std::vector<std::string> server_ips){
+uint32_t insert_each_client(vector<vector <int32_t>> *data_vector, int client_number, int client_index, std::vector<std::string> server_ips){
 
   auto client = MDTrieClient(server_ips, client_number);
   uint32_t start_pos = data_vector->size() / client_number * client_index;
@@ -54,7 +54,6 @@ std::tuple<uint32_t, uint32_t, uint32_t> insert_each_client(vector<vector <int32
         for (uint32_t j = current_pos - sent_count; j < current_pos; j++){
             client.insert_rec(j);
             if (j == end_pos - warmup_cooldown_points){
-
               diff = GetTimestamp() - start;
             }
         }
@@ -71,12 +70,12 @@ std::tuple<uint32_t, uint32_t, uint32_t> insert_each_client(vector<vector <int32
         diff = GetTimestamp() - start;
       }
   }
-  return std::make_tuple(((float) (total_points_to_insert - 2 * warmup_cooldown_points) / diff) * 1000000, diff, total_points_to_insert - 2 * warmup_cooldown_points);
+  return ((float) (total_points_to_insert - 2 * warmup_cooldown_points) / diff) * 1000000;
 }
 
-std::tuple<uint32_t, float> total_client_insert(vector<vector <int32_t>> *data_vector, int client_number, std::vector<std::string> server_ips){
+uint32_t total_client_insert(vector<vector <int32_t>> *data_vector, int client_number, std::vector<std::string> server_ips){
 
-  std::vector<std::future<std::tuple<uint32_t, uint32_t, uint32_t>>> threads; 
+  std::vector<std::future<uint32_t>> threads; 
   threads.reserve(client_number);
 
   for (int i = 0; i < client_number; i++){
@@ -85,24 +84,17 @@ std::tuple<uint32_t, float> total_client_insert(vector<vector <int32_t>> *data_v
   }  
 
   uint32_t total_throughput = 0;
-  uint32_t total_latency = 0;
-  uint32_t total_points = 0;
-
   for (int i = 0; i < client_number; i++){
-
-    std::tuple<uint32_t, uint32_t, uint32_t> return_tuple = threads[i].get();
-    total_throughput += std::get<0>(return_tuple);
-    total_latency += std::get<1>(return_tuple);    
-    total_points += std::get<2>(return_tuple);
+    total_throughput += threads[i].get();
   } 
-  return std::make_tuple(total_throughput, (float) total_latency / total_points);  
+  return total_throughput;  
 }
 
 /**
  * Lookup given primary keys
  */
 
-std::tuple<uint32_t, uint32_t, uint32_t> lookup_each_client(vector<vector <int32_t>> *data_vector, int client_number, int client_index, std::vector<std::string> server_ips){
+uint32_t lookup_each_client(vector<vector <int32_t>> *data_vector, int client_number, int client_index, std::vector<std::string> server_ips){
 
   auto client = MDTrieClient(server_ips, client_number);
 
@@ -151,31 +143,23 @@ std::tuple<uint32_t, uint32_t, uint32_t> lookup_each_client(vector<vector <int32
       client.primary_key_lookup_rec(rec_vect, j);
   }
 
-  return std::make_tuple(((float) (total_points_to_lookup - 2 * warmup_cooldown_points) / diff) * 1000000, diff, total_points_to_lookup - 2 * warmup_cooldown_points);
+  return ((float) (total_points_to_lookup - 2 * warmup_cooldown_points) / diff) * 1000000;
 }
 
-std::tuple<uint32_t, float> total_client_lookup(vector<vector <int32_t>> *data_vector, int client_number, std::vector<std::string> server_ips){
+uint32_t total_client_lookup(vector<vector <int32_t>> *data_vector, int client_number, std::vector<std::string> server_ips){
 
-  std::vector<std::future<std::tuple<uint32_t, uint32_t, uint32_t>>> threads; 
+  std::vector<std::future<uint32_t>> threads; 
   threads.reserve(client_number);
 
   for (int i = 0; i < client_number; i++){
-
     threads.push_back(std::async(lookup_each_client, data_vector, client_number, i, server_ips));
   }  
 
   uint32_t total_throughput = 0;
-  uint32_t total_latency = 0;
-  uint32_t total_points = 0;
   for (int i = 0; i < client_number; i++){
-
-    std::tuple<uint32_t, uint32_t, uint32_t> return_tuple = threads[i].get();
-    total_throughput += std::get<0>(return_tuple);
-    total_latency += std::get<1>(return_tuple);    
-    total_points += std::get<2>(return_tuple);
+    total_throughput += threads[i].get();
   } 
-
-  return std::make_tuple(total_throughput, (float) total_latency / total_points);  
+  return total_throughput;  
 }
 
 #endif //TrinityBenchShared_H

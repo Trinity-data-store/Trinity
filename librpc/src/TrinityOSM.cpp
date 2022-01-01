@@ -103,35 +103,28 @@ int main(){
 
     std::tuple<uint32_t, float> return_tuple;
     uint32_t throughput;
-    float latency;
-
+    
     std::vector<int32_t> max_values(DIMENSION, 0);
     std::vector<int32_t> min_values(DIMENSION, 2147483647);
     vector<vector <int32_t>> *data_vector = get_data_vector(max_values, min_values);
 
     start = GetTimestamp();
-    return_tuple = total_client_insert(data_vector, client_num, server_ips);
-    throughput = std::get<0>(return_tuple);
-    latency = std::get<1>(return_tuple);
+    throughput = total_client_insert(data_vector, client_num, server_ips);
     diff = GetTimestamp() - start;
 
-    cout << "Insertion Throughput measured from thread (pt / seconds): " << throughput << endl;
-    cout << "Throughput measured from end-to-end Laatency: " << ((float) total_points_count / diff) * 1000000 << endl;
-    cout << "Latency (us): " << latency << endl;
+    cout << "Insertion Throughput (pt / seconds): " << throughput << endl;
+    cout << "End-to-end Latency (us): " << diff << endl;
+    cout << "Storage: " << client.get_size() << endl;
 
     /**   
         Point Lookup given primary key
     */
 
     start = GetTimestamp();
-    return_tuple = total_client_lookup(data_vector, client_num, server_ips);
-    throughput = std::get<0>(return_tuple);
-    latency = std::get<1>(return_tuple);
+    throughput = total_client_lookup(data_vector, client_num, server_ips);
 
     diff = GetTimestamp() - start;
-    cout << "Primary Key Lookup Throughput measured from thread (pt / seconds): " << throughput << endl;
-    cout << "Latency (us): " << latency << endl;
-    cout << "Throughput measured from end-to-end Laatency: " << ((float) total_points_count / diff) * 1000000 << endl;
+    cout << "Primary Key Lookup Throughput (pt / seconds): " << throughput << endl;
 
     delete data_vector;
     return 0;
