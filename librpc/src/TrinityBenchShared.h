@@ -40,16 +40,15 @@ uint32_t insert_each_client(vector<vector <int32_t>> *data_vector, int client_nu
   uint32_t warmup_cooldown_points = total_points_to_insert / WARMUP_FACTOR;
 
   int sent_count = 0;
-  uint32_t current_pos;
 
-  TimeStamp start = 0; 
-  TimeStamp diff = 0;
+  TimeStamp start, diff = 0; 
 
-  for (current_pos = start_pos; current_pos <= end_pos; current_pos++){
+  for (uint32_t current_pos = start_pos; current_pos <= end_pos; current_pos++){
     
     if (current_pos == start_pos + warmup_cooldown_points){
       start = GetTimestamp();
     }
+    
     if (sent_count != 0 && sent_count % BATCH_SIZE == 0){
         for (uint32_t j = current_pos - sent_count; j < current_pos; j++){
             client.insert_rec(j);
@@ -108,12 +107,10 @@ uint32_t lookup_each_client(vector<vector <int32_t>> *data_vector, int client_nu
   uint32_t warmup_cooldown_points = total_points_to_lookup / WARMUP_FACTOR;
 
   int sent_count = 0;
-  uint32_t current_pos;
 
-  TimeStamp start = 0; 
-  TimeStamp diff = 0;
+  TimeStamp start, diff = 0; 
 
-  for (current_pos = start_pos; current_pos <= end_pos; current_pos++){
+  for (uint32_t current_pos = start_pos; current_pos <= end_pos; current_pos++){
     
     if (current_pos == start_pos + warmup_cooldown_points){
       start = GetTimestamp();
