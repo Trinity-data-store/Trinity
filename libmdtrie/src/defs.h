@@ -85,7 +85,7 @@ morton_t level_to_num_children[128] = {0};
  * no_dynamic_sizing: flag to indicate whether we set the treeblock size to the same value.
  */
 
-bitmap::CompactPtrVector p_key_to_treeblock_compact(300005812);
+bitmap::CompactPtrVector p_key_to_treeblock_compact(14583357);
 std::vector<morton_t> dimension_to_num_bits;
 std::vector<level_t> start_dimension_bits;
 std::vector<int32_t> primary_key_vector;

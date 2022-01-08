@@ -240,7 +240,6 @@ int main() {
     uint32_t treeblock_size = 512;
     discount_factor = 10;
     total_points_count = 300005812;
-    // p_key_to_treeblock_compact(bitmap::CompactPtrVector(total_points_count));
     
     std::cout << "Data Dimension: " << DIMENSION << std::endl;
     std::cout << "trie depth: " << trie_depth << std::endl;
