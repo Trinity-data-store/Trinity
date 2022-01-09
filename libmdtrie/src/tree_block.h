@@ -997,7 +997,7 @@ public:
     void range_search_treeblock(data_point<DIMENSION> *start_range, data_point<DIMENSION> *end_range, tree_block<DIMENSION> *current_block, level_t level, 
                                             preorder_t current_node, preorder_t current_node_pos,
                                             preorder_t prev_node, preorder_t prev_node_pos,
-                                            preorder_t current_frontier, preorder_t current_primary, point_array<DIMENSION> *found_points) {
+                                            preorder_t current_frontier, preorder_t current_primary, std::vector<int32_t> &found_points) {
 
         if (level == max_depth_) {
             
@@ -1013,13 +1013,7 @@ public:
             for (n_leaves_t i = 0; i < list_size; i++)
             {
                 auto primary_key = primary_key_list[current_primary].get(i);
-                auto *leaf = new data_point<DIMENSION>();
-
-                leaf->set(start_range->get());
-                leaf->set_primary(primary_key);
-
-                found_points->add_leaf(leaf);
-                primary_key_vector.push_back(primary_key);
+                found_points.push_back(primary_key);
             }
             return;
         }

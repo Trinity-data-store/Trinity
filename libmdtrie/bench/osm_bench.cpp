@@ -2,7 +2,6 @@
 #include <unistd.h>
 #include <sys/time.h>
 #include <climits>
-#include <tqdm.h>
 #include <vector>
 #include <iostream>
 #include <fstream>
@@ -11,7 +10,7 @@ const dimension_t DIMENSION = 4;
 
 void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node){
     
-    point_array<DIMENSION> found_points;
+    std::vector<int32_t> found_points;
     md_trie<DIMENSION> mdtrie(max_depth, trie_depth, max_tree_node);
     data_point<DIMENSION> leaf_point;
 
@@ -95,9 +94,10 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node){
             start_range.set_coordinate(j, min[j] + (max[j] - min[j] + 1) / 10 * (rand() % 10));
             end_range.set_coordinate(j, start_range.get_coordinate(j) + (max[j] - start_range.get_coordinate(j) + 1) / 3 * (rand() % 3));
         }
-        point_array<DIMENSION> found_points_temp;
+        std::vector<int32_t> primary_key_vector;
+
         start = GetTimestamp();
-        mdtrie.range_search_trie(&start_range, &end_range, mdtrie.root(), 0, &found_points_temp);
+        mdtrie.range_search_trie(&start_range, &end_range, mdtrie.root(), 0, primary_key_vector);
         diff = GetTimestamp() - start;
         if (primary_key_vector.size() >= 1000){
             file << primary_key_vector.size() << "," << diff << "," << std::endl;
@@ -106,7 +106,6 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node){
             if (itr % (total_itr / 20) == 0)
                 std::cout << "range search - itr: " << itr << std::endl;
         }
-        primary_key_vector.clear();
     }
 
     /**
@@ -119,7 +118,7 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node){
     }
 
     start = GetTimestamp();
-    mdtrie.range_search_trie(&start_range, &end_range, mdtrie.root(), 0, &found_points);
+    mdtrie.range_search_trie(&start_range, &end_range, mdtrie.root(), 0, found_points);
     diff = GetTimestamp() - start;
 
     std::cout << "found_pts size: " << found_points.size() << std::endl;
@@ -136,8 +135,7 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node){
     for (n_leaves_t i = 0; i < found_points_size; i += 5){
         checked_points_size++;
 
-        data_point<DIMENSION> *point = found_points.at(i);
-        n_leaves_t returned_primary_key = point->read_primary();
+        n_leaves_t returned_primary_key = found_points[i];
         std::vector<morton_t> node_path_from_primary(max_depth + 1);
 
         tree_block<DIMENSION> *t_ptr = (tree_block<DIMENSION> *) (p_key_to_treeblock_compact->At(returned_primary_key));
@@ -145,15 +143,10 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node){
         start = GetTimestamp();
         morton_t parent_symbol_from_primary = t_ptr->get_node_path_primary_key(returned_primary_key, node_path_from_primary);
         node_path_from_primary[max_depth - 1] = parent_symbol_from_primary;
-        data_point<DIMENSION> *returned_coordinates = t_ptr->node_path_to_coordinates(node_path_from_primary, DIMENSION);
+        t_ptr->node_path_to_coordinates(node_path_from_primary, DIMENSION);
         diff_primary += GetTimestamp() - start;
-
-        for (dimension_t j = 0; j < DIMENSION; j++){
-            if (returned_coordinates->get_coordinate(j) != point->get_coordinate(j)){
-                raise(SIGINT);
-            }
-        }    
     }
+
     std::cout << "Lookup Latency: " << (float) diff_primary / checked_points_size << std::endl;
 }
 

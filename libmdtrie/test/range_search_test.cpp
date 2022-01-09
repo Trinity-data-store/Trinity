@@ -44,18 +44,21 @@ bool test_range_search(n_leaves_t n_points, level_t max_depth, level_t trie_dept
     }
     data_point<DIMENSION> start_range;
     data_point<DIMENSION> end_range;
-    point_array<DIMENSION> found_points;
+
     for (uint32_t itr = 1; itr <= n_itr; itr++) {
+
+        std::vector<int32_t> found_points;
+
         for (dimension_t i = 0; i < DIMENSION; i++) {
             start_range.set_coordinate(i, min[i] + rand() % (max[i] - min[i] + 1));
             end_range.set_coordinate(i, start_range.get_coordinate(i) + rand() % (max[i] - start_range.get_coordinate(i) + 1));
         }
 
-        mdtrie->range_search_trie(&start_range, &end_range, mdtrie->root(), 0, &found_points);
+        mdtrie->range_search_trie(&start_range, &end_range, mdtrie->root(), 0, found_points);
 
         for (n_leaves_t i = 0; i < found_points.size(); i++) {
-            data_point<DIMENSION> *leaf = found_points.at(i);
-            if (!mdtrie->check(leaf)) {
+            data_point<DIMENSION> leaf = all_leaf_points[found_points[i]];
+            if (!mdtrie->check(&leaf)) {
                 return false;
             }
         }
@@ -78,7 +81,6 @@ bool test_range_search(n_leaves_t n_points, level_t max_depth, level_t trie_dept
         if (correct_found_size != found_points.size())
             return false;
 
-        found_points.reset();
     }
 
     delete mdtrie;

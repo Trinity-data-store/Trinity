@@ -110,15 +110,7 @@ public:
     for (uint8_t i = 0; i < DIMENSION; i++)
       end_range_point.set_coordinate(i, end_range[i]);     
 
-    point_array<DIMENSION> found_points;
-    mdtrie_->range_search_trie(&start_range_point, &end_range_point, mdtrie_->root(), 0, &found_points);
-
-    n_leaves_t n_found_points = found_points.size();
-
-    _return.reserve(n_found_points);
-    for (n_leaves_t i = 0; i < n_found_points; i++){
-      _return.emplace_back(found_points.at(i)->read_primary());
-    }
+    mdtrie_->range_search_trie(&start_range_point, &end_range_point, mdtrie_->root(), 0, _return);
   }
 
   void primary_key_lookup(std::vector<int32_t> & _return, const int32_t primary_key){

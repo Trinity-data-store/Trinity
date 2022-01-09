@@ -45,7 +45,6 @@ vector<vector <int32_t>> *get_data_vector(std::vector<int32_t> &max_values, std:
   while ((read = getline(&line, &len, fp)) != -1)
   {
       vector <int32_t> point(DIMENSION, 0);
-      bar.progress(n_points, n_lines);
       char *token = strtok(line, ",");
       char *ptr;
 
@@ -76,7 +75,6 @@ vector<vector <int32_t>> *get_data_vector(std::vector<int32_t> &max_values, std:
       data_vector->push_back(point);
       n_points ++;
   }
-  bar.finish();
   return data_vector;
 }
 

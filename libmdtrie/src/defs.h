@@ -81,14 +81,12 @@ morton_t level_to_num_children[128] = {0};
  * p_key_to_treeblock_compact: maps primary key to treeblock pointers in a compact pointer vector
  * dimension_to_num_bits: maps the attribute index to bit widths of that attribute
  * start_dimension_bits: the level to which we start considering bits from that attribute
- * primary_key_vector: stores found primary keys when doing range search
  * no_dynamic_sizing: flag to indicate whether we set the treeblock size to the same value.
  */
 
 bitmap::CompactPtrVector *p_key_to_treeblock_compact;
 std::vector<morton_t> dimension_to_num_bits;
 std::vector<level_t> start_dimension_bits;
-std::vector<int32_t> primary_key_vector;
 bool no_dynamic_sizing = true;
 
 void create_level_to_num_children(std::vector<level_t> bit_widths, std::vector<level_t> start_bits, level_t max_level){
