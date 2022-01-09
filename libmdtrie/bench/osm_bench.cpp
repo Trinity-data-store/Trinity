@@ -151,7 +151,8 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node, 
         start = GetTimestamp();
         morton_t parent_symbol_from_primary = t_ptr->get_node_path_primary_key(returned_primary_key, node_path_from_primary);
         node_path_from_primary[max_depth - 1] = parent_symbol_from_primary;
-        t_ptr->node_path_to_coordinates(node_path_from_primary, DIMENSION);
+        data_point<DIMENSION> *coordinates = t_ptr->node_path_to_coordinates(node_path_from_primary, DIMENSION);
+        delete coordinates;
         diff_primary += GetTimestamp() - start;
     }
 

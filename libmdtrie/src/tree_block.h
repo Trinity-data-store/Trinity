@@ -13,7 +13,7 @@ class tree_block {
 public:
 
     explicit tree_block(level_t root_depth, preorder_t node_capacity, node_pos_t bit_capacity, preorder_t num_nodes,
-                        level_t max_depth, preorder_t max_tree_nodes, trie_node<DIMENSION> *parent_trie_node) {
+                        level_t max_depth, preorder_t max_tree_nodes, trie_node<DIMENSION> *parent_trie_node, compressed_bitmap::compressed_bitmap *dfuds = NULL) {
 
         root_depth_ = root_depth;
         node_capacity_ = node_capacity;
@@ -22,7 +22,10 @@ public:
         num_nodes_ = num_nodes;
         bit_capacity_ = bit_capacity;
         total_nodes_bits_ = bit_capacity;
-        dfuds_ = new compressed_bitmap::compressed_bitmap(node_capacity, bit_capacity);
+        if (!dfuds)
+            dfuds_ = new compressed_bitmap::compressed_bitmap(node_capacity, bit_capacity);
+        else
+            dfuds_ = dfuds;
         parent_trie_node_ = parent_trie_node;
     }
 
@@ -525,8 +528,8 @@ public:
                 dest_node += 1;
                 n_nodes_copied += 1;
             }
-            auto new_block = new tree_block<DIMENSION>(selected_node_depth, subtree_size, dest_node_pos, subtree_size, max_depth_, max_tree_nodes_, NULL);
-            new_block->dfuds_ = new_dfuds;
+            auto new_block = new tree_block<DIMENSION>(selected_node_depth, subtree_size, dest_node_pos, subtree_size, max_depth_, max_tree_nodes_, NULL, new_dfuds);
+            // new_block->dfuds_ = new_dfuds;
 
             //  If no pointer is copied to the new block
             if (new_pointer_index == 0) {
@@ -1085,9 +1088,7 @@ public:
     void insert_primary_key_at_present_index(n_leaves_t index, n_leaves_t primary_key){
 
         p_key_to_treeblock_compact->Set(primary_key, this);
-
         primary_key_list[index].push(primary_key);
-      
     }
 
     void insert_primary_key_at_index(n_leaves_t index, n_leaves_t primary_key){
