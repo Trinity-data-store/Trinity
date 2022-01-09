@@ -10,7 +10,8 @@ bool test_random_data(n_leaves_t n_points, level_t max_depth, level_t trie_depth
         Insert random points into the mdtrie
         Check whether the inserted points exist
     */     
-
+    bitmap::CompactPtrVector tmp_ptr_vect(n_points);
+    p_key_to_treeblock_compact = &tmp_ptr_vect;
     create_level_to_num_children(std::vector<level_t>(DIMENSION, max_depth), std::vector<level_t>(DIMENSION, 0), max_depth);
     auto range = (n_leaves_t) pow(2, max_depth);
     auto *mdtrie = new md_trie<DIMENSION>(max_depth, trie_depth, max_tree_nodes);
@@ -36,7 +37,8 @@ bool test_nonexistent_data(n_leaves_t n_points, level_t max_depth, level_t trie_
         Query non-existent points
         Pass the test if none of those points can be found
     */ 
-
+    bitmap::CompactPtrVector tmp_ptr_vect(n_points);
+    p_key_to_treeblock_compact = &tmp_ptr_vect;
     create_level_to_num_children(std::vector<level_t>(DIMENSION, max_depth), std::vector<level_t>(DIMENSION, 0), max_depth);
     auto range = (n_leaves_t) pow(2, max_depth);
     auto *mdtrie = new md_trie<DIMENSION>(max_depth, trie_depth, max_tree_node);
@@ -66,7 +68,8 @@ bool test_contiguous_data(n_leaves_t n_points, level_t max_depth, level_t trie_d
         Insert random points that are close to each other into the mdtrie
         Check whether the inserted points exist
     */ 
-
+    bitmap::CompactPtrVector tmp_ptr_vect(n_points);
+    p_key_to_treeblock_compact = &tmp_ptr_vect;
     create_level_to_num_children(std::vector<level_t>(DIMENSION, max_depth), std::vector<level_t>(DIMENSION, 0), max_depth);
     auto range = (n_leaves_t) pow(2, max_depth);
     auto *mdtrie = new md_trie<DIMENSION>(max_depth, trie_depth, max_tree_node);
