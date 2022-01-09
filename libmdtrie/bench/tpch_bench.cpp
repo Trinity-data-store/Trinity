@@ -25,7 +25,6 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node){
     n_leaves_t n_points = 0;
     total_points_count = total_points_count / discount_factor;
 
-    tqdm bar;
     TimeStamp start, diff;
     diff = 0;
 
@@ -35,7 +34,6 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node){
 
     while (std::getline(infile, line))
     {
-        bar.progress(n_points, total_points_count);
         std::stringstream ss(line);
         std::vector<std::string> string_result;
 
@@ -92,8 +90,9 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node){
         diff += GetTimestamp() - start;
 
         n_points ++;
+        if (n_points % (total_points_count / 20) == 0)
+            std::cout << "Inserted - n_points: " << n_points << std::endl;
     }
-    bar.finish();
 
     std::cout << "Insertion Latency: " << (float) diff / total_points_count << std::endl;
     std::cout << "mdtrie storage: " << mdtrie.size() << std::endl;
@@ -106,12 +105,12 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node){
     data_point<DIMENSION> end_range;
 
     int itr = 0;
+    const int total_itr = 600;
+
     std::ofstream file("range_search_tpch.csv", std::ios_base::app);
     srand(time(NULL));
 
-    tqdm bar3;
-    while (itr < 300){
-        bar3.progress(itr, 300);
+    while (itr < total_itr){
 
         for (uint8_t j = 0; j < DIMENSION; j++){
             start_range.set_coordinate(j, min_values[j] + (max_values[j] - min_values[j] + 1) / 10 * (rand() % 10));
@@ -124,10 +123,12 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node){
         if (primary_key_vector.size() >= 1000){
             file << primary_key_vector.size() << "," << diff << "," << std::endl;
             itr ++;
+
+            if (itr % (total_itr / 20) == 0)
+                std::cout << "range search - itr: " << itr << std::endl;
         }
         primary_key_vector.clear();
     }
-    bar3.finish();
 
     /**
      * Range Search with full range
@@ -153,11 +154,10 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node){
     TimeStamp diff_primary = 0;
 
     n_leaves_t checked_points_size = 0;
-    tqdm bar4;
+
     for (n_leaves_t i = 0; i < found_points_size; i += 5){
         checked_points_size++;
 
-        bar4.progress(i, found_points_size);
         data_point<DIMENSION> *point = found_points.at(i);
         n_leaves_t returned_primary_key = point->read_primary();
 
@@ -178,10 +178,14 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node){
             if (returned_coordinates->get_coordinate(j) != point->get_coordinate(j)){
                 raise(SIGINT);
             }
-        }          
+        }   
+               
+        if (i % (found_points_size / 20) == 0)
+            std::cout << "lookup - i: " << i << std::endl;
+
         free(node_path_from_primary);
     }
-    bar4.finish();
+
     std::cout << "Lookup Latency: " << (float) diff_primary / checked_points_size << std::endl;   
 }
 

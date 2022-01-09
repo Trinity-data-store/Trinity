@@ -9,6 +9,7 @@ bool test_lookup(n_leaves_t n_points, level_t max_depth, level_t trie_depth, pre
         First insert random points into the mdtrie
         Lookup query every points in the mdtrie given primary keys
     */   
+   
     bitmap::CompactPtrVector tmp_ptr_vect(n_points);
     p_key_to_treeblock_compact = &tmp_ptr_vect;
     create_level_to_num_children(std::vector<level_t>(DIMENSION, max_depth), std::vector<level_t>(DIMENSION, 0), max_depth);
@@ -68,6 +69,7 @@ bool test_lookup_close(n_leaves_t n_points, level_t max_depth, level_t trie_dept
         Each attribute can only be from [0, 1023]
         Lookup query every points in the mdtrie given primary keys
     */   
+   
     bitmap::CompactPtrVector tmp_ptr_vect(n_points);
     p_key_to_treeblock_compact = &tmp_ptr_vect;
     create_level_to_num_children(std::vector<level_t>(DIMENSION, max_depth), std::vector<level_t>(DIMENSION, 0), max_depth);

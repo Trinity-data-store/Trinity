@@ -11,6 +11,7 @@ bool test_range_search(n_leaves_t n_points, level_t max_depth, level_t trie_dept
         Range query random search range
         and check if number of found points is correct
     */   
+   
     bitmap::CompactPtrVector tmp_ptr_vect(n_points);
     p_key_to_treeblock_compact = &tmp_ptr_vect;
     create_level_to_num_children(std::vector<level_t>(DIMENSION, max_depth), std::vector<level_t>(DIMENSION, 0), max_depth);
