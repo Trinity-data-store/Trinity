@@ -5,7 +5,7 @@ import csv
 pp = pprint.PrettyPrinter(indent=4)
 
 jsons = []
-csvfile = open('osm_us_northeast_timestamp.csv', 'w', newline='')
+csvfile = open('osm_dataset.csv', 'w', newline='')
 fieldnames = ['id', 'version', "timestamp", "lon", "lat"]
 idx = 0
 writer = csv.DictWriter(csvfile, fieldnames=fieldnames)

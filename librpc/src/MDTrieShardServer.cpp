@@ -59,7 +59,7 @@ public:
     }
     else if (dataset_idx == 1) // OSM
     {
-      if (DIMENSION != 4 || total_points_count != 152806264 || DIMENSION != dimension_to_num_bits.size() || DIMENSION != start_dimension_bits.size())
+      if (DIMENSION != 4 || total_points_count != 155846019 || DIMENSION != dimension_to_num_bits.size() || DIMENSION != start_dimension_bits.size())
         return false;
     }
     else if (dataset_idx == 2) // TPC-H

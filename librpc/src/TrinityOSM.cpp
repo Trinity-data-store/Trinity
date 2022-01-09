@@ -37,7 +37,7 @@ vector<vector <int32_t>> *get_data_vector(std::vector<int32_t> &max_values, std:
   }
 
   n_leaves_t n_points = 0;
-  n_leaves_t n_lines = 152806264;
+  n_leaves_t n_lines = 155846019;
   total_points_count = n_lines;
   auto data_vector = new vector<vector <int32_t>>;
 
