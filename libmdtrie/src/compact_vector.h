@@ -426,7 +426,9 @@ class CompactPtrVector : CompactVector<uint64_t, 44> {
   typedef int64_t tmp_pos_type;
 
   CompactPtrVector() : CompactVector<uint64_t, 44>() {}
-  CompactPtrVector(size_type num_elements) : CompactVector<uint64_t, 44>(num_elements) {}
+  CompactPtrVector(size_type num_elements) : CompactVector<uint64_t, 44>(num_elements) {
+    num_elements_ = num_elements;
+  }
 
   // Accessors, Mutators
   void *At(pos_type idx) {
@@ -440,6 +442,13 @@ class CompactPtrVector : CompactVector<uint64_t, 44> {
   void PushBack(void *val) {
     CompactVector<uint64_t, 44>::Append(reinterpret_cast<uint64_t>(val) >> 4ULL);
   }
+
+  size_type get_num_elements(){
+    return num_elements_;
+  }
+  
+ private:
+  size_type num_elements_;
 };
 
 class CompactPrimaryVector : CompactVector<uint64_t, 46> {

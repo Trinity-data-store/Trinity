@@ -54,17 +54,17 @@ public:
     cout << "ping()" << endl; 
     if (dataset_idx == 0) // FS
     {
-      if (DIMENSION != 7 || total_points_count != 14583357 || DIMENSION != dimension_to_num_bits.size() || DIMENSION != start_dimension_bits.size())
+      if (DIMENSION != 7 || total_points_count != 14583357 || DIMENSION != dimension_to_num_bits.size() || DIMENSION != start_dimension_bits.size() || total_points_count != p_key_to_treeblock_compact.get_num_elements())
         return false;
     }
     else if (dataset_idx == 1) // OSM
     {
-      if (DIMENSION != 4 || total_points_count != 155846019 || DIMENSION != dimension_to_num_bits.size() || DIMENSION != start_dimension_bits.size())
+      if (DIMENSION != 4 || total_points_count != 155846019 || DIMENSION != dimension_to_num_bits.size() || DIMENSION != start_dimension_bits.size() || total_points_count != p_key_to_treeblock_compact.get_num_elements())
         return false;
     }
     else if (dataset_idx == 2) // TPC-H
     {
-      if (DIMENSION != 9 || total_points_count != 300005812 || DIMENSION != dimension_to_num_bits.size() || DIMENSION != start_dimension_bits.size())
+      if (DIMENSION != 9 || total_points_count != 300005812 || DIMENSION != dimension_to_num_bits.size() || DIMENSION != start_dimension_bits.size() || total_points_count != p_key_to_treeblock_compact.get_num_elements())
         return false;
     }
     else 

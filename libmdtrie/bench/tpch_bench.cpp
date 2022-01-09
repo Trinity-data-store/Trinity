@@ -257,7 +257,7 @@ int main() {
         exit(0);
     }
 
-    if (total_points_count != 300005812){
+    if (total_points_count != 300005812 || total_points_count != p_key_to_treeblock_compact.get_num_elements()){
         std::cerr << "total_points_count does not match" << std::endl;
         exit(0);
     }
