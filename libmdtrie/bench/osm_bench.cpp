@@ -165,17 +165,19 @@ int main() {
 
     level_t trie_depth = 6;
     uint32_t treeblock_size = 512;
-    total_points_count = 155846019;
-
-    bitmap::CompactPtrVector tmp_ptr_vect(total_points_count);
-    p_key_to_treeblock_compact = &tmp_ptr_vect;
-    std::vector<level_t> bit_widths = {32, 32, 32, 32}; // 4 Dimensions
-    std::vector<level_t> start_bits = {0, 0, 0, 0}; // 4 Dimensions    
+    discount_factor = 1;
+    total_points_count = 155846019 / discount_factor;
 
     std::cout << "dimension: " << DIMENSION << std::endl;
     std::cout << "trie depth: " << trie_depth << std::endl;
     std::cout << "treeblock sizes: " << treeblock_size << std::endl;
     std::cout << "discount factor: " << discount_factor << std::endl;
+    std::cout << "total_points_count: " << total_points_count << std::endl;
+
+    bitmap::CompactPtrVector tmp_ptr_vect(total_points_count);
+    p_key_to_treeblock_compact = &tmp_ptr_vect;
+    std::vector<level_t> bit_widths = {32, 32, 32, 32}; // 4 Dimensions
+    std::vector<level_t> start_bits = {0, 0, 0, 0}; // 4 Dimensions    
 
     level_t max_depth = 32;
     create_level_to_num_children(bit_widths, start_bits, max_depth);
@@ -185,7 +187,7 @@ int main() {
         exit(0);
     }
 
-    if (total_points_count != 155846019  || total_points_count != p_key_to_treeblock_compact->get_num_elements()){
+    if (total_points_count != p_key_to_treeblock_compact->get_num_elements()){
         std::cerr << "total_points_count does not match" << std::endl;
         exit(0);
     }
