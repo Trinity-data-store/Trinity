@@ -974,7 +974,8 @@ public:
     }
 
     data_point<DIMENSION> *node_path_to_coordinates(std::vector<morton_t> &node_path, dimension_t dimension) const{
-
+        
+        // Will be free-ed in the benchmark code
         auto coordinates = new data_point<DIMENSION>();
 
         for (level_t i = 0; i < max_depth_; i++){
