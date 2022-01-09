@@ -192,7 +192,7 @@ int main() {
 
     level_t trie_depth = 6;
     uint32_t treeblock_size = 512;
-    discount_factor = 10;
+    discount_factor = 1;
     total_points_count = 300005812 / discount_factor;
 
     std::cout << "Data Dimension: " << DIMENSION << std::endl;
