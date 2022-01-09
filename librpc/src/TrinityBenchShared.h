@@ -8,7 +8,6 @@
 #include <thrift/transport/TTransportUtils.h>
 
 #include "trie.h"
-#include <tqdm.h>
 #include <future>
 #include <atomic>
 #include <tuple>

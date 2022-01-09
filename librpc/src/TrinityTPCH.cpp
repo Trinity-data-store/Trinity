@@ -7,7 +7,6 @@
 #include "MDTrieShardClient.h"
 #include "TrinityBenchShared.h"
 #include "trie.h"
-#include <tqdm.h>
 #include <future>
 #include <atomic>
 #include <tuple>
@@ -31,14 +30,12 @@ vector<vector <int32_t>> *get_data_vector(std::vector<int32_t> &max_values, std:
   std::string line;
   std::getline(infile, line);
 
-  tqdm bar;
   n_leaves_t n_points = 0;
   n_leaves_t n_lines = 110418170;
   auto data_vector = new vector<vector <int32_t>>;
 
   while (std::getline(infile, line))
   {
-      bar.progress(n_points, n_lines);
       std::stringstream ss(line);
       vector <int32_t> point(DIMENSION, 0);
 
@@ -94,7 +91,6 @@ vector<vector <int32_t>> *get_data_vector(std::vector<int32_t> &max_values, std:
       }    
       n_points ++;
   }
-  bar.finish();
   return data_vector;
 }
 

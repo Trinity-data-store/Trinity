@@ -42,8 +42,8 @@ bool test_lookup(n_leaves_t n_points, level_t max_depth, level_t trie_depth, pre
     }
 
     for (n_leaves_t i = 0; i < n_points; i++){
-
-        point_t *node_path_from_primary = (point_t *)malloc((max_depth + 1) * sizeof(point_t));
+        
+        std::vector<morton_t> node_path_from_primary(max_depth + 1);
         tree_block<DIMENSION> *t_ptr = (tree_block<DIMENSION> *) (p_key_to_treeblock_compact->At(i));
 
         point_t parent_symbol_from_primary = t_ptr->get_node_path_primary_key(i, node_path_from_primary);
@@ -69,7 +69,7 @@ bool test_lookup_close(n_leaves_t n_points, level_t max_depth, level_t trie_dept
         Each attribute can only be from [0, 1023]
         Lookup query every points in the mdtrie given primary keys
     */   
-   
+
     bitmap::CompactPtrVector tmp_ptr_vect(n_points);
     p_key_to_treeblock_compact = &tmp_ptr_vect;
     create_level_to_num_children(std::vector<level_t>(DIMENSION, max_depth), std::vector<level_t>(DIMENSION, 0), max_depth);
@@ -103,7 +103,7 @@ bool test_lookup_close(n_leaves_t n_points, level_t max_depth, level_t trie_dept
 
     for (n_leaves_t i = 0; i < n_points; i++){
 
-        point_t *node_path_from_primary = (point_t *)malloc((max_depth + 1) * sizeof(point_t));
+        std::vector<morton_t> node_path_from_primary(max_depth + 1);
         tree_block<DIMENSION> *t_ptr = (tree_block<DIMENSION> *) (p_key_to_treeblock_compact->At(i));
 
         point_t parent_symbol_from_primary = t_ptr->get_node_path_primary_key(i, node_path_from_primary);

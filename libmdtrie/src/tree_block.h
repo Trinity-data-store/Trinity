@@ -724,7 +724,7 @@ public:
         return true;
     }
 
-    void get_node_path(preorder_t node, morton_t *node_path) {
+    void get_node_path(preorder_t node, std::vector<morton_t> &node_path) {
 
         if (node == 0){
             node_path[root_depth_] = dfuds_->next_symbol(0, 0, 0, (1 << level_to_num_children[root_depth_]) - 1, level_to_num_children[root_depth_]);
@@ -846,7 +846,7 @@ public:
         }
     }
 
-    morton_t get_node_path_primary_key(n_leaves_t primary_key, morton_t *node_path) {
+    morton_t get_node_path_primary_key(n_leaves_t primary_key, std::vector<morton_t> &node_path) {
 
         preorder_t stack[64] = {};
         preorder_t path[64] = {};
@@ -970,7 +970,7 @@ public:
         return parent_symbol;
     }
 
-    data_point<DIMENSION> *node_path_to_coordinates(morton_t *node_path, dimension_t dimension) const{
+    data_point<DIMENSION> *node_path_to_coordinates(std::vector<morton_t> &node_path, dimension_t dimension) const{
 
         auto coordinates = new data_point<DIMENSION>();
 

@@ -143,7 +143,7 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node){
         data_point<DIMENSION> *point = found_points.at(i);
         n_leaves_t returned_primary_key = point->read_primary();
 
-        morton_t *node_path_from_primary = (morton_t *)malloc((max_depth + 1) * sizeof(morton_t));
+        std::vector<morton_t> node_path_from_primary(max_depth + 1);
 
         tree_block<DIMENSION> *t_ptr = (tree_block<DIMENSION> *) (p_key_to_treeblock_compact->At(returned_primary_key));
         
@@ -163,7 +163,6 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node){
         if (i % (found_points_size / 20) == 0)
             std::cout << "lookup - i: " << i << std::endl;
 
-        free(node_path_from_primary);
     }
     std::cout << "Lookup Latency: " << (float) diff_primary / checked_points_size << std::endl;
 }

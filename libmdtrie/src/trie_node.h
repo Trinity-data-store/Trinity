@@ -57,7 +57,7 @@ public:
         return total_size;
     }
 
-    void get_node_path(level_t level, morton_t *node_path){
+    void get_node_path(level_t level, std::vector<morton_t> &node_path){
 
         if (parent_trie_node_){
             node_path[level - 1] = parent_symbol_;

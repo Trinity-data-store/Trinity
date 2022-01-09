@@ -7,7 +7,6 @@
 #include "MDTrieShardClient.h"
 #include "TrinityBenchShared.h"
 #include "trie.h"
-#include <tqdm.h>
 #include <future>
 #include <atomic>
 #include <tuple>
@@ -41,7 +40,6 @@ vector<vector <int32_t>> *get_data_vector(std::vector<int32_t> &max_values, std:
   total_points_count = n_lines;
   auto data_vector = new vector<vector <int32_t>>;
 
-  tqdm bar;
   read = getline(&line, &len, fp);
 
   while ((read = getline(&line, &len, fp)) != -1)

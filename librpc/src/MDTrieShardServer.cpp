@@ -125,7 +125,7 @@ public:
 
     _return.reserve(DIMENSION);
 
-    morton_t *node_path_from_primary = (morton_t *)malloc((max_depth + 1) * sizeof(morton_t));
+    std::vector<morton_t> node_path_from_primary(max_depth + 1);
     tree_block<DIMENSION> *t_ptr = (tree_block<DIMENSION> *) (p_key_to_treeblock_compact->At(primary_key));
 
     morton_t parent_symbol_from_primary = t_ptr->get_node_path_primary_key(primary_key, node_path_from_primary);
@@ -136,7 +136,6 @@ public:
     for (uint8_t i = 0; i < DIMENSION; i++){
       _return.emplace_back(returned_coordinates->get_coordinate(i));
     }      
-    free(node_path_from_primary);
   }
 
   int32_t get_size(){
