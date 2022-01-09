@@ -88,3 +88,5 @@ target
 *.csv
 *.txt
 build_*
+
+baseline/*
