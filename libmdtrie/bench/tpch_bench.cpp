@@ -8,7 +8,7 @@
 
 const dimension_t DIMENSION = 9;
 
-void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node){
+void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node, bool range_search_bench = false){
     
     std::vector<int32_t> found_points;
     md_trie<DIMENSION> mdtrie(max_depth, trie_depth, max_tree_node);
@@ -103,31 +103,33 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node){
     data_point<DIMENSION> start_range;
     data_point<DIMENSION> end_range;
 
-    int itr = 0;
-    const int total_itr = 600;
+    if (range_search_bench){
+        int itr = 0;
+        const int total_itr = 600;
 
-    std::ofstream file("range_search_tpch.csv", std::ios_base::app);
-    srand(time(NULL));
+        std::ofstream file("range_search_tpch.csv", std::ios_base::app);
+        srand(time(NULL));
 
-    while (itr < total_itr){
+        while (itr < total_itr){
 
-        for (uint8_t j = 0; j < DIMENSION; j++){
-            start_range.set_coordinate(j, min_values[j] + (max_values[j] - min_values[j] + 1) / 10 * (rand() % 10));
-            end_range.set_coordinate(j, start_range.get_coordinate(j) + (max_values[j] - start_range.get_coordinate(j) + 1) / 3 * (rand() % 3));
-        }
-        std::vector<int32_t> found_points_temp;
-        start = GetTimestamp();
-        mdtrie.range_search_trie(&start_range, &end_range, mdtrie.root(), 0, found_points_temp);
-        diff = GetTimestamp() - start;
-        if (found_points_temp.size() >= 1000){
-            file << found_points_temp.size() << "," << diff << "," << std::endl;
-            itr ++;
+            for (uint8_t j = 0; j < DIMENSION; j++){
+                start_range.set_coordinate(j, min_values[j] + (max_values[j] - min_values[j] + 1) / 10 * (rand() % 10));
+                end_range.set_coordinate(j, start_range.get_coordinate(j) + (max_values[j] - start_range.get_coordinate(j) + 1) / 3 * (rand() % 3));
+            }
+            std::vector<int32_t> found_points_temp;
+            start = GetTimestamp();
+            mdtrie.range_search_trie(&start_range, &end_range, mdtrie.root(), 0, found_points_temp);
+            diff = GetTimestamp() - start;
+            if (found_points_temp.size() >= 1000){
+                file << found_points_temp.size() << "," << diff << "," << std::endl;
+                itr ++;
 
-            if (itr % (total_itr / 20) == 0)
-                std::cout << "range search - itr: " << itr << std::endl;
+                if (itr % (total_itr / 20) == 0)
+                    std::cout << "range search - itr: " << itr << std::endl;
+            }
         }
     }
-
+    
     /**
      * Range Search with full range
      */
