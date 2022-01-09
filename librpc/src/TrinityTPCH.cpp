@@ -26,7 +26,7 @@ vector<vector <int32_t>> *get_data_vector(std::vector<int32_t> &max_values, std:
     Get data from the TPC-H dataset stored in a vector
 */
 
-  std::ifstream infile("/home/ziming/tpch-dbgen/tpch_20/orders_lineitem_merged_inner.csv");
+  std::ifstream infile("../libmdtrie/bench/data/tpch/tpch_dataset.csv");
 
   std::string line;
   std::getline(infile, line);

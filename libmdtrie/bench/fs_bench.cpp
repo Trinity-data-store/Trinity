@@ -19,7 +19,7 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node){
     char *line = nullptr;
     size_t len = 0;
     ssize_t read;
-    FILE *fp = fopen("../data/fs/fs_shuf.txt", "r");
+    FILE *fp = fopen("../data/fs/fs_dataset.txt", "r");
 
     // If the file cannot be open
     if (fp == nullptr)

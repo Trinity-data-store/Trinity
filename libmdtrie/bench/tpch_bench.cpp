@@ -16,7 +16,7 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node){
     auto *mdtrie = new md_trie<DIMENSION>(max_depth, trie_depth, max_tree_node);
     auto *leaf_point = new data_point<DIMENSION>();
 
-    std::ifstream infile("../data/tpc-h/orders_lineitem_merged.csv");
+    std::ifstream infile("../data/tpc-h/tpch_dataset.csv");
 
     std::string line;
     std::getline(infile, line);

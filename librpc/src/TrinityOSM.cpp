@@ -29,7 +29,7 @@ vector<vector <int32_t>> *get_data_vector(std::vector<int32_t> &max_values, std:
   char *line = nullptr;
   size_t len = 0;
   ssize_t read;
-  FILE *fp = fopen("/home/ziming/osm/osm_us_northeast_timestamp.csv", "r");
+  FILE *fp = fopen("../libmdtrie/bench/data/osm/osm_dataset.csv", "r");
   if (fp == nullptr)
   {
       fprintf(stderr, "file not found\n");
