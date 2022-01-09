@@ -5,23 +5,19 @@ import csv
 pp = pprint.PrettyPrinter(indent=4)
 
 jsons = []
-csvfile = open('osm_us_northeast.csv', 'w', newline='')
-# fieldnames = ['id', 'version', 'changeset', "uid", "timestamp-minute", "timestamp-hour", "timestamp-day", "timestamp-month", "timestamp-year", "tags-ele", "tags-gnis:id", "tags-gnis:ST_num", "gnis:County_num", "location-lon (abs, rounded)", "location-lat (abs, rounded)"]
-# fieldnames = ['id', 'version', 'changeset', "uid", "timestamp-minute", "timestamp-hour", "timestamp-day", "timestamp-month", "timestamp-year",  "location-lon (abs, rounded)", "location-lat (abs, rounded)"]
-fieldnames = ['id', 'version', "timestamp-minute", "timestamp-hour", "timestamp-day", "timestamp-month", "timestamp-year",  "location-lon (abs, rounded)", "location-lat (abs, rounded)"]
+csvfile = open('osm_us_northeast_timestamp.csv', 'w', newline='')
+fieldnames = ['id', 'version', "timestamp", "lon", "lat"]
 idx = 0
 writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
 writer.writeheader()
 total_processed = 0
 
+has_tags = 0
+total_count = 0
+
 class NamesHandler(osmium.SimpleHandler):
     def node(self, n):
-        
-        global total_processed
-        total_processed += 1
-        if total_processed % 100000 == 0:
-            print("total_processed", total_processed)
-
+                        
         json = {}
         if n.id:
             json["id"] = int(n.id)
@@ -33,34 +29,18 @@ class NamesHandler(osmium.SimpleHandler):
         else:
             print("version not found")
             return
-        # if n.changeset:
-        #     json["changeset"] = int(n.changeset)
-        # else:
-        #     print("changeset not found")
-        #     return
-        # if n.uid:
-        #     json["uid"] = int(n.uid)
-        # else:
-        #     print("uid not found")
-        #     return
         if n.timestamp:
-            json["timestamp-minute"] = n.timestamp.minute
-            json["timestamp-hour"] = n.timestamp.hour
-            json["timestamp-day"] = n.timestamp.day
-            json["timestamp-month"] = n.timestamp.month
-            json["timestamp-year"] = n.timestamp.year
+            json["timestamp"] = n.timestamp.year * 10000 + n.timestamp.month * 100 + n.timestamp.day
         else:
             print("timestamp not found")
             return
         if n.location:
-            print(n.location.lon)
-            exit(0)
-            json["location-lon (abs, rounded)"] = round(abs(n.location.lon))
-            json["location-lat (abs, rounded)"] = round(abs(n.location.lat))
+            json["lon"] = round(abs(n.location.lon) * 10000000)
+            json["lat"] = round(abs(n.location.lat) * 10000000)
         else:
             print("location not found")
             return
-        # jsons.append(json)
+            
         global idx
         idx += 1
         if idx % 10000 == 0:
@@ -68,7 +48,6 @@ class NamesHandler(osmium.SimpleHandler):
 
         writer.writerow(json)
                 
-
 def main(osmfile):
     NamesHandler().apply_file(osmfile)
     return 0
