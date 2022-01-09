@@ -11,13 +11,8 @@ const dimension_t DIMENSION = 7;
 
 void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node){
 
-    // auto *found_points = new point_array<DIMENSION>();
     point_array<DIMENSION> found_points;
-    // auto *all_points = new std::vector<data_point<DIMENSION>>();
-    std::vector<data_point<DIMENSION>> all_points;
-    // auto *mdtrie = new md_trie<DIMENSION>(max_depth, trie_depth, max_tree_node);
     md_trie<DIMENSION> mdtrie(max_depth, trie_depth, max_tree_node);
-    // auto *leaf_point = new data_point<DIMENSION>();
     data_point<DIMENSION> leaf_point;
 
     char *line = nullptr;
@@ -36,7 +31,6 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node){
     uint64_t max[DIMENSION];
     uint64_t min[DIMENSION];
 
-    // tqdm bar;
     TimeStamp start, diff;
     diff = 0;
 
@@ -46,7 +40,6 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node){
 
     while ((read = getline(&line, &len, fp)) != -1)
     {
-        // bar.progress(n_points, total_points_count);
         char *token = strtok(line, " ");
         char *ptr;
 
@@ -74,64 +67,37 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node){
                 }
             }          
         }
-        // (*all_points).push_back((*leaf_point));
-        all_points.push_back(leaf_point);
         start = GetTimestamp();
         mdtrie.insert_trie(&leaf_point, n_points);
         diff += GetTimestamp() - start;
         n_points ++;
 
-        if (n_points % (total_points_count / 50) == 0)
-            std::cout << "n_points inserted: " << n_points << std::endl;
+        if (n_points % (total_points_count / 20) == 0)
+            std::cout << "Inserted - n_points: " << n_points << std::endl;
     }
 
-    // bar.finish();
     std::cout << "Insertion Latency: " << (float) diff / total_points_count << std::endl;
     std::cout << "mdtrie storage: " << mdtrie.size() << std::endl;
 
-    exit(0);
     /**
-     * check whether a data point exists given coordinates
+     * Benchmark range search given a query selectivity
+     * This will take a long time, depending on query selectivity
      */
 
-    tqdm bar2;
-    TimeStamp check_diff = 0;
-    for (uint64_t i = 0; i < total_points_count; i++){
-        bar2.progress(i, total_points_count);
-        // auto check_point = (*all_points)[i];
-        auto check_point = all_points[i];
-        start = GetTimestamp();
-        if (!mdtrie.check(&check_point)){
-            raise(SIGINT);
-        } 
-        check_diff += GetTimestamp() - start;  
-    }
-    bar2.finish();
-    std::cout << "Average time to check one point: " << (float) check_diff / total_points_count << std::endl;
-
-    // auto *start_range = new data_point<DIMENSION>();
     data_point<DIMENSION> start_range;
-    // auto *end_range = new data_point<DIMENSION>();
     data_point<DIMENSION> end_range;
 
     int itr = 0;
+    const int total_itr = 600;
     std::ofstream file("range_search_filesystem.csv", std::ios_base::app);
     srand(time(NULL));
 
-    /**
-     * Benchmark range search given a query selectivity
-     */
-
-    tqdm bar3;
-    while (itr < 600){
-        bar3.progress(itr, 600);
+    while (itr < total_itr){
 
         for (unsigned int j = 0; j < DIMENSION; j++){
             start_range.set_coordinate(j, min[j] + (max[j] - min[j] + 1) / 10 * (rand() % 10));
             end_range.set_coordinate(j, start_range.get_coordinate(j) + (max[j] - start_range.get_coordinate(j) + 1) / 10 * (rand() % 10));
         }
-
-        // auto *found_points_temp = new point_array<DIMENSION>();
         point_array<DIMENSION> found_points_temp;
         start = GetTimestamp();
         mdtrie.range_search_trie(&start_range, &end_range, mdtrie.root(), 0, &found_points_temp);
@@ -140,20 +106,17 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node){
         if (found_points_temp.size() >= 1000){
             file << found_points_temp.size() << "," << diff << "," << std::endl;
             itr ++;
+
+            if (itr % (total_itr / 20) == 0)
+                std::cout << "range search - itr: " << itr << std::endl;
         }
         primary_key_vector.clear();
-        // delete found_points_temp;
     }
-    bar3.finish();
     
     /**
      * Range Search with full range
      */
 
-    // start_range = new data_point<DIMENSION>();
-    // data_point<DIMENSION> start_range;
-    // end_range = new data_point<DIMENSION>();
-    // data_point<DIMENSION> end_range;
     for (dimension_t i = 0; i < DIMENSION; i++){
         start_range.set_coordinate(i, min[i]);
         end_range.set_coordinate(i, max[i]);
@@ -173,18 +136,16 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node){
     n_leaves_t found_points_size = found_points.size();
     TimeStamp diff_primary = 0;
     n_leaves_t checked_points_size = 0;
-    tqdm bar4;
 
     for (n_leaves_t i = 0; i < found_points_size; i += 5){
         checked_points_size++;
 
-        bar4.progress(i, found_points_size);
         data_point<DIMENSION> *point = found_points.at(i);
         n_leaves_t returned_primary_key = point->read_primary();
 
         morton_t *node_path_from_primary = (morton_t *)malloc((max_depth + 1) * sizeof(morton_t));
 
-        tree_block<DIMENSION> *t_ptr = (tree_block<DIMENSION> *) (p_key_to_treeblock_compact.At(returned_primary_key));
+        tree_block<DIMENSION> *t_ptr = (tree_block<DIMENSION> *) (p_key_to_treeblock_compact->At(returned_primary_key));
         
         start = GetTimestamp();
         morton_t parent_symbol_from_primary = t_ptr->get_node_path_primary_key(returned_primary_key, node_path_from_primary);
@@ -198,17 +159,13 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node){
                 raise(SIGINT);
             }
         }    
+
+        if (i % (found_points_size / 20) == 0)
+            std::cout << "lookup - i: " << i << std::endl;
+
         free(node_path_from_primary);
     }
-    bar4.finish();
     std::cout << "Lookup Latency: " << (float) diff_primary / checked_points_size << std::endl;
-
-    // delete found_points;
-    // delete all_points;
-    // delete mdtrie;
-    // delete leaf_point;
-    // delete start_range;
-    // delete end_range;
 }
 
 int main() {
@@ -226,6 +183,8 @@ int main() {
     level_t max_depth = 32;
 
     total_points_count = 14583357;
+    bitmap::CompactPtrVector tmp_ptr_vect(total_points_count);
+    p_key_to_treeblock_compact = &tmp_ptr_vect;
 
     std::vector<level_t> bit_widths = {32, 32, 32, 32, 24, 24, 32}; // 7 Dimensions    
     std::vector<level_t> start_bits = {0, 0, 0, 0, 0, 0, 0}; // 7 Dimensions    
@@ -242,7 +201,7 @@ int main() {
         exit(0);
     }
 
-    if (total_points_count != 14583357 || total_points_count != p_key_to_treeblock_compact.get_num_elements()){
+    if (total_points_count != 14583357 || total_points_count != p_key_to_treeblock_compact->get_num_elements()){
         std::cerr << "total_points_count does not match" << std::endl;
         exit(0);
     }

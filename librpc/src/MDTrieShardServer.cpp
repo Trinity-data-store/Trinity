@@ -54,17 +54,17 @@ public:
     cout << "ping()" << endl; 
     if (dataset_idx == 0) // FS
     {
-      if (DIMENSION != 7 || total_points_count != 14583357 || DIMENSION != dimension_to_num_bits.size() || DIMENSION != start_dimension_bits.size() || total_points_count != p_key_to_treeblock_compact.get_num_elements())
+      if (DIMENSION != 7 || total_points_count != 14583357 || DIMENSION != dimension_to_num_bits.size() || DIMENSION != start_dimension_bits.size() || total_points_count != p_key_to_treeblock_compact->get_num_elements())
         return false;
     }
     else if (dataset_idx == 1) // OSM
     {
-      if (DIMENSION != 4 || total_points_count != 155846019 || DIMENSION != dimension_to_num_bits.size() || DIMENSION != start_dimension_bits.size() || total_points_count != p_key_to_treeblock_compact.get_num_elements())
+      if (DIMENSION != 4 || total_points_count != 155846019 || DIMENSION != dimension_to_num_bits.size() || DIMENSION != start_dimension_bits.size() || total_points_count != p_key_to_treeblock_compact->get_num_elements())
         return false;
     }
     else if (dataset_idx == 2) // TPC-H
     {
-      if (DIMENSION != 9 || total_points_count != 300005812 || DIMENSION != dimension_to_num_bits.size() || DIMENSION != start_dimension_bits.size() || total_points_count != p_key_to_treeblock_compact.get_num_elements())
+      if (DIMENSION != 9 || total_points_count != 300005812 || DIMENSION != dimension_to_num_bits.size() || DIMENSION != start_dimension_bits.size() || total_points_count != p_key_to_treeblock_compact->get_num_elements())
         return false;
     }
     else 
@@ -126,7 +126,7 @@ public:
     _return.reserve(DIMENSION);
 
     morton_t *node_path_from_primary = (morton_t *)malloc((max_depth + 1) * sizeof(morton_t));
-    tree_block<DIMENSION> *t_ptr = (tree_block<DIMENSION> *) (p_key_to_treeblock_compact.At(primary_key));
+    tree_block<DIMENSION> *t_ptr = (tree_block<DIMENSION> *) (p_key_to_treeblock_compact->At(primary_key));
 
     morton_t parent_symbol_from_primary = t_ptr->get_node_path_primary_key(primary_key, node_path_from_primary);
     node_path_from_primary[max_depth - 1] = parent_symbol_from_primary;

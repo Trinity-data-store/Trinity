@@ -576,7 +576,7 @@ public:
                 uint64_t primary_key_size = primary_key_list[i].size();
 
                 for (uint64_t j = 0; j < primary_key_size; j++){
-                    p_key_to_treeblock_compact.Set(primary_key_list[i].get(j), new_block);
+                    p_key_to_treeblock_compact->Set(primary_key_list[i].get(j), new_block);
                 }
             }
 
@@ -1090,7 +1090,7 @@ public:
     
     void insert_primary_key_at_present_index(n_leaves_t index, n_leaves_t primary_key){
 
-        p_key_to_treeblock_compact.Set(primary_key, this);
+        p_key_to_treeblock_compact->Set(primary_key, this);
 
         primary_key_list[index].push(primary_key);
       
@@ -1098,7 +1098,7 @@ public:
 
     void insert_primary_key_at_index(n_leaves_t index, n_leaves_t primary_key){
 
-        p_key_to_treeblock_compact.Set(primary_key, this);
+        p_key_to_treeblock_compact->Set(primary_key, this);
 
         auto primary_key_ptr = bits::compact_ptr(primary_key);
         primary_key_list.insert(primary_key_list.begin() + index, primary_key_ptr);

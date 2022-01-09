@@ -42,7 +42,7 @@ bool test_lookup(n_leaves_t n_points, level_t max_depth, level_t trie_depth, pre
     for (n_leaves_t i = 0; i < n_points; i++){
 
         point_t *node_path_from_primary = (point_t *)malloc((max_depth + 1) * sizeof(point_t));
-        tree_block<DIMENSION> *t_ptr = (tree_block<DIMENSION> *) (p_key_to_treeblock_compact.At(i));
+        tree_block<DIMENSION> *t_ptr = (tree_block<DIMENSION> *) (p_key_to_treeblock_compact->At(i));
 
         point_t parent_symbol_from_primary = t_ptr->get_node_path_primary_key(i, node_path_from_primary);
         node_path_from_primary[max_depth - 1] = parent_symbol_from_primary;
@@ -100,7 +100,7 @@ bool test_lookup_close(n_leaves_t n_points, level_t max_depth, level_t trie_dept
     for (n_leaves_t i = 0; i < n_points; i++){
 
         point_t *node_path_from_primary = (point_t *)malloc((max_depth + 1) * sizeof(point_t));
-        tree_block<DIMENSION> *t_ptr = (tree_block<DIMENSION> *) (p_key_to_treeblock_compact.At(i));
+        tree_block<DIMENSION> *t_ptr = (tree_block<DIMENSION> *) (p_key_to_treeblock_compact->At(i));
 
         point_t parent_symbol_from_primary = t_ptr->get_node_path_primary_key(i, node_path_from_primary);
         node_path_from_primary[max_depth - 1] = parent_symbol_from_primary;
