@@ -91,6 +91,9 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node, 
         n_points ++;
         if (n_points % (total_points_count / 20) == 0)
             std::cout << "Inserted - n_points: " << n_points << std::endl;
+
+        if (n_points == total_points_count)
+            break;
     }
 
     std::cout << "Insertion Latency: " << (float) diff / total_points_count << std::endl;
@@ -172,8 +175,6 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node, 
         t_ptr->node_path_to_coordinates(node_path_from_primary, DIMENSION);
 
         diff_primary += GetTimestamp() - start;
-        if (i % (found_points_size / 20) == 0)
-            std::cout << "lookup - i: " << i << std::endl;
     }
 
     std::cout << "Lookup Latency: " << (float) diff_primary / checked_points_size << std::endl;   
@@ -218,8 +219,5 @@ int main() {
         std::cerr << "total_points_count does not match" << std::endl;
         exit(0);
     }
-
     run_bench(max_depth, trie_depth, treeblock_size);
-    std::cout << std::endl;
-    exit(0);
 }

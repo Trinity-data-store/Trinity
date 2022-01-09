@@ -70,6 +70,11 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node, 
         diff += GetTimestamp() - start;
 
         n_points ++;
+        if (n_points % (total_points_count / 20) == 0)
+            std::cout << "Inserted - n_points: " << n_points << std::endl;
+
+        if (n_points == total_points_count)
+            break;
     }
 
     std::cout << "Insertion Latency: " << (float) diff / total_points_count << std::endl;
@@ -165,7 +170,7 @@ int main() {
 
     level_t trie_depth = 6;
     uint32_t treeblock_size = 512;
-    discount_factor = 1;
+    discount_factor = 10;
     total_points_count = 155846019 / discount_factor;
 
     std::cout << "dimension: " << DIMENSION << std::endl;
@@ -191,7 +196,5 @@ int main() {
         std::cerr << "total_points_count does not match" << std::endl;
         exit(0);
     }
-
     run_bench(max_depth, trie_depth, treeblock_size);
-    std::cout << std::endl;
 }
