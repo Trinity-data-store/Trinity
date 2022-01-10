@@ -26,7 +26,10 @@ public:
             dfuds_ = new compressed_bitmap::compressed_bitmap(node_capacity, bit_capacity);
         else
             dfuds_ = dfuds;
-        parent_trie_node_ = parent_trie_node;
+        if (parent_trie_node){
+            parent_combined_ptr_ = parent_trie_node;
+            parent_is_trie_ = true;
+        }
     }
 
     inline preorder_t num_frontiers() {
@@ -52,7 +55,8 @@ public:
     inline void set_pointer(preorder_t current_frontier, tree_block *pointer) 
     {
         frontiers_[current_frontier].pointer_ = pointer;
-        pointer->parent_tree_block_ = this;
+        pointer->parent_combined_ptr_ = this;
+        parent_is_trie_ = false;
         pointer->treeblock_frontier_num_ = get_preorder(current_frontier);
     }
 
@@ -731,11 +735,11 @@ public:
 
         if (node == 0){
             node_path[root_depth_] = dfuds_->next_symbol(0, 0, 0, (1 << level_to_num_children[root_depth_]) - 1, level_to_num_children[root_depth_]);
-            if (parent_tree_block_){
-                parent_tree_block_->get_node_path(treeblock_frontier_num_, node_path);
+            if (!parent_is_trie_){
+                ((tree_block<DIMENSION> *)parent_combined_ptr_)->get_node_path(treeblock_frontier_num_, node_path);
             }
             else {
-                parent_trie_node_->get_node_path(root_depth_, node_path);
+                ((trie_node<DIMENSION> *)parent_combined_ptr_)->get_node_path(root_depth_, node_path);
             }  
             return;          
         }
@@ -841,11 +845,11 @@ public:
         for (int i = 0; i <= sTop; i++){
             node_path[root_depth_ + i] = symbol[i];
         }
-        if (parent_tree_block_){
-            parent_tree_block_->get_node_path(treeblock_frontier_num_, node_path);
+        if (!parent_is_trie_){
+            ((tree_block<DIMENSION> *)parent_combined_ptr_)->get_node_path(treeblock_frontier_num_, node_path);
         }
         else {
-            parent_trie_node_->get_node_path(root_depth_, node_path);
+            ((trie_node<DIMENSION> *)parent_combined_ptr_)->get_node_path(root_depth_, node_path);
         }
     }
 
@@ -922,7 +926,6 @@ public:
                         if (primary_key_list[p].check_if_present(primary_key))
                         {
                             found = true;
-                            // This optimization doesn't seem to be faster
                             parent_symbol = dfuds_->get_k_th_set_bit(current_node, p - current_primary /* 0-indexed*/, node_positions[current_node], level_to_num_children[current_level]);
                             break;                     
                         }
@@ -964,11 +967,11 @@ public:
         for (int i = 0; i <= sTop; i++){
             node_path[root_depth_ + i] = symbol[i];
         }
-        if (parent_tree_block_){
-            parent_tree_block_->get_node_path(treeblock_frontier_num_, node_path);
+        if (!parent_is_trie_){
+            ((tree_block<DIMENSION> *)parent_combined_ptr_)->get_node_path(treeblock_frontier_num_, node_path);
         }
         else {
-            parent_trie_node_->get_node_path(root_depth_, node_path);
+            ((trie_node<DIMENSION> *)parent_combined_ptr_)->get_node_path(root_depth_, node_path);
         }        
         return parent_symbol;
     }
@@ -1041,8 +1044,8 @@ public:
         morton_t representation = start_range_symbol ^ end_range_symbol;
         morton_t neg_representation = ~representation;
 
-        struct data_point<DIMENSION> original_start_range = (*start_range);
-        struct data_point<DIMENSION> original_end_range = (*end_range); 
+        data_point<DIMENSION> original_start_range = (*start_range);
+        data_point<DIMENSION> original_end_range = (*end_range); 
 
         preorder_t new_current_node;
         preorder_t new_current_node_pos = 0;
@@ -1068,15 +1071,15 @@ public:
                 new_current_node = current_block->child(new_current_block, current_node, new_current_node_pos, current_symbol, level,
                                                         new_current_frontier, new_current_primary);
                 
-                 start_range->update_symbol(end_range, current_symbol, level); // NOT HERE
+                 start_range->update_symbol(end_range, current_symbol, level); 
 
                 if (new_current_block != current_block){
 
-                    new_current_block->range_search_treeblock(start_range, end_range, new_current_block, level + 1, new_current_node, new_current_node_pos, 0, 0, new_current_frontier, new_current_primary, found_points); // NOT HERE
+                    new_current_block->range_search_treeblock(start_range, end_range, new_current_block, level + 1, new_current_node, new_current_node_pos, 0, 0, new_current_frontier, new_current_primary, found_points);
                 }
                 else {
 
-                    current_block->range_search_treeblock(start_range, end_range, current_block, level + 1, new_current_node, new_current_node_pos, current_node, current_node_pos, new_current_frontier, new_current_primary, found_points);     // NOT HERE      
+                    current_block->range_search_treeblock(start_range, end_range, current_block, level + 1, new_current_node, new_current_node_pos, current_node, current_node_pos, new_current_frontier, new_current_primary, found_points);  
                 }
                 (*start_range) = original_start_range;
                 (*end_range) = original_end_range;    
@@ -1139,10 +1142,8 @@ private:
     preorder_t num_frontiers_ = 0;
     preorder_t previous_p_key_ = 0;
     
-    // TODO: parent_tree_block & parent_trie_node pointer can be combined
-    tree_block<DIMENSION> *parent_tree_block_ = NULL;
-    trie_node<DIMENSION> *parent_trie_node_ = NULL;
-
+    void *parent_combined_ptr_ = NULL;
+    bool parent_is_trie_ = false;
     preorder_t treeblock_frontier_num_ = 0;
     std::vector<bits::compact_ptr> primary_key_list;
 };
