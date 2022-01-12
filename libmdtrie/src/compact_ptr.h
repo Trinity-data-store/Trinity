@@ -6,7 +6,7 @@
 #include <vector>
 #include "delta_encoded_array.h"
 
-const uint64_t compact_pointer_vector_size_limit = 2000;
+const uint64_t compact_pointer_vector_size_limit = 14252681;
 
 namespace bits {
 
