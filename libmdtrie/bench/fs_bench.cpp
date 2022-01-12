@@ -71,9 +71,6 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node){
         diff += GetTimestamp() - start;
         n_points ++;
 
-        if (n_points % (total_points_count / 10) == 0)
-            std::cout << "Inserted - n_points: " << n_points << std::endl;
-
         if (n_points == total_points_count)
             break;
     }
@@ -116,7 +113,7 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node){
         TimeStamp temp_diff =  GetTimestamp() - start; 
         diff += temp_diff;
         if (found_points_temp.size() > 2000 || found_points_temp.size() < 1000)
-            std::cout << "found points size: " << found_points_temp.size() << std::endl;
+            std::cout << "found points size: " << found_points_temp.size() << ", index:  " << count << std::endl;
         count ++;
         found_points_temp.clear();
     }
@@ -160,7 +157,6 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node){
         diff_primary += GetTimestamp() - start;
         delete coordinates;
         checked_points_size++;
-
     }
     std::cout << "Lookup Latency: " << (float) diff_primary / checked_points_size << std::endl;
 }

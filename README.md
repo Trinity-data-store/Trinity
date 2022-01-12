@@ -24,6 +24,12 @@ make
 ## Simple Example
 A simple example can be found [here](libmdtrie/bench/tpch_bench.cpp). 
 
+## Reproduce Results
+
+```
+nohup source scripts/microbench.sh &
+```
+
 ## Contributing
 
 ### The MIT License
