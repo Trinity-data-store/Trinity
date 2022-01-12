@@ -8,7 +8,7 @@
 
 const dimension_t DIMENSION = 9;
 
-void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node, bool range_search_bench = false){
+void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node){
     
     std::vector<int32_t> found_points;
     md_trie<DIMENSION> mdtrie(max_depth, trie_depth, max_tree_node);
@@ -100,81 +100,60 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node, 
     std::cout << "mdtrie storage: " << mdtrie.size() << std::endl;
 
     /**
-     * Benchmark range search given a query selectivity
+     * Benchmark range search given a query selectivity (1000-2000)
      */
 
     data_point<DIMENSION> start_range;
     data_point<DIMENSION> end_range;
 
-    if (range_search_bench){
-        int itr = 0;
-        const int total_itr = 600;
+    char *line_c = nullptr;
+    size_t len = 0;
+    FILE *fp = fopen("../queries/tpch/tpch_range_queries.csv", "r");
+    ssize_t read = getline(&line_c, &len, fp);
+    diff = 0;
+    int count = 0;
+    while ((read = getline(&line_c, &len, fp)) != -1)
+    {
+        char *ptr;
+        char *token = strtok(line_c, ",");
 
-        std::ofstream file("range_search_tpch.csv", std::ios_base::app);
-        srand(time(NULL));
-
-        while (itr < total_itr){
-
-            for (uint8_t j = 0; j < DIMENSION; j++){
-                start_range.set_coordinate(j, min_values[j] + (max_values[j] - min_values[j] + 1) / 10 * (rand() % 10));
-                end_range.set_coordinate(j, start_range.get_coordinate(j) + (max_values[j] - start_range.get_coordinate(j) + 1) / 3 * (rand() % 3));
-            }
-            std::vector<int32_t> found_points_temp;
-            start = GetTimestamp();
-            mdtrie.range_search_trie(&start_range, &end_range, mdtrie.root(), 0, found_points_temp);
-            diff = GetTimestamp() - start;
-            if (found_points_temp.size() >= 1000){
-                file << found_points_temp.size() << "," << diff << "," << std::endl;
-                itr ++;
-
-                if (itr % (total_itr / 20) == 0)
-                    std::cout << "range search - itr: " << itr << std::endl;
-            }
+        for (dimension_t i = 0; i < DIMENSION; i++){
+            token = strtok(nullptr, ","); // start
+            start_range.set_coordinate(i, strtoul(token, &ptr, 10));
+            token = strtok(nullptr, ","); // end
+            end_range.set_coordinate(i, strtoul(token, &ptr, 10));
         }
+
+        std::vector<int32_t> found_points_temp;
+        start = GetTimestamp();
+        mdtrie.range_search_trie(&start_range, &end_range, mdtrie.root(), 0, found_points_temp);
+        TimeStamp temp_diff =  GetTimestamp() - start; 
+        diff += temp_diff;
+        count ++;
+        found_points_temp.clear();
     }
-
-    /**
-     * Range Search with full range
-     */
-
-    for (dimension_t i = 0; i < DIMENSION; i++){
-        start_range.set_coordinate(i, min_values[i]);
-        end_range.set_coordinate(i, max_values[i]);
-    }
-
-    start = GetTimestamp();
-    mdtrie.range_search_trie(&start_range, &end_range, mdtrie.root(), 0, found_points);
-    diff = GetTimestamp() - start;
-
-    std::cout << "found_pts size: " << found_points.size() << std::endl;
-    std::cout << "Range Search Latency: " << (float) diff / found_points.size() << std::endl;
+    std::cout << "average query latency: " << (float) diff / count << std::endl; 
 
     /**
      * Point lookup given primary keys returned by range search
      */
 
-    n_leaves_t found_points_size = found_points.size();
     TimeStamp diff_primary = 0;
-
     n_leaves_t checked_points_size = 0;
 
-    for (n_leaves_t i = 0; i < found_points_size; i += 5){
-        checked_points_size++;
-
-        n_leaves_t returned_primary_key = found_points[i];
+    for (n_leaves_t primary_key = 0; primary_key < total_points_count; primary_key += 100){
 
         std::vector<morton_t> node_path_from_primary(max_depth + 1);
 
-        tree_block<DIMENSION> *t_ptr = (tree_block<DIMENSION> *) (p_key_to_treeblock_compact->At(returned_primary_key));
+        tree_block<DIMENSION> *t_ptr = (tree_block<DIMENSION> *) (p_key_to_treeblock_compact->At(primary_key));
         
         start = GetTimestamp();
-
-        morton_t parent_symbol_from_primary = t_ptr->get_node_path_primary_key(returned_primary_key, node_path_from_primary);
+        morton_t parent_symbol_from_primary = t_ptr->get_node_path_primary_key(primary_key, node_path_from_primary);
         node_path_from_primary[max_depth - 1] = parent_symbol_from_primary;
-
         data_point<DIMENSION> *coordinates = t_ptr->node_path_to_coordinates(node_path_from_primary, DIMENSION);
         delete coordinates;
         diff_primary += GetTimestamp() - start;
+        checked_points_size++;
     }
 
     std::cout << "Lookup Latency: " << (float) diff_primary / checked_points_size << std::endl;   

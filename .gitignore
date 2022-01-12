@@ -85,7 +85,7 @@ target
 
 *.osm.pbf
 *.osm.csv
-*.csv
+data/*
 *.txt
 build_*
 

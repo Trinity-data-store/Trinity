@@ -56,7 +56,6 @@ public:
     {
         frontiers_[current_frontier].pointer_ = pointer;
         pointer->parent_combined_ptr_ = this;
-        parent_is_trie_ = false;
         pointer->treeblock_frontier_num_ = get_preorder(current_frontier);
     }
 
@@ -839,7 +838,7 @@ public:
             }
         }
         if (current_node == num_nodes_){
-            fprintf(stderr, "node not found!\n");
+            // fprintf(stderr, "node not found!\n");
             return;
         }
         for (int i = 0; i <= sTop; i++){
@@ -959,9 +958,8 @@ public:
                 symbol[sTop] = dfuds_->next_symbol(symbol[sTop] + 1, top_node, node_positions[top_node], (1 << level_to_num_children[sTop_to_level[sTop]]) - 1, level_to_num_children[sTop_to_level[sTop]]);
             }
         }
-        // This shouldn't happen
         if (current_node == num_nodes_){
-            fprintf(stderr, "node not found!\n");
+            // fprintf(stderr, "node not found!\n");
             return 0;
         }
         for (int i = 0; i <= sTop; i++){
