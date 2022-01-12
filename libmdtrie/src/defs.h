@@ -87,7 +87,7 @@ morton_t level_to_num_children[128] = {0};
 bitmap::CompactPtrVector *p_key_to_treeblock_compact;
 std::vector<morton_t> dimension_to_num_bits;
 std::vector<level_t> start_dimension_bits;
-bool no_dynamic_sizing = true;
+bool no_dynamic_sizing = false;
 
 void create_level_to_num_children(std::vector<level_t> bit_widths, std::vector<level_t> start_bits, level_t max_level){
 

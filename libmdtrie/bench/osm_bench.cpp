@@ -154,7 +154,7 @@ int main() {
 
     level_t trie_depth = 6;
     uint32_t treeblock_size = 512;
-    discount_factor = 100;
+    discount_factor = 10;
     total_points_count = 155846019 / discount_factor;
 
     std::cout << "dimension: " << DIMENSION << std::endl;
@@ -165,7 +165,7 @@ int main() {
 
     bitmap::CompactPtrVector tmp_ptr_vect(total_points_count);
     p_key_to_treeblock_compact = &tmp_ptr_vect;
-    std::vector<level_t> bit_widths = {32, 32, 32, 32}; // 4 Dimensions
+    std::vector<level_t> bit_widths = {8, 32, 32, 32}; // 4 Dimensions
     std::vector<level_t> start_bits = {0, 0, 0, 0}; // 4 Dimensions    
 
     level_t max_depth = 32;

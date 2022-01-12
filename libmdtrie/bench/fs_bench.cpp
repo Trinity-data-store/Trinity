@@ -123,14 +123,32 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node){
     std::cout << "Average query latency: " << (float) diff / count << std::endl;    
 
     /**
+     * Range Search with full range
+     */
+
+    for (dimension_t i = 0; i < DIMENSION; i++){
+        start_range.set_coordinate(i, min[i]);
+        end_range.set_coordinate(i, max[i]);
+    }
+
+    start = GetTimestamp();
+    mdtrie.range_search_trie(&start_range, &end_range, mdtrie.root(), 0, found_points);
+    diff = GetTimestamp() - start;
+
+    std::cout << "found_pts size: " << found_points.size() << std::endl;
+    std::cout << "Full Range Search Latency per point: " << (float) diff / found_points.size() << std::endl;
+
+    /**
      * Point lookup given primary keys returned by range search
      */
 
+    n_leaves_t found_points_size = found_points.size();
     TimeStamp diff_primary = 0;
     n_leaves_t checked_points_size = 0;
 
-    for (n_leaves_t primary_key = 0; primary_key < total_points_count; primary_key += 100){
+    for (n_leaves_t i = 0; i < found_points_size; i += 5){
 
+        n_leaves_t primary_key = found_points[i];
         std::vector<morton_t> node_path_from_primary(max_depth + 1);
 
         tree_block<DIMENSION> *t_ptr = (tree_block<DIMENSION> *) (p_key_to_treeblock_compact->At(primary_key));
@@ -139,8 +157,8 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node){
         morton_t parent_symbol_from_primary = t_ptr->get_node_path_primary_key(primary_key, node_path_from_primary);
         node_path_from_primary[max_depth - 1] = parent_symbol_from_primary;
         data_point<DIMENSION> *coordinates = t_ptr->node_path_to_coordinates(node_path_from_primary, DIMENSION);
-        delete coordinates;
         diff_primary += GetTimestamp() - start;
+        delete coordinates;
         checked_points_size++;
 
     }
