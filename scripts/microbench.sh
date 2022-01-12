@@ -2,7 +2,7 @@
 
 cd /home/ziming/md-trie/build/
 
-NUM_REPEATS=1
+NUM_REPEATS=5
 
 for i in $( seq 1 $NUM_REPEATS )
 do

@@ -27,7 +27,7 @@ A simple example can be found [here](libmdtrie/bench/tpch_bench.cpp).
 ## Reproduce Results
 
 ```
-nohup source scripts/microbench.sh &
+nohup sh scripts/microbench.sh &
 ```
 
 ## Contributing
