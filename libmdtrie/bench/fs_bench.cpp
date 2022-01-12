@@ -115,6 +115,8 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node){
         mdtrie.range_search_trie(&start_range, &end_range, mdtrie.root(), 0, found_points_temp);
         TimeStamp temp_diff =  GetTimestamp() - start; 
         diff += temp_diff;
+        if (found_points_temp.size() > 2000 || found_points_temp.size() < 1000)
+            std::cout << "found points size: " << found_points_temp.size() << std::endl;
         count ++;
         found_points_temp.clear();
     }
