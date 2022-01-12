@@ -95,9 +95,6 @@ public:
         total_size += sizeof(uint8_t) * 2; // max_depth_ & trie_depth_
         total_size += sizeof(uint16_t); // max_tree_nodes_
 
-        // Primary Key to Treeblock Index    
-        // total_size += sizeof(uint64_t) + total_points_count / discount_factor * sizeof(uint32_t);
-
         std::queue<trie_node<DIMENSION> *> trie_node_queue;
         trie_node_queue.push(root_);
 
@@ -120,8 +117,13 @@ public:
             }
         }
 
-        // total_size += sizeof(uint64_t) + (44 * total_treeblock_num / 64 + 1) * 8;
-        total_size += sizeof(uint64_t) + (44 * (total_points_count / discount_factor) / 64 + 1) * 8;
+        // Todo: Primary Key to Treeblock Index    
+        total_size += sizeof(uint64_t) + total_points_count / discount_factor * sizeof(uint32_t);
+        // Treeblock Index to Treeblock Pointer
+        total_size += sizeof(uint64_t) + (44 * total_treeblock_num / 64 + 1) * 8;
+
+        // Previous: primary key to Treeblock Pointer
+        // total_size += sizeof(uint64_t) + (44 * (total_points_count / discount_factor) / 64 + 1) * 8;
 
         return total_size;
     }
