@@ -71,7 +71,7 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node){
         diff += GetTimestamp() - start;
         n_points ++;
 
-        if (n_points % (total_points_count / 20) == 0)
+        if (n_points % (total_points_count / 10) == 0)
             std::cout << "Inserted - n_points: " << n_points << std::endl;
 
         if (n_points == total_points_count)
