@@ -159,7 +159,7 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node){
     std::cout << "Lookup Latency: " << (float) diff_primary / checked_points_size << std::endl;
 }
 
-int main() {
+int main(int argc, char *argv[]) {
 
     /**
      * Set hyperparameters
@@ -174,6 +174,10 @@ int main() {
     discount_factor = 1;
     total_points_count = 155846019 / discount_factor;
     no_dynamic_sizing = true;
+
+    if (argc == 2){
+        discount_factor = atoi(argv[1]);
+    }
 
     std::cout << "dimension: " << DIMENSION << std::endl;
     std::cout << "trie depth: " << trie_depth << std::endl;
