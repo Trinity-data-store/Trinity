@@ -172,12 +172,11 @@ int main(int argc, char *argv[]) {
     level_t trie_depth = 6;
     uint32_t treeblock_size = 512;
     discount_factor = 1;
-    total_points_count = 155846019 / discount_factor;
-    no_dynamic_sizing = true;
-
     if (argc == 2){
         discount_factor = atoi(argv[1]);
     }
+    total_points_count = 155846019 / discount_factor;
+    no_dynamic_sizing = true;
 
     std::cout << "dimension: " << DIMENSION << std::endl;
     std::cout << "trie depth: " << trie_depth << std::endl;
