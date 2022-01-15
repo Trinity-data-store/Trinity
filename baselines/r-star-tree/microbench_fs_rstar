@@ -54,3 +54,27 @@ finished: 4375005
 finished: 5833340
 finished: 7291675
 finished: 8750010
+finished: 10208345
+finished: 11666680
+finished: 13125015
+finished: 14583350
+insertion latency: 43.8271
+average query latency: 404646
+
+
+**** fs_bench 5's iteration started! ****
+file system......
+finished: 1458335
+finished: 2916670
+finished: 4375005
+finished: 5833340
+finished: 7291675
+finished: 8750010
+finished: 10208345
+finished: 11666680
+finished: 13125015
+finished: 14583350
+insertion latency: 43.9216
+average query latency: 407470
+
+

@@ -123,7 +123,7 @@ void filesys() {
         }
         n_points ++;
     }    
-    std::cout << "Done! " << "Insertion Latency per point" << (float) diff / n_points << std::endl;
+    std::cout << "Done! " << "Insertion Latency per point: " << (float) diff / n_points << std::endl;
 
     /**
      * Benchmark range search given a query selectivity (1000-2000), given a query
@@ -211,7 +211,11 @@ void osm() {
         }
         n_points ++;
     }    
-    std::cout << "Done! " << "Insertion Latency per point" << (float) diff / n_points << std::endl;
+    std::cout << "Done! " << "Insertion Latency per point: " << (float) diff / n_points << std::endl;
+
+    /**
+     * Benchmark range search given a query selectivity (1000-2000), given a query
+     */
 
     line = nullptr;
     len = 0;
@@ -235,13 +239,18 @@ void osm() {
             end_range[i] = strtoul(token, &ptr, 10);
         }
         count ++;   
-
         Counter callback;
         start = GetTimestamp();
         tree.for_each({start_range, end_range}, callback);
         TimeStamp temp_diff =  GetTimestamp() - start; 
         diff += temp_diff;
+        // if (key_list.size() < 1000 || key_list.size() > 2000){
+        //     std::cout << "key list size: " << key_list.size() << std::endl;
+        // }
         key_list.clear();
+
+        // if (count % 50 == 0)
+        //     std::cout << "done: " << count << std::endl;
     }
     std::cout << "average query latency: " << (float) diff / count << std::endl;    
 }
@@ -311,7 +320,7 @@ void tpch() {
         start = GetTimestamp();
         tree.emplace(p1, n_points);
         diff += GetTimestamp() - start;
-        if (n_points % 1000000 == 0)
+        if (n_points % 10000000 == 0)
             std::cout << "n_points: " << n_points << std::endl;
 
         for (dimension_t i = 0; i < 9; i++){
@@ -331,7 +340,7 @@ void tpch() {
         n_points ++;
 
     }    
-    std::cout << "Done! " << "Insertion Latency per point" << (float) diff / n_points << std::endl;
+    std::cout << "Done! " << "Insertion Latency per point: " << (float) diff / n_points << std::endl;
 
     /**
      * Benchmark range search given a query selectivity (1000-2000), given a query

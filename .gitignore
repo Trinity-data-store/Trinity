@@ -89,4 +89,5 @@ data/*
 *.txt
 build_*
 
-baselines/*
+baselines/phtree-cpp/build/*
+# *.log

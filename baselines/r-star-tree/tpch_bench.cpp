@@ -78,7 +78,7 @@ void tpch()
 	srand(time(0));
 	#define nodes_tpch 300005812
 
-    std::ifstream infile("/../../data/tpc-h/tpch_dataset.csv");
+    std::ifstream infile("../../data/tpc-h/tpch_dataset.csv");
 
     TimeStamp start, diff;
     diff = 0;
@@ -174,7 +174,7 @@ void tpch()
 
     char *line_query = nullptr;
     size_t len = 0;
-    FILE *fp = fopen("../../queries/tpc-h/tpch_dataset.csv", "r");
+    FILE *fp = fopen("../../queries/tpch/tpch_range_queries.csv", "r");
     int count = 0;
     diff = 0;
     ssize_t read = getline(&line_query, &len, fp);
@@ -187,7 +187,7 @@ void tpch()
         char *ptr;
         char *token = strtok(line_query, ","); // id
 
-        for (dimension_t i = 0; i < 9; i++){
+        for (dimension_t i = 0; i < DIMENSION; i++){
             token = strtok(nullptr, ","); // id
             start_range[i] = strtoul(token, &ptr, 10);
             token = strtok(nullptr, ",");

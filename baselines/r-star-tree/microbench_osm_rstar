@@ -1,0 +1,75 @@
+**** osm_bench  1's iteration started! ****
+osm......
+finished: 15280626
+finished: 30561252
+finished: 45841878
+finished: 61122504
+finished: 76403130
+finished: 91683756
+finished: 106964382
+finished: 122245008
+finished: 137525634
+finished: 152806260
+insertion latency: 34.5939
+
+
+**** osm_bench  2's iteration started! ****
+osm......
+finished: 15280626
+finished: 30561252
+finished: 45841878
+finished: 61122504
+finished: 76403130
+finished: 91683756
+finished: 106964382
+finished: 122245008
+finished: 137525634
+finished: 152806260
+insertion latency: 35.1104
+
+
+**** osm_bench  3's iteration started! ****
+osm......
+finished: 15280626
+finished: 30561252
+finished: 45841878
+finished: 61122504
+finished: 76403130
+finished: 91683756
+finished: 106964382
+finished: 122245008
+finished: 137525634
+finished: 152806260
+insertion latency: 34.9351
+
+
+**** osm_bench  4's iteration started! ****
+osm......
+finished: 15280626
+finished: 30561252
+finished: 45841878
+finished: 61122504
+finished: 76403130
+finished: 91683756
+finished: 106964382
+finished: 122245008
+finished: 137525634
+finished: 152806260
+insertion latency: 35.016
+
+
+**** osm_bench  5's iteration started! ****
+osm......
+finished: 15280626
+finished: 30561252
+finished: 45841878
+finished: 61122504
+finished: 76403130
+finished: 91683756
+finished: 106964382
+finished: 122245008
+finished: 137525634
+finished: 152806260
+insertion latency: 34.3355
+
+

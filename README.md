@@ -30,6 +30,7 @@ A simple example can be found [here](libmdtrie/bench/tpch_bench.cpp).
 nohup sh scripts/microbench.sh &
 nohup sh scripts/dataset_size_sensitivity.sh &
 nohup sh scripts/rstar_microbench.sh &
+nohup sh scripts/phtree_microbench.sh &
 ```
 
 ## Contributing

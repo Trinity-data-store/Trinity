@@ -151,7 +151,7 @@ void osm()
     fp = fopen("../../queries/osm/osm_range_queries.csv", "r");
     int count = 0;
     diff = 0;
-
+    read = getline(&line, &len, fp);
     while ((read = getline(&line, &len, fp)) != -1)
     {
         std::vector<int> start_range(DIMENSION, 0);
@@ -159,8 +159,6 @@ void osm()
 
         char *ptr;
         char *token = strtok(line, ","); // id
-        token = strtok(nullptr, ",");
-        token = strtok(nullptr, ",");
 
         for (dimension_t i = 0; i < DIMENSION; i++){
             token = strtok(nullptr, ","); // id
