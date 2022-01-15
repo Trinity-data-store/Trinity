@@ -8,7 +8,7 @@ for i in $( seq 1 $NUM_REPEATS )
 do
     echo "**** fs_bench $i's iteration started! ****" >> microbench_fs
     libmdtrie/fs_bench >> microbench_fs
-    echo "\n" >> microbench_fs
+    echo "\n" >> microbench_fså
 done
 
 for i in $( seq 1 $NUM_REPEATS )
