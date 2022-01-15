@@ -1,0 +1,56 @@
+**** fs_bench 1's iteration started! ****
+file system......
+finished: 1458335
+finished: 2916670
+finished: 4375005
+finished: 5833340
+finished: 7291675
+finished: 8750010
+finished: 10208345
+finished: 11666680
+finished: 13125015
+finished: 14583350
+insertion latency: 43.7825
+average query latency: 404327
+
+
+**** fs_bench 2's iteration started! ****
+file system......
+finished: 1458335
+finished: 2916670
+finished: 4375005
+finished: 5833340
+finished: 7291675
+finished: 8750010
+finished: 10208345
+finished: 11666680
+finished: 13125015
+finished: 14583350
+insertion latency: 43.586
+average query latency: 413794
+
+
+**** fs_bench 3's iteration started! ****
+file system......
+finished: 1458335
+finished: 2916670
+finished: 4375005
+finished: 5833340
+finished: 7291675
+finished: 8750010
+finished: 10208345
+finished: 11666680
+finished: 13125015
+finished: 14583350
+insertion latency: 43.5476
+average query latency: 404036
+
+
+**** fs_bench 4's iteration started! ****
+file system......
+finished: 1458335
+finished: 2916670
+finished: 4375005
+finished: 5833340
+finished: 7291675
+finished: 8750010
