@@ -5,10 +5,11 @@
 #include <vector>
 #include <iostream>
 #include <fstream>
+#include <string> 
 
 const dimension_t DIMENSION = 7;
 
-void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node){
+void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node, bool run_preset_query = true, bool run_search_query = false){
 
     std::vector<int32_t> found_points;
     md_trie<DIMENSION> mdtrie(max_depth, trie_depth, max_tree_node);
@@ -79,45 +80,84 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node){
     std::cout << "mdtrie storage: " << mdtrie.size() << std::endl;
     
     /**
-     * Benchmark range search given a query selectivity (1000-2000)
+     * Benchmark range search given a query selectivity (1000-2000), given a query
      */
 
     data_point<DIMENSION> start_range;
     data_point<DIMENSION> end_range;
+    
+    if (run_preset_query){
 
-    line = nullptr;
-    len = 0;
-    fp = fopen("../queries/fs/fs_range_queries.csv", "r");
-    read = getline(&line, &len, fp);
-    diff = 0;
-    int count = 0;
-    while ((read = getline(&line, &len, fp)) != -1)
-    {
-        char *ptr;
-        char *token = strtok(line, ",");
+        line = nullptr;
+        len = 0;
+        fp = fopen("../queries/fs/fs_range_queries.csv", "r");
+        read = getline(&line, &len, fp);
+        diff = 0;
+        int count = 0;
+        while ((read = getline(&line, &len, fp)) != -1)
+        {
+            char *ptr;
+            char *token = strtok(line, ",");
 
-        for (dimension_t i = 0; i < DIMENSION - 1; i++){
-            token = strtok(nullptr, ","); // start
-            start_range.set_coordinate(i, strtoul(token, &ptr, 10));
-            token = strtok(nullptr, ","); // end
-            end_range.set_coordinate(i, strtoul(token, &ptr, 10));
+            for (dimension_t i = 0; i < DIMENSION - 1; i++){
+                token = strtok(nullptr, ","); // start
+                start_range.set_coordinate(i, strtoul(token, &ptr, 10));
+                token = strtok(nullptr, ","); // end
+                end_range.set_coordinate(i, strtoul(token, &ptr, 10));
+            }
+            if (DIMENSION > 6){
+                start_range.set_coordinate(6, min[6]);
+                end_range.set_coordinate(6, max[6]);
+            }
+
+            std::vector<int32_t> found_points_temp;
+            start = GetTimestamp();
+            mdtrie.range_search_trie(&start_range, &end_range, mdtrie.root(), 0, found_points_temp);
+            TimeStamp temp_diff =  GetTimestamp() - start; 
+            diff += temp_diff;
+            // if (found_points_temp.size() > 2000 || found_points_temp.size() < 1000)
+            //     std::cout << "found points size: " << found_points_temp.size() << ", index:  " << count << std::endl;
+            count ++;
+            found_points_temp.clear();
         }
-        if (DIMENSION > 6){
-            start_range.set_coordinate(6, min[6]);
-            end_range.set_coordinate(6, max[6]);
-        }
-
-        std::vector<int32_t> found_points_temp;
-        start = GetTimestamp();
-        mdtrie.range_search_trie(&start_range, &end_range, mdtrie.root(), 0, found_points_temp);
-        TimeStamp temp_diff =  GetTimestamp() - start; 
-        diff += temp_diff;
-        if (found_points_temp.size() > 2000 || found_points_temp.size() < 1000)
-            std::cout << "found points size: " << found_points_temp.size() << ", index:  " << count << std::endl;
-        count ++;
-        found_points_temp.clear();
+        std::cout << "Average query latency: " << (float) diff / count << std::endl;    
     }
-    std::cout << "Average query latency: " << (float) diff / count << std::endl;    
+
+    /**
+     * Benchmark range search given a query selectivity (1000-2000), find new query
+     */
+
+    if (run_search_query){
+
+        std::cout << "Find range query started, created range_search_filesystem.csv" << std::endl;
+        int itr = 0;
+        std::ofstream file("../queries/fs/range_search_filesystem_sensitivity_" + std::to_string(discount_factor) + ".csv", std::ios_base::app);
+
+        while (itr < 100){
+
+            for (unsigned int j = 0; j < DIMENSION; j++){
+                start_range.set_coordinate(j, min[j] + (max[j] - min[j] + 1) / 10 * (rand() % 10));
+                end_range.set_coordinate(j, start_range.get_coordinate(j) + (max[j] - start_range.get_coordinate(j) + 1) / 10 * (rand() % 10));
+            }
+
+            std::vector<int32_t> found_points_temp;
+            start = GetTimestamp();
+            mdtrie.range_search_trie(&start_range, &end_range, mdtrie.root(), 0, found_points_temp);
+            diff = GetTimestamp() - start;
+
+            if (found_points_temp.size() >= 1000 && found_points_temp.size() <= 2000){
+
+                file << found_points_temp.size() << "," << diff << ",";
+                for (unsigned int i = 0; i < DIMENSION; i++){
+                    file << start_range.get_coordinate(i) << "," << end_range.get_coordinate(i) << ",";
+                }
+                file <<  std::endl;
+                itr ++;
+                if (itr % 10 == 0)
+                    std::cout << "find query: " << itr << " done!" << std::endl;
+            }
+        }    
+    }
 
     /**
      * Range Search with full range
@@ -203,5 +243,9 @@ int main(int argc, char *argv[]) {
         std::cerr << "total_points_count does not match" << std::endl;
         exit(0);
     }
-    run_bench(max_depth, trie_depth, treeblock_size);
+    if (argc == 2){
+        run_bench(max_depth, trie_depth, treeblock_size, false, true);
+    }
+    else 
+        run_bench(max_depth, trie_depth, treeblock_size);
 }
