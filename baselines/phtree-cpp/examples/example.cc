@@ -104,8 +104,8 @@ void filesys() {
         start = GetTimestamp();
         tree.emplace(p1, n_points);
         diff += GetTimestamp() - start;
-        if (n_points % 1000000 == 0)
-            std::cout << "n_points: " << n_points << std::endl;
+        // if (n_points % 1000000 == 0)
+        //     std::cout << "n_points: " << n_points << std::endl;
 
         for (dimension_t i = 0; i < 7; i++){
             if (n_points == 0){
@@ -192,8 +192,8 @@ void osm() {
         start = GetTimestamp();
         tree.emplace(p1, n_points);
         diff += GetTimestamp() - start;
-        if (n_points % 3000000 == 0)
-            std::cout << "n_points: " << n_points << std::endl;
+        // if (n_points % 3000000 == 0)
+        //     std::cout << "n_points: " << n_points << std::endl;
 
         for (dimension_t i = 0; i < 4; i++){
             if (n_points == 0){
@@ -320,8 +320,8 @@ void tpch() {
         start = GetTimestamp();
         tree.emplace(p1, n_points);
         diff += GetTimestamp() - start;
-        if (n_points % 10000000 == 0)
-            std::cout << "n_points: " << n_points << std::endl;
+        // if (n_points % 10000000 == 0)
+        //     std::cout << "n_points: " << n_points << std::endl;
 
         for (dimension_t i = 0; i < 9; i++){
             if (n_points == 0){
