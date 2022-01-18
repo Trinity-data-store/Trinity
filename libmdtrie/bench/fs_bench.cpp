@@ -94,6 +94,8 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node, 
         read = getline(&line, &len, fp);
         diff = 0;
         int count = 0;
+        std::vector<TimeStamp> latency_vect;
+
         while ((read = getline(&line, &len, fp)) != -1)
         {
             char *ptr;
@@ -114,6 +116,7 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node, 
             start = GetTimestamp();
             mdtrie.range_search_trie(&start_range, &end_range, mdtrie.root(), 0, found_points_temp);
             TimeStamp temp_diff =  GetTimestamp() - start; 
+            latency_vect.push_back(temp_diff);
             diff += temp_diff;
             // if (found_points_temp.size() > 2000 || found_points_temp.size() < 1000)
             //     std::cout << "found points size: " << found_points_temp.size() << ", index:  " << count << std::endl;
@@ -121,6 +124,12 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node, 
             found_points_temp.clear();
         }
         std::cout << "Average query latency: " << (float) diff / count << std::endl;    
+        TimeStamp squared_cumulative = 0;
+        for (unsigned int i = 0; i < latency_vect.size(); i++){
+            squared_cumulative += (latency_vect[i] - diff / count) * (latency_vect[i] - diff / count);
+        }
+        std::cout << "Standard Deviation: " << (float) sqrt (squared_cumulative / (count - 1)) << std::endl;
+
     }
 
     /**

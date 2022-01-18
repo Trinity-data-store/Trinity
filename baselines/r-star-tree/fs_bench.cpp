@@ -15,6 +15,7 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <unistd.h>
+#include <cmath>
 
 #define RANDOM_DATASET
 const uint8_t DIMENSION = 7; 
@@ -174,6 +175,7 @@ void file_system()
     int count = 0;
     diff = 0;
     read = getline(&line, &len, fp);
+    std::vector<TimeStamp> latency_vect;
 
     while ((read = getline(&line, &len, fp)) != -1)
     {
@@ -199,12 +201,20 @@ void file_system()
         start = GetTimestamp();
         x = tree.Query(RTree::AcceptEnclosing(bound), Visitor());
         TimeStamp temp_diff =  GetTimestamp() - start; 
+        latency_vect.push_back(temp_diff);
+
         diff += temp_diff;
 
         count ++;   
         leaf_list.clear();
     }
     std::cout << "average query latency: " << (float) diff / count << std::endl;    
+
+    TimeStamp squared_cumulative = 0;
+    for (unsigned int i = 0; i < latency_vect.size(); i++){
+        squared_cumulative += (latency_vect[i] - diff / count) * (latency_vect[i] - diff / count);
+    }
+    std::cout << "Standard Deviation: " << (float) sqrt (squared_cumulative / (count - 1)) << std::endl;
 }
 
 int main(){

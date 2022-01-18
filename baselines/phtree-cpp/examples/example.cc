@@ -21,6 +21,7 @@
 #include <iostream>
 #include <fstream>
 #include <signal.h>
+#include <cmath>
 
 using namespace improbable::phtree;
 typedef unsigned long long int TimeStamp;
@@ -135,7 +136,7 @@ void filesys() {
     int count = 0;
     diff = 0;
     read = getline(&line, &len, fp);
-
+    std::vector<TimeStamp> latency_vect;
     while ((read = getline(&line, &len, fp)) != -1)
     {
         PhPoint<7> start_range;
@@ -157,12 +158,19 @@ void filesys() {
         start = GetTimestamp();
         tree.for_each({start_range, end_range}, callback);
         TimeStamp temp_diff =  GetTimestamp() - start; 
+        latency_vect.push_back(temp_diff);
         diff += temp_diff;
 
         count ++;   
-        key_list_tpch.clear();
+        key_list_filesys.clear();
     }
     std::cout << "average query latency: " << (float) diff / count << std::endl;    
+
+    TimeStamp squared_cumulative = 0;
+    for (unsigned int i = 0; i < latency_vect.size(); i++){
+        squared_cumulative += (latency_vect[i] - diff / count) * (latency_vect[i] - diff / count);
+    }
+    std::cout << "Standard Deviation: " << (float) sqrt (squared_cumulative / (count - 1)) << std::endl;
 }
 
 void osm() {
@@ -223,7 +231,8 @@ void osm() {
     int count = 0;
     diff = 0;
     read = getline(&line, &len, fp);
-    
+    std::vector<TimeStamp> latency_vect;
+
     while ((read = getline(&line, &len, fp)) != -1)
     {
         PhPoint<4> start_range;
@@ -243,6 +252,7 @@ void osm() {
         start = GetTimestamp();
         tree.for_each({start_range, end_range}, callback);
         TimeStamp temp_diff =  GetTimestamp() - start; 
+        latency_vect.push_back(temp_diff);
         diff += temp_diff;
         // if (key_list.size() < 1000 || key_list.size() > 2000){
         //     std::cout << "key list size: " << key_list.size() << std::endl;
@@ -253,6 +263,12 @@ void osm() {
         //     std::cout << "done: " << count << std::endl;
     }
     std::cout << "average query latency: " << (float) diff / count << std::endl;    
+
+    TimeStamp squared_cumulative = 0;
+    for (unsigned int i = 0; i < latency_vect.size(); i++){
+        squared_cumulative += (latency_vect[i] - diff / count) * (latency_vect[i] - diff / count);
+    }
+    std::cout << "Standard Deviation: " << (float) sqrt (squared_cumulative / (count - 1)) << std::endl;
 }
 
 void tpch() {
@@ -352,6 +368,7 @@ void tpch() {
     int count = 0;
     diff = 0;
     ssize_t read = getline(&line_query, &len, fp);
+    std::vector<TimeStamp> latency_vect;
 
     while ((read = getline(&line_query, &len, fp)) != -1)
     {
@@ -370,11 +387,19 @@ void tpch() {
         Counter_tpch callback;
         start = GetTimestamp();
         tree.for_each({start_range, end_range}, callback);
-        diff += GetTimestamp() - start;
+        TimeStamp temp_diff = GetTimestamp() - start;
+        diff += temp_diff;
         key_list_tpch.clear();
+        latency_vect.push_back(temp_diff);
+
         count ++;
     }
     std::cout << "average query latency: " << (float) diff / count << std::endl;    
+    TimeStamp squared_cumulative = 0;
+    for (unsigned int i = 0; i < latency_vect.size(); i++){
+        squared_cumulative += (latency_vect[i] - diff / count) * (latency_vect[i] - diff / count);
+    }
+    std::cout << "Standard Deviation: " << (float) sqrt (squared_cumulative / (count - 1)) << std::endl;
 }
 
 
