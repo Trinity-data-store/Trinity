@@ -17,7 +17,7 @@ public:
         if (!is_leaf){
             trie_or_treeblock_ptr_ = (trie_node<DIMENSION> **)calloc(sizeof(trie_node<DIMENSION> *), 1 << num_dimensions);
         }
-        num_children_ = 1 << num_dimensions;
+        // num_children_ = 1 << num_dimensions;
     }
 
     inline trie_node<DIMENSION> *get_child(morton_t symbol) {
@@ -44,14 +44,14 @@ public:
         is_leaf_ = true;
     }
 
-    uint64_t size() {
+    uint64_t size(level_t num_children) {
 
-        uint64_t total_size = sizeof(uint64_t); // trie_or_treeblock_ptr_
-        total_size += sizeof(uint64_t); // parent_trie_node_
-        total_size += sizeof(uint8_t); // parent_symbol_
+        uint64_t total_size = sizeof(parent_trie_node_) + sizeof(is_leaf_); // trie_or_treeblock_ptr_
+        total_size += sizeof(parent_trie_node_); // parent_trie_node_
+        total_size += sizeof(parent_symbol_); // parent_symbol_
 
         if (!is_leaf_)
-            total_size += sizeof(trie_node<DIMENSION> *) * num_children_; // Array of Trie node ptrs
+            total_size += sizeof(trie_node<DIMENSION> *) * num_children; // Array of Trie node ptrs
         // is_leaf and num_children_ can be deduced from outside and only used for size calculations
 
         return total_size;
@@ -70,13 +70,13 @@ public:
         return parent_trie_node_;
     }
 
-    morton_t get_parent_symbol(){
-        return parent_symbol_;
-    }
-
     void set_parent_trie_node(trie_node<DIMENSION> *node){
 
         parent_trie_node_ = node;
+    }
+
+    morton_t get_parent_symbol(){
+        return parent_symbol_;
     }
 
     void set_parent_symbol(morton_t symbol){
@@ -88,18 +88,18 @@ public:
         return is_leaf_;
     }
 
-    dimension_t get_num_children(){
-        return num_children_;
-    }
+    // dimension_t get_num_children(){
+    //     return num_children_;
+    // }
 
 private:
     bool is_leaf_ = false;
     void *trie_or_treeblock_ptr_ = NULL;
     trie_node<DIMENSION> *parent_trie_node_ = NULL; 
+    morton_t parent_symbol_ = 0; 
 
     // Only used for trie node size calculation
-    morton_t parent_symbol_ = 0; 
-    dimension_t num_children_ = 0;
+    // dimension_t num_children_ = 0;
 };
 
 #endif //MD_TRIE_TRIE_NODE_H

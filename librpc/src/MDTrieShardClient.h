@@ -47,6 +47,13 @@ public:
     return connect(ip_address, port_num);
   }
 
+  void clear_trie(){
+
+    int client_count = shard_vector_.size();
+    for (uint8_t i = 0; i < client_count; i++)
+      shard_vector_[i].clear_trie();
+  }
+
   bool ping(int32_t dataset_idx){
 
     int client_count = shard_vector_.size();

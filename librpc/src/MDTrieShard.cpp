@@ -122,4 +122,20 @@ MDTrieShard_get_size_presult::~MDTrieShard_get_size_presult() noexcept {
 }
 
 
+MDTrieShard_clear_trie_args::~MDTrieShard_clear_trie_args() noexcept {
+}
+
+
+MDTrieShard_clear_trie_pargs::~MDTrieShard_clear_trie_pargs() noexcept {
+}
+
+
+MDTrieShard_clear_trie_result::~MDTrieShard_clear_trie_result() noexcept {
+}
+
+
+MDTrieShard_clear_trie_presult::~MDTrieShard_clear_trie_presult() noexcept {
+}
+
+
 

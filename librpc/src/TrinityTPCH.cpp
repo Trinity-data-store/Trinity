@@ -139,6 +139,7 @@ int main(){
     diff = GetTimestamp() - start;
     cout << "Primary Key Lookup Throughput (pt / seconds): " << throughput << endl;
 
+    client.clear_trie();
     delete data_vector;
     return 0;
 }

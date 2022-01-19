@@ -49,6 +49,12 @@ public:
 
   };
 
+  void clear_trie(){
+
+    delete mdtrie_; // TODO
+    mdtrie_ = new md_trie<DIMENSION>(max_depth, trie_depth, max_tree_node);
+  }
+
   bool ping(const int32_t dataset_idx) { 
 
     cout << "ping()" << endl; 

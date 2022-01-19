@@ -13,7 +13,7 @@ namespace bits {
 class compact_ptr {
  public:
 
-  compact_ptr(uint64_t primary_key){
+  compact_ptr(uint32_t primary_key){
 
     ptr_ = (uintptr_t) primary_key;
     flag_ = 0;
@@ -21,15 +21,15 @@ class compact_ptr {
 
   compact_ptr(){}
 
-  std::vector<uint64_t> *get_vector_pointer(){
-    return (std::vector<uint64_t> *) (ptr_ << 4ULL);
+  std::vector<uint32_t> *get_vector_pointer(){
+    return (std::vector<uint32_t> *) (ptr_ << 4ULL);
   }
 
-  bitmap::EliasGammaDeltaEncodedArray<uint64_t> *get_delta_encoded_array_pointer(){
-    return (bitmap::EliasGammaDeltaEncodedArray<uint64_t> *) (ptr_ << 4ULL);
+  bitmap::EliasGammaDeltaEncodedArray<uint32_t> *get_delta_encoded_array_pointer(){
+    return (bitmap::EliasGammaDeltaEncodedArray<uint32_t> *) (ptr_ << 4ULL);
   }
 
-  bool binary_if_present(std::vector<uint64_t> *vect, uint64_t primary_key){
+  bool binary_if_present(std::vector<uint32_t> *vect, uint32_t primary_key){
       uint64_t low = 0;
       uint64_t high = vect->size() - 1;
 
@@ -54,7 +54,7 @@ class compact_ptr {
       return 0 /*sizeof(compact_ptr)*/;
     }
     if (flag_ == 1){
-      std::vector<uint64_t> *vect_ptr = get_vector_pointer();
+      std::vector<uint32_t> *vect_ptr = get_vector_pointer();
       return /*sizeof(*vect_ptr) + */ sizeof(uint32_t) /*primary key size*/ * vect_ptr->size() /*+ sizeof(compact_ptr)*/;
     }
     else {
@@ -62,11 +62,11 @@ class compact_ptr {
     }
   }
 
-  void push(uint64_t primary_key){
+  void push(uint32_t primary_key){
     
     if (flag_ == 0){
-        auto array = new std::vector<uint64_t>;
-        array->push_back((uint64_t) ptr_);
+        auto array = new std::vector<uint32_t>;
+        array->push_back((uint32_t) ptr_);
         array->push_back(primary_key);
         ptr_ = ((uintptr_t) array) >> 4ULL;
         flag_ = 1; 
@@ -74,9 +74,9 @@ class compact_ptr {
     }
     else if (size() == compact_pointer_vector_size_limit + 1){
 
-      std::vector<uint64_t> *vect_ptr = get_vector_pointer();
+      std::vector<uint32_t> *vect_ptr = get_vector_pointer();
 
-      auto enc_array = new bitmap::EliasGammaDeltaEncodedArray<uint64_t>(*vect_ptr, vect_ptr->size());
+      auto enc_array = new bitmap::EliasGammaDeltaEncodedArray<uint32_t>(*vect_ptr, vect_ptr->size());
       delete vect_ptr;
       ptr_ = ((uintptr_t) enc_array) >> 4ULL;
       flag_ = 2;
@@ -105,7 +105,7 @@ class compact_ptr {
     }       
   }
 
-  bool check_if_present(uint64_t primary_key){
+  bool check_if_present(uint32_t primary_key){
 
     if (flag_ == 0){
       return primary_key == (uint64_t)ptr_;

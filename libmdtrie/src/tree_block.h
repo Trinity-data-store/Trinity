@@ -692,7 +692,6 @@ public:
         }
 
         insert(current_node, current_node_pos, leaf_point, level, current_frontier, current_primary, primary_key);
-        previous_p_key_ = primary_key;
 
         return;
     }
@@ -1107,38 +1106,46 @@ public:
         total_treeblock_num ++; // For primary key -> treeblock index -> treeblock pointer
         
         uint64_t total_size = 0;
-        total_size += sizeof(uint8_t); // root_depth_
-        total_size += sizeof(uint16_t); // node_capacity_
-        total_size += sizeof(uint64_t); // Either a treeblock pointer or trie node pointer + preorder number
+        total_size += sizeof(root_depth_); // root_depth_
+        total_size += sizeof(num_nodes_);
+        total_size += sizeof(total_nodes_bits_);
+        total_size += sizeof(node_capacity_); // node_capacity_
+        total_size += sizeof(bit_capacity_);
 
-        total_size += sizeof(primary_key_list) + primary_key_list.size() * 46 / 8 /*sizeof(bits::compact_ptr)*/;
+        total_size += sizeof(dfuds_);
+        total_size += dfuds_->size() /*+ sizeof(dfuds_)*/;
 
+        total_size += num_frontiers_ * sizeof(frontier_node<DIMENSION>) /*Use compact pointer representation*/ + sizeof(frontiers_) /*pointer*/;
+        for (uint16_t i = 0; i < num_frontiers_; i++){
+            total_size += ((frontier_node<DIMENSION> *) frontiers_)[i].pointer_->size();
+        }
+        total_size += sizeof(num_frontiers_);
+
+        total_size += sizeof(parent_combined_ptr_); // Either a treeblock pointer or trie node pointer + preorder number
+        total_size += sizeof(parent_is_trie_);
+        total_size += sizeof(treeblock_frontier_num_);
+
+        total_size += sizeof(primary_key_list) + primary_key_list.size() * sizeof(bits::compact_ptr);
         for (preorder_t i = 0; i < primary_key_list.size(); i++)
         {
             total_size += primary_key_list[i].size_overhead();
         }
-        total_size += dfuds_->size() /*+ sizeof(dfuds_)*/;
-        total_size += num_frontiers_ * sizeof(tree_block<DIMENSION> *) /*Use compact pointer representation*/ + sizeof(frontiers_) /*pointer*/;
 
-        for (uint16_t i = 0; i < num_frontiers_; i++){
-            total_size += ((frontier_node<DIMENSION> *) frontiers_)[i].pointer_->size();
-        }
         return total_size;
     }
 
 private:
 
-    preorder_t max_tree_nodes_;
+    // preorder_t max_tree_nodes_;
     level_t root_depth_;
     preorder_t num_nodes_;
     preorder_t total_nodes_bits_;
     preorder_t node_capacity_;
     node_pos_t bit_capacity_;
-    level_t max_depth_;
+    // level_t max_depth_;
     compressed_bitmap::compressed_bitmap *dfuds_{};
     frontier_node<DIMENSION> *frontiers_ = nullptr; 
     preorder_t num_frontiers_ = 0;
-    preorder_t previous_p_key_ = 0;
     
     void *parent_combined_ptr_ = NULL;
     bool parent_is_trie_ = false;

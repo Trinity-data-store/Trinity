@@ -29,6 +29,7 @@ class MDTrieShardIf {
   virtual void range_search(std::vector<int32_t> & _return, const std::vector<int32_t> & start_range, const std::vector<int32_t> & end_range) = 0;
   virtual void primary_key_lookup(std::vector<int32_t> & _return, const int32_t primary_key) = 0;
   virtual int32_t get_size() = 0;
+  virtual void clear_trie() = 0;
 };
 
 class MDTrieShardIfFactory {
@@ -83,6 +84,9 @@ class MDTrieShardNull : virtual public MDTrieShardIf {
   int32_t get_size() {
     int32_t _return = 0;
     return _return;
+  }
+  void clear_trie() {
+    return;
   }
 };
 
@@ -865,6 +869,86 @@ class MDTrieShard_get_size_presult {
 
 };
 
+
+class MDTrieShard_clear_trie_args {
+ public:
+
+  MDTrieShard_clear_trie_args(const MDTrieShard_clear_trie_args&);
+  MDTrieShard_clear_trie_args& operator=(const MDTrieShard_clear_trie_args&);
+  MDTrieShard_clear_trie_args() {
+  }
+
+  virtual ~MDTrieShard_clear_trie_args() noexcept;
+
+  bool operator == (const MDTrieShard_clear_trie_args & /* rhs */) const
+  {
+    return true;
+  }
+  bool operator != (const MDTrieShard_clear_trie_args &rhs) const {
+    return !(*this == rhs);
+  }
+
+  bool operator < (const MDTrieShard_clear_trie_args & ) const;
+
+  template <class Protocol_>
+  uint32_t read(Protocol_* iprot);
+  template <class Protocol_>
+  uint32_t write(Protocol_* oprot) const;
+
+};
+
+
+class MDTrieShard_clear_trie_pargs {
+ public:
+
+
+  virtual ~MDTrieShard_clear_trie_pargs() noexcept;
+
+  template <class Protocol_>
+  uint32_t write(Protocol_* oprot) const;
+
+};
+
+
+class MDTrieShard_clear_trie_result {
+ public:
+
+  MDTrieShard_clear_trie_result(const MDTrieShard_clear_trie_result&);
+  MDTrieShard_clear_trie_result& operator=(const MDTrieShard_clear_trie_result&);
+  MDTrieShard_clear_trie_result() {
+  }
+
+  virtual ~MDTrieShard_clear_trie_result() noexcept;
+
+  bool operator == (const MDTrieShard_clear_trie_result & /* rhs */) const
+  {
+    return true;
+  }
+  bool operator != (const MDTrieShard_clear_trie_result &rhs) const {
+    return !(*this == rhs);
+  }
+
+  bool operator < (const MDTrieShard_clear_trie_result & ) const;
+
+  template <class Protocol_>
+  uint32_t read(Protocol_* iprot);
+  template <class Protocol_>
+  uint32_t write(Protocol_* oprot) const;
+
+};
+
+
+class MDTrieShard_clear_trie_presult {
+ public:
+
+
+  virtual ~MDTrieShard_clear_trie_presult() noexcept;
+
+  template <class Protocol_>
+  uint32_t read(Protocol_* iprot);
+
+};
+
 template <class Protocol_>
 class MDTrieShardClientT : virtual public MDTrieShardIf {
  public:
@@ -912,6 +996,9 @@ class MDTrieShardClientT : virtual public MDTrieShardIf {
   int32_t get_size();
   void send_get_size();
   int32_t recv_get_size();
+  void clear_trie();
+  void send_clear_trie();
+  void recv_clear_trie();
  protected:
   std::shared_ptr< Protocol_> piprot_;
   std::shared_ptr< Protocol_> poprot_;
@@ -954,6 +1041,8 @@ class MDTrieShardProcessorT : public ::apache::thrift::TDispatchProcessorT<Proto
   void process_primary_key_lookup(int32_t seqid, Protocol_* iprot, Protocol_* oprot, void* callContext);
   void process_get_size(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
   void process_get_size(int32_t seqid, Protocol_* iprot, Protocol_* oprot, void* callContext);
+  void process_clear_trie(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
+  void process_clear_trie(int32_t seqid, Protocol_* iprot, Protocol_* oprot, void* callContext);
  public:
   MDTrieShardProcessorT(::std::shared_ptr<MDTrieShardIf> iface) :
     iface_(iface) {
@@ -978,6 +1067,9 @@ class MDTrieShardProcessorT : public ::apache::thrift::TDispatchProcessorT<Proto
     processMap_["get_size"] = ProcessFunctions(
       &MDTrieShardProcessorT::process_get_size,
       &MDTrieShardProcessorT::process_get_size);
+    processMap_["clear_trie"] = ProcessFunctions(
+      &MDTrieShardProcessorT::process_clear_trie,
+      &MDTrieShardProcessorT::process_clear_trie);
   }
 
   virtual ~MDTrieShardProcessorT() {}
@@ -1076,6 +1168,15 @@ class MDTrieShardMultiface : virtual public MDTrieShardIf {
     return ifaces_[i]->get_size();
   }
 
+  void clear_trie() {
+    size_t sz = ifaces_.size();
+    size_t i = 0;
+    for (; i < (sz - 1); ++i) {
+      ifaces_[i]->clear_trie();
+    }
+    ifaces_[i]->clear_trie();
+  }
+
 };
 
 // The 'concurrent' client is a thread safe client that correctly handles
@@ -1130,6 +1231,9 @@ class MDTrieShardConcurrentClientT : virtual public MDTrieShardIf {
   int32_t get_size();
   int32_t send_get_size();
   int32_t recv_get_size(const int32_t seqid);
+  void clear_trie();
+  int32_t send_clear_trie();
+  void recv_clear_trie(const int32_t seqid);
  protected:
   std::shared_ptr< Protocol_> piprot_;
   std::shared_ptr< Protocol_> poprot_;

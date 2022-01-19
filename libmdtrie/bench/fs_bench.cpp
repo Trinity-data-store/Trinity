@@ -78,7 +78,9 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node, 
 
     std::cout << "Insertion Latency: " << (float) diff / total_points_count << std::endl;
     std::cout << "mdtrie storage: " << mdtrie.size() << std::endl;
-    
+    fclose(fp);
+    usleep(15 * 1000000);
+
     /**
      * Benchmark range search given a query selectivity (1000-2000), given a query
      */
