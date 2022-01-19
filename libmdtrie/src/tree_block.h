@@ -1102,26 +1102,24 @@ public:
     }
 
     uint64_t size() {
-        
-        total_treeblock_num ++; // For primary key -> treeblock index -> treeblock pointer
-        
+                
         uint64_t total_size = 0;
-        total_size += sizeof(root_depth_); // root_depth_
+        total_size += sizeof(root_depth_);
         total_size += sizeof(num_nodes_);
         total_size += sizeof(total_nodes_bits_);
-        total_size += sizeof(node_capacity_); // node_capacity_
+        total_size += sizeof(node_capacity_); 
         total_size += sizeof(bit_capacity_);
 
         total_size += sizeof(dfuds_);
-        total_size += dfuds_->size() /*+ sizeof(dfuds_)*/;
+        total_size += dfuds_->size();
 
-        total_size += num_frontiers_ * sizeof(frontier_node<DIMENSION>) /*Use compact pointer representation*/ + sizeof(frontiers_) /*pointer*/;
+        total_size += num_frontiers_ * sizeof(frontier_node<DIMENSION>) + sizeof(frontiers_);
         for (uint16_t i = 0; i < num_frontiers_; i++){
             total_size += ((frontier_node<DIMENSION> *) frontiers_)[i].pointer_->size();
         }
         total_size += sizeof(num_frontiers_);
 
-        total_size += sizeof(parent_combined_ptr_); // Either a treeblock pointer or trie node pointer + preorder number
+        total_size += sizeof(parent_combined_ptr_);
         total_size += sizeof(parent_is_trie_);
         total_size += sizeof(treeblock_frontier_num_);
 
@@ -1130,7 +1128,6 @@ public:
         {
             total_size += primary_key_list[i].size_overhead();
         }
-
         return total_size;
     }
 

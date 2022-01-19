@@ -74,7 +74,7 @@ TimeStamp GetTimestamp() {
 
 n_leaves_t total_points_count = 0;
 int discount_factor = 1;
-n_leaves_t total_treeblock_num = 0;
+// n_leaves_t total_treeblock_num = 0;
 morton_t level_to_num_children[128] = {0};
 preorder_t max_tree_nodes_ = 512;
 level_t max_depth_;
