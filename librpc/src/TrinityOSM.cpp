@@ -122,6 +122,100 @@ int main(){
     diff = GetTimestamp() - start;
     cout << "Primary Key Lookup Throughput (pt / seconds): " << throughput << endl;
 
+
+    /**   
+     * Sample Query:
+     * (1) Find all points created between June and July of 2020 and with version 1 or 2
+    */
+    
+    std::vector<int32_t>start_range(DIMENSION, 0);
+    std::vector<int32_t>end_range(DIMENSION, 0);
+
+    start = GetTimestamp();
+
+    for (dimension_t i = 0; i < DIMENSION; i++){
+        start_range[i] = min_values[i];
+        end_range[i] = max_values[i];
+
+        if (i == 0) 
+        {
+            start_range[i] = 1;  
+            end_range[i] = 2;
+        }
+        if (i == 1){ 
+            start_range[i] = 20200600;  
+            end_range[i] = 20200700;
+        }
+    }
+    std::vector<int32_t> found_points;
+
+    client.range_search_trie(found_points, start_range, end_range);
+    diff = GetTimestamp() - start;
+
+    std::cout << "Query 1 end to end latency: " << diff << std::endl;       
+    std::cout << "Found points count: " << found_points.size() << std::endl;
+
+    /**   
+     * Sample Query:
+     * (2) Find all points that lie between longtidue 71.5W-72.0W and latitude 41.9N-42.0N
+    */
+
+    start = GetTimestamp();
+
+    for (dimension_t i = 0; i < DIMENSION; i++){
+        start_range[i] = min_values[i];
+        end_range[i] = max_values[i];
+
+        if (i == 2)  
+        {
+            start_range[i] = 715000010;  
+            end_range[i] = 720000010;
+        }
+        if (i == 3){  
+            start_range[i] = 419000000;  
+            end_range[i] = 420000000;
+        }
+    }
+    found_points.clear();
+
+    client.range_search_trie(found_points, start_range, end_range);
+    diff = GetTimestamp() - start;
+
+    std::cout << "Query 2 end to end latency: " << diff << std::endl;    
+    std::cout << "Found points count: " << found_points.size() << std::endl;
+
+    /**   
+     * Sample Query:
+     * (3) Find all points that lie between longitude 71.95W-72.00W, latitude 41.95N-42.00N and were added after the year 2020
+    */
+
+    start = GetTimestamp();
+
+    for (dimension_t i = 0; i < DIMENSION; i++){
+        start_range[i] = min_values[i];
+        end_range[i] = max_values[i];
+
+        if (i == 2)  
+        {
+            start_range[i] = 719500010;  
+            end_range[i] = 720000010;
+        }
+        if (i == 3){ 
+            start_range[i] = 419500000;  
+            end_range[i] = 420000000;
+        }
+        if (i == 1){
+            start_range[i] = 20200000;
+        }
+    }
+    found_points.clear();
+
+    client.range_search_trie(found_points, start_range, end_range);
+    diff = GetTimestamp() - start;
+
+    std::cout << "Query 3 end to end latency: " << diff << std::endl;    
+    std::cout << "Found points count: " << found_points.size() << std::endl;
+
     client.clear_trie();
     delete data_vector;
     return 0;

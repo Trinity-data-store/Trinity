@@ -139,6 +139,90 @@ int main(){
     diff = GetTimestamp() - start;
     cout << "Primary Key Lookup Throughput (pt / seconds): " << throughput << endl;
 
+    /**   
+     * Sample Query 1:
+    */
+
+    std::vector<int32_t>start_range(DIMENSION, 0);
+    std::vector<int32_t>end_range(DIMENSION, 0);
+
+    start = GetTimestamp();
+
+    // [QUANTITY, EXTENDEDPRICE, DISCOUNT, TAX, SHIPDATE, COMMITDATE, RECEIPTDATE, TOTALPRICE, ORDERDATE]
+
+    for (dimension_t i = 0; i < DIMENSION; i++){
+        start_range[i] = min_values[i];
+        end_range[i] = max_values[i];
+
+        if (i == 0) 
+        {
+            start_range[i] = 20;  
+        }
+        if (i == 7){ 
+            start_range[i] = 10000;  
+            end_range[i] = 50000;
+        }
+        if (i == 3)
+            start_range[i] = 1;
+    }
+    std::vector<int32_t> found_points;
+    client.range_search_trie(found_points, start_range, end_range);
+    diff = GetTimestamp() - start;
+
+    std::cout << "Query 1 end to end latency: " << diff << std::endl;       
+    std::cout << "Found points count: " << found_points.size() << std::endl;
+
+    /**   
+     * Sample Query 2:
+    */
+
+    for (dimension_t i = 0; i < DIMENSION; i++){
+        start_range[i] = min_values[i];
+        end_range[i] = max_values[i];
+
+        if (i == 1) 
+        {
+            end_range[i] = 10000;  
+        }
+        if (i == 7){ 
+            end_range[i] = 50000;
+        }
+        if (i == 3)
+            start_range[i] = 5;
+    }
+    found_points.clear();
+    client.range_search_trie(found_points, start_range, end_range);
+    diff = GetTimestamp() - start;
+
+    std::cout << "Query 2 end to end latency: " << diff << std::endl;  
+    std::cout << "Found points count: " << found_points.size() << std::endl;
+
+    /**   
+     * Sample Query 3:
+    */
+
+    for (dimension_t i = 0; i < DIMENSION; i++){
+        start_range[i] = min_values[i];
+        end_range[i] = max_values[i];
+
+        if (i == 1) 
+        {
+            end_range[i] = 50000;  
+        }
+        if (i == 7){ 
+            end_range[i] = 400000;
+        }
+        if (i == 3)
+            start_range[i] = 5;
+    }
+
+    found_points.clear();
+    client.range_search_trie(found_points, start_range, end_range);
+    diff = GetTimestamp() - start;
+
+    std::cout << "Query 3 end to end latency: " << diff << std::endl;  
+    std::cout << "Found points count: " << found_points.size() << std::endl;
+
     client.clear_trie();
     delete data_vector;
     return 0;
