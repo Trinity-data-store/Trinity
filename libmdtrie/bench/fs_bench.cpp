@@ -49,7 +49,7 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node, 
 
         for (dimension_t i = 0; i < DIMENSION; i++){
             token = strtok(nullptr, " ");
-            leaf_point.set_coordinate(i, strtoul(token, &ptr, 10));
+            leaf_point.set_coordinate(i, strtoull(token, &ptr, 10) % std::numeric_limits<uint32_t>::max());
         }
 
         for (dimension_t i = 0; i < DIMENSION; i++){
@@ -67,6 +67,7 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node, 
                 }
             }       
         }
+
         start = GetTimestamp();
         mdtrie.insert_trie(&leaf_point, n_points);
         diff += GetTimestamp() - start;
@@ -120,8 +121,6 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node, 
             TimeStamp temp_diff =  GetTimestamp() - start; 
             latency_vect.push_back(temp_diff);
             diff += temp_diff;
-            // if (found_points_temp.size() > 2000 || found_points_temp.size() < 1000)
-            //     std::cout << "found points size: " << found_points_temp.size() << ", index:  " << count << std::endl;
             count ++;
             found_points_temp.clear();
         }

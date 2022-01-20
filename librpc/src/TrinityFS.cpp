@@ -52,7 +52,7 @@ vector<vector <int32_t>> *get_data_vector(std::vector<int32_t> &max_values, std:
 
       for (dimension_t i = 0; i < DIMENSION; i++){
           token = strtok(nullptr, " ");
-          point[i] = strtoul(token, &ptr, 10);
+          point[i] = strtoull(token, &ptr, 10) % std::numeric_limits<uint32_t>::max();
       }
 
       for (dimension_t i = 0; i < DIMENSION; i++){
