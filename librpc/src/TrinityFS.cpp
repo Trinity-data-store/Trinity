@@ -126,7 +126,10 @@ int main(){
 
     /**   
      * Sample Query:
+     * (1) Find the top 5 users who created OR modified a certain file in this time window. (sort by number of files created)
     */
+
+    start = GetTimestamp();
 
     std::vector<int32_t>start_range(DIMENSION, 0);
     std::vector<int32_t>end_range(DIMENSION, 0);
@@ -146,17 +149,104 @@ int main(){
         }
         if (i == 6)  // File Size
         {
-            start_range[i] = 10000;
+            start_range[i] = 0;
             end_range[i] = 2147483647;
         }
     }
     std::vector<int32_t> found_points;
-    start = GetTimestamp();
-    client.range_search_trie(found_points, start_range, end_range);
-    diff = GetTimestamp() - start;
 
-    std::cout << found_points.size() << std::endl;
-    std::cout << "Range Search end to end latency: " << diff << std::endl;   
+    client.range_search_trie(found_points, start_range, end_range);
+    std::map<int32_t, int32_t> user_ids_to_mod_count;
+
+    for (unsigned int i = 0; i < found_points.size(); i++){
+        std::vector<int32_t> point;
+        client.primary_key_lookup(point, found_points[i]);
+        if (user_ids_to_mod_count.find(point[4]) == user_ids_to_mod_count.end()){  // point[4] owner_id
+            user_ids_to_mod_count[point[4]] = 1;
+        }
+        else {
+            user_ids_to_mod_count[point[4]] += 1;
+        }
+    }
+    diff = GetTimestamp() - start;
+    std::cout << "Query 1 end to end latency: " << diff << std::endl;   
+
+    /**   
+     * (2) Find the top5 files by size created and modified within a 100 second time window.
+    */
+
+    start = GetTimestamp();
+
+    for (dimension_t i = 0; i < DIMENSION; i++){
+        start_range[i] = min_values[i];
+        end_range[i] = max_values[i];
+
+        if (i == 0)  // Creation Time
+        {
+            start_range[i] = 1300000000;  
+            end_range[i] = 1400000000;
+        }
+        if (i == 1){  // Modify Time
+            start_range[i] = 1399000000;  
+            end_range[i] = 1400000000;
+        }
+        if (i == 6)  // File Size
+        {
+            start_range[i] = 0;
+            end_range[i] = 2147483647;
+        }
+    }
+    found_points.clear();
+
+    client.range_search_trie(found_points, start_range, end_range);
+    std::vector<int32_t> found_sizes;
+
+    for (unsigned int i = 0; i < found_points.size(); i++){
+        std::vector<int32_t> point;
+        client.primary_key_lookup(point, found_points[i]);
+        found_sizes.push_back(point[6]); // point[6] size
+    }
+    diff = GetTimestamp() - start;
+    std::cout << "Query 2 end to end latency: " << diff << std::endl;   
+
+    /**   
+     * (3) Average, minimum and maximum file size across16 fixed-sized adjacent 50 second time windows.
+    */
+
+    start = GetTimestamp();
+
+    for (int j = 1000000000; j <= 1800000000; j += 50000000){
+        for (dimension_t i = 0; i < 7; i++){
+            start_range[i] = min_values[i];
+            end_range[i] = max_values[i];
+
+            if (i == 1){
+                start_range[i] = j;  
+                end_range[i] = j + 50000000;
+            }
+            if (i == 0)
+            {
+                start_range[i] = j;  
+                end_range[i] = j + 50000000;
+            }
+            if (i == 6)
+            {
+                start_range[i] = 0;
+                end_range[i] = 2147483647;
+            }
+        }
+        found_points.clear();
+        client.range_search_trie(found_points, start_range, end_range);
+        std::vector<int32_t> found_sizes;
+
+        for (unsigned int i = 0; i < found_points.size(); i++){
+            std::vector<int32_t> point;
+            client.primary_key_lookup(point, found_points[i]);
+            found_sizes.push_back(point[6]); // point[6] size
+        }
+    }
+    diff = GetTimestamp() - start;
+    std::cout << "Query 3 end to end latency: " << diff << std::endl;   
 
     client.clear_trie();
     delete data_vector;
