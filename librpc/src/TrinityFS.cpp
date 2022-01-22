@@ -94,6 +94,7 @@ int main(){
     }
 
     TimeStamp start, diff;
+    cout << "Storage: " << client.get_size() << endl;
 
     /** 
         Insert all points
@@ -113,16 +114,6 @@ int main(){
     cout << "Insertion Throughput (pt / seconds): " << throughput << endl;
     cout << "End-to-end Latency (us): " << diff << endl;
     cout << "Storage: " << client.get_size() << endl;
-
-    /**   
-        Point Lookup given primary key
-    */
-
-    start = GetTimestamp();
-    throughput = total_client_lookup(data_vector, shard_num, client_num, server_ips);
-
-    diff = GetTimestamp() - start;
-    cout << "Primary Key Lookup Throughput (pt / seconds): " << throughput << endl;
 
     /**   
      * Sample Query:
@@ -209,6 +200,8 @@ int main(){
     diff = GetTimestamp() - start;
     std::cout << "Query 2 end to end latency: " << diff << std::endl;   
 
+    return 0;
+
     /**   
      * (3) Average, minimum and maximum file size across16 fixed-sized adjacent 50 second time windows.
     */
@@ -247,6 +240,17 @@ int main(){
     }
     diff = GetTimestamp() - start;
     std::cout << "Query 3 end to end latency: " << diff << std::endl;   
+
+    
+    /**   
+        Point Lookup given primary key
+    */
+
+    start = GetTimestamp();
+    throughput = total_client_lookup(data_vector, shard_num, client_num, server_ips);
+
+    diff = GetTimestamp() - start;
+    cout << "Primary Key Lookup Throughput (pt / seconds): " << throughput << endl;
 
     client.clear_trie();
     delete data_vector;
