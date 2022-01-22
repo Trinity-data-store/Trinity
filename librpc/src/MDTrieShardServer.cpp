@@ -42,9 +42,10 @@ public:
     std::vector<level_t> bit_widths = {8, 32, 32, 32}; // 4 Dimensions
     std::vector<level_t> start_bits = {0, 0, 0, 0}; // 4 Dimensions;
  
-    total_points_count = 152806264;
-    bitmap::CompactPtrVector p_key_to_treeblock_compact(total_points_count);
+    total_points_count = 155846019;
 
+    bitmap::CompactPtrVector tmp_ptr_vect(total_points_count);
+    p_key_to_treeblock_compact = &tmp_ptr_vect;
     create_level_to_num_children(bit_widths, start_bits, 32);
 
   };
@@ -65,7 +66,7 @@ public:
     }
     else if (dataset_idx == 1) // OSM
     {
-      if (DIMENSION != 4 || total_points_count != 152806264 || DIMENSION != dimension_to_num_bits.size() || DIMENSION != start_dimension_bits.size() || total_points_count != p_key_to_treeblock_compact->get_num_elements())
+      if (DIMENSION != 4 || total_points_count != 155846019 || DIMENSION != dimension_to_num_bits.size() || DIMENSION != start_dimension_bits.size() || total_points_count != p_key_to_treeblock_compact->get_num_elements())
         return false;
     }
     else if (dataset_idx == 2) // TPC-H
