@@ -101,8 +101,8 @@ int main(){
     std::vector<std::string> server_ips = {"172.28.229.152", "172.28.229.153", "172.28.229.151", "172.28.229.149", "172.28.229.148"};
     total_points_count = 300005812;
 
-    int shard_num = 48;
-    int client_num = 10;
+    int shard_num = 20;
+    int client_num = 48;
     auto client = MDTrieClient(server_ips, shard_num);
     if (!client.ping(2)){
         std::cerr << "Server setting wrong!" << std::endl;
