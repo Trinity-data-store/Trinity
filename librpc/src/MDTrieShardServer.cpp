@@ -67,8 +67,6 @@ public:
     }
     else if (dataset_idx == 1) // OSM
     {
-      std::cout << "num_elements: " << p_key_to_treeblock_compact->get_num_elements();
-
       if (DIMENSION != 4 || total_points_count != 155846019 || DIMENSION != dimension_to_num_bits.size() || DIMENSION != start_dimension_bits.size())
         return false;
     }
