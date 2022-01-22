@@ -31,7 +31,7 @@ using namespace apache::thrift::server;
 const level_t max_depth = 32;
 level_t trie_depth = 6;
 const preorder_t max_tree_node = 512;
-const dimension_t DIMENSION = 4;
+const dimension_t DIMENSION = 7;
 unsigned int num_shards = 1;
 
 class MDTrieHandler : public MDTrieShardIf {
