@@ -13,9 +13,6 @@ using namespace apache::thrift;
 using namespace apache::thrift::protocol;
 using namespace apache::thrift::transport;
 
-const int NUM_SERVERS = 72;
-const int START_PORT_NUMBER = 9090;
-
 class MDTrieClient {
 
 public:
@@ -158,15 +155,15 @@ public:
     }    
   }
 
-  int32_t get_size(){
+  int64_t get_size(){
 
     int client_count = shard_vector_.size();
-    int32_t count = 0;
-    for (uint8_t i = 0; i < client_count; i++){
-      int32_t temp = shard_vector_[i].get_size();
+    int64_t count = 0;
+    for (int i = 0; i < client_count; i++){
+      int64_t temp = shard_vector_[i].get_size();
       count += temp;
     }        
-    return count + total_points_count * sizeof(uint32_t);
+    return count;
   }
 
 private:

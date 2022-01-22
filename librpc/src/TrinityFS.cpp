@@ -84,7 +84,7 @@ vector<vector <int32_t>> *get_data_vector(std::vector<int32_t> &max_values, std:
 int main(){
 
     std::vector<std::string> server_ips = {"172.28.229.152", "172.28.229.153", "172.28.229.151", "172.28.229.149", "172.28.229.148"};
-
+    total_points_count = 14583357;
     int shard_num = 48;
     int client_num = 128;
     auto client = MDTrieClient(server_ips, shard_num);

@@ -36,7 +36,7 @@ vector<vector <int32_t>> *get_data_vector(std::vector<int32_t> &max_values, std:
   }
 
   n_leaves_t n_points = 0;
-  n_leaves_t n_lines = 155846019;
+  n_leaves_t n_lines = 152806265;
   total_points_count = n_lines;
   auto data_vector = new vector<vector <int32_t>>;
 
@@ -82,15 +82,18 @@ vector<vector <int32_t>> *get_data_vector(std::vector<int32_t> &max_values, std:
 int main(){
 
     std::vector<std::string> server_ips = {"172.28.229.152", "172.28.229.153", "172.28.229.151", "172.28.229.149", "172.28.229.148"};
-
+    total_points_count = 155846019;
     int shard_num = 48;
     int client_num = 10;
     auto client = MDTrieClient(server_ips, shard_num);
+
     if (!client.ping(1)){
         std::cerr << "Server setting wrong!" << std::endl;
         exit(-1);
     }
 
+    cout << "Storage: " << client.get_size() << endl;
+    // exit(0);
     TimeStamp start, diff;
 
     /** 
@@ -112,15 +115,6 @@ int main(){
     cout << "End-to-end Latency (us): " << diff << endl;
     cout << "Storage: " << client.get_size() << endl;
 
-    /**   
-        Point Lookup given primary key
-    */
-
-    start = GetTimestamp();
-    throughput = total_client_lookup(data_vector, shard_num, client_num, server_ips);
-
-    diff = GetTimestamp() - start;
-    cout << "Primary Key Lookup Throughput (pt / seconds): " << throughput << endl;
 
 
     /**   
@@ -184,6 +178,14 @@ int main(){
     std::cout << "Query 2 end to end latency: " << diff << std::endl;    
     std::cout << "Found points count: " << found_points.size() << std::endl;
 
+    int count = 0;
+    for (unsigned int i = 0; i < data_vector->size(); i++){
+        std::vector<int32_t> data = (* data_vector)[i];
+        if (data[2] >= 715000010 && data[2] <= 720000010 && data[3] >= 419000000 && data[3] <= 420000000)
+            count ++;
+    }
+    std::cout << "Correct Size: " << count << std::endl;
+
     /**   
      * Sample Query:
      * (3) Find all points that lie between longitude 71.95W-72.00W, latitude 41.95N-42.00N and were added after the year 2020
@@ -217,6 +219,17 @@ int main(){
     std::cout << "Found points count: " << found_points.size() << std::endl;
 
     client.clear_trie();
+
+    /**   
+        Point Lookup given primary key
+    */
+
+    start = GetTimestamp();
+    throughput = total_client_lookup(data_vector, shard_num, client_num, server_ips);
+
+    diff = GetTimestamp() - start;
+    cout << "Primary Key Lookup Throughput (pt / seconds): " << throughput << endl;
+
     delete data_vector;
     return 0;
 
