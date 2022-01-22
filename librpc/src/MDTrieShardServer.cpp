@@ -40,8 +40,9 @@ public:
     
     std::vector<level_t> bit_widths = {8, 32, 32, 32}; // 4 Dimensions
     std::vector<level_t> start_bits = {0, 0, 0, 0}; // 4 Dimensions;
- 
-    total_points_count = 155846019;
+    int num_shards = 20;
+
+    total_points_count = 152806265 / num_shards;
 
     // bitmap::CompactPtrVector tmp_ptr_vect(total_points_count);
     p_key_to_treeblock_compact = new bitmap::CompactPtrVector(total_points_count);
@@ -105,9 +106,9 @@ public:
     for (uint8_t i = 0; i < DIMENSION; i++)
       leaf_point.set_coordinate(i, point[i]);
     
-    mdtrie_->insert_trie(&leaf_point, primary_key);
-    
-    return primary_key;
+    mdtrie_->insert_trie(&leaf_point, inserted_points_);
+    inserted_points_ ++;
+    return inserted_points_ - 1;
   }
 
   void range_search(std::vector<int32_t> & _return, const std::vector<int32_t> & start_range, const std::vector<int32_t> & end_range){

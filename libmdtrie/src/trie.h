@@ -80,7 +80,7 @@ public:
         current_treeblock->insert_remaining(leaf_point, level, primary_key);
     }
 
-    bool check(data_point<DIMENSION> *leaf_point) const {
+    bool check(data_point<DIMENSION> *leaf_point, bool include_pkey_vect = true) const {
 
         level_t level = 0;
         trie_node<DIMENSION> *current_trie_node = root_;
@@ -130,7 +130,8 @@ public:
         total_size += sizeof(max_depth_);
 
         total_size += sizeof(p_key_to_treeblock_compact);
-        total_size += p_key_to_treeblock_compact->size_overhead();
+        if (include_pkey_vect)
+            total_size += p_key_to_treeblock_compact->size_overhead();
 
         total_size += sizeof(dimension_to_num_bits) + dimension_to_num_bits.size() * sizeof(morton_t);
         total_size += sizeof(start_dimension_bits) + start_dimension_bits.size() * sizeof(level_t);

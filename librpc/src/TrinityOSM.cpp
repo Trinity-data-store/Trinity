@@ -36,7 +36,7 @@ vector<vector <int32_t>> *get_data_vector(std::vector<int32_t> &max_values, std:
   }
 
   n_leaves_t n_points = 0;
-  n_leaves_t n_lines = 155846019;
+  n_leaves_t n_lines = 152806265;
   total_points_count = n_lines;
   auto data_vector = new vector<vector <int32_t>>;
 
@@ -83,8 +83,8 @@ int main(){
 
     std::vector<std::string> server_ips = {"172.28.229.152", "172.28.229.153", "172.28.229.151", "172.28.229.149", "172.28.229.148"};
     total_points_count = 155846019;
-    int shard_num = 48;
-    int client_num = 10;
+    int shard_num = 20;
+    int client_num = 48;
     auto client = MDTrieClient(server_ips, shard_num);
 
     if (!client.ping(1)){
@@ -93,7 +93,6 @@ int main(){
     }
 
     cout << "Storage: " << client.get_size() << endl;
-    // exit(0);
     TimeStamp start, diff;
 
     /** 
@@ -170,8 +169,8 @@ int main(){
 
         if (i == 2)  
         {
-            start_range[i] = 715000010;  
-            end_range[i] = 720000010;
+            start_range[i] = 715000000;  
+            end_range[i] = 720000000;
         }
         if (i == 3){  
             start_range[i] = 419000000;  
@@ -189,7 +188,7 @@ int main(){
     count = 0;
     for (unsigned int i = 0; i < data_vector->size(); i++){
         std::vector<int32_t> data = (* data_vector)[i];
-        if (data[2] >= 715000010 && data[2] <= 720000010 && data[3] >= 419000000 && data[3] <= 420000000)
+        if (data[2] >= 715000000 && data[2] <= 720000000 && data[3] >= 419000000 && data[3] <= 420000000)
             count ++;
     }
     std::cout << "Correct Size: " << count << std::endl;
@@ -207,8 +206,8 @@ int main(){
 
         if (i == 2)  
         {
-            start_range[i] = 719500010;  
-            end_range[i] = 720000010;
+            start_range[i] = 719500000;  
+            end_range[i] = 720000000;
         }
         if (i == 3){ 
             start_range[i] = 419500000;  
@@ -229,12 +228,10 @@ int main(){
     count = 0;
     for (unsigned int i = 0; i < data_vector->size(); i++){
         std::vector<int32_t> data = (* data_vector)[i];
-        if (data[2] >= 719500010 && data[2] <= 720000010 && data[3] >= 419500000 && data[3] <= 420000000 && data[1] >= 20200000)
+        if (data[2] >= 719500000 && data[2] <= 720000000 && data[3] >= 419500000 && data[3] <= 420000000 && data[1] >= 20200000)
             count ++;
     }
     std::cout << "Correct Size: " << count << std::endl;
-
-    client.clear_trie();
     return 0;
 
     /**   
@@ -247,6 +244,7 @@ int main(){
     diff = GetTimestamp() - start;
     cout << "Primary Key Lookup Throughput (pt / seconds): " << throughput << endl;
 
+    client.clear_trie();
     delete data_vector;
     return 0;
 
