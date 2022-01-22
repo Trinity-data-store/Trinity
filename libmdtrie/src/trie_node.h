@@ -26,7 +26,6 @@ public:
     }
 
     inline void set_child(morton_t symbol, trie_node *node) {
-
         auto trie_ptr = (trie_node<DIMENSION> **) trie_or_treeblock_ptr_;
         trie_ptr[symbol] = node;
     }

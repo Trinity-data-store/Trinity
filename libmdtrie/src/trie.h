@@ -122,7 +122,6 @@ public:
             }
             current_level ++;
         }
-
         // Global variables in def.h
         total_size += sizeof(total_points_count);
         total_size += sizeof(discount_factor);
