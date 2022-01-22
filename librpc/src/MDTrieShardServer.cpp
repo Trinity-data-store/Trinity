@@ -43,24 +43,24 @@ public:
         FS
     */
 
-    // std::vector<level_t> bit_widths = {32, 32, 32, 32, 24, 24, 32}; // 7 Dimensions    
-    // std::vector<level_t> start_bits = {0, 0, 0, 0, 0, 0, 0}; // 7 Dimensions    
-    // num_shards = 20 * 5;
-    // trie_depth = 10;
-
-    // total_points_count = 14583357 / num_shards;    
+    std::vector<level_t> bit_widths = {32, 32, 32, 32, 24, 24, 32}; // 7 Dimensions    
+    std::vector<level_t> start_bits = {0, 0, 0, 0, 0, 0, 0}; // 7 Dimensions    
+    num_shards = 20 * 5;
+    trie_depth = 10;
+    no_dynamic_sizing = true;
+    total_points_count = 14583357 / num_shards;    
 
     /** 
         OSM
     */
 
-    std::vector<level_t> bit_widths = {8, 32, 32, 32}; // 4 Dimensions
-    std::vector<level_t> start_bits = {0, 0, 0, 0}; // 4 Dimensions;
-    num_shards = 20 * 5;
-    trie_depth = 6;
-    no_dynamic_sizing = true;
+    // std::vector<level_t> bit_widths = {8, 32, 32, 32}; // 4 Dimensions
+    // std::vector<level_t> start_bits = {0, 0, 0, 0}; // 4 Dimensions;
+    // num_shards = 20 * 5;
+    // trie_depth = 6;
+    // no_dynamic_sizing = true;
 
-    total_points_count = 152806265 / num_shards;
+    // total_points_count = 152806265 / num_shards;
 
 
     p_key_to_treeblock_compact = new bitmap::CompactPtrVector(total_points_count);
