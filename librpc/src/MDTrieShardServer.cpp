@@ -44,16 +44,17 @@ public:
  
     total_points_count = 155846019;
 
-    bitmap::CompactPtrVector tmp_ptr_vect(total_points_count);
-    p_key_to_treeblock_compact = &tmp_ptr_vect;
+    // bitmap::CompactPtrVector tmp_ptr_vect(total_points_count);
+    p_key_to_treeblock_compact = new bitmap::CompactPtrVector(total_points_count);
     create_level_to_num_children(bit_widths, start_bits, 32);
-
   };
 
   void clear_trie(){
 
     delete mdtrie_; // TODO
+    delete p_key_to_treeblock_compact;
     mdtrie_ = new md_trie<DIMENSION>(max_depth, trie_depth, max_tree_node);
+    p_key_to_treeblock_compact = new bitmap::CompactPtrVector(total_points_count);
   }
 
   bool ping(const int32_t dataset_idx) { 
