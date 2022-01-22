@@ -29,7 +29,7 @@ using namespace apache::thrift::transport;
 using namespace apache::thrift::server;
 
 const level_t max_depth = 32;
-const level_t trie_depth = 6;
+level_t trie_depth = 7;
 const preorder_t max_tree_node = 512;
 const dimension_t DIMENSION = 4;
 unsigned int num_shards = 1;
@@ -39,13 +39,29 @@ public:
 
   MDTrieHandler(){
     
-    std::vector<level_t> bit_widths = {8, 32, 32, 32}; // 4 Dimensions
-    std::vector<level_t> start_bits = {0, 0, 0, 0}; // 4 Dimensions;
-    num_shards = 10 * 5;
+    /** 
+        FS
+    */
 
-    total_points_count = 152806265 / num_shards;
+    std::vector<level_t> bit_widths = {32, 32, 32, 32, 24, 24, 32}; // 7 Dimensions    
+    std::vector<level_t> start_bits = {0, 0, 0, 0, 0, 0, 0}; // 7 Dimensions    
+    num_shards = 20 * 5;
+    trie_depth = 10;
 
-    // bitmap::CompactPtrVector tmp_ptr_vect(total_points_count);
+    total_points_count = 14583357 / num_shards;    
+
+    /** 
+        OSM
+    */
+
+    // std::vector<level_t> bit_widths = {8, 32, 32, 32}; // 4 Dimensions
+    // std::vector<level_t> start_bits = {0, 0, 0, 0}; // 4 Dimensions;
+    // num_shards = 20 * 5;
+    // trie_depth = 6;
+
+    // total_points_count = 152806265 / num_shards;
+
+
     p_key_to_treeblock_compact = new bitmap::CompactPtrVector(total_points_count);
     create_level_to_num_children(bit_widths, start_bits, 32);
 
