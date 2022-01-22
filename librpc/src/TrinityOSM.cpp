@@ -36,7 +36,7 @@ vector<vector <int32_t>> *get_data_vector(std::vector<int32_t> &max_values, std:
   }
 
   n_leaves_t n_points = 0;
-  n_leaves_t n_lines = 152806265;
+  n_leaves_t n_lines = 155846019;
   total_points_count = n_lines;
   auto data_vector = new vector<vector <int32_t>>;
 
@@ -149,6 +149,14 @@ int main(){
     std::cout << "Query 1 end to end latency: " << diff << std::endl;       
     std::cout << "Found points count: " << found_points.size() << std::endl;
 
+    int count = 0;
+    for (unsigned int i = 0; i < data_vector->size(); i++){
+        std::vector<int32_t> data = (* data_vector)[i];
+        if (data[0] >= 1 && data[0] <= 2 && data[1] >= 20200600 && data[1] <= 20200700)
+            count ++;
+    }
+    std::cout << "Correct Size: " << count << std::endl;
+
     /**   
      * Sample Query:
      * (2) Find all points that lie between longtidue 71.5W-72.0W and latitude 41.9N-42.0N
@@ -178,7 +186,7 @@ int main(){
     std::cout << "Query 2 end to end latency: " << diff << std::endl;    
     std::cout << "Found points count: " << found_points.size() << std::endl;
 
-    int count = 0;
+    count = 0;
     for (unsigned int i = 0; i < data_vector->size(); i++){
         std::vector<int32_t> data = (* data_vector)[i];
         if (data[2] >= 715000010 && data[2] <= 720000010 && data[3] >= 419000000 && data[3] <= 420000000)
@@ -218,7 +226,16 @@ int main(){
     std::cout << "Query 3 end to end latency: " << diff << std::endl;    
     std::cout << "Found points count: " << found_points.size() << std::endl;
 
+    count = 0;
+    for (unsigned int i = 0; i < data_vector->size(); i++){
+        std::vector<int32_t> data = (* data_vector)[i];
+        if (data[2] >= 719500010 && data[2] <= 720000010 && data[3] >= 419500000 && data[3] <= 420000000 && data[1] >= 20200000)
+            count ++;
+    }
+    std::cout << "Correct Size: " << count << std::endl;
+
     client.clear_trie();
+    return 0;
 
     /**   
         Point Lookup given primary key
