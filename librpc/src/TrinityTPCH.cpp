@@ -25,7 +25,7 @@ vector<vector <int32_t>> *get_data_vector(std::vector<int32_t> &max_values, std:
     Get data from the TPC-H dataset stored in a vector
 */
 
-  std::ifstream infile("../libmdtrie/bench/data/tpch/tpch_dataset.csv");
+  std::ifstream infile("../data/tpch/tpch_dataset.csv");
 
   std::string line;
   std::getline(infile, line);
@@ -122,7 +122,7 @@ int main(){
     vector<vector <int32_t>> *data_vector = get_data_vector(max_values, min_values);
 
     start = GetTimestamp();
-    throughput = total_client_insert(data_vector, client_num, server_ips);
+    throughput = total_client_insert(data_vector, shard_num, client_num, server_ips);
     diff = GetTimestamp() - start;
 
     cout << "Insertion Throughput (pt / seconds): " << throughput << endl;
@@ -134,7 +134,7 @@ int main(){
     */
 
     start = GetTimestamp();
-    throughput = total_client_lookup(data_vector, client_num, server_ips);
+    throughput = total_client_lookup(data_vector, shard_num, client_num, server_ips);
 
     diff = GetTimestamp() - start;
     cout << "Primary Key Lookup Throughput (pt / seconds): " << throughput << endl;

@@ -28,7 +28,7 @@ vector<vector <int32_t>> *get_data_vector(std::vector<int32_t> &max_values, std:
   char *line = nullptr;
   size_t len = 0;
   ssize_t read;
-  FILE *fp = fopen("../libmdtrie/bench/data/osm/osm_dataset.csv", "r");
+  FILE *fp = fopen("../data/osm/osm_dataset.csv", "r");
   if (fp == nullptr)
   {
       fprintf(stderr, "file not found\n");
@@ -105,7 +105,7 @@ int main(){
     vector<vector <int32_t>> *data_vector = get_data_vector(max_values, min_values);
 
     start = GetTimestamp();
-    throughput = total_client_insert(data_vector, client_num, server_ips);
+    throughput = total_client_insert(data_vector, shard_num, client_num, server_ips);
     diff = GetTimestamp() - start;
 
     cout << "Insertion Throughput (pt / seconds): " << throughput << endl;
@@ -117,7 +117,7 @@ int main(){
     */
 
     start = GetTimestamp();
-    throughput = total_client_lookup(data_vector, client_num, server_ips);
+    throughput = total_client_lookup(data_vector, shard_num, client_num, server_ips);
 
     diff = GetTimestamp() - start;
     cout << "Primary Key Lookup Throughput (pt / seconds): " << throughput << endl;

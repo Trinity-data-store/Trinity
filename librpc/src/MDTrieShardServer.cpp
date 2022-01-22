@@ -29,7 +29,7 @@ using namespace apache::thrift::transport;
 using namespace apache::thrift::server;
 
 const level_t max_depth = 32;
-const level_t trie_depth = 10;
+const level_t trie_depth = 6;
 const preorder_t max_tree_node = 512;
 const dimension_t DIMENSION = 4;
 

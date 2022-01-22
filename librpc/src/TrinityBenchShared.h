@@ -26,9 +26,9 @@ int WARMUP_FACTOR = 10;
  * Insertion
  */
 
-uint32_t insert_each_client(vector<vector <int32_t>> *data_vector, int client_number, int client_index, std::vector<std::string> server_ips){
+uint32_t insert_each_client(vector<vector <int32_t>> *data_vector, int shard_number, int client_number, int client_index, std::vector<std::string> server_ips){
 
-  auto client = MDTrieClient(server_ips, client_number);
+  auto client = MDTrieClient(server_ips, shard_number);
   uint32_t start_pos = data_vector->size() / client_number * client_index;
   uint32_t end_pos = data_vector->size() / client_number * (client_index + 1) - 1;
 
@@ -71,14 +71,14 @@ uint32_t insert_each_client(vector<vector <int32_t>> *data_vector, int client_nu
   return ((float) (total_points_to_insert - 2 * warmup_cooldown_points) / diff) * 1000000;
 }
 
-uint32_t total_client_insert(vector<vector <int32_t>> *data_vector, int client_number, std::vector<std::string> server_ips){
+uint32_t total_client_insert(vector<vector <int32_t>> *data_vector, int shard_number, int client_number, std::vector<std::string> server_ips){
 
   std::vector<std::future<uint32_t>> threads; 
   threads.reserve(client_number);
 
   for (int i = 0; i < client_number; i++){
 
-    threads.push_back(std::async(insert_each_client, data_vector, client_number, i, server_ips));
+    threads.push_back(std::async(insert_each_client, data_vector, shard_number, client_number, i, server_ips));
   }  
 
   uint32_t total_throughput = 0;
@@ -92,9 +92,9 @@ uint32_t total_client_insert(vector<vector <int32_t>> *data_vector, int client_n
  * Lookup given primary keys
  */
 
-uint32_t lookup_each_client(vector<vector <int32_t>> *data_vector, int client_number, int client_index, std::vector<std::string> server_ips){
+uint32_t lookup_each_client(vector<vector <int32_t>> *data_vector, int shard_number, int client_number, int client_index, std::vector<std::string> server_ips){
 
-  auto client = MDTrieClient(server_ips, client_number);
+  auto client = MDTrieClient(server_ips, shard_number);
 
   uint32_t start_pos = data_vector->size() / client_number * client_index;
   uint32_t end_pos = data_vector->size() / client_number * (client_index + 1) - 1;
@@ -142,13 +142,13 @@ uint32_t lookup_each_client(vector<vector <int32_t>> *data_vector, int client_nu
   return ((float) (total_points_to_lookup - 2 * warmup_cooldown_points) / diff) * 1000000;
 }
 
-uint32_t total_client_lookup(vector<vector <int32_t>> *data_vector, int client_number, std::vector<std::string> server_ips){
+uint32_t total_client_lookup(vector<vector <int32_t>> *data_vector, int shard_number, int client_number, std::vector<std::string> server_ips){
 
   std::vector<std::future<uint32_t>> threads; 
   threads.reserve(client_number);
 
   for (int i = 0; i < client_number; i++){
-    threads.push_back(std::async(lookup_each_client, data_vector, client_number, i, server_ips));
+    threads.push_back(std::async(lookup_each_client, data_vector, shard_number, client_number, i, server_ips));
   }  
 
   uint32_t total_throughput = 0;
