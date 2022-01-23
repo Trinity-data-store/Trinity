@@ -162,9 +162,9 @@ public:
     _return.reserve(DIMENSION);
 
     std::vector<morton_t> node_path_from_primary(max_depth + 1);
-    tree_block<DIMENSION> *t_ptr = (tree_block<DIMENSION> *) (p_key_to_treeblock_compact_->At(primary_key));
+    tree_block<DIMENSION> *t_ptr = (tree_block<DIMENSION> *) (p_key_to_treeblock_compact_->At(client_to_server[primary_key]));
 
-    morton_t parent_symbol_from_primary = t_ptr->get_node_path_primary_key(primary_key, node_path_from_primary);
+    morton_t parent_symbol_from_primary = t_ptr->get_node_path_primary_key(client_to_server[primary_key], node_path_from_primary);
     node_path_from_primary[max_depth - 1] = parent_symbol_from_primary;
 
     auto returned_coordinates = t_ptr->node_path_to_coordinates(node_path_from_primary, DIMENSION);  
