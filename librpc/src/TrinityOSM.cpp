@@ -127,7 +127,7 @@ int main(){
      * Sample Query:
      * (1) Find all points created between June and July of 2020 and with version 1 or 2
     */
-    
+
     client.pull_global_cache();
     std::vector<int32_t>start_range(DIMENSION, 0);
     std::vector<int32_t>end_range(DIMENSION, 0);
@@ -244,7 +244,8 @@ int main(){
     */
 
     start = GetTimestamp();
-    throughput = total_client_lookup(data_vector, shard_num, client_num, server_ips);
+    // throughput = total_client_lookup(data_vector, shard_num, client_num, server_ips);
+    throughput = total_client_lookup(data_vector, shard_num, 1 /*client_num*/, server_ips);
 
     diff = GetTimestamp() - start;
     cout << "Primary Key Lookup Throughput (pt / seconds): " << throughput << endl;
