@@ -102,8 +102,16 @@ int main(){
     total_points_count = 300005812;
 
     int shard_num = 20;
-    int client_num = 1;
+    int client_num = 48;
     auto client = MDTrieClient(server_ips, shard_num);
+
+    for (unsigned int i = 0; i < server_ips.size(); ++i) {
+      for (int j = 0; j < shard_num; j++){
+        client_to_server.push_back({});
+        server_to_client.push_back({});
+      }
+    }
+
     if (!client.ping(2)){
         std::cerr << "Server setting wrong!" << std::endl;
         exit(-1);
@@ -124,7 +132,7 @@ int main(){
     vector<vector <int32_t>> *data_vector = get_data_vector(max_values, min_values);
 
     start = GetTimestamp();
-    throughput = total_client_insert(data_vector, shard_num, client_num, server_ips, &client);
+    throughput = total_client_insert(data_vector, shard_num, client_num, server_ips);
     diff = GetTimestamp() - start;
 
     cout << "Insertion Throughput (pt / seconds): " << throughput << endl;
@@ -134,7 +142,7 @@ int main(){
     /**   
      * Sample Query 1:
     */
-
+    client.pull_global_cache();
     std::vector<int32_t>start_range(DIMENSION, 0);
     std::vector<int32_t>end_range(DIMENSION, 0);
 
@@ -248,7 +256,7 @@ int main(){
     */
 
     start = GetTimestamp();
-    throughput = total_client_lookup(data_vector, shard_num, client_num, server_ips, &client);
+    throughput = total_client_lookup(data_vector, shard_num, client_num, server_ips);
 
     diff = GetTimestamp() - start;
     cout << "Primary Key Lookup Throughput (pt / seconds): " << throughput << endl;

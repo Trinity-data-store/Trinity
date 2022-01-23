@@ -179,6 +179,19 @@ public:
     return count;
   }
 
+  void push_global_cache(){
+
+    for (unsigned int i = 0; i < client_to_server.size(); i++){
+      client_to_server[i].insert(client_to_server_[i].begin(), client_to_server_[i].end());
+      server_to_client[i].insert(server_to_client_[i].begin(), server_to_client_[i].end());
+    }
+  }
+
+  void pull_global_cache(){
+    client_to_server_ = client_to_server;
+    server_to_client_ = server_to_client;
+  }
+
 private:
   std::vector<MDTrieShardClient> shard_vector_; 
   std::vector<std::map<int32_t, int32_t>> client_to_server_;
