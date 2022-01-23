@@ -91,7 +91,7 @@ std::vector<morton_t> dimension_to_num_bits;
 std::vector<level_t> start_dimension_bits;
 bool no_dynamic_sizing = false;
 
-
+std::mutex cache_lock;
 std::vector<std::map<int32_t, int32_t>> client_to_server;
 std::vector<std::map<int32_t, int32_t>> server_to_client;
 
