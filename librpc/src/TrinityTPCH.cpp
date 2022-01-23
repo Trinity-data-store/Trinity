@@ -206,7 +206,7 @@ int main(){
             count ++;
     }
     std::cout << "Correct Size: " << count << std::endl;
-    
+
     /**   
      * Sample Query 3:
     */
@@ -227,6 +227,7 @@ int main(){
     }
 
     found_points.clear();
+    start = GetTimestamp();
     client.range_search_trie(found_points, start_range, end_range);
     diff = GetTimestamp() - start;
 

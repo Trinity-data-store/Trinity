@@ -124,8 +124,6 @@ int main(){
     std::vector<int32_t>start_range(DIMENSION, 0);
     std::vector<int32_t>end_range(DIMENSION, 0);
 
-    start = GetTimestamp();
-
     for (dimension_t i = 0; i < DIMENSION; i++){
         start_range[i] = min_values[i];
         end_range[i] = max_values[i];
@@ -141,7 +139,7 @@ int main(){
         }
     }
     std::vector<int32_t> found_points;
-
+    start = GetTimestamp();
     client.range_search_trie(found_points, start_range, end_range);
     diff = GetTimestamp() - start;
 
@@ -178,7 +176,7 @@ int main(){
         }
     }
     found_points.clear();
-
+    start = GetTimestamp();
     client.range_search_trie(found_points, start_range, end_range);
     diff = GetTimestamp() - start;
 
@@ -218,7 +216,7 @@ int main(){
         }
     }
     found_points.clear();
-
+    start = GetTimestamp();
     client.range_search_trie(found_points, start_range, end_range);
     diff = GetTimestamp() - start;
 
