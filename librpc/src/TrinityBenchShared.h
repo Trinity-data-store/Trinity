@@ -19,7 +19,7 @@ using namespace apache::thrift;
 using namespace apache::thrift::protocol;
 using namespace apache::thrift::transport;
 
-int BATCH_SIZE = 1024;
+int BATCH_SIZE = 4096;
 int WARMUP_FACTOR = 10;
 
 /**
