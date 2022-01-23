@@ -350,8 +350,8 @@ int main(){
                     raise(SIGINT);
                 }
             }
-            if (j % 100 == 0)
-                std::cout << "done: " << j << std::endl;
+            // if (j % 100 == 0)
+                // std::cout << "done: " << j << std::endl;
         }
         sent_count = 0;
         }
