@@ -161,7 +161,14 @@ int main(){
     }
     diff = GetTimestamp() - start;
     std::cout << "Query 1 end to end latency: " << diff << std::endl;   
-
+    std::cout << "Found: " << found_points.size() << std::endl;
+    int count = 0;
+    for (unsigned int i = 0; i < data_vector->size(); i++){
+        std::vector<int32_t> data = (* data_vector)[i];
+        if (data[0] >= 1300000000 && data[0] <= 1400000000 && data[1] >= 1399000000 && data[1] <= 1400000000 && data[6] >= 0 && data[6] <= 2147483647)
+            count ++;
+    }
+    std::cout << "Correct Size: " << count << std::endl;
     /**   
      * (2) Find the top5 files by size created and modified within a 100 second time window.
     */
@@ -199,6 +206,15 @@ int main(){
     }
     diff = GetTimestamp() - start;
     std::cout << "Query 2 end to end latency: " << diff << std::endl;   
+    std::cout << "Found: " << found_points.size() << std::endl;
+
+    count = 0;
+    for (unsigned int i = 0; i < data_vector->size(); i++){
+        std::vector<int32_t> data = (* data_vector)[i];
+        if (data[0] >= 1300000000 && data[0] <= 1400000000 && data[1] >= 1399000000 && data[1] <= 1400000000 && data[6] >= 0 && data[6] <= 2147483647)
+            count ++;
+    }
+    std::cout << "Correct Size: " << count << std::endl;
 
     return 0;
 

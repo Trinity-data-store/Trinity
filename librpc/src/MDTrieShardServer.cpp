@@ -69,7 +69,7 @@ public:
 
     std::vector<level_t> bit_widths = {8, 32, 16, 24, 32, 32, 32, 32, 32}; // 9 Dimensions;
     std::vector<level_t> start_bits = {0, 0, 8, 16, 0, 0, 0, 0, 0}; // 9 Dimensions;
-    num_shards = 20 * 5;
+    num_shards = 48 * 5;
     trie_depth = 6;
     no_dynamic_sizing = true;
     total_points_count = 300005812 / num_shards;
