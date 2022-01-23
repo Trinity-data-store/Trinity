@@ -48,7 +48,7 @@ public:
     num_shards = 20 * 5;
     trie_depth = 10;
     no_dynamic_sizing = true;
-    total_points_count = 14583357 / num_shards + 1;    
+    total_points_count = 14583357 / num_shards * 1.1;    
 
     /** 
         OSM
@@ -94,17 +94,17 @@ public:
 
     if (dataset_idx == 0) // FS
     {
-      if (DIMENSION != 7 || total_points_count != 14583357 / num_shards + 1|| DIMENSION != dimension_to_num_bits.size() || DIMENSION != start_dimension_bits.size() || total_points_count != p_key_to_treeblock_compact->get_num_elements())
+      if (DIMENSION != 7 || total_points_count != 14583357  / num_shards  * 1.1 || DIMENSION != dimension_to_num_bits.size() || DIMENSION != start_dimension_bits.size() || total_points_count != p_key_to_treeblock_compact->get_num_elements())
         return false;
     }
     else if (dataset_idx == 1) // OSM
     {
-      if (DIMENSION != 4 || total_points_count != 152806265 / num_shards + 1 || DIMENSION != dimension_to_num_bits.size() || DIMENSION != start_dimension_bits.size() || total_points_count != p_key_to_treeblock_compact->get_num_elements())
+      if (DIMENSION != 4 || total_points_count != 152806265 / num_shards * 1.1 || DIMENSION != dimension_to_num_bits.size() || DIMENSION != start_dimension_bits.size() || total_points_count != p_key_to_treeblock_compact->get_num_elements())
         return false;
     }
     else if (dataset_idx == 2) // TPC-H
     {
-      if (DIMENSION != 9 || total_points_count != 300005812 / num_shards + 1 || DIMENSION != dimension_to_num_bits.size() || DIMENSION != start_dimension_bits.size() || total_points_count != p_key_to_treeblock_compact->get_num_elements())
+      if (DIMENSION != 9 || total_points_count != 300005812 / num_shards * 1.1 || DIMENSION != dimension_to_num_bits.size() || DIMENSION != start_dimension_bits.size() || total_points_count != p_key_to_treeblock_compact->get_num_elements())
         return false;
     }
     else 
