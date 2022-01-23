@@ -89,7 +89,7 @@ int main(){
 
     for (unsigned int i = 0; i < server_ips.size(); ++i) {
       for (int j = 0; j < shard_num; j++){
-        client_to_server.push_back({});
+        // client_to_server.push_back({});
         server_to_client.push_back({});
       }
     }
@@ -238,6 +238,38 @@ int main(){
             count ++;
     }
     std::cout << "Correct Size: " << count << std::endl;
+
+    /**   
+        Point Lookup Test
+    */
+
+    client.pull_global_cache();
+    int sent_count = 0;
+    for (unsigned i = 0; i < data_vector->size(); i++){
+
+        if (sent_count != 0 && sent_count % 4096 == 0){
+        for (uint32_t j = i - sent_count; j < i; j++){
+            std::vector<int32_t> rec_vect;
+            client.primary_key_lookup_rec(rec_vect, j);
+            for (unsigned int k = 0; k < DIMENSION; k++){
+                if (rec_vect[k] != (*data_vector)[j][k])
+                {
+                    std::cout << "error!" << std::endl;
+                    raise(SIGINT);
+                }
+            }
+            if (j % 100 == 0)
+                std::cout << "done: " << j << std::endl;
+        }
+        sent_count = 0;
+        }
+        client.primary_key_lookup_send(i);
+        sent_count ++;
+    }
+    for (uint32_t j = data_vector->size() - sent_count; j < data_vector->size(); j++){
+        std::vector<int32_t> rec_vect;
+        client.primary_key_lookup_rec(rec_vect, j);
+    }
 
     /**   
         Point Lookup given primary key

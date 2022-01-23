@@ -92,8 +92,9 @@ std::vector<level_t> start_dimension_bits;
 bool no_dynamic_sizing = false;
 
 std::mutex cache_lock;
-std::vector<std::map<int32_t, int32_t>> client_to_server;
-std::vector<std::map<int32_t, int32_t>> server_to_client;
+// std::vector<std::unordered_map<int32_t, int32_t>> client_to_server;
+std::unordered_map<int32_t, int32_t> client_to_server;
+std::vector<std::unordered_map<int32_t, int32_t>> server_to_client;
 
 void create_level_to_num_children(std::vector<level_t> bit_widths, std::vector<level_t> start_bits, level_t max_level){
 

@@ -20,6 +20,8 @@ using namespace apache::thrift::protocol;
 using namespace apache::thrift::transport;
 
 int BATCH_SIZE = 4096;
+int BATCH_SIZE_LOOKUP = 512;
+
 int WARMUP_FACTOR = 10;
 
 /**
@@ -118,11 +120,10 @@ uint32_t lookup_each_client(vector<vector <int32_t>> *data_vector, int shard_num
       start = GetTimestamp();
     }
 
-    if (sent_count != 0 && sent_count % BATCH_SIZE == 0){
+    if (sent_count != 0 && sent_count % BATCH_SIZE_LOOKUP == 0){
         for (uint32_t j = current_pos - sent_count; j < current_pos; j++){
             std::vector<int32_t> rec_vect;
             client.primary_key_lookup_rec(rec_vect, j);
-            raise(SIGINT);
             if (j == end_pos - warmup_cooldown_points){
               diff = GetTimestamp() - start;
             }
