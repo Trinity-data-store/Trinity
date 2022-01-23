@@ -13,15 +13,13 @@ using namespace apache::thrift;
 using namespace apache::thrift::protocol;
 using namespace apache::thrift::transport;
 
-std::map<int32_t, int32_t> client_to_server;
-
 class MDTrieClient {
 
 public:
 
   MDTrieClient(std::vector<std::string> server_ips, int shard_count){
 
-    shard_vector_.reserve(server_ips.size());
+    shard_vector_.reserve(server_ips.size() * shard_count);
 
     for (unsigned int i = 0; i < server_ips.size(); ++i) {
       for (int j = 0; j < shard_count; j++){
@@ -67,8 +65,7 @@ public:
 
     int shard_index = p_key % shard_vector_.size();
     shard_vector_[shard_index].send_insert(point, p_key);
-    uint32_t returned_key = shard_vector_[shard_index].recv_insert();
-    client_to_server[p_key] = returned_key;
+    shard_vector_[shard_index].recv_insert();
   }
 
   void insert_send(vector<int32_t> point, int32_t p_key){
@@ -80,8 +77,7 @@ public:
   void insert_rec(int32_t p_key){
 
     int shard_index = p_key % shard_vector_.size();
-    uint32_t returned_key = shard_vector_[shard_index].recv_insert();
-    client_to_server[p_key] = returned_key;
+    shard_vector_[shard_index].recv_insert();
   }
 
   bool check(vector<int32_t> point, int32_t p_key){
@@ -106,7 +102,7 @@ public:
   void primary_key_lookup(std::vector<int32_t> & return_vect, const int32_t p_key){
 
     int shard_index = p_key % shard_vector_.size();
-    shard_vector_[shard_index].send_primary_key_lookup(client_to_server[p_key]);
+    shard_vector_[shard_index].send_primary_key_lookup(p_key);
     shard_vector_[shard_index].recv_primary_key_lookup(return_vect);
 
   }
@@ -114,7 +110,7 @@ public:
   void primary_key_lookup_send(const int32_t p_key){
 
     int shard_index = p_key % shard_vector_.size();
-    shard_vector_[shard_index].send_primary_key_lookup(client_to_server[p_key]);
+    shard_vector_[shard_index].send_primary_key_lookup(p_key);
   }
 
 

@@ -61,19 +61,18 @@ public:
     // trie_depth = 10;
     // no_dynamic_sizing = true;
 
-    // total_points_count = 152806265 / num_shards;
+    // total_points_count = 152806265 / num_shards + 1; 
 
     /** 
         TPCH
     */
-
 
     // std::vector<level_t> bit_widths = {8, 32, 16, 24, 32, 32, 32, 32, 32}; // 9 Dimensions;
     // std::vector<level_t> start_bits = {0, 0, 8, 16, 0, 0, 0, 0, 0}; // 9 Dimensions;
     // num_shards = 20 * 5;
     // trie_depth = 6;
     // no_dynamic_sizing = true;
-    // total_points_count = 300005812 / num_shards;
+    // total_points_count = 300005812 / num_shards + 1; 
 
     p_key_to_treeblock_compact_ = new bitmap::CompactPtrVector(total_points_count);
     create_level_to_num_children(bit_widths, start_bits, 32);
@@ -135,11 +134,10 @@ public:
 
     for (uint8_t i = 0; i < DIMENSION; i++)
       leaf_point.set_coordinate(i, point[i]);
-    
-    if (inserted_points_ >= total_points_count)
-      std::cout << "inserted_points_ >= total_points_count!" << std::endl;
 
     mdtrie_->insert_trie(&leaf_point, inserted_points_, p_key_to_treeblock_compact_);
+    client_to_server[primary_key] = inserted_points_;
+    server_to_client[inserted_points_] = primary_key;
     inserted_points_ ++;
     return inserted_points_ - 1;
   }
@@ -155,12 +153,12 @@ public:
       end_range_point.set_coordinate(i, end_range[i]);     
 
     mdtrie_->range_search_trie(&start_range_point, &end_range_point, mdtrie_->root(), 0, _return);
+    for (unsigned int i = 0; i < _return.size(); i++)
+      _return[i] = server_to_client[_return[i]];
   }
 
   void primary_key_lookup(std::vector<int32_t> & _return, const int32_t primary_key){
 
-    if (primary_key >= inserted_points_)
-      std::cout << "primary_key > inserted points: " << primary_key << std::endl;
     _return.reserve(DIMENSION);
 
     std::vector<morton_t> node_path_from_primary(max_depth + 1);
@@ -185,6 +183,8 @@ protected:
   md_trie<DIMENSION> *mdtrie_; 
   bitmap::CompactPtrVector *p_key_to_treeblock_compact_;
   uint64_t inserted_points_ = 0;
+  std::map<int32_t, int32_t> client_to_server;
+  std::map<int32_t, int32_t> server_to_client;
 };
 
 class MDTrieCloneFactory : virtual public MDTrieShardIfFactory {
