@@ -102,7 +102,7 @@ int main(){
     total_points_count = 300005812;
 
     int shard_num = 20;
-    int client_num = 48;
+    int client_num = 1;
     auto client = MDTrieClient(server_ips, shard_num);
     if (!client.ping(2)){
         std::cerr << "Server setting wrong!" << std::endl;
@@ -124,7 +124,7 @@ int main(){
     vector<vector <int32_t>> *data_vector = get_data_vector(max_values, min_values);
 
     start = GetTimestamp();
-    throughput = total_client_insert(data_vector, shard_num, client_num, server_ips);
+    throughput = total_client_insert(data_vector, shard_num, client_num, server_ips, &client);
     diff = GetTimestamp() - start;
 
     cout << "Insertion Throughput (pt / seconds): " << throughput << endl;
@@ -248,7 +248,7 @@ int main(){
     */
 
     start = GetTimestamp();
-    throughput = total_client_lookup(data_vector, shard_num, client_num, server_ips);
+    throughput = total_client_lookup(data_vector, shard_num, client_num, server_ips, &client);
 
     diff = GetTimestamp() - start;
     cout << "Primary Key Lookup Throughput (pt / seconds): " << throughput << endl;

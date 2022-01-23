@@ -136,8 +136,6 @@ public:
       leaf_point.set_coordinate(i, point[i]);
 
     mdtrie_->insert_trie(&leaf_point, inserted_points_, p_key_to_treeblock_compact_);
-    client_to_server[primary_key] = inserted_points_;
-    server_to_client[inserted_points_] = primary_key;
     inserted_points_ ++;
     return inserted_points_ - 1;
   }
@@ -155,7 +153,7 @@ public:
     std::vector<int32_t> temp;
     mdtrie_->range_search_trie(&start_range_point, &end_range_point, mdtrie_->root(), 0, temp);
     for (unsigned int i = 0; i < _return.size(); i++)
-      _return.push_back(server_to_client[temp[i]]);
+      _return.push_back(temp[i]);
   }
 
   void primary_key_lookup(std::vector<int32_t> & _return, const int32_t primary_key){
@@ -163,9 +161,9 @@ public:
     _return.reserve(DIMENSION);
 
     std::vector<morton_t> node_path_from_primary(max_depth + 1);
-    tree_block<DIMENSION> *t_ptr = (tree_block<DIMENSION> *) (p_key_to_treeblock_compact_->At(client_to_server[primary_key]));
+    tree_block<DIMENSION> *t_ptr = (tree_block<DIMENSION> *) (p_key_to_treeblock_compact_->At(primary_key));
 
-    morton_t parent_symbol_from_primary = t_ptr->get_node_path_primary_key(client_to_server[primary_key], node_path_from_primary);
+    morton_t parent_symbol_from_primary = t_ptr->get_node_path_primary_key(primary_key, node_path_from_primary);
     node_path_from_primary[max_depth - 1] = parent_symbol_from_primary;
 
     auto returned_coordinates = t_ptr->node_path_to_coordinates(node_path_from_primary, DIMENSION);  
@@ -184,8 +182,6 @@ protected:
   md_trie<DIMENSION> *mdtrie_; 
   bitmap::CompactPtrVector *p_key_to_treeblock_compact_;
   uint64_t inserted_points_ = 0;
-  std::map<int32_t, int32_t> client_to_server;
-  std::map<int32_t, int32_t> server_to_client;
 };
 
 class MDTrieCloneFactory : virtual public MDTrieShardIfFactory {
