@@ -48,7 +48,7 @@ public:
     num_shards = 20 * 5;
     trie_depth = 10;
     no_dynamic_sizing = true;
-    total_points_count = 14583357 / num_shards;    
+    total_points_count = 14583357 / num_shards + 1;    
 
     /** 
         OSM
@@ -135,6 +135,9 @@ public:
     for (uint8_t i = 0; i < DIMENSION; i++)
       leaf_point.set_coordinate(i, point[i]);
     
+    if (inserted_points_ >= total_points_count)
+      std::cout << "inserted_points_ >= total_points_count!" << std::endl;
+
     mdtrie_->insert_trie(&leaf_point, inserted_points_);
     inserted_points_ ++;
     return inserted_points_ - 1;

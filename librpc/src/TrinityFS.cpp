@@ -78,7 +78,6 @@ vector<vector <int32_t>> *get_data_vector(std::vector<int32_t> &max_values, std:
       n_points ++;
   }
 
-  raise(SIGINT);
   return data_vector;
 }
 
