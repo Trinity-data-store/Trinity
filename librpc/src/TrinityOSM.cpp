@@ -127,6 +127,7 @@ int main(){
      * Sample Query:
      * (1) Find all points created between June and July of 2020 and with version 1 or 2
     */
+    
     client.pull_global_cache();
     std::vector<int32_t>start_range(DIMENSION, 0);
     std::vector<int32_t>end_range(DIMENSION, 0);
@@ -237,7 +238,6 @@ int main(){
             count ++;
     }
     std::cout << "Correct Size: " << count << std::endl;
-    return 0;
 
     /**   
         Point Lookup given primary key
