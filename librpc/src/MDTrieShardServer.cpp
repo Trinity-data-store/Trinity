@@ -48,7 +48,8 @@ public:
     num_shards = 20 * 5;
     trie_depth = 10;
     no_dynamic_sizing = true;
-    total_points_count = 14583357 / num_shards * 1.1;    
+    // total_points_count = 14583357 / num_shards * 1.1;    
+    total_points_count = 14583357;
 
     /** 
         OSM
