@@ -249,13 +249,12 @@ int main(){
     }
     std::cout << "Correct Size: " << count << std::endl;
 
-    return 0;
-
     /**   
         Point Lookup given primary key
     */
 
     start = GetTimestamp();
+    data_vector->resize(data_vector->size() / 3); // Original Test consumes too much resources and got killed
     throughput = total_client_lookup(data_vector, shard_num, client_num, server_ips);
 
     diff = GetTimestamp() - start;
