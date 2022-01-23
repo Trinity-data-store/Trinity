@@ -65,7 +65,7 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node, 
             }            
         }
         start = GetTimestamp();
-        mdtrie.insert_trie(&leaf_point, n_points);
+        mdtrie.insert_trie(&leaf_point, n_points, p_key_to_treeblock_compact);
         diff += GetTimestamp() - start;
 
         n_points ++;

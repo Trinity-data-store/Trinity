@@ -48,8 +48,8 @@ public:
     num_shards = 20 * 5;
     trie_depth = 10;
     no_dynamic_sizing = true;
-    // total_points_count = 14583357 / num_shards * 1.1;    
-    total_points_count = 14583357;
+    total_points_count = 14583357 / num_shards + 1;    
+    // total_points_count = 14583357;
 
     /** 
         OSM
@@ -75,7 +75,7 @@ public:
     // no_dynamic_sizing = true;
     // total_points_count = 300005812 / num_shards;
 
-    p_key_to_treeblock_compact = new bitmap::CompactPtrVector(total_points_count);
+    p_key_to_treeblock_compact_ = new bitmap::CompactPtrVector(total_points_count);
     create_level_to_num_children(bit_widths, start_bits, 32);
 
     mdtrie_ = new md_trie<DIMENSION>(max_depth, trie_depth, max_tree_node);
@@ -84,9 +84,9 @@ public:
   void clear_trie(){
 
     delete mdtrie_; // TODO
-    delete p_key_to_treeblock_compact;
+    delete p_key_to_treeblock_compact_;
     mdtrie_ = new md_trie<DIMENSION>(max_depth, trie_depth, max_tree_node);
-    p_key_to_treeblock_compact = new bitmap::CompactPtrVector(total_points_count);
+    p_key_to_treeblock_compact_ = new bitmap::CompactPtrVector(total_points_count);
   }
 
   bool ping(const int32_t dataset_idx) { 
@@ -95,17 +95,17 @@ public:
 
     if (dataset_idx == 0) // FS
     {
-      if (DIMENSION != 7 || DIMENSION != dimension_to_num_bits.size() || DIMENSION != start_dimension_bits.size() || total_points_count != p_key_to_treeblock_compact->get_num_elements())
+      if (DIMENSION != 7 || DIMENSION != dimension_to_num_bits.size() || DIMENSION != start_dimension_bits.size() || total_points_count != p_key_to_treeblock_compact_->get_num_elements())
         return false;
     }
     else if (dataset_idx == 1) // OSM
     {
-      if (DIMENSION != 4 || DIMENSION != dimension_to_num_bits.size() || DIMENSION != start_dimension_bits.size() || total_points_count != p_key_to_treeblock_compact->get_num_elements())
+      if (DIMENSION != 4 || DIMENSION != dimension_to_num_bits.size() || DIMENSION != start_dimension_bits.size() || total_points_count != p_key_to_treeblock_compact_->get_num_elements())
         return false;
     }
     else if (dataset_idx == 2) // TPC-H
     {
-      if (DIMENSION != 9 || DIMENSION != dimension_to_num_bits.size() || DIMENSION != start_dimension_bits.size() || total_points_count != p_key_to_treeblock_compact->get_num_elements())
+      if (DIMENSION != 9 || DIMENSION != dimension_to_num_bits.size() || DIMENSION != start_dimension_bits.size() || total_points_count != p_key_to_treeblock_compact_->get_num_elements())
         return false;
     }
     else 
@@ -139,7 +139,7 @@ public:
     if (inserted_points_ >= total_points_count)
       std::cout << "inserted_points_ >= total_points_count!" << std::endl;
 
-    mdtrie_->insert_trie(&leaf_point, inserted_points_);
+    mdtrie_->insert_trie(&leaf_point, inserted_points_, p_key_to_treeblock_compact_);
     inserted_points_ ++;
     return inserted_points_ - 1;
   }
@@ -164,7 +164,7 @@ public:
     _return.reserve(DIMENSION);
 
     std::vector<morton_t> node_path_from_primary(max_depth + 1);
-    tree_block<DIMENSION> *t_ptr = (tree_block<DIMENSION> *) (p_key_to_treeblock_compact->At(primary_key));
+    tree_block<DIMENSION> *t_ptr = (tree_block<DIMENSION> *) (p_key_to_treeblock_compact_->At(primary_key));
 
     morton_t parent_symbol_from_primary = t_ptr->get_node_path_primary_key(primary_key, node_path_from_primary);
     node_path_from_primary[max_depth - 1] = parent_symbol_from_primary;
@@ -183,6 +183,7 @@ public:
 protected:
 
   md_trie<DIMENSION> *mdtrie_; 
+  bitmap::CompactPtrVector *p_key_to_treeblock_compact_;
   uint64_t inserted_points_ = 0;
 };
 

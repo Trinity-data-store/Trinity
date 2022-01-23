@@ -72,12 +72,12 @@ public:
         return current_treeblock;
     }
 
-    void insert_trie(data_point<DIMENSION> *leaf_point, n_leaves_t primary_key) {
+    void insert_trie(data_point<DIMENSION> *leaf_point, n_leaves_t primary_key, bitmap::CompactPtrVector *p_key_to_treeblock_compact) {
 
         level_t level = 0;
         trie_node<DIMENSION> *current_trie_node = root_;
         tree_block<DIMENSION> *current_treeblock = walk_trie(current_trie_node, leaf_point, level);
-        current_treeblock->insert_remaining(leaf_point, level, primary_key);
+        current_treeblock->insert_remaining(leaf_point, level, primary_key, p_key_to_treeblock_compact);
     }
 
     bool check(data_point<DIMENSION> *leaf_point) const {
