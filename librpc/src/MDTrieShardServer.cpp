@@ -177,7 +177,7 @@ public:
   }
 
   int32_t get_size(){
-    return mdtrie_->size();
+    return mdtrie_->size(p_key_to_treeblock_compact_);
   }
 
 protected:

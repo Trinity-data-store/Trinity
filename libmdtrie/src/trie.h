@@ -89,7 +89,7 @@ public:
         return result;
     }
 
-    uint64_t size() {
+    uint64_t size(bitmap::CompactPtrVector *p_key_to_treeblock_compact) {
 
         uint64_t total_size = sizeof(root_) + sizeof(max_depth_) + sizeof(trie_depth_);
         total_size += sizeof(max_tree_nodes_); 
