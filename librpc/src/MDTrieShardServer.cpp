@@ -150,10 +150,7 @@ public:
     for (uint8_t i = 0; i < DIMENSION; i++)
       end_range_point.set_coordinate(i, end_range[i]);     
 
-    std::vector<int32_t> temp;
-    mdtrie_->range_search_trie(&start_range_point, &end_range_point, mdtrie_->root(), 0, temp);
-    for (unsigned int i = 0; i < _return.size(); i++)
-      _return.push_back(temp[i]);
+    mdtrie_->range_search_trie(&start_range_point, &end_range_point, mdtrie_->root(), 0, _return);
   }
 
   void primary_key_lookup(std::vector<int32_t> & _return, const int32_t primary_key){

@@ -129,7 +129,7 @@ public:
   void range_search_trie(std::vector<int32_t> & return_vect, const std::vector<int32_t> & start_range, const std::vector<int32_t> & end_range){
 
     int client_count = shard_vector_.size();
-
+    
     for (uint8_t i = 0; i < client_count; i++){
       shard_vector_[i].send_range_search(start_range, end_range);
     }     
@@ -137,6 +137,7 @@ public:
     for (uint8_t i = 0; i < client_count; i++){
       std::vector<int32_t> return_vect_tmp;
       shard_vector_[i].recv_range_search(return_vect_tmp);
+      raise(SIGINT);
       // return_vect.insert(return_vect.end(), return_vect_tmp.begin(), return_vect_tmp.end());
       for (unsigned int j = 0; j < return_vect_tmp.size(); j++){
         return_vect.push_back(server_to_client_[i][return_vect_tmp[j]]);
