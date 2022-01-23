@@ -147,18 +147,38 @@ int main(){
     std::vector<int32_t> found_points;
 
     client.range_search_trie(found_points, start_range, end_range);
-    std::map<int32_t, int32_t> user_ids_to_mod_count;
+    
+    // std::map<int32_t, int32_t> user_ids_to_mod_count;
 
-    for (unsigned int i = 0; i < found_points.size(); i++){
-        std::vector<int32_t> point;
-        client.primary_key_lookup(point, found_points[i]);
-        if (user_ids_to_mod_count.find(point[4]) == user_ids_to_mod_count.end()){  // point[4] owner_id
-            user_ids_to_mod_count[point[4]] = 1;
+    // for (unsigned int i = 0; i < found_points.size(); i++){
+    //     std::vector<int32_t> point;
+    //     client.primary_key_lookup(point, found_points[i]);
+    //     if (user_ids_to_mod_count.find(point[4]) == user_ids_to_mod_count.end()){  // point[4] owner_id
+    //         user_ids_to_mod_count[point[4]] = 1;
+    //     }
+    //     else {
+    //         user_ids_to_mod_count[point[4]] += 1;
+    //     }
+    // }
+
+    int sent_count = 0;
+    for (unsigned i = 0; i < found_points.size(); i++){
+
+        if (sent_count != 0 && sent_count % 20 == 0){
+        for (uint32_t j = i - sent_count; j < i; j++){
+            std::vector<int32_t> rec_vect;
+            client.primary_key_lookup_rec(rec_vect, found_points[j]);
         }
-        else {
-            user_ids_to_mod_count[point[4]] += 1;
+        sent_count = 0;
         }
+        client.primary_key_lookup_send(found_points[i]);
+        sent_count ++;
     }
+    for (uint32_t j = found_points.size() - sent_count; j < found_points.size(); j++){
+        std::vector<int32_t> rec_vect;
+        client.primary_key_lookup_rec(rec_vect, found_points[j]);
+    }
+
     diff = GetTimestamp() - start;
     std::cout << "Query 1 end to end latency: " << diff << std::endl;   
     std::cout << "Found: " << found_points.size() << std::endl;
@@ -169,7 +189,7 @@ int main(){
             count ++;
     }
     std::cout << "Correct Size: " << count << std::endl;
-    
+
     /**   
      * (2) Find the top5 files by size created and modified within a 100 second time window.
     */
@@ -198,13 +218,32 @@ int main(){
     found_points.clear();
 
     client.range_search_trie(found_points, start_range, end_range);
-    std::vector<int32_t> found_sizes;
+    // std::vector<int32_t> found_sizes;
 
-    for (unsigned int i = 0; i < found_points.size(); i++){
-        std::vector<int32_t> point;
-        client.primary_key_lookup(point, found_points[i]);
-        found_sizes.push_back(point[6]); // point[6] size
+    // for (unsigned int i = 0; i < found_points.size(); i++){
+    //     std::vector<int32_t> point;
+    //     client.primary_key_lookup(point, found_points[i]);
+    //     found_sizes.push_back(point[6]); // point[6] size
+    // }
+
+    sent_count = 0;
+    for (unsigned i = 0; i < found_points.size(); i++){
+
+        if (sent_count != 0 && sent_count % 20 == 0){
+        for (uint32_t j = i - sent_count; j < i; j++){
+            std::vector<int32_t> rec_vect;
+            client.primary_key_lookup_rec(rec_vect, found_points[j]);
+        }
+        sent_count = 0;
+        }
+        client.primary_key_lookup_send(found_points[i]);
+        sent_count ++;
     }
+    for (uint32_t j = found_points.size() - sent_count; j < found_points.size(); j++){
+        std::vector<int32_t> rec_vect;
+        client.primary_key_lookup_rec(rec_vect, found_points[j]);
+    }
+
     diff = GetTimestamp() - start;
     std::cout << "Query 2 end to end latency: " << diff << std::endl;   
     std::cout << "Found: " << found_points.size() << std::endl;
@@ -217,7 +256,6 @@ int main(){
     }
     std::cout << "Correct Size: " << count << std::endl;
 
-    return 0;
 
     /**   
      * (3) Average, minimum and maximum file size across16 fixed-sized adjacent 50 second time windows.
@@ -247,17 +285,34 @@ int main(){
         }
         found_points.clear();
         client.range_search_trie(found_points, start_range, end_range);
-        std::vector<int32_t> found_sizes;
+        // std::vector<int32_t> found_sizes;
 
-        for (unsigned int i = 0; i < found_points.size(); i++){
-            std::vector<int32_t> point;
-            client.primary_key_lookup(point, found_points[i]);
-            found_sizes.push_back(point[6]); // point[6] size
-        }
+        // for (unsigned int i = 0; i < found_points.size(); i++){
+        //     std::vector<int32_t> point;
+        //     client.primary_key_lookup(point, found_points[i]);
+        //     found_sizes.push_back(point[6]); // point[6] size
+        // }
+
+        // sent_count = 0;
+        // for (unsigned i = 0; i < found_points.size(); i++){
+
+        //     if (sent_count != 0 && sent_count % 20 == 0){
+        //     for (uint32_t j = i - sent_count; j < i; j++){
+        //         std::vector<int32_t> rec_vect;
+        //         client.primary_key_lookup_rec(rec_vect, found_points[j]);
+        //     }
+        //     sent_count = 0;
+        //     }
+        //     client.primary_key_lookup_send(found_points[i]);
+        //     sent_count ++;
+        // }
+        // for (uint32_t j = found_points.size() - sent_count; j < found_points.size(); j++){
+        //     std::vector<int32_t> rec_vect;
+        //     client.primary_key_lookup_rec(rec_vect, found_points[j]);
+        // }
     }
     diff = GetTimestamp() - start;
     std::cout << "Query 3 end to end latency: " << diff << std::endl;   
-
     
     /**   
         Point Lookup given primary key

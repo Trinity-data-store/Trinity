@@ -155,6 +155,8 @@ public:
 
   void primary_key_lookup(std::vector<int32_t> & _return, const int32_t primary_key){
 
+    if (primary_key >= inserted_points_)
+      std::cout << "primary_key > inserted points: " << primary_key << std::endl;
     _return.reserve(DIMENSION);
 
     std::vector<morton_t> node_path_from_primary(max_depth + 1);
