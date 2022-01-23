@@ -837,7 +837,7 @@ public:
             }
         }
         if (current_node == num_nodes_){
-            // fprintf(stderr, "node not found!\n");
+            fprintf(stderr, "node not found!\n");
             return;
         }
         for (int i = 0; i <= sTop; i++){
@@ -958,7 +958,7 @@ public:
             }
         }
         if (current_node == num_nodes_){
-            // fprintf(stderr, "node not found!\n");
+            fprintf(stderr, "node not found!\n");
             return 0;
         }
         for (int i = 0; i <= sTop; i++){

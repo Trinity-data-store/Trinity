@@ -193,7 +193,7 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node, 
     TimeStamp diff_primary = 0;
     n_leaves_t checked_points_size = 0;
 
-    for (n_leaves_t i = 0; i < found_points_size; i += 5){
+    for (n_leaves_t i = 0; i < found_points_size; i++){
 
         n_leaves_t primary_key = found_points[i];
         std::vector<morton_t> node_path_from_primary(max_depth + 1);
