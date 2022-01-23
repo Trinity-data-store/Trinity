@@ -71,7 +71,7 @@ public:
     std::vector<level_t> start_bits = {0, 0, 8, 16, 0, 0, 0, 0, 0}; // 9 Dimensions;
     num_shards = 20 * 5;
     trie_depth = 6;
-    no_dynamic_sizing = false;
+    no_dynamic_sizing = true;
     total_points_count = 300005812 / num_shards;
 
     p_key_to_treeblock_compact = new bitmap::CompactPtrVector(total_points_count);

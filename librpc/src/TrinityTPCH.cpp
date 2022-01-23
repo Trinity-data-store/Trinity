@@ -158,6 +158,7 @@ int main(){
             start_range[i] = 1;
     }
     std::vector<int32_t> found_points;
+    start = GetTimestamp();
     client.range_search_trie(found_points, start_range, end_range);
     diff = GetTimestamp() - start;
 
@@ -191,6 +192,7 @@ int main(){
             start_range[i] = 5;
     }
     found_points.clear();
+    start = GetTimestamp();
     client.range_search_trie(found_points, start_range, end_range);
     diff = GetTimestamp() - start;
 
@@ -204,6 +206,7 @@ int main(){
             count ++;
     }
     std::cout << "Correct Size: " << count << std::endl;
+    
     /**   
      * Sample Query 3:
     */
