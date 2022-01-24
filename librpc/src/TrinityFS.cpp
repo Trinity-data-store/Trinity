@@ -89,6 +89,7 @@ int main(){
     int shard_num = 20;
     int client_num = 48;
     auto client = MDTrieClient(server_ips, shard_num);
+    client_to_server_vect.resize(total_points_count);
 
     for (unsigned int i = 0; i < server_ips.size(); ++i) {
       for (int j = 0; j < shard_num; j++){
@@ -103,7 +104,6 @@ int main(){
     }
 
     TimeStamp start, diff;
-    cout << "Storage: " << client.get_size() << endl;
 
     /** 
         Insert all points
@@ -265,14 +265,14 @@ int main(){
     }
     std::cout << "Correct Size: " << count << std::endl;
 
-    for (unsigned int i = 0; i < found_points.size(); i++){
-        std::vector<int32_t> data = (* data_vector)[found_points[i]];
-        bool correct = false;
-        if (data[0] >= 1300000000 && data[0] <= 1400000000 && data[1] >= 1399000000 && data[1] <= 1400000000 && data[6] >= 0 && data[6] <= 2147483647)
-            correct = true;
-        if (!correct)
-            std::cout << "Incorrect!" << std::endl;
-    }
+    // for (unsigned int i = 0; i < found_points.size(); i++){
+    //     std::vector<int32_t> data = (* data_vector)[found_points[i]];
+    //     bool correct = false;
+    //     if (data[0] >= 1300000000 && data[0] <= 1400000000 && data[1] >= 1399000000 && data[1] <= 1400000000 && data[6] >= 0 && data[6] <= 2147483647)
+    //         correct = true;
+    //     if (!correct)
+    //         std::cout << "Incorrect!" << std::endl;
+    // }
 
     /**   
      * (3) Average, minimum and maximum file size across16 fixed-sized adjacent 50 second time windows.
@@ -350,8 +350,8 @@ int main(){
                     raise(SIGINT);
                 }
             }
-            // if (j % 100 == 0)
-                // std::cout << "done: " << j << std::endl;
+            if (j % 1000000 == 0)
+                std::cout << "done: " << j << std::endl;
         }
         sent_count = 0;
         }

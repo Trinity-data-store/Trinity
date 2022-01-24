@@ -86,6 +86,7 @@ int main(){
     int shard_num = 20;
     int client_num = 48;
     auto client = MDTrieClient(server_ips, shard_num);
+    client_to_server_vect.resize(total_points_count);
 
     for (unsigned int i = 0; i < server_ips.size(); ++i) {
       for (int j = 0; j < shard_num; j++){
@@ -99,7 +100,6 @@ int main(){
         exit(-1);
     }
 
-    cout << "Storage: " << client.get_size() << endl;
     TimeStamp start, diff;
 
     /** 
@@ -120,8 +120,6 @@ int main(){
     cout << "Insertion Throughput (pt / seconds): " << throughput << endl;
     cout << "End-to-end Latency (us): " << diff << endl;
     cout << "Storage: " << client.get_size() << endl;
-
-
 
     /**   
      * Sample Query:
@@ -243,33 +241,33 @@ int main(){
         Point Lookup Test
     */
 
-    client.pull_global_cache();
-    int sent_count = 0;
-    for (unsigned i = 0; i < data_vector->size(); i++){
+    // client.pull_global_cache();
+    // int sent_count = 0;
+    // for (unsigned i = 0; i < data_vector->size(); i++){
 
-        if (sent_count != 0 && sent_count % 4096 == 0){
-        for (uint32_t j = i - sent_count; j < i; j++){
-            std::vector<int32_t> rec_vect;
-            client.primary_key_lookup_rec(rec_vect, j);
-            for (unsigned int k = 0; k < DIMENSION; k++){
-                if (rec_vect[k] != (*data_vector)[j][k])
-                {
-                    std::cout << "error!" << std::endl;
-                    raise(SIGINT);
-                }
-            }
-            // if (j % 100 == 0)
-            //     std::cout << "done: " << j << std::endl;
-        }
-        sent_count = 0;
-        }
-        client.primary_key_lookup_send(i);
-        sent_count ++;
-    }
-    for (uint32_t j = data_vector->size() - sent_count; j < data_vector->size(); j++){
-        std::vector<int32_t> rec_vect;
-        client.primary_key_lookup_rec(rec_vect, j);
-    }
+    //     if (sent_count != 0 && sent_count % 4096 == 0){
+    //     for (uint32_t j = i - sent_count; j < i; j++){
+    //         std::vector<int32_t> rec_vect;
+    //         client.primary_key_lookup_rec(rec_vect, j);
+    //         for (unsigned int k = 0; k < DIMENSION; k++){
+    //             if (rec_vect[k] != (*data_vector)[j][k])
+    //             {
+    //                 std::cout << "error!" << std::endl;
+    //                 raise(SIGINT);
+    //             }
+    //         }
+    //         if (j % 100000 == 0)
+    //             std::cout << "done: " << j << std::endl;
+    //     }
+    //     sent_count = 0;
+    //     }
+    //     client.primary_key_lookup_send(i);
+    //     sent_count ++;
+    // }
+    // for (uint32_t j = data_vector->size() - sent_count; j < data_vector->size(); j++){
+    //     std::vector<int32_t> rec_vect;
+    //     client.primary_key_lookup_rec(rec_vect, j);
+    
 
     /**   
         Point Lookup given primary key
@@ -277,7 +275,7 @@ int main(){
 
     start = GetTimestamp();
     // throughput = total_client_lookup(data_vector, shard_num, client_num, server_ips);
-    throughput = total_client_lookup(data_vector, shard_num, 1 /*client_num*/, server_ips);
+    throughput = total_client_lookup(data_vector, shard_num, client_num, server_ips);
 
     diff = GetTimestamp() - start;
     cout << "Primary Key Lookup Throughput (pt / seconds): " << throughput << endl;

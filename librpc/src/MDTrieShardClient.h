@@ -25,7 +25,7 @@ public:
       for (int j = 0; j < shard_count; j++){
         shard_vector_.push_back(launch_port(9090 + j, server_ips[i]));
         // client_to_server_.push_back({});
-        server_to_client_.push_back({});
+        // server_to_client_.push_back({});
       }
     }
   }
@@ -70,7 +70,7 @@ public:
     int32_t returned_key = shard_vector_[shard_index].recv_insert();
     // client_to_server_[shard_index][p_key] = returned_key;
     client_to_server_[p_key] = returned_key;
-    server_to_client_[shard_index][returned_key] = p_key;
+    // server_to_client_[shard_index][returned_key] = p_key;
   }
 
   void insert_send(vector<int32_t> point, int32_t p_key){
@@ -85,7 +85,7 @@ public:
     int32_t returned_key = shard_vector_[shard_index].recv_insert();
     // client_to_server_[shard_index][p_key] = returned_key;
     client_to_server_[p_key] = returned_key;
-    server_to_client_[shard_index][returned_key] = p_key;   
+    // server_to_client_[shard_index][returned_key] = p_key;   
   }
 
   bool check(vector<int32_t> point, int32_t p_key){
@@ -111,7 +111,7 @@ public:
 
     int shard_index = p_key % shard_vector_.size();
     // shard_vector_[shard_index].send_primary_key_lookup(client_to_server_[shard_index][p_key]);
-    shard_vector_[shard_index].send_primary_key_lookup(client_to_server_[p_key]);
+    shard_vector_[shard_index].send_primary_key_lookup(client_to_server_vect[p_key]);
     shard_vector_[shard_index].recv_primary_key_lookup(return_vect);
 
   }
@@ -120,7 +120,7 @@ public:
 
     int shard_index = p_key % shard_vector_.size();
     // shard_vector_[shard_index].send_primary_key_lookup(client_to_server_[shard_index][p_key]);
-    shard_vector_[shard_index].send_primary_key_lookup(client_to_server_[p_key]);
+    shard_vector_[shard_index].send_primary_key_lookup(client_to_server_vect[p_key]);
   }
 
 
@@ -142,10 +142,10 @@ public:
       std::vector<int32_t> return_vect_tmp;
       shard_vector_[i].recv_range_search(return_vect_tmp);
       // raise(SIGINT);
-      // return_vect.insert(return_vect.end(), return_vect_tmp.begin(), return_vect_tmp.end());
-      for (unsigned int j = 0; j < return_vect_tmp.size(); j++){
-        return_vect.push_back(server_to_client_[i][return_vect_tmp[j]]);
-      }
+      return_vect.insert(return_vect.end(), return_vect_tmp.begin(), return_vect_tmp.end());
+      // for (unsigned int j = 0; j < return_vect_tmp.size(); j++){
+      //   return_vect.push_back(server_to_client_[i][return_vect_tmp[j]]);
+      // }
     }    
   }
 
@@ -165,10 +165,10 @@ public:
     for (uint8_t i = 0; i < client_count; i++){
       std::vector<int32_t> return_vect_tmp;
       shard_vector_[i].recv_range_search(return_vect_tmp);
-      // return_vect.insert(return_vect.end(), return_vect_tmp.begin(), return_vect_tmp.end());
-      for (unsigned int j = 0; j < return_vect_tmp.size(); j++){
-        return_vect.push_back(server_to_client_[i][return_vect_tmp[j]]);
-      }    
+      return_vect.insert(return_vect.end(), return_vect_tmp.begin(), return_vect_tmp.end());
+      // for (unsigned int j = 0; j < return_vect_tmp.size(); j++){
+      //   return_vect.push_back(server_to_client_[i][return_vect_tmp[j]]);
+      // }    
     }    
   }
 
@@ -186,11 +186,18 @@ public:
   void push_global_cache(){
     
     cache_lock.lock();
+    /*
     for (unsigned int i = 0; i < server_to_client_.size(); i++){
       // client_to_server[i].insert(client_to_server_[i].begin(), client_to_server_[i].end());
       server_to_client[i].insert(server_to_client_[i].begin(), server_to_client_[i].end());
     }
     client_to_server.insert(client_to_server_.begin(), client_to_server_.end());
+    */
+    
+    for (auto it = client_to_server.begin(); it != client_to_server.end(); it++)
+    {
+      client_to_server_vect[it->first] = client_to_server_vect[it->second];
+    }
     cache_lock.unlock();
 
   }

@@ -104,6 +104,7 @@ int main(){
     int shard_num = 20;
     int client_num = 48;
     auto client = MDTrieClient(server_ips, shard_num);
+    client_to_server_vect.resize(total_points_count);
 
     for (unsigned int i = 0; i < server_ips.size(); ++i) {
       for (int j = 0; j < shard_num; j++){
@@ -116,7 +117,6 @@ int main(){
         std::cerr << "Server setting wrong!" << std::endl;
         exit(-1);
     }
-    cout << "Storage: " << client.get_size() << endl;
 
     TimeStamp start, diff;
 

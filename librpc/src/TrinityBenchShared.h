@@ -19,10 +19,10 @@ using namespace apache::thrift;
 using namespace apache::thrift::protocol;
 using namespace apache::thrift::transport;
 
-int BATCH_SIZE = 4096;
-int BATCH_SIZE_LOOKUP = 512;
+int BATCH_SIZE = 8192;
+int BATCH_SIZE_LOOKUP = 8192;
 
-int WARMUP_FACTOR = 10;
+int WARMUP_FACTOR = 5;
 
 /**
  * Insertion
@@ -99,7 +99,7 @@ uint32_t total_client_insert(vector<vector <int32_t>> *data_vector, int shard_nu
 uint32_t lookup_each_client(vector<vector <int32_t>> *data_vector, int shard_number, int client_number, int client_index, std::vector<std::string> server_ips){
 
   auto client = MDTrieClient(server_ips, shard_number);
-  client.pull_global_cache();
+  // client.pull_global_cache();
 
   uint32_t start_pos = data_vector->size() / client_number * client_index;
   uint32_t end_pos = data_vector->size() / client_number * (client_index + 1) - 1;
@@ -111,6 +111,7 @@ uint32_t lookup_each_client(vector<vector <int32_t>> *data_vector, int shard_num
   uint32_t warmup_cooldown_points = total_points_to_lookup / WARMUP_FACTOR;
 
   int sent_count = 0;
+  // std::cout << "started! client index: " << client_index << std::endl;
 
   TimeStamp start, diff = 0; 
 
@@ -127,6 +128,8 @@ uint32_t lookup_each_client(vector<vector <int32_t>> *data_vector, int shard_num
             if (j == end_pos - warmup_cooldown_points){
               diff = GetTimestamp() - start;
             }
+            // if (j % 1000000 == 0)
+            //   std::cout << "finished: " << j << std::endl;
         }
         sent_count = 0;
     }

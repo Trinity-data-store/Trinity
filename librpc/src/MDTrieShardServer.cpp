@@ -147,8 +147,10 @@ public:
     data_point<DIMENSION> end_range_point;
     for (uint8_t i = 0; i < DIMENSION; i++)
       end_range_point.set_coordinate(i, end_range[i]);     
-
-    mdtrie_->range_search_trie(&start_range_point, &end_range_point, mdtrie_->root(), 0, _return);
+    
+    std::vector<int32_t> tmp;
+    mdtrie_->range_search_trie(&start_range_point, &end_range_point, mdtrie_->root(), 0, tmp);
+    _return = tmp;
   }
 
   void primary_key_lookup(std::vector<int32_t> & _return, const int32_t primary_key){
