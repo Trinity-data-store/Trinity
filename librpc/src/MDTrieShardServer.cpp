@@ -57,7 +57,7 @@ public:
     std::vector<level_t> bit_widths = {8, 32, 32, 32}; // 4 Dimensions
     std::vector<level_t> start_bits = {0, 0, 0, 0}; // 4 Dimensions;
     num_shards = 20 * 5;
-    trie_depth = 10;
+    trie_depth = 6;
     no_dynamic_sizing = true;
     total_points_count = 152806265 / num_shards + 1; 
 
@@ -148,9 +148,7 @@ public:
     for (uint8_t i = 0; i < DIMENSION; i++)
       end_range_point.set_coordinate(i, end_range[i]);     
     
-    std::vector<int32_t> tmp;
-    mdtrie_->range_search_trie(&start_range_point, &end_range_point, mdtrie_->root(), 0, tmp);
-    _return = tmp;
+    mdtrie_->range_search_trie(&start_range_point, &end_range_point, mdtrie_->root(), 0, _return);
   }
 
   void primary_key_lookup(std::vector<int32_t> & _return, const int32_t primary_key){
