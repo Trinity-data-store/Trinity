@@ -102,7 +102,7 @@ int main(){
     total_points_count = 300005812;
 
     int shard_num = 20;
-    int client_num = 48;
+    int client_num = 128;
     auto client = MDTrieClient(server_ips, shard_num);
     client_to_server_vect.resize(total_points_count);
 
