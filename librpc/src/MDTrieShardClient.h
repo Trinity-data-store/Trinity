@@ -193,10 +193,10 @@ public:
     }
     client_to_server.insert(client_to_server_.begin(), client_to_server_.end());
     */
-    
-    for (auto it = client_to_server.begin(); it != client_to_server.end(); it++)
+
+    for (auto it = client_to_server_.begin(); it != client_to_server_.end(); it++)
     {
-      client_to_server_vect[it->first] = client_to_server_vect[it->second];
+      client_to_server_vect[it->first] = it->second;
     }
     cache_lock.unlock();
 

@@ -87,7 +87,7 @@ int main(){
     std::vector<std::string> server_ips = {"172.28.229.152", "172.28.229.153", "172.28.229.151", "172.28.229.149", "172.28.229.148"};
     total_points_count = 14583357;
     int shard_num = 20;
-    int client_num = 128;
+    int client_num = 64;
     auto client = MDTrieClient(server_ips, shard_num);
     client_to_server_vect.resize(total_points_count);
 
@@ -335,33 +335,31 @@ int main(){
         Point Lookup Test
     */
 
-    client.pull_global_cache();
-    sent_count = 0;
-    for (unsigned i = 0; i < data_vector->size(); i++){
+    // client.pull_global_cache();
+    // sent_count = 0;
+    // for (unsigned i = 0; i < data_vector->size(); i++){
 
-        if (sent_count != 0 && sent_count % 4096 == 0){
-        for (uint32_t j = i - sent_count; j < i; j++){
-            std::vector<int32_t> rec_vect;
-            client.primary_key_lookup_rec(rec_vect, j);
-            for (unsigned int k = 0; k < DIMENSION; k++){
-                if (rec_vect[k] != (*data_vector)[j][k])
-                {
-                    std::cout << "error!" << std::endl;
-                    raise(SIGINT);
-                }
-            }
-            if (j % 1000000 == 0)
-                std::cout << "done: " << j << std::endl;
-        }
-        sent_count = 0;
-        }
-        client.primary_key_lookup_send(i);
-        sent_count ++;
-    }
-    for (uint32_t j = data_vector->size() - sent_count; j < data_vector->size(); j++){
-        std::vector<int32_t> rec_vect;
-        client.primary_key_lookup_rec(rec_vect, j);
-    }
+    //     if (sent_count != 0 && sent_count % 4096 == 0){
+    //     for (uint32_t j = i - sent_count; j < i; j++){
+    //         std::vector<int32_t> rec_vect;
+    //         client.primary_key_lookup_rec(rec_vect, j);
+    //         for (unsigned int k = 0; k < DIMENSION; k++){
+    //             if (rec_vect[k] != (*data_vector)[j][k])
+    //             {
+    //                 std::cout << "error!" << std::endl;
+    //                 raise(SIGINT);
+    //             }
+    //         }
+    //     }
+    //     sent_count = 0;
+    //     }
+    //     client.primary_key_lookup_send(i);
+    //     sent_count ++;
+    // }
+    // for (uint32_t j = data_vector->size() - sent_count; j < data_vector->size(); j++){
+    //     std::vector<int32_t> rec_vect;
+    //     client.primary_key_lookup_rec(rec_vect, j);
+    // }
 
     /**   
         Point Lookup given primary key
