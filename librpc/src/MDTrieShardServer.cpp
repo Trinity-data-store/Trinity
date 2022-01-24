@@ -56,7 +56,7 @@ public:
 
     std::vector<level_t> bit_widths = {8, 32, 32, 32}; // 4 Dimensions
     std::vector<level_t> start_bits = {0, 0, 0, 0}; // 4 Dimensions;
-    num_shards = 48 * 5;
+    num_shards = 20 * 5;
     trie_depth = 6;
     no_dynamic_sizing = true;
     total_points_count = 152806265 / num_shards + 1; 
