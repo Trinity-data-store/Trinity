@@ -80,6 +80,7 @@ public:
 
   void clear_trie(){
 
+    exit(42);
     delete mdtrie_; // TODO
     delete p_key_to_treeblock_compact_;
     mdtrie_ = new md_trie<DIMENSION>(max_depth, trie_depth, max_tree_node);
