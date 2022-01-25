@@ -67,6 +67,11 @@ class BitVector {
     return size_;
   }
 
+  uint64_t size_overhead() const {
+    
+    return sizeof(size_) + sizeof(data_) + sizeof(data_type) * BITS2BLOCKS(size_);
+  }
+
   // Bit operations
   void Clear() {
     memset((void *) data_, 0, BITS2BLOCKS(size_) * sizeof(uint64_t));

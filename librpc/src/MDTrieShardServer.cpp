@@ -29,42 +29,80 @@ using namespace apache::thrift::transport;
 using namespace apache::thrift::server;
 
 const level_t max_depth = 32;
-const level_t trie_depth = 10;
+level_t trie_depth = 6;
 const preorder_t max_tree_node = 512;
-const dimension_t DIMENSION = 4;
+const dimension_t DIMENSION = 9;
+unsigned int num_shards = 1;
 
 class MDTrieHandler : public MDTrieShardIf {
 public:
 
   MDTrieHandler(){
     
-    mdtrie_ = new md_trie<DIMENSION>(max_depth, trie_depth, max_tree_node);
-    std::vector<level_t> bit_widths = {8, 32, 32, 32}; // 4 Dimensions
-    std::vector<level_t> start_bits = {0, 0, 0, 0}; // 4 Dimensions;
- 
-    total_points_count = 152806264;
-    bitmap::CompactPtrVector p_key_to_treeblock_compact(total_points_count);
+    /** 
+        FS
+    */
 
+    // std::vector<level_t> bit_widths = {32, 32, 32, 32, 24, 24, 32}; // 7 Dimensions    
+    // std::vector<level_t> start_bits = {0, 0, 0, 0, 0, 0, 0}; // 7 Dimensions    
+    // num_shards = 20 * 5;
+    // trie_depth = 10;
+    // no_dynamic_sizing = true;
+    // total_points_count = 14583357 / num_shards + 1;    
+
+    /** 
+        OSM
+    */
+
+    // std::vector<level_t> bit_widths = {8, 32, 32, 32}; // 4 Dimensions
+    // std::vector<level_t> start_bits = {0, 0, 0, 0}; // 4 Dimensions;
+    // num_shards = 20 * 5;
+    // trie_depth = 6;
+    // no_dynamic_sizing = true;
+    // total_points_count = 152806265 / num_shards + 1; 
+
+    /** 
+        TPCH
+    */
+
+    std::vector<level_t> bit_widths = {8, 32, 16, 24, 32, 32, 32, 32, 32}; // 9 Dimensions;
+    std::vector<level_t> start_bits = {0, 0, 8, 16, 0, 0, 0, 0, 0}; // 9 Dimensions;
+    num_shards = 20 * 5;
+    trie_depth = 6;
+    no_dynamic_sizing = true;
+    total_points_count = 300005812 / num_shards + 1; 
+
+    p_key_to_treeblock_compact_ = new bitmap::CompactPtrVector(total_points_count);
     create_level_to_num_children(bit_widths, start_bits, 32);
 
+    mdtrie_ = new md_trie<DIMENSION>(max_depth, trie_depth, max_tree_node);
   };
+
+  void clear_trie(){
+
+    delete mdtrie_; // TODO
+    delete p_key_to_treeblock_compact_;
+    mdtrie_ = new md_trie<DIMENSION>(max_depth, trie_depth, max_tree_node);
+    p_key_to_treeblock_compact_ = new bitmap::CompactPtrVector(total_points_count);
+  }
 
   bool ping(const int32_t dataset_idx) { 
 
-    cout << "ping()" << endl; 
+    cout << "ping(): [" << dataset_idx << "]" << endl; 
+
     if (dataset_idx == 0) // FS
     {
-      if (DIMENSION != 7 || total_points_count != 14583357 || DIMENSION != dimension_to_num_bits.size() || DIMENSION != start_dimension_bits.size() || total_points_count != p_key_to_treeblock_compact->get_num_elements())
+      if (DIMENSION != 7 || DIMENSION != dimension_to_num_bits.size() || DIMENSION != start_dimension_bits.size() || total_points_count != p_key_to_treeblock_compact_->get_num_elements())
         return false;
     }
     else if (dataset_idx == 1) // OSM
     {
-      if (DIMENSION != 4 || total_points_count != 155846019 || DIMENSION != dimension_to_num_bits.size() || DIMENSION != start_dimension_bits.size() || total_points_count != p_key_to_treeblock_compact->get_num_elements())
+      if (DIMENSION != 4 || DIMENSION != dimension_to_num_bits.size() || DIMENSION != start_dimension_bits.size() || total_points_count != p_key_to_treeblock_compact_->get_num_elements())
         return false;
     }
     else if (dataset_idx == 2) // TPC-H
     {
-      if (DIMENSION != 9 || total_points_count != 300005812 || DIMENSION != dimension_to_num_bits.size() || DIMENSION != start_dimension_bits.size() || total_points_count != p_key_to_treeblock_compact->get_num_elements())
+      if (DIMENSION != 9 || DIMENSION != dimension_to_num_bits.size() || DIMENSION != start_dimension_bits.size() || total_points_count != p_key_to_treeblock_compact_->get_num_elements())
         return false;
     }
     else 
@@ -94,10 +132,10 @@ public:
 
     for (uint8_t i = 0; i < DIMENSION; i++)
       leaf_point.set_coordinate(i, point[i]);
-    
-    mdtrie_->insert_trie(&leaf_point, primary_key);
-    
-    return primary_key;
+
+    mdtrie_->insert_trie(&leaf_point, inserted_points_, p_key_to_treeblock_compact_);
+    inserted_points_ ++;
+    return inserted_points_ - 1;
   }
 
   void range_search(std::vector<int32_t> & _return, const std::vector<int32_t> & start_range, const std::vector<int32_t> & end_range){
@@ -109,7 +147,7 @@ public:
     data_point<DIMENSION> end_range_point;
     for (uint8_t i = 0; i < DIMENSION; i++)
       end_range_point.set_coordinate(i, end_range[i]);     
-
+    
     mdtrie_->range_search_trie(&start_range_point, &end_range_point, mdtrie_->root(), 0, _return);
   }
 
@@ -118,7 +156,7 @@ public:
     _return.reserve(DIMENSION);
 
     std::vector<morton_t> node_path_from_primary(max_depth + 1);
-    tree_block<DIMENSION> *t_ptr = (tree_block<DIMENSION> *) (p_key_to_treeblock_compact->At(primary_key));
+    tree_block<DIMENSION> *t_ptr = (tree_block<DIMENSION> *) (p_key_to_treeblock_compact_->At(primary_key));
 
     morton_t parent_symbol_from_primary = t_ptr->get_node_path_primary_key(primary_key, node_path_from_primary);
     node_path_from_primary[max_depth - 1] = parent_symbol_from_primary;
@@ -131,12 +169,13 @@ public:
   }
 
   int32_t get_size(){
-    return mdtrie_->size();
+    return mdtrie_->size(p_key_to_treeblock_compact_);
   }
 
 protected:
 
   md_trie<DIMENSION> *mdtrie_; 
+  bitmap::CompactPtrVector *p_key_to_treeblock_compact_;
   uint64_t inserted_points_ = 0;
 };
 

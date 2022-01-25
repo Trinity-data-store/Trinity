@@ -72,12 +72,12 @@ public:
         return current_treeblock;
     }
 
-    void insert_trie(data_point<DIMENSION> *leaf_point, n_leaves_t primary_key) {
+    void insert_trie(data_point<DIMENSION> *leaf_point, n_leaves_t primary_key, bitmap::CompactPtrVector *p_key_to_treeblock_compact) {
 
         level_t level = 0;
         trie_node<DIMENSION> *current_trie_node = root_;
         tree_block<DIMENSION> *current_treeblock = walk_trie(current_trie_node, leaf_point, level);
-        current_treeblock->insert_remaining(leaf_point, level, primary_key);
+        current_treeblock->insert_remaining(leaf_point, level, primary_key, p_key_to_treeblock_compact);
     }
 
     bool check(data_point<DIMENSION> *leaf_point) const {
@@ -89,41 +89,52 @@ public:
         return result;
     }
 
-    uint64_t size() {
+    uint64_t size(bitmap::CompactPtrVector *p_key_to_treeblock_compact) {
 
-        uint64_t total_size = sizeof(uint64_t); // root_ is will be counted later
-        total_size += sizeof(uint8_t) * 2; // max_depth_ & trie_depth_
-        total_size += sizeof(uint16_t); // max_tree_nodes_
+        uint64_t total_size = sizeof(root_) + sizeof(max_depth_) + sizeof(trie_depth_);
+        total_size += sizeof(max_tree_nodes_); 
 
         std::queue<trie_node<DIMENSION> *> trie_node_queue;
         trie_node_queue.push(root_);
+        level_t current_level = 0;
 
         while (!trie_node_queue.empty()){
 
-            trie_node<DIMENSION> *current_node = trie_node_queue.front();
-            trie_node_queue.pop();
-            total_size += current_node->size();
-            
-            if (!current_node->is_leaf()) {
-                for (morton_t i = 0; i < current_node->get_num_children(); i++)
-                {
-                    if (current_node->get_child(i)) {
-                        trie_node_queue.push(current_node->get_child(i));
+            unsigned int queue_size = trie_node_queue.size();
+
+            for (unsigned int s = 0; s < queue_size; s++){
+
+                trie_node<DIMENSION> *current_node = trie_node_queue.front();
+                trie_node_queue.pop();
+                total_size += current_node->size(1 << level_to_num_children[current_level]);
+                
+                if (!current_node->is_leaf()) {
+                    for (int i = 0; i < (1 << level_to_num_children[current_level]); i++)
+                    {
+                        if (current_node->get_child(i)) {
+                            trie_node_queue.push(current_node->get_child(i));
+                        }
                     }
                 }
+                else {
+                    total_size += current_node->get_block()->size();
+                }
             }
-            else {
-                total_size += current_node->get_block()->size();
-            }
+            current_level ++;
         }
+        // Global variables in def.h
+        total_size += sizeof(total_points_count);
+        total_size += sizeof(discount_factor);
+        total_size += sizeof(level_to_num_children) + 128 * sizeof(morton_t);
+        total_size += sizeof(max_tree_nodes_);
+        total_size += sizeof(max_depth_);
 
-        // Todo: Primary Key to Treeblock Index    
-        total_size += sizeof(uint64_t) + total_points_count / discount_factor * sizeof(uint32_t);
-        // Treeblock Index to Treeblock Pointer
-        total_size += sizeof(uint64_t) + (44 * total_treeblock_num / 64 + 1) * 8;
+        total_size += sizeof(p_key_to_treeblock_compact);
+        total_size += p_key_to_treeblock_compact->size_overhead();
 
-        // Previous: primary key to Treeblock Pointer
-        // total_size += sizeof(uint64_t) + (44 * (total_points_count / discount_factor) / 64 + 1) * 8;
+        total_size += sizeof(dimension_to_num_bits) + dimension_to_num_bits.size() * sizeof(morton_t);
+        total_size += sizeof(start_dimension_bits) + start_dimension_bits.size() * sizeof(level_t);
+        total_size += sizeof(no_dynamic_sizing);
 
         return total_size;
     }

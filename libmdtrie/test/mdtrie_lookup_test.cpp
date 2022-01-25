@@ -38,7 +38,7 @@ bool test_lookup(n_leaves_t n_points, level_t max_depth, level_t trie_depth, pre
                 }
             }
         }
-        mdtrie->insert_trie(&leaf_point, itr - 1);
+        mdtrie->insert_trie(&leaf_point, itr - 1, p_key_to_treeblock_compact);
         all_leaf_points.push_back(leaf_point);
     }
 
@@ -98,7 +98,7 @@ bool test_lookup_close(n_leaves_t n_points, level_t max_depth, level_t trie_dept
                 }
             }
         }
-        mdtrie->insert_trie(&leaf_point, itr - 1);
+        mdtrie->insert_trie(&leaf_point, itr - 1, p_key_to_treeblock_compact);
         all_leaf_points.push_back(leaf_point);
     }
 
@@ -159,7 +159,7 @@ bool test_lookup_small_dimension(n_leaves_t n_points, level_t max_depth, level_t
                 }
             }
         }
-        mdtrie->insert_trie(&leaf_point, itr - 1);
+        mdtrie->insert_trie(&leaf_point, itr - 1, p_key_to_treeblock_compact);
         all_leaf_points.push_back(leaf_point);
     }
 

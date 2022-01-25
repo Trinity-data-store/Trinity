@@ -443,6 +443,10 @@ class CompactPtrVector : CompactVector<uint64_t, 44> {
     CompactVector<uint64_t, 44>::Append(reinterpret_cast<uint64_t>(val) >> 4ULL);
   }
 
+  uint64_t size_overhead(){
+    return CompactVector<uint64_t, 44>::size_overhead();
+  }
+
   size_type get_num_elements(){
     return num_elements_;
   }

@@ -22,7 +22,7 @@ bool test_random_data(n_leaves_t n_points, level_t max_depth, level_t trie_depth
         for (dimension_t i = 0; i < DIMENSION; i++) {
             leaf_point.set_coordinate(i, (point_t) rand() % range);
         }
-        mdtrie->insert_trie(&leaf_point, itr - 1);
+        mdtrie->insert_trie(&leaf_point, itr - 1, p_key_to_treeblock_compact);
         if (!mdtrie->check(&leaf_point)) {
             return false;
         }
@@ -51,7 +51,7 @@ bool test_nonexistent_data(n_leaves_t n_points, level_t max_depth, level_t trie_
         for (dimension_t i = 0; i < DIMENSION; i++) {
             leaf_point.set_coordinate(i, rand() % (range / 2));
         }
-        mdtrie->insert_trie(&leaf_point, itr - 1);
+        mdtrie->insert_trie(&leaf_point, itr - 1, p_key_to_treeblock_compact);
     }
     for (n_leaves_t itr = 1; itr <= n_points; itr++) {
         for (dimension_t i = 0; i < DIMENSION; i++) {
@@ -90,7 +90,7 @@ bool test_contiguous_data(n_leaves_t n_points, level_t max_depth, level_t trie_d
         for (dimension_t i = DIMENSION / 2; i < DIMENSION; i++) {
             leaf_point.set_coordinate(i, second_half_value);
         }
-        mdtrie->insert_trie(&leaf_point, itr - 1);
+        mdtrie->insert_trie(&leaf_point, itr - 1, p_key_to_treeblock_compact);
         if (!mdtrie->check(&leaf_point)) {
             raise(SIGINT);
             return false;

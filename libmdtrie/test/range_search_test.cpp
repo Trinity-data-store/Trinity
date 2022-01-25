@@ -39,7 +39,7 @@ bool test_range_search(n_leaves_t n_points, level_t max_depth, level_t trie_dept
                 }
             }
         }
-        mdtrie->insert_trie(&leaf_point, itr - 1);
+        mdtrie->insert_trie(&leaf_point, itr - 1, p_key_to_treeblock_compact);
         all_leaf_points.push_back(leaf_point);
     }
     data_point<DIMENSION> start_range;

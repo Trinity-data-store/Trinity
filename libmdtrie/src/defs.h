@@ -74,8 +74,10 @@ TimeStamp GetTimestamp() {
 
 n_leaves_t total_points_count = 0;
 int discount_factor = 1;
-n_leaves_t total_treeblock_num = 0;
+// n_leaves_t total_treeblock_num = 0;
 morton_t level_to_num_children[128] = {0};
+preorder_t max_tree_nodes_ = 512;
+level_t max_depth_;
 
 /**
  * p_key_to_treeblock_compact: maps primary key to treeblock pointers in a compact pointer vector
@@ -88,6 +90,12 @@ bitmap::CompactPtrVector *p_key_to_treeblock_compact;
 std::vector<morton_t> dimension_to_num_bits;
 std::vector<level_t> start_dimension_bits;
 bool no_dynamic_sizing = false;
+
+std::mutex cache_lock;
+// std::vector<std::unordered_map<int32_t, int32_t>> client_to_server;
+std::unordered_map<int32_t, int32_t> client_to_server;
+std::vector<int32_t> client_to_server_vect;
+std::vector<std::unordered_map<int32_t, int32_t>> server_to_client;
 
 void create_level_to_num_children(std::vector<level_t> bit_widths, std::vector<level_t> start_bits, level_t max_level){
 

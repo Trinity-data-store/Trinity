@@ -14,4 +14,6 @@ service MDTrieShard {
     list<i32> primary_key_lookup(1:i32 primary_key),
 
     i32 get_size(),
+
+    void clear_trie(),
 }

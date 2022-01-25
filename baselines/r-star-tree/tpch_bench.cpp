@@ -15,6 +15,7 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <unistd.h>
+#include <cmath>
 
 #define RANDOM_DATASET
 const uint8_t DIMENSION = 9; 
@@ -178,6 +179,7 @@ void tpch()
     int count = 0;
     diff = 0;
     ssize_t read = getline(&line_query, &len, fp);
+    std::vector<TimeStamp> latency_vect;
 
     while ((read = getline(&line_query, &len, fp)) != -1)
     {
@@ -199,11 +201,18 @@ void tpch()
         x = tree.Query(RTree::AcceptEnclosing(bound), Visitor());
         TimeStamp temp_diff =  GetTimestamp() - start; 
         diff += temp_diff;
+        latency_vect.push_back(temp_diff);
 
         count ++;   
         leaf_list.clear();
     }
     std::cout << "average query latency: " << (float) diff / count << std::endl;    
+
+    TimeStamp squared_cumulative = 0;
+    for (unsigned int i = 0; i < latency_vect.size(); i++){
+        squared_cumulative += (latency_vect[i] - diff / count) * (latency_vect[i] - diff / count);
+    }
+    std::cout << "Standard Deviation: " << (float) sqrt (squared_cumulative / (count - 1)) << std::endl;
 }
 
 int main(){

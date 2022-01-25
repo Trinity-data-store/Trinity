@@ -142,7 +142,11 @@ class compressed_bitmap {
 
   inline uint64_t size() const {
     
-    return (data_size_ + flag_size_) / 8 + sizeof(size_type) /* data_size_ */ + 2 * sizeof(data_type *) /* two data arrays */;
+    uint64_t total_size = 0;
+    total_size += sizeof(data_size_) + sizeof(flag_size_);
+    total_size += sizeof(data_) + sizeof(flag_);
+    total_size += sizeof(data_type) * (BITS2BLOCKS(data_size_) + BITS2BLOCKS(flag_size_));
+    return total_size;
   }
 
   inline void increase_bits(width_type increase_width, bool is_on_data){
@@ -563,7 +567,6 @@ class compressed_bitmap {
   size_type data_size_;
   size_type flag_size_;
 };
-
 }
 
 #endif

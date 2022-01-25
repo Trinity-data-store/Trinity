@@ -302,7 +302,7 @@ public:
     }
 
     void insert(preorder_t node, preorder_t node_pos, data_point<DIMENSION> *leaf_point, level_t level,
-                            preorder_t current_frontier, preorder_t current_primary, n_leaves_t primary_key) {
+                            preorder_t current_frontier, preorder_t current_primary, n_leaves_t primary_key, bitmap::CompactPtrVector *p_key_to_treeblock_compact) {
         
         morton_t current_num_children = level_to_num_children[level];
 
@@ -318,7 +318,7 @@ public:
                 current_primary ++;
             }
 
-            insert_primary_key_at_present_index(current_primary, primary_key);
+            insert_primary_key_at_present_index(current_primary, primary_key, p_key_to_treeblock_compact);
 
             return;
         }
@@ -345,7 +345,7 @@ public:
             }
 
             total_nodes_bits_ += dfuds_->get_num_bits(node, level) - node_previous_bits;
-            get_pointer(current_frontier)->insert(0, 0, leaf_point, level, 0, 0, primary_key);
+            get_pointer(current_frontier)->insert(0, 0, leaf_point, level, 0, 0, primary_key, p_key_to_treeblock_compact);
 
             return;
         }
@@ -366,7 +366,7 @@ public:
                 current_primary ++;
             }
 
-            insert_primary_key_at_index(current_primary, primary_key);
+            insert_primary_key_at_index(current_primary, primary_key, p_key_to_treeblock_compact);
 
             return;
         }
@@ -427,7 +427,7 @@ public:
                     set_pointer(j, get_pointer(j)); // Prob not necessary
                 }
 
-            insert_primary_key_at_index(current_primary, primary_key);
+            insert_primary_key_at_index(current_primary, primary_key, p_key_to_treeblock_compact);
 
             return;
         } 
@@ -447,7 +447,7 @@ public:
             node_capacity_ = num_nodes_ + (max_depth_ - level);
             bit_capacity_ = total_nodes_bits_ + total_extra_bits;
 
-            insert(node, node_pos, leaf_point, level, current_frontier, current_primary, primary_key);
+            insert(node, node_pos, leaf_point, level, current_frontier, current_primary, primary_key, p_key_to_treeblock_compact);
             return;
         } 
         else {
@@ -640,14 +640,14 @@ public:
                     dfuds_->set_symbol(insertion_node, insertion_node_pos, leaf_point->leaf_to_symbol(level), false, dfuds_->get_num_bits(insertion_node, level));
                     total_nodes_bits_ += dfuds_->get_num_bits(insertion_node, level) - insertion_node_previous_bits;
                     
-                    new_block->insert(0, 0, leaf_point, level, current_frontier_new_block, current_primary_new_block, primary_key);
+                    new_block->insert(0, 0, leaf_point, level, current_frontier_new_block, current_primary_new_block, primary_key, p_key_to_treeblock_compact);
                 } else {
-                    new_block->insert(insertion_node, insertion_node_pos, leaf_point, level, current_frontier_new_block, current_primary_new_block, primary_key);
+                    new_block->insert(insertion_node, insertion_node_pos, leaf_point, level, current_frontier_new_block, current_primary_new_block, primary_key, p_key_to_treeblock_compact);
                 }
             }
             // If the insertion is in the old block
             else {
-                insert(insertion_node, insertion_node_pos, leaf_point, level, current_frontier, current_primary, primary_key); 
+                insert(insertion_node, insertion_node_pos, leaf_point, level, current_frontier, current_primary, primary_key, p_key_to_treeblock_compact); 
             }
             return;
         }
@@ -655,7 +655,7 @@ public:
 
     // Traverse the current TreeBlock, going into frontier nodes as needed
     // Until it cannot traverse further and calls insertion
-    void insert_remaining(data_point<DIMENSION> *leaf_point, level_t level, n_leaves_t primary_key) {
+    void insert_remaining(data_point<DIMENSION> *leaf_point, level_t level, n_leaves_t primary_key, bitmap::CompactPtrVector *p_key_to_treeblock_compact) {
         
         preorder_t current_node = 0;
         preorder_t current_node_pos = 0;
@@ -684,15 +684,14 @@ public:
                 current_node == get_preorder(current_frontier)) {
                 
                 tree_block *next_block = get_pointer(current_frontier);
-                next_block->insert_remaining(leaf_point, level + 1, primary_key);
+                next_block->insert_remaining(leaf_point, level + 1, primary_key, p_key_to_treeblock_compact);
                 
                 return;
             }
             level++;
         }
 
-        insert(current_node, current_node_pos, leaf_point, level, current_frontier, current_primary, primary_key);
-        previous_p_key_ = primary_key;
+        insert(current_node, current_node_pos, leaf_point, level, current_frontier, current_primary, primary_key, p_key_to_treeblock_compact);
 
         return;
     }
@@ -838,7 +837,7 @@ public:
             }
         }
         if (current_node == num_nodes_){
-            // fprintf(stderr, "node not found!\n");
+            fprintf(stderr, "node not found!\n");
             return;
         }
         for (int i = 0; i <= sTop; i++){
@@ -959,7 +958,7 @@ public:
             }
         }
         if (current_node == num_nodes_){
-            // fprintf(stderr, "node not found!\n");
+            fprintf(stderr, "node not found!\n");
             return 0;
         }
         for (int i = 0; i <= sTop; i++){
@@ -1087,13 +1086,13 @@ public:
 
     }
     
-    void insert_primary_key_at_present_index(n_leaves_t index, n_leaves_t primary_key){
+    void insert_primary_key_at_present_index(n_leaves_t index, n_leaves_t primary_key, bitmap::CompactPtrVector *p_key_to_treeblock_compact){
 
         p_key_to_treeblock_compact->Set(primary_key, this);
         primary_key_list[index].push(primary_key);
     }
 
-    void insert_primary_key_at_index(n_leaves_t index, n_leaves_t primary_key){
+    void insert_primary_key_at_index(n_leaves_t index, n_leaves_t primary_key, bitmap::CompactPtrVector *p_key_to_treeblock_compact){
 
         p_key_to_treeblock_compact->Set(primary_key, this);
 
@@ -1103,42 +1102,47 @@ public:
     }
 
     uint64_t size() {
-        
-        total_treeblock_num ++; // For primary key -> treeblock index -> treeblock pointer
-        
+                
         uint64_t total_size = 0;
-        total_size += sizeof(uint8_t); // root_depth_
-        total_size += sizeof(uint16_t); // node_capacity_
-        total_size += sizeof(uint64_t); // Either a treeblock pointer or trie node pointer + preorder number
+        total_size += sizeof(root_depth_);
+        total_size += sizeof(num_nodes_);
+        total_size += sizeof(total_nodes_bits_);
+        total_size += sizeof(node_capacity_); 
+        total_size += sizeof(bit_capacity_);
 
-        total_size += sizeof(primary_key_list) + primary_key_list.size() * 46 / 8 /*sizeof(bits::compact_ptr)*/;
+        total_size += sizeof(dfuds_);
+        total_size += dfuds_->size();
 
+        total_size += num_frontiers_ * sizeof(frontier_node<DIMENSION>) + sizeof(frontiers_);
+        for (uint16_t i = 0; i < num_frontiers_; i++){
+            total_size += ((frontier_node<DIMENSION> *) frontiers_)[i].pointer_->size();
+        }
+        total_size += sizeof(num_frontiers_);
+
+        total_size += sizeof(parent_combined_ptr_);
+        total_size += sizeof(parent_is_trie_);
+        total_size += sizeof(treeblock_frontier_num_);
+
+        total_size += sizeof(primary_key_list) + primary_key_list.size() * sizeof(bits::compact_ptr);
         for (preorder_t i = 0; i < primary_key_list.size(); i++)
         {
             total_size += primary_key_list[i].size_overhead();
-        }
-        total_size += dfuds_->size() /*+ sizeof(dfuds_)*/;
-        total_size += num_frontiers_ * sizeof(tree_block<DIMENSION> *) /*Use compact pointer representation*/ + sizeof(frontiers_) /*pointer*/;
-
-        for (uint16_t i = 0; i < num_frontiers_; i++){
-            total_size += ((frontier_node<DIMENSION> *) frontiers_)[i].pointer_->size();
         }
         return total_size;
     }
 
 private:
 
-    preorder_t max_tree_nodes_;
+    // preorder_t max_tree_nodes_;
     level_t root_depth_;
     preorder_t num_nodes_;
     preorder_t total_nodes_bits_;
     preorder_t node_capacity_;
     node_pos_t bit_capacity_;
-    level_t max_depth_;
+    // level_t max_depth_;
     compressed_bitmap::compressed_bitmap *dfuds_{};
     frontier_node<DIMENSION> *frontiers_ = nullptr; 
     preorder_t num_frontiers_ = 0;
-    preorder_t previous_p_key_ = 0;
     
     void *parent_combined_ptr_ = NULL;
     bool parent_is_trie_ = false;

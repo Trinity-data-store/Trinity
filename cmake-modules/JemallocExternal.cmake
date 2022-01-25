@@ -8,6 +8,7 @@
 
 set(JEMALLOC_VERSION "5.0.1")
 set(JEMALLOC_BUILD ON)
+# set(JEMALLOC_BUILD OFF)
 
 if (DEFINED ENV{JEMALLOC_ROOT} AND EXISTS $ENV{JEMALLOC_ROOT})
   set(JEMALLOC_ROOT_DIR "$ENV{JEMALLOC_ROOT}")
@@ -49,6 +50,6 @@ if (JEMALLOC_BUILD)
           LOG_INSTALL ON)
 endif ()
 
-include_directories(SYSTEM ${JEMALLOC_INCLUDE_DIR})
-message(STATUS "Jemalloc include dir: ${JEMALLOC_INCLUDE_DIR}")
-message(STATUS "Jemalloc static library: ${JEMALLOC_LIBRARY}")
+# include_directories(SYSTEM ${JEMALLOC_INCLUDE_DIR})
+# message(STATUS "Jemalloc include dir: ${JEMALLOC_INCLUDE_DIR}")
+# message(STATUS "Jemalloc static library: ${JEMALLOC_LIBRARY}")

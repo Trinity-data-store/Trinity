@@ -2,7 +2,7 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src)
 
 add_library(mdtrie INTERFACE)
 target_include_directories(mdtrie INTERFACE src/)
-add_dependencies(mdtrie ${HEAP_MANAGER_EP})
+# add_dependencies(mdtrie ${HEAP_MANAGER_EP})
 set(MDTRIE_LIBS "${HEAP_MANAGER_LIBRARY}" "${CMAKE_DL_LIBS}" "mdtrie")
 
 if (BUILD_TESTS)
