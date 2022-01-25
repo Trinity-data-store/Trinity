@@ -21,7 +21,7 @@ if [ $(cat /proc/sys/kernel/hostname) = "vmhost1" ]
 then
     ip="172.28.229.148"
 fi
-if [ $(cat /proc/sys/kernel/hostname) = "vmhost1" ]
+if [ $(cat /proc/sys/kernel/hostname) = "vmhost2" ]
 then
     ip="172.28.229.149"
 fi
