@@ -27,6 +27,7 @@ then
 fi
 
 librpc/MDTrieShardServer $ip 20
-while [ $? -e 42 ]; do
+while true
+do
     librpc/MDTrieShardServer $ip 20
 done
