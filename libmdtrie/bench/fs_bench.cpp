@@ -229,6 +229,7 @@ int main(int argc, char *argv[]) {
         discount_factor = atoi(argv[1]);
     }
     total_points_count = 14583357 / discount_factor;
+    no_dynamic_sizing = false;
 
     std::cout << "dimension: " << DIMENSION << std::endl;
     std::cout << "trie depth: " << trie_depth << std::endl;
