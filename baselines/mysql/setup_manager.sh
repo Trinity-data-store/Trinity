@@ -1,3 +1,4 @@
+# sudo chown -R mysql:mysql /etc/mysql
 sudo pkill -f ndb_mgmd
 sudo rm -r /var/lib/mysql-cluster
 sudo mkdir -p /var/lib/mysql-cluster
