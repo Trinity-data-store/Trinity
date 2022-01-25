@@ -8,19 +8,22 @@ NUM_REPEATS=20
 # do
 #     echo "**** fs_bench $i's iteration started! ****" >> ../results_log/macrobench_fs.log
 #     librpc/TrinityFS >> ../results_log/macrobench_fs.log
-#     echo "\n" >> ../results_log/macrobench_fs.log
+#     printf "\n" >> ../results_log/macrobench_fs.log
+#     sleep 1s
 # done
 
-for i in $( seq 12 $NUM_REPEATS )
+for i in $( seq 1 $NUM_REPEATS )
 do
     echo "**** osm_bench  $i's iteration started! ****" >> ../results_log/macrobench_osm.log
     librpc/TrinityOSM >> ../results_log/macrobench_osm.log
-    echo "\n" >> ../results_log/macrobench_osm.log
+    printf "\n" >> ../results_log/macrobench_osm.log
+    sleep 1s
 done
 
-# for i in $( seq 12 $NUM_REPEATS )
+# for i in $( seq 1 $NUM_REPEATS )
 # do
 #     echo "**** tpch_bench  $i's iteration started! ****" >> ../results_log/macrobench_tpch.log
 #     librpc/TrinityTPCH >> ../results_log/macrobench_tpch.log
-#     echo "\n" >> ../results_log/macrobench_tpch.log
+#     printf "\n" >> ../results_log/macrobench_tpch.log
+#     sleep 1s
 # done
