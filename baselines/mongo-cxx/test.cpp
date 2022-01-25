@@ -95,27 +95,21 @@ int main(){
 
             int start = id_vector.size() / partition_num * j;
             int end = id_vector.size() / partition_num * (j + 1) - 1;
-            int count;
-            std::cout << i << " start: " << start << " end: " << end << std::endl;
 
             for (int k = start; k <= end; k ++){
                 auto str = id_vector[k];
 
-                bsoncxx::document::value doc = document{} << "_id" << bsoncxx::oid(str)
-                    << finalize;
-                auto cursor = coll.find
-                    (doc.view());
+                auto cursor_id = coll.find_one
+                    (document{} << "_id" << bsoncxx::oid(str)
+                    << finalize);
 
                 if ((k - start) % ((end - start) / 100) == 0)
                     std::cout << "thread: " << j << "finished: " << k - start << std::endl;
-                count ++;
             }
-            std::cout << "count: " << count << std::endl;
         };
         std::thread runner{run_find, i};
         threads.push_back(std::move(runner));
     }    
-
     TimeStamp now = GetTimestamp();
     for (auto &th : threads) {
         th.join();
