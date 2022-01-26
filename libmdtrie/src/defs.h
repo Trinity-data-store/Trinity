@@ -17,11 +17,11 @@
 #include <fcntl.h>
 #include <unistd.h>
 
-typedef uint64_t preorder_t;
-typedef uint64_t n_leaves_t;
+typedef uint16_t preorder_t;
+typedef uint32_t n_leaves_t;
 typedef uint64_t node_pos_t;
-typedef uint64_t level_t;
-typedef uint64_t morton_t;
+typedef uint8_t level_t;
+typedef uint16_t morton_t;
 typedef uint64_t dimension_t;
 typedef uint64_t point_t;
 
@@ -75,7 +75,8 @@ TimeStamp GetTimestamp() {
 n_leaves_t total_points_count = 0;
 int discount_factor = 1;
 // n_leaves_t total_treeblock_num = 0;
-morton_t level_to_num_children[128] = {0};
+level_t trie_depth_;
+morton_t level_to_num_children[32] = {0};
 preorder_t max_tree_nodes_ = 512;
 level_t max_depth_;
 
@@ -87,7 +88,7 @@ level_t max_depth_;
  */
 
 bitmap::CompactPtrVector *p_key_to_treeblock_compact;
-std::vector<morton_t> dimension_to_num_bits;
+std::vector<level_t> dimension_to_num_bits;
 std::vector<level_t> start_dimension_bits;
 bool no_dynamic_sizing = false;
 

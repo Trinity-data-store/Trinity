@@ -6,7 +6,7 @@ g++ -o fs_out  fs_bench.cpp
 g++ -o osm_out osm_bench.cpp
 g++ -o tpch_out tpch_bench.cpp
 
-NUM_REPEATS=1
+NUM_REPEATS=2
 
 
 for i in $( seq 1 $NUM_REPEATS )
