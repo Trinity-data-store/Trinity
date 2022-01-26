@@ -1,4 +1,5 @@
 cd build/
+make
 
 if [ $(cat /proc/sys/kernel/hostname) = "ecl-comp-data" ]
 then
