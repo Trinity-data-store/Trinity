@@ -20,7 +20,7 @@ public:
         max_depth_ = max_depth;
         max_tree_nodes_ = max_tree_nodes;
         num_nodes_ = num_nodes;
-        bit_capacity_ = bit_capacity;
+        // bit_capacity_ = bit_capacity;
         total_nodes_bits_ = bit_capacity;
         if (!dfuds)
             dfuds_ = new compressed_bitmap::compressed_bitmap(node_capacity, bit_capacity);
@@ -28,7 +28,7 @@ public:
             dfuds_ = dfuds;
         if (parent_trie_node){
             parent_combined_ptr_ = parent_trie_node;
-            parent_is_trie_ = true;
+            // parent_is_trie_ = true;
         }
     }
 
@@ -445,7 +445,7 @@ public:
             dfuds_->increase_bits(max_depth_ - level, false);
 
             node_capacity_ = num_nodes_ + (max_depth_ - level);
-            bit_capacity_ = total_nodes_bits_ + total_extra_bits;
+            // bit_capacity_ = total_nodes_bits_ + total_extra_bits;
 
             insert(node, node_pos, leaf_point, level, current_frontier, current_primary, primary_key, p_key_to_treeblock_compact);
             return;
@@ -531,6 +531,7 @@ public:
                 dest_node += 1;
                 n_nodes_copied += 1;
             }
+            new_dfuds->keep_bits(dest_node_pos, true);
             auto new_block = new tree_block<DIMENSION>(selected_node_depth, subtree_size, dest_node_pos, subtree_size, max_depth_, max_tree_nodes_, NULL, new_dfuds);
             // new_block->dfuds_ = new_dfuds;
 
@@ -607,10 +608,10 @@ public:
                 dfuds_->bulk_clear_node(orig_selected_node, orig_selected_node_pos, selected_node, selected_node_pos);
                 total_nodes_bits_ -= selected_node_pos - orig_selected_node_pos;
             }
-            if (node_capacity_ * level_to_num_children[root_depth_] < bit_capacity_){
+            // if (node_capacity_ * level_to_num_children[root_depth_] < bit_capacity_){
 
-                bit_capacity_ = node_capacity_ * level_to_num_children[root_depth_];
-            }
+            //     bit_capacity_ = node_capacity_ * level_to_num_children[root_depth_];
+            // }
 
             if (subtree_size > max_depth_) {
                 node_capacity_ -= subtree_size - max_depth_; 
@@ -733,7 +734,8 @@ public:
 
         if (node == 0){
             node_path[root_depth_] = dfuds_->next_symbol(0, 0, 0, (1 << level_to_num_children[root_depth_]) - 1, level_to_num_children[root_depth_]);
-            if (!parent_is_trie_){
+            // if (!parent_is_trie_){
+            if (root_depth_ != trie_depth_){
                 ((tree_block<DIMENSION> *)parent_combined_ptr_)->get_node_path(treeblock_frontier_num_, node_path);
             }
             else {
@@ -843,7 +845,9 @@ public:
         for (int i = 0; i <= sTop; i++){
             node_path[root_depth_ + i] = symbol[i];
         }
-        if (!parent_is_trie_){
+        // if (!parent_is_trie_){
+        if (root_depth_ != trie_depth_){
+
             ((tree_block<DIMENSION> *)parent_combined_ptr_)->get_node_path(treeblock_frontier_num_, node_path);
         }
         else {
@@ -964,7 +968,8 @@ public:
         for (int i = 0; i <= sTop; i++){
             node_path[root_depth_ + i] = symbol[i];
         }
-        if (!parent_is_trie_){
+        // if (!parent_is_trie_){
+        if (root_depth_ != trie_depth_){
             ((tree_block<DIMENSION> *)parent_combined_ptr_)->get_node_path(treeblock_frontier_num_, node_path);
         }
         else {
@@ -1108,7 +1113,7 @@ public:
         total_size += sizeof(num_nodes_);
         total_size += sizeof(total_nodes_bits_);
         total_size += sizeof(node_capacity_); 
-        total_size += sizeof(bit_capacity_);
+        // total_size += sizeof(bit_capacity_);
 
         total_size += sizeof(dfuds_);
         total_size += dfuds_->size();
@@ -1120,9 +1125,8 @@ public:
         total_size += sizeof(num_frontiers_);
 
         total_size += sizeof(parent_combined_ptr_);
-        total_size += sizeof(parent_is_trie_);
+        // total_size += sizeof(parent_is_trie_);
         total_size += sizeof(treeblock_frontier_num_);
-
         total_size += sizeof(primary_key_list) + primary_key_list.size() * sizeof(bits::compact_ptr);
         for (preorder_t i = 0; i < primary_key_list.size(); i++)
         {
@@ -1138,14 +1142,14 @@ private:
     preorder_t num_nodes_;
     preorder_t total_nodes_bits_;
     preorder_t node_capacity_;
-    node_pos_t bit_capacity_;
+    // node_pos_t bit_capacity_;
     // level_t max_depth_;
     compressed_bitmap::compressed_bitmap *dfuds_{};
     frontier_node<DIMENSION> *frontiers_ = nullptr; 
     preorder_t num_frontiers_ = 0;
     
     void *parent_combined_ptr_ = NULL;
-    bool parent_is_trie_ = false;
+    // bool parent_is_trie_ = false;
     preorder_t treeblock_frontier_num_ = 0;
     std::vector<bits::compact_ptr> primary_key_list;
 };

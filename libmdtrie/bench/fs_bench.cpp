@@ -221,7 +221,7 @@ int main(int argc, char *argv[]) {
      * bit_widths: the bit widths of each column, with default start-level all set to 0.
      */
 
-    level_t treeblock_size = 512;
+    preorder_t treeblock_size = 512;
     uint32_t trie_depth = 10;
     level_t max_depth = 32;
     discount_factor = 1;

@@ -91,7 +91,7 @@ public:
 
     uint64_t size(bitmap::CompactPtrVector *p_key_to_treeblock_compact) {
 
-        uint64_t total_size = sizeof(root_) + sizeof(max_depth_) + sizeof(trie_depth_);
+        uint64_t total_size = sizeof(root_) + sizeof(max_depth_);
         total_size += sizeof(max_tree_nodes_); 
 
         std::queue<trie_node<DIMENSION> *> trie_node_queue;
@@ -105,10 +105,11 @@ public:
             for (unsigned int s = 0; s < queue_size; s++){
 
                 trie_node<DIMENSION> *current_node = trie_node_queue.front();
-                trie_node_queue.pop();
-                total_size += current_node->size(1 << level_to_num_children[current_level]);
+                trie_node_queue.pop(); 
+
+                total_size += current_node->size(1 << level_to_num_children[current_level], current_level == trie_depth_);
                 
-                if (!current_node->is_leaf()) {
+                if (current_level != trie_depth_) {
                     for (int i = 0; i < (1 << level_to_num_children[current_level]); i++)
                     {
                         if (current_node->get_child(i)) {
@@ -125,9 +126,10 @@ public:
         // Global variables in def.h
         total_size += sizeof(total_points_count);
         total_size += sizeof(discount_factor);
-        total_size += sizeof(level_to_num_children) + 128 * sizeof(morton_t);
+        total_size += sizeof(level_to_num_children) + 32 * sizeof(morton_t);
         total_size += sizeof(max_tree_nodes_);
         total_size += sizeof(max_depth_);
+        total_size += sizeof(trie_depth_);
 
         total_size += sizeof(p_key_to_treeblock_compact);
         total_size += p_key_to_treeblock_compact->size_overhead();
@@ -181,7 +183,6 @@ public:
 private:
     trie_node<DIMENSION> *root_ = nullptr;
     level_t max_depth_;
-    level_t trie_depth_;
     preorder_t max_tree_nodes_;
 };
 
