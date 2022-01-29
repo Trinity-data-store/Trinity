@@ -4,7 +4,7 @@ After=network.target auditd.service
 
 [Service]
 Type=forking
-ExecStart=/usr/sbin/ndb_mgmd -f /var/lib/mysql-cluster/config.ini
+ExecStart=/usr/sbin/ndb_mgmd --reload -f /var/lib/mysql-cluster/config.ini
 ExecReload=/bin/kill -HUP $MAINPID
 KillMode=process
 Restart=on-failure
