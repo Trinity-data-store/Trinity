@@ -31,7 +31,6 @@ vector<vector <int32_t>> *get_data_vector(std::vector<int32_t> &max_values, std:
   std::getline(infile, line);
 
   n_leaves_t n_points = 0;
-  n_leaves_t n_lines = 110418170;
   auto data_vector = new vector<vector <int32_t>>;
 
   while (std::getline(infile, line))
@@ -78,7 +77,7 @@ vector<vector <int32_t>> *get_data_vector(std::vector<int32_t> &max_values, std:
           leaf_point_index++;
       }
       
-      if (n_points == n_lines)
+      if (n_points == total_points_count)
           break;
 
       data_vector->push_back(point);
@@ -185,6 +184,7 @@ int main(){
      * Sample Query 2:
     */
 
+    // [QUANTITY, EXTENDEDPRICE, DISCOUNT, TAX, SHIPDATE, COMMITDATE, RECEIPTDATE, TOTALPRICE, ORDERDATE]
     for (dimension_t i = 0; i < DIMENSION; i++){
         start_range[i] = min_values[i];
         end_range[i] = max_values[i];
@@ -218,6 +218,7 @@ int main(){
     /**   
      * Sample Query 3:
     */
+    // [QUANTITY, EXTENDEDPRICE, DISCOUNT, TAX, SHIPDATE, COMMITDATE, RECEIPTDATE, TOTALPRICE, ORDERDATE]
 
     for (dimension_t i = 0; i < DIMENSION; i++){
         start_range[i] = min_values[i];

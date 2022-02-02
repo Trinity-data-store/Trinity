@@ -36,8 +36,6 @@ vector<vector <int32_t>> *get_data_vector(std::vector<int32_t> &max_values, std:
   }
 
   n_leaves_t n_points = 0;
-  n_leaves_t n_lines = 152806265;
-  total_points_count = n_lines;
   auto data_vector = new vector<vector <int32_t>>;
 
   read = getline(&line, &len, fp);
@@ -69,7 +67,7 @@ vector<vector <int32_t>> *get_data_vector(std::vector<int32_t> &max_values, std:
           }          
       }
 
-      if (n_points == n_lines)
+      if (n_points == total_points_count)
           break;
 
       data_vector->push_back(point);
