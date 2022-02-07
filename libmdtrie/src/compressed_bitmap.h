@@ -560,7 +560,7 @@ class compressed_bitmap {
 
     out.write(reinterpret_cast<const char *>(data_),
               sizeof(data_type) * BITS2BLOCKS(data_size_));
-    out_size += (BITS2BLOCKS(data_size_) * sizeof(uint64_t));
+    out_size += (BITS2BLOCKS(data_size_) * sizeof(data_type));
 
     out.write(reinterpret_cast<const char *>(&flag_size_), sizeof(size_type));
     out_size += sizeof(size_type);
