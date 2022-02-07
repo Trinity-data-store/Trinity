@@ -12,7 +12,9 @@ const dimension_t DIMENSION = 7;
 void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node, bool run_preset_query = true, bool run_search_query = false){
 
     std::vector<int32_t> found_points;
+    md_trie<DIMENSION> mdtrie_mem(max_depth, trie_depth, max_tree_node);
     md_trie<DIMENSION> mdtrie(max_depth, trie_depth, max_tree_node);
+
     data_point<DIMENSION> leaf_point;
 
     char *line = nullptr;
@@ -69,7 +71,7 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node, 
         }
 
         start = GetTimestamp();
-        mdtrie.insert_trie(&leaf_point, n_points, p_key_to_treeblock_compact);
+        mdtrie_mem.insert_trie(&leaf_point, n_points, p_key_to_treeblock_compact);
         diff += GetTimestamp() - start;
         n_points ++;
 
@@ -78,8 +80,19 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node, 
     }
 
     std::cout << "Insertion Latency: " << (float) diff / total_points_count << std::endl;
-    std::cout << "mdtrie storage: " << mdtrie.size(p_key_to_treeblock_compact) << std::endl;
+    std::cout << "mdtrie storage: " << mdtrie_mem.size(p_key_to_treeblock_compact) << std::endl;
     fclose(fp);
+    
+    std::filebuf fb;
+    fb.open ("mdtrie.txt",std::ios::out);
+    std::ostream os(&fb);    
+    std::cout << "Serizlied size: " << mdtrie_mem.Serialize(os) << std::endl;
+
+    std::filebuf fb_in;
+    fb_in.open ("mdtrie.txt",std::ios::in);
+    std::istream is(&fb_in);
+
+    mdtrie.Deserialize(is);
     usleep(15 * 1000000);
 
     /**

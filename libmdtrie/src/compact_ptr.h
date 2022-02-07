@@ -130,6 +130,57 @@ class compact_ptr {
     return get_delta_encoded_array_pointer()->get_num_elements();
   }
 
+
+  size_t Serialize(std::ostream& out) {
+
+    size_t out_size = 0;
+
+    if (flag_ == 0){
+      return 0;
+    }
+    else if (flag_ == 1){
+
+      std::vector<n_leaves_t> *vect = get_vector_pointer();
+      uint32_t vect_size = vect->size();
+      out.write(reinterpret_cast<char const*>(&vect_size), sizeof(vect_size));
+      out_size += sizeof(vect_size);
+
+      out.write(reinterpret_cast<char const*>(vect->data()), vect_size * sizeof(n_leaves_t));
+      out_size += vect_size * sizeof(n_leaves_t);      
+      return out_size;
+    }
+    else {
+      return get_delta_encoded_array_pointer()->Serialize(out);
+    }  
+
+  } 
+
+
+  size_t Deserialize(std::istream& in) {
+
+    size_t in_size = 0;
+
+    if (flag_ == 0){
+      return 0;
+    }
+    else if (flag_ == 1){
+
+      std::vector<n_leaves_t> *vect = get_vector_pointer();
+      uint32_t vect_size;
+      in.read(reinterpret_cast<char *>(&vect_size), sizeof(vect_size));
+      in_size += sizeof(vect_size);
+
+      vect->resize(vect_size);
+      in.read(reinterpret_cast<char *>(vect->data()), vect_size * sizeof(n_leaves_t));
+      in_size += vect_size * sizeof(n_leaves_t);      
+      return in_size;
+    }
+    else {
+      return get_delta_encoded_array_pointer()->Deserialize(in);
+    }  
+
+  } 
+
  private:
   uintptr_t ptr_: 44;
   unsigned flag_ : 2;

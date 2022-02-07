@@ -4,12 +4,12 @@ cd /home/ziming/md-trie/build/
 make
 NUM_REPEATS=21
 
-for i in $( seq 21 $NUM_REPEATS )
-do
-    echo "**** fs_bench $i's iteration started! ****" >> ../results_log/microbench_fs.log
-    libmdtrie/fs_bench >> ../results_log/microbench_fs.log
-    echo "\n" >> ../results_log/microbench_fs.log
-done
+# for i in $( seq 21 $NUM_REPEATS )
+# do
+#     echo "**** fs_bench $i's iteration started! ****" >> ../results_log/microbench_fs.log
+#     libmdtrie/fs_bench >> ../results_log/microbench_fs.log
+#     echo "\n" >> ../results_log/microbench_fs.log
+# done
 
 for i in $( seq 21 $NUM_REPEATS )
 do

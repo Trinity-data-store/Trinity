@@ -87,6 +87,60 @@ public:
         return total_size;
     }
 
+
+    virtual size_t Serialize(std::ostream& out, level_t num_children, bool is_leaf) {
+
+        size_t out_size = 0; 
+
+        // void *trie_or_treeblock_ptr_ = NULL;
+        if (is_leaf && false) {
+            out.write(reinterpret_cast<const char *>(trie_or_treeblock_ptr_), sizeof(trie_node<DIMENSION> *) * num_children);
+            out_size += sizeof(trie_node<DIMENSION> *) * num_children;    
+        }
+        else {
+            out.write(reinterpret_cast<const char *>(&trie_or_treeblock_ptr_), sizeof(trie_or_treeblock_ptr_));
+            out_size += sizeof(trie_or_treeblock_ptr_);
+        }
+
+        // trie_node *parent_trie_node_;
+        out.write(reinterpret_cast<const char *>(&parent_trie_node_), sizeof(parent_trie_node_));
+        out_size += sizeof(parent_trie_node_);
+
+        // symbol_t parent_symbol_ = 0; 
+        out.write(reinterpret_cast<const char *>(&parent_symbol_), sizeof(parent_symbol_));
+        out_size += sizeof(parent_symbol_);       
+
+
+        return out_size;
+    } 
+
+    virtual size_t Deserialize(std::istream& in, level_t num_children, bool is_leaf) {
+
+        size_t in_size = 0;
+
+
+        // void *trie_or_treeblock_ptr_ = NULL;
+        if (is_leaf && false) {
+            in.read(reinterpret_cast<char *>(trie_or_treeblock_ptr_), sizeof(trie_node<DIMENSION> *) * num_children);
+            in_size += sizeof(trie_node<DIMENSION> *) * num_children;    
+        }
+        else {
+            in.read(reinterpret_cast<char *>(&trie_or_treeblock_ptr_), sizeof(trie_or_treeblock_ptr_));
+            in_size += sizeof(trie_or_treeblock_ptr_);
+        }
+
+        // trie_node *parent_trie_node_;
+        in.read(reinterpret_cast<char *>(&parent_trie_node_), sizeof(parent_trie_node_));
+        in_size += sizeof(parent_trie_node_);
+
+        // symbol_t parent_symbol_ = 0; 
+        in.read(reinterpret_cast<char *>(&parent_symbol_), sizeof(parent_symbol_));
+        in_size += sizeof(parent_symbol_);           
+
+
+        return in_size;
+    } 
+
 private:
     // bool is_leaf_ = false;
     void *trie_or_treeblock_ptr_ = NULL;

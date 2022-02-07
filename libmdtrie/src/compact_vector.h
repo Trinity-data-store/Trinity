@@ -414,6 +414,14 @@ class CompactVector : public BitVector {
   const_iterator cend() const {
     return const_iterator(this, this->num_elements_);
   }
+
+  size_type Serialize(std::ostream &out) override {
+    return BitVector::Serialize(out);
+  }
+
+  size_type Deserialize(std::istream &in) override {
+    return BitVector::Deserialize(in);
+  }
 };
 
 class CompactPtrVector : CompactVector<uint64_t, 44> {
@@ -450,6 +458,15 @@ class CompactPtrVector : CompactVector<uint64_t, 44> {
   size_type get_num_elements(){
     return num_elements_;
   }
+
+  // Serialization and De-serialization
+  size_type Serialize(std::ostream &out) {
+    return CompactVector<uint64_t, 44>::Serialize(out);
+  }
+
+  size_type Deserialize(std::istream &in) {
+    return CompactVector<uint64_t, 44>::Deserialize(in);
+  }
   
  private:
   size_type num_elements_;
@@ -481,6 +498,15 @@ class CompactPrimaryVector : CompactVector<uint64_t, 46> {
     CompactVector<uint64_t, 46>::Append(reinterpret_cast<uint64_t>(val) >> 20ULL);
   }
 
+  // Serialization and De-serialization
+  size_type Serialize(std::ostream &out) {
+    return CompactVector<uint64_t, 46>::Serialize(out);
+  }
+
+  size_type Deserialize(std::istream &in) {
+    return CompactVector<uint64_t, 46>::Deserialize(in);
+  }
+  
   uintptr_t ptr(pos_type idx){
     return At(idx) >> 0b11;
   }

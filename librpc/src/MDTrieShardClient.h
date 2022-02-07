@@ -66,7 +66,7 @@ public:
   void insert(vector<int32_t> point, int32_t p_key){
 
     int shard_index = p_key % shard_vector_.size();
-    shard_vector_[shard_index].send_insert(point, p_key);
+    shard_vector_[shard_index].send_insert(point);
     int32_t returned_key = shard_vector_[shard_index].recv_insert();
     // client_to_server_[shard_index][p_key] = returned_key;
     client_to_server_[p_key] = returned_key;
@@ -76,7 +76,7 @@ public:
   void insert_send(vector<int32_t> point, int32_t p_key){
 
     int shard_index = p_key % shard_vector_.size();
-    shard_vector_[shard_index].send_insert(point, p_key);
+    shard_vector_[shard_index].send_insert(point);
   }
 
   void insert_rec(int32_t p_key){

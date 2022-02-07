@@ -128,7 +128,7 @@ public:
     return result;
   }
 
-  int32_t insert(const std::vector<int32_t> & point, int32_t primary_key){
+  int32_t insert(const std::vector<int32_t> & point){
 
     data_point<DIMENSION> leaf_point;
 
