@@ -1,0 +1,11 @@
+python3 line-chart2.py \
+  -d sensitivity_query_selectivity.tsv \
+  -o sensitivity_query_selectivity.pdf \
+  --nomarker \
+  --legendpos upper-left \
+  --ylabel "Latency (us)" \
+  --xlabel "Number of Pts Returned" \
+  --ymin 4000 \
+  --ymax 200000000 \
+  --xmin 1000 \
+  --xmax 56000000
