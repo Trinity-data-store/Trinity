@@ -130,8 +130,13 @@ class BitVector {
     out.write(reinterpret_cast<const char *>(&size_), sizeof(size_type));
     out_size += sizeof(size_type);
 
-    out.write(reinterpret_cast<const char *>(data_), sizeof(data_type) * BITS2BLOCKS(size_));
-    out_size += (BITS2BLOCKS(size_) * sizeof(uint64_t));
+    for (uint64_t i = 0; i < BITS2BLOCKS(size_); i++) {
+      out.write(reinterpret_cast<const char *>(&data_[i]), sizeof(data_type));
+      out_size += sizeof(data_type);
+    }
+
+    // out.write(reinterpret_cast<const char *>(data_), sizeof(data_type) * BITS2BLOCKS(size_));
+    // out_size += (BITS2BLOCKS(size_) * sizeof(uint64_t));
 
     return out_size;
   }
@@ -143,8 +148,13 @@ class BitVector {
     in_size += sizeof(size_type);
 
     data_ = static_cast<data_type *>(malloc(BITS2BLOCKS(size_) * sizeof(data_type)));
-    in.read(reinterpret_cast<char *>(data_), BITS2BLOCKS(size_) * sizeof(data_type));
-    in_size += (BITS2BLOCKS(size_) * sizeof(data_type));
+
+    for (uint64_t i = 0; i < BITS2BLOCKS(size_); i++) {
+      in.read(reinterpret_cast<char *>(&data_[i]), sizeof(data_type));
+      in_size += sizeof(data_type);
+    }
+    // in.read(reinterpret_cast<char *>(data_), BITS2BLOCKS(size_) * sizeof(data_type));
+    // in_size += (BITS2BLOCKS(size_) * sizeof(data_type));
 
     return in_size;
   }

@@ -145,8 +145,12 @@ class compact_ptr {
       out.write(reinterpret_cast<char const*>(&vect_size), sizeof(vect_size));
       out_size += sizeof(vect_size);
 
-      out.write(reinterpret_cast<char const*>(vect->data()), vect_size * sizeof(n_leaves_t));
-      out_size += vect_size * sizeof(n_leaves_t);      
+      for (n_leaves_t i : *vect) {
+        out.write(reinterpret_cast<const char *>(&i), sizeof(n_leaves_t));
+        out_size += sizeof(n_leaves_t);
+      }
+      // out.write(reinterpret_cast<char const*>(vect->data()), vect_size * sizeof(n_leaves_t));
+      // out_size += vect_size * sizeof(n_leaves_t);      
       return out_size;
     }
     else {
@@ -165,14 +169,21 @@ class compact_ptr {
     }
     else if (flag_ == 1){
 
-      std::vector<n_leaves_t> *vect = get_vector_pointer();
+      std::vector<n_leaves_t> *vect = new std::vector<n_leaves_t>;
       uint32_t vect_size;
       in.read(reinterpret_cast<char *>(&vect_size), sizeof(vect_size));
       in_size += sizeof(vect_size);
 
-      vect->resize(vect_size);
-      in.read(reinterpret_cast<char *>(vect->data()), vect_size * sizeof(n_leaves_t));
-      in_size += vect_size * sizeof(n_leaves_t);      
+      vect->reserve(vect_size);
+      for (size_t i = 0; i < vect_size; i++) {
+        n_leaves_t val;
+        in.read(reinterpret_cast<char *>(&val), sizeof(n_leaves_t));
+        vect->push_back(val);
+        in_size += sizeof(n_leaves_t);
+      }
+
+      // in.read(reinterpret_cast<char *>(vect->data()), vect_size * sizeof(n_leaves_t));
+      // in_size += vect_size * sizeof(n_leaves_t);      
       return in_size;
     }
     else {

@@ -83,13 +83,11 @@ public:
             
             // Bring the start of the search range to second half
             if (symbol_bit && !start_bit) {
-
                 start_coordinate = start_coordinate & compressed_bitmap::low_bits_unset[offset];
                 SETBIT(start_coordinate, offset);
             } 
             // Bring the end of the search range to first half
             if (!symbol_bit && end_bit) {
-         
                 end_coordinate = end_coordinate | compressed_bitmap::low_bits_set[offset];
                 CLRBIT(end_coordinate, offset);            
             }

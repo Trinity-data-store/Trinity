@@ -94,8 +94,14 @@ public:
 
         // void *trie_or_treeblock_ptr_ = NULL;
         if (is_leaf && false) {
-            out.write(reinterpret_cast<const char *>(trie_or_treeblock_ptr_), sizeof(trie_node<DIMENSION> *) * num_children);
-            out_size += sizeof(trie_node<DIMENSION> *) * num_children;    
+
+            for (uint64_t i = 0; i < num_children; i++) {
+                out.write(reinterpret_cast<const char *>(&((trie_node<DIMENSION> **) trie_or_treeblock_ptr_)[i]), sizeof(trie_node<DIMENSION> *));
+                out_size += sizeof(trie_node<DIMENSION> *);
+            }
+
+            // out.write(reinterpret_cast<const char *>(trie_or_treeblock_ptr_), sizeof(trie_node<DIMENSION> *) * num_children);
+            // out_size += sizeof(trie_node<DIMENSION> *) * num_children;    
         }
         else {
             out.write(reinterpret_cast<const char *>(&trie_or_treeblock_ptr_), sizeof(trie_or_treeblock_ptr_));
@@ -121,8 +127,17 @@ public:
 
         // void *trie_or_treeblock_ptr_ = NULL;
         if (is_leaf && false) {
-            in.read(reinterpret_cast<char *>(trie_or_treeblock_ptr_), sizeof(trie_node<DIMENSION> *) * num_children);
-            in_size += sizeof(trie_node<DIMENSION> *) * num_children;    
+
+
+            trie_or_treeblock_ptr_ = static_cast<trie_node<DIMENSION> **>(malloc(sizeof(trie_node<DIMENSION> *) * num_children));
+
+            for (uint64_t i = 0; i < num_children; i++) {
+                in.read(reinterpret_cast<char *>(&((trie_node<DIMENSION> **) trie_or_treeblock_ptr_)[i]), sizeof(trie_node<DIMENSION> *));
+                in_size += sizeof(trie_node<DIMENSION> *);
+            }
+
+            // in.read(reinterpret_cast<char *>(trie_or_treeblock_ptr_), sizeof(trie_node<DIMENSION> *) * num_children);
+            // in_size += sizeof(trie_node<DIMENSION> *) * num_children;    
         }
         else {
             in.read(reinterpret_cast<char *>(&trie_or_treeblock_ptr_), sizeof(trie_or_treeblock_ptr_));

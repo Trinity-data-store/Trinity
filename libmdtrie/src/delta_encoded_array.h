@@ -27,8 +27,6 @@ class DeltaEncodedArray {
     out_size += delta_offsets_.Serialize(out);
     out_size += deltas_.Serialize(out);
 
-    // size_type num_elements_ = 0;
-
     out.write(reinterpret_cast<const char *>(&num_elements_), sizeof(size_type));
     out_size += sizeof(size_type);    
 

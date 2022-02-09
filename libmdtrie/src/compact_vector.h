@@ -572,7 +572,6 @@ class CompactPrimaryVector : CompactVector<uint64_t, 46> {
     else if (size(idx) == compact_pointer_vector_size_limit + 1){
 
       std::vector<uint64_t> *vect_ptr = get_vector_pointer(idx);
-
       auto enc_array = new bitmap::EliasGammaDeltaEncodedArray<uint64_t>(*vect_ptr, vect_ptr->size());
       delete vect_ptr;
       set_ptr(idx, ((uintptr_t) enc_array) >> 4ULL);

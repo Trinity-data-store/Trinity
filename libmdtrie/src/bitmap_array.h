@@ -376,8 +376,7 @@ class BitmapArray : public Bitmap {
               sizeof(size_type));
     out_size += sizeof(size_type);
 
-    out.write(reinterpret_cast<const char *>(&this->bit_width_),
-              sizeof(width_type));
+    out.write(reinterpret_cast<const char *>(&this->bit_width_), sizeof(width_type));
     out_size += sizeof(width_type);
 
     out_size += Bitmap::Serialize(out);

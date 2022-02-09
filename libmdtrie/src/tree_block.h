@@ -1157,14 +1157,20 @@ public:
         // compressed_bitmap::compressed_bitmap *dfuds_{};
         out_size += dfuds_->Serialize(out); 
 
-        // frontier_node *frontiers_ = nullptr; 
-        out.write(reinterpret_cast<const char *>(frontiers_),
-                    sizeof(frontier_node<DIMENSION>) * num_frontiers_);        
-        out_size += (num_frontiers_ * sizeof(frontier_node<DIMENSION>)); 
-
         // node_n_t num_frontiers_;
         out.write(reinterpret_cast<const char *>(&num_frontiers_), sizeof(num_frontiers_));
         out_size += sizeof(num_frontiers_);     
+
+        // frontier_node *frontiers_ = nullptr; 
+        // out.write(reinterpret_cast<const char *>(frontiers_),
+        //             sizeof(frontier_node<DIMENSION>) * num_frontiers_);  
+
+        for (size_t i = 0; i < num_frontiers_; i++) {
+            out.write(reinterpret_cast<const char *>(&frontiers_[i]), sizeof(frontier_node<DIMENSION>));
+            out_size += sizeof(frontier_node<DIMENSION>);            
+        }
+      
+        out_size += (num_frontiers_ * sizeof(frontier_node<DIMENSION>)); 
 
         //  tree_block *parent_tree_block_
         out.write(reinterpret_cast<const char *>(&parent_combined_ptr_), sizeof(parent_combined_ptr_));
@@ -1178,8 +1184,13 @@ public:
         out.write(reinterpret_cast<const char*>(&primary_key_list_size), sizeof(primary_key_list_size));
         out_size += sizeof(primary_key_list_size); 
 
-        out.write(reinterpret_cast<const char*>(primary_key_list.data()), primary_key_list_size * sizeof(bits::compact_ptr));
-        out_size += primary_key_list_size * sizeof(bits::compact_ptr);
+
+        for (bits::compact_ptr i : primary_key_list) {
+            out.write(reinterpret_cast<const char *>(&i), sizeof(bits::compact_ptr));
+            out_size += sizeof(bits::compact_ptr);
+        }
+        // out.write(reinterpret_cast<const char*>(primary_key_list.data()), primary_key_list_size * sizeof(bits::compact_ptr));
+        // out_size += primary_key_list_size * sizeof(bits::compact_ptr);
 
         for (uint16_t i = 0; i < primary_key_list_size; i++){
             out_size += primary_key_list[i].Serialize(out);
@@ -1213,16 +1224,22 @@ public:
         // compressed_bitmap::compressed_bitmap *dfuds_{};
         in_size += dfuds_->Deserialize(in); 
 
-        // frontier_node *frontiers_ = nullptr; 
-        frontiers_ = static_cast<frontier_node<DIMENSION> *>(malloc(num_frontiers_ * sizeof(frontier_node<DIMENSION>)));
-        in.read(reinterpret_cast<char *>(frontiers_),
-                    sizeof(frontier_node<DIMENSION>) * num_frontiers_);        
-        in_size += (num_frontiers_ * sizeof(frontier_node<DIMENSION>));
-
         // node_n_t num_frontiers_;
         in.read(reinterpret_cast<char *>(&num_frontiers_), sizeof(num_frontiers_));
         in_size += sizeof(num_frontiers_);    
 
+        // frontier_node *frontiers_ = nullptr; 
+        frontiers_ = static_cast<frontier_node<DIMENSION> *>(malloc(num_frontiers_ * sizeof(frontier_node<DIMENSION>)));
+        // in.read(reinterpret_cast<char *>(frontiers_),
+        //             sizeof(frontier_node<DIMENSION>) * num_frontiers_);        
+        // in_size += (num_frontiers_ * sizeof(frontier_node<DIMENSION>));
+
+        for (size_t i = 0; i < num_frontiers_; i++) {
+            in.read(reinterpret_cast<char *>(&frontiers_[i]), sizeof(frontier_node<DIMENSION>));
+            in_size += sizeof(frontier_node<DIMENSION>);            
+        }
+      
+    
         //  tree_block *parent_tree_block_
         in.read(reinterpret_cast<char *>(&parent_combined_ptr_), sizeof(parent_combined_ptr_));
         in_size += sizeof(parent_combined_ptr_);          
@@ -1236,9 +1253,17 @@ public:
         in.read(reinterpret_cast<char *>(&primary_key_list_size), sizeof(primary_key_list_size));
         in_size += sizeof(primary_key_list_size); // sizeof(primary_key_list_size) => 8
 
-        primary_key_list.resize(primary_key_list_size);
-        in.read(reinterpret_cast<char *>(primary_key_list.data()), primary_key_list_size * sizeof(bits::compact_ptr));
-        in_size += primary_key_list_size * sizeof(bits::compact_ptr);
+        primary_key_list.reserve(primary_key_list_size);
+
+        for (size_t i = 0; i < primary_key_list_size; i++) {
+            bits::compact_ptr val;
+            in.read(reinterpret_cast<char *>(&val), sizeof(bits::compact_ptr));
+            primary_key_list.push_back(val);
+            in_size += sizeof(bits::compact_ptr);
+        }
+
+        // in.read(reinterpret_cast<char *>(primary_key_list.data()), primary_key_list_size * sizeof(bits::compact_ptr));
+        // in_size += primary_key_list_size * sizeof(bits::compact_ptr);
 
         for (uint16_t i = 0; i < primary_key_list_size; i++){
             in_size += primary_key_list[i].Deserialize(in);
