@@ -178,15 +178,14 @@ class compact_ptr {
       for (size_t i = 0; i < vect_size; i++) {
         n_leaves_t val;
         in.read(reinterpret_cast<char *>(&val), sizeof(n_leaves_t));
-        vect->push_back(val);
+        (* vect)[i] = val;
         in_size += sizeof(n_leaves_t);
-      }
-
-      // in.read(reinterpret_cast<char *>(vect->data()), vect_size * sizeof(n_leaves_t));
-      // in_size += vect_size * sizeof(n_leaves_t);      
+      }   
       return in_size;
     }
     else {
+      auto enc_array = new bitmap::EliasGammaDeltaEncodedArray<n_leaves_t>();
+      ptr_ = ((uintptr_t) enc_array) >> 4ULL;
       return get_delta_encoded_array_pointer()->Deserialize(in);
     }  
 

@@ -93,15 +93,12 @@ public:
         size_t out_size = 0; 
 
         // void *trie_or_treeblock_ptr_ = NULL;
-        if (is_leaf && false) {
+        if (!is_leaf) {
 
             for (uint64_t i = 0; i < num_children; i++) {
                 out.write(reinterpret_cast<const char *>(&((trie_node<DIMENSION> **) trie_or_treeblock_ptr_)[i]), sizeof(trie_node<DIMENSION> *));
                 out_size += sizeof(trie_node<DIMENSION> *);
             }
-
-            // out.write(reinterpret_cast<const char *>(trie_or_treeblock_ptr_), sizeof(trie_node<DIMENSION> *) * num_children);
-            // out_size += sizeof(trie_node<DIMENSION> *) * num_children;    
         }
         else {
             out.write(reinterpret_cast<const char *>(&trie_or_treeblock_ptr_), sizeof(trie_or_treeblock_ptr_));
@@ -126,26 +123,30 @@ public:
 
 
         // void *trie_or_treeblock_ptr_ = NULL;
-        if (is_leaf && false) {
+        if (!is_leaf) {
 
-
-            trie_or_treeblock_ptr_ = static_cast<trie_node<DIMENSION> **>(malloc(sizeof(trie_node<DIMENSION> *) * num_children));
+            trie_or_treeblock_ptr_ = static_cast<trie_node<DIMENSION> **>(calloc(num_children, sizeof(trie_node<DIMENSION> *)));
 
             for (uint64_t i = 0; i < num_children; i++) {
                 in.read(reinterpret_cast<char *>(&((trie_node<DIMENSION> **) trie_or_treeblock_ptr_)[i]), sizeof(trie_node<DIMENSION> *));
                 in_size += sizeof(trie_node<DIMENSION> *);
-            }
 
-            // in.read(reinterpret_cast<char *>(trie_or_treeblock_ptr_), sizeof(trie_node<DIMENSION> *) * num_children);
-            // in_size += sizeof(trie_node<DIMENSION> *) * num_children;    
+                // trie_node<DIMENSION> *trie_node_ptr = get_child(i);
+                // if (trie_node_ptr)
+                //     set_child(i, (trie_node<DIMENSION> *)old_ptr_to_new_ptr[(void *)trie_node_ptr]);
+            }
         }
         else {
             in.read(reinterpret_cast<char *>(&trie_or_treeblock_ptr_), sizeof(trie_or_treeblock_ptr_));
+            if (!trie_or_treeblock_ptr_)
+                raise(SIGINT);
+            // trie_or_treeblock_ptr_ = old_ptr_to_new_ptr[trie_or_treeblock_ptr_];
             in_size += sizeof(trie_or_treeblock_ptr_);
         }
 
         // trie_node *parent_trie_node_;
         in.read(reinterpret_cast<char *>(&parent_trie_node_), sizeof(parent_trie_node_));
+        parent_trie_node_ = (trie_node<DIMENSION> *) old_ptr_to_new_ptr[(void *)parent_trie_node_];
         in_size += sizeof(parent_trie_node_);
 
         // symbol_t parent_symbol_ = 0; 

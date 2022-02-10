@@ -126,7 +126,7 @@ class BitVector {
   // Serialization/De-serialization
   virtual size_type Serialize(std::ostream &out) {
     size_t out_size = 0;
-
+    // raise(SIGINT);
     out.write(reinterpret_cast<const char *>(&size_), sizeof(size_type));
     out_size += sizeof(size_type);
 
@@ -143,7 +143,7 @@ class BitVector {
 
   virtual size_type Deserialize(std::istream &in) {
     size_t in_size = 0;
-
+    // raise(SIGINT);
     in.read(reinterpret_cast<char *>(&size_), sizeof(size_type));
     in_size += sizeof(size_type);
 

@@ -183,8 +183,12 @@ public:
 
     size_t Serialize(std::ostream& out) {
 
-        size_t out_size = 0;
+        // raise(SIGINT);
         
+        size_t out_size = 0;
+
+        out_size += p_key_to_treeblock_compact->Serialize(out);         
+
         // trie_node *root_ = nullptr;
         out.write(reinterpret_cast<const char *>(&root_), sizeof(root_));
         out_size += sizeof(root_);     
@@ -196,6 +200,10 @@ public:
         // preorder_t max_tree_nodes_;
         out.write(reinterpret_cast<const char *>(&max_tree_nodes_), sizeof(max_tree_nodes_));
         out_size += sizeof(max_tree_nodes_);         
+
+        out.write(reinterpret_cast<char const*>(&total_points_count), sizeof(total_points_count));
+        out_size += sizeof(total_points_count);     
+
 
         std::queue<trie_node<DIMENSION> *> trie_node_queue;
         trie_node_queue.push(root_);
@@ -230,10 +238,14 @@ public:
             current_level ++;                
         }
 
-        out.write(reinterpret_cast<char const*>(&total_points_count), sizeof(total_points_count));
-        out_size += sizeof(total_points_count);     
+        // out.write(reinterpret_cast<char const*>(&total_points_count), sizeof(total_points_count));
+        // out_size += sizeof(total_points_count);     
 
-        out_size += p_key_to_treeblock_compact->Serialize(out);         
+        // out_size += p_key_to_treeblock_compact->Serialize(out);         
+
+        // total_points_count = 135;
+        // out.write(reinterpret_cast<char const*>(&total_points_count), sizeof(total_points_count));
+        // out_size += sizeof(total_points_count);   
 
         return out_size;
     }
@@ -241,18 +253,33 @@ public:
 
     size_t Deserialize(std::istream& in) {
 
+        // raise(SIGINT);
+
         size_t in_size = 0;
-        
+        // raise(SIGINT);
+
+        p_key_to_treeblock_compact = new bitmap::CompactPtrVector(total_points_count);
+        in_size += p_key_to_treeblock_compact->Deserialize(in);
+
         in.read(reinterpret_cast<char *>(&root_), sizeof(root_));
         in_size += sizeof(root_);     
+        old_ptr_to_new_ptr[root_] = (void *) new trie_node<DIMENSION>(false, level_to_num_children[0]);
+        root_ = (trie_node<DIMENSION> *) old_ptr_to_new_ptr[root_];
 
-        // level_t max_depth_;
         in.read(reinterpret_cast<char *>(&max_depth_), sizeof(max_depth_));
         in_size += sizeof(max_depth_);      
 
-        // preorder_t max_tree_nodes_;
         in.read(reinterpret_cast<char *>(&max_tree_nodes_), sizeof(max_tree_nodes_));
         in_size += sizeof(max_tree_nodes_);         
+
+        n_leaves_t tmp = 0;
+        in.read(reinterpret_cast<char *>(&tmp), sizeof(total_points_count));
+        in_size += sizeof(total_points_count); 
+        total_points_count = tmp;
+
+
+        // bitmap::CompactPtrVector tmp_ptr_vect(total_points_count);
+        // p_key_to_treeblock_compact = &tmp_ptr_vect;
 
         std::queue<trie_node<DIMENSION> *> trie_node_queue;
         trie_node_queue.push(root_);
@@ -273,21 +300,36 @@ public:
                     for (int i = 0; i < (1 << level_to_num_children[current_level]); i++)
                     {
                         if (current_node->get_child(i)) {
+                            old_ptr_to_new_ptr[current_node->get_child(i)] = (void *) new trie_node<DIMENSION>(false, level_to_num_children[current_level]);
+                            current_node->set_child(i, (trie_node<DIMENSION> *) old_ptr_to_new_ptr[current_node->get_child(i)]);
                             trie_node_queue.push(current_node->get_child(i));
                         }
                     }
                 }
                 else {
+                    // if (current_node->get_block()->get_primary_key_list()[0].check_if_present(171328))
+                    //     raise(SIGINT);
+
+                    old_ptr_to_new_ptr[current_node->get_block()] = new tree_block<DIMENSION>(trie_depth_, 1 /* initial_tree_capacity_ */, 1 << level_to_num_children[trie_depth_], 1, max_depth_, max_tree_nodes_, current_node);
+                    current_node->set_block((tree_block<DIMENSION> *) old_ptr_to_new_ptr[current_node->get_block()]);
                     current_node->get_block()->Deserialize(in);
                 }
             }
             current_level ++;   
         }
 
-        in.read(reinterpret_cast<char *>(&total_points_count), sizeof(total_points_count));
-        in_size += sizeof(total_points_count); 
-        in_size += p_key_to_treeblock_compact->Deserialize(in);
+        // On stack
+        // p_key_to_treeblock_compact = new bitmap::CompactPtrVector(total_points_count);
+        // in_size += p_key_to_treeblock_compact->Deserialize(in);
 
+        // n_leaves_t random_num = 0;
+        // in.read(reinterpret_cast<char *>(&random_num), sizeof(total_points_count));
+        // in_size += sizeof(total_points_count); 
+
+        for (unsigned int i = 0; i < total_points_count; i++){
+
+            p_key_to_treeblock_compact->Set(i, old_ptr_to_new_ptr[p_key_to_treeblock_compact->At(i)]);
+        }
         return in_size;
     }
     

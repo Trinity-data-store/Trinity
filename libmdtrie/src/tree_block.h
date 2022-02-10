@@ -24,6 +24,7 @@ public:
         total_nodes_bits_ = bit_capacity;
         if (!dfuds)
             dfuds_ = new compressed_bitmap::compressed_bitmap(node_capacity, bit_capacity);
+            // compressed_bitmap::compressed_bitmap dfuds_(node_capacity, bit_capacity);
         else
             dfuds_ = dfuds;
         if (parent_trie_node){
@@ -57,6 +58,11 @@ public:
         frontiers_[current_frontier].pointer_ = pointer;
         pointer->parent_combined_ptr_ = this;
         pointer->treeblock_frontier_num_ = get_preorder(current_frontier);
+    }
+
+    std::vector<bits::compact_ptr> get_primary_key_list()
+    {
+        return primary_key_list;
     }
 
     preorder_t select_subtree(preorder_t &subtree_size, preorder_t &selected_node_depth, preorder_t &selected_node_pos, preorder_t &num_primary, preorder_t &selected_primary_index, preorder_t *node_to_primary, preorder_t *node_to_depth) {
@@ -1136,7 +1142,20 @@ public:
     }
 
     size_t Serialize(std::ostream& out) {
+
         size_t out_size = 0;
+
+        out.write(reinterpret_cast<const char *>(&num_frontiers_), sizeof(num_frontiers_));
+        out_size += sizeof(num_frontiers_);     
+
+        for (size_t i = 0; i < num_frontiers_; i++) {
+            out.write(reinterpret_cast<const char *>(&frontiers_[i]), sizeof(frontier_node<DIMENSION>));
+            out_size += sizeof(frontier_node<DIMENSION>);            
+        }
+      
+        for (uint16_t i = 0; i < num_frontiers_; i++){
+            out_size += ((frontier_node<DIMENSION> *) frontiers_)[i].pointer_->Serialize(out);
+        }
 
         // level_t root_depth_;
         out.write(reinterpret_cast<const char *>(&root_depth_), sizeof(root_depth_));
@@ -1157,21 +1176,6 @@ public:
         // compressed_bitmap::compressed_bitmap *dfuds_{};
         out_size += dfuds_->Serialize(out); 
 
-        // node_n_t num_frontiers_;
-        out.write(reinterpret_cast<const char *>(&num_frontiers_), sizeof(num_frontiers_));
-        out_size += sizeof(num_frontiers_);     
-
-        // frontier_node *frontiers_ = nullptr; 
-        // out.write(reinterpret_cast<const char *>(frontiers_),
-        //             sizeof(frontier_node<DIMENSION>) * num_frontiers_);  
-
-        for (size_t i = 0; i < num_frontiers_; i++) {
-            out.write(reinterpret_cast<const char *>(&frontiers_[i]), sizeof(frontier_node<DIMENSION>));
-            out_size += sizeof(frontier_node<DIMENSION>);            
-        }
-      
-        out_size += (num_frontiers_ * sizeof(frontier_node<DIMENSION>)); 
-
         //  tree_block *parent_tree_block_
         out.write(reinterpret_cast<const char *>(&parent_combined_ptr_), sizeof(parent_combined_ptr_));
         out_size += sizeof(parent_combined_ptr_);          
@@ -1189,21 +1193,36 @@ public:
             out.write(reinterpret_cast<const char *>(&i), sizeof(bits::compact_ptr));
             out_size += sizeof(bits::compact_ptr);
         }
-        // out.write(reinterpret_cast<const char*>(primary_key_list.data()), primary_key_list_size * sizeof(bits::compact_ptr));
-        // out_size += primary_key_list_size * sizeof(bits::compact_ptr);
 
-        for (uint16_t i = 0; i < primary_key_list_size; i++){
+        for (n_leaves_t i = 0; i < primary_key_list_size; i++){
             out_size += primary_key_list[i].Serialize(out);
         }
 
-        for (uint16_t i = 0; i < num_frontiers_; i++){
-            out_size += ((frontier_node<DIMENSION> *) frontiers_)[i].pointer_->Serialize(out);
-        }
         return out_size;
     }
 
     size_t Deserialize(std::istream &in) {
         size_t in_size  = 0;
+
+        in.read(reinterpret_cast<char *>(&num_frontiers_), sizeof(num_frontiers_));
+        in_size += sizeof(num_frontiers_);    
+
+        frontiers_ = static_cast<frontier_node<DIMENSION> *>(malloc(num_frontiers_ * sizeof(frontier_node<DIMENSION>)));
+
+        for (size_t i = 0; i < num_frontiers_; i++) {
+            in.read(reinterpret_cast<char *>(&frontiers_[i]), sizeof(frontier_node<DIMENSION>));
+            in_size += sizeof(frontier_node<DIMENSION>);            
+        }
+      
+        for (uint16_t i = 0; i < num_frontiers_; i++){
+            tree_block<DIMENSION> *old_treeblock_ptr = ((frontier_node<DIMENSION> *) frontiers_)[i].pointer_;
+            tree_block<DIMENSION> *new_treeblock_ptr = new tree_block<DIMENSION>(trie_depth_, 1, 1 << level_to_num_children[trie_depth_], 1, max_depth_, max_tree_nodes_, NULL);
+
+            old_ptr_to_new_ptr[old_treeblock_ptr] = new_treeblock_ptr;
+
+            ((frontier_node<DIMENSION> *) frontiers_)[i].pointer_ = new_treeblock_ptr;
+            in_size += new_treeblock_ptr->Deserialize(in);
+        }
 
         // level_t root_depth_;
         in.read(reinterpret_cast<char *>(&root_depth_), sizeof(root_depth_));
@@ -1223,26 +1242,11 @@ public:
 
         // compressed_bitmap::compressed_bitmap *dfuds_{};
         in_size += dfuds_->Deserialize(in); 
-
-        // node_n_t num_frontiers_;
-        in.read(reinterpret_cast<char *>(&num_frontiers_), sizeof(num_frontiers_));
-        in_size += sizeof(num_frontiers_);    
-
-        // frontier_node *frontiers_ = nullptr; 
-        frontiers_ = static_cast<frontier_node<DIMENSION> *>(malloc(num_frontiers_ * sizeof(frontier_node<DIMENSION>)));
-        // in.read(reinterpret_cast<char *>(frontiers_),
-        //             sizeof(frontier_node<DIMENSION>) * num_frontiers_);        
-        // in_size += (num_frontiers_ * sizeof(frontier_node<DIMENSION>));
-
-        for (size_t i = 0; i < num_frontiers_; i++) {
-            in.read(reinterpret_cast<char *>(&frontiers_[i]), sizeof(frontier_node<DIMENSION>));
-            in_size += sizeof(frontier_node<DIMENSION>);            
-        }
-      
     
         //  tree_block *parent_tree_block_
         in.read(reinterpret_cast<char *>(&parent_combined_ptr_), sizeof(parent_combined_ptr_));
-        in_size += sizeof(parent_combined_ptr_);          
+        in_size += sizeof(parent_combined_ptr_);
+        parent_combined_ptr_ = old_ptr_to_new_ptr[parent_combined_ptr_]; // by this time, all treeblock and tree nodes should already be created       
 
         // preorder_t treeblock_frontier_num_ = 0;
         in.read(reinterpret_cast<char *>(&treeblock_frontier_num_), sizeof(treeblock_frontier_num_));
@@ -1255,23 +1259,17 @@ public:
 
         primary_key_list.reserve(primary_key_list_size);
 
-        for (size_t i = 0; i < primary_key_list_size; i++) {
+        for (n_leaves_t i = 0; i < primary_key_list_size; i++) {
             bits::compact_ptr val;
             in.read(reinterpret_cast<char *>(&val), sizeof(bits::compact_ptr));
-            primary_key_list.push_back(val);
+            primary_key_list[i] = val;
             in_size += sizeof(bits::compact_ptr);
         }
 
-        // in.read(reinterpret_cast<char *>(primary_key_list.data()), primary_key_list_size * sizeof(bits::compact_ptr));
-        // in_size += primary_key_list_size * sizeof(bits::compact_ptr);
-
-        for (uint16_t i = 0; i < primary_key_list_size; i++){
+        for (n_leaves_t i = 0; i < primary_key_list_size; i++){
             in_size += primary_key_list[i].Deserialize(in);
         }
 
-        for (uint16_t i = 0; i < num_frontiers_; i++){
-            in_size += ((frontier_node<DIMENSION> *) frontiers_)[i].pointer_->Deserialize(in);
-        }
         return in_size;
     }
 

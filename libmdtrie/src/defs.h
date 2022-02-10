@@ -91,6 +91,8 @@ bitmap::CompactPtrVector *p_key_to_treeblock_compact;
 std::vector<level_t> dimension_to_num_bits;
 std::vector<level_t> start_dimension_bits;
 bool no_dynamic_sizing = false;
+std::map<void *, void*> old_ptr_to_new_ptr;
+n_leaves_t treeblock_ctr = 0;
 
 std::mutex cache_lock;
 // std::vector<std::unordered_map<int32_t, int32_t>> client_to_server;
