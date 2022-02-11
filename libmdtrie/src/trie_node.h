@@ -128,7 +128,12 @@ public:
             trie_or_treeblock_ptr_ = static_cast<trie_node<DIMENSION> **>(calloc(num_children, sizeof(trie_node<DIMENSION> *)));
 
             for (uint64_t i = 0; i < num_children; i++) {
-                in.read(reinterpret_cast<char *>(&((trie_node<DIMENSION> **) trie_or_treeblock_ptr_)[i]), sizeof(trie_node<DIMENSION> *));
+                trie_node<DIMENSION> * tmp;
+                in.read(reinterpret_cast<char *>(&tmp), sizeof(trie_node<DIMENSION> *));
+                ((trie_node<DIMENSION> **)trie_or_treeblock_ptr_)[i] = tmp;
+
+                // if (tmp)
+                //     raise(SIGINT);
                 in_size += sizeof(trie_node<DIMENSION> *);
 
                 // trie_node<DIMENSION> *trie_node_ptr = get_child(i);
@@ -138,8 +143,8 @@ public:
         }
         else {
             in.read(reinterpret_cast<char *>(&trie_or_treeblock_ptr_), sizeof(trie_or_treeblock_ptr_));
-            if (!trie_or_treeblock_ptr_)
-                raise(SIGINT);
+            // if (!trie_or_treeblock_ptr_)
+            //     raise(SIGINT);
             // trie_or_treeblock_ptr_ = old_ptr_to_new_ptr[trie_or_treeblock_ptr_];
             in_size += sizeof(trie_or_treeblock_ptr_);
         }

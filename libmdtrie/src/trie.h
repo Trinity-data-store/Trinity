@@ -188,7 +188,7 @@ public:
         size_t out_size = 0;
 
         out_size += p_key_to_treeblock_compact->Serialize(out);         
-
+        // std::cout << "p_key_to_treeblock_conpact size: \n" << out_size << std::endl; 
         // trie_node *root_ = nullptr;
         out.write(reinterpret_cast<const char *>(&root_), sizeof(root_));
         out_size += sizeof(root_);     
@@ -253,13 +253,12 @@ public:
 
     size_t Deserialize(std::istream& in) {
 
-        // raise(SIGINT);
-
         size_t in_size = 0;
-        // raise(SIGINT);
 
         p_key_to_treeblock_compact = new bitmap::CompactPtrVector(total_points_count);
         in_size += p_key_to_treeblock_compact->Deserialize(in);
+
+        // std::cout <<  std::endl << "p_key_to_treeblock_conpact size: " << in_size << std::endl; 
 
         in.read(reinterpret_cast<char *>(&root_), sizeof(root_));
         in_size += sizeof(root_);     
@@ -303,6 +302,8 @@ public:
                             old_ptr_to_new_ptr[current_node->get_child(i)] = (void *) new trie_node<DIMENSION>(false, level_to_num_children[current_level]);
                             current_node->set_child(i, (trie_node<DIMENSION> *) old_ptr_to_new_ptr[current_node->get_child(i)]);
                             trie_node_queue.push(current_node->get_child(i));
+                            // if (current_node == root_)
+                            //     raise(SIGINT);
                         }
                     }
                 }
@@ -312,7 +313,7 @@ public:
 
                     old_ptr_to_new_ptr[current_node->get_block()] = new tree_block<DIMENSION>(trie_depth_, 1 /* initial_tree_capacity_ */, 1 << level_to_num_children[trie_depth_], 1, max_depth_, max_tree_nodes_, current_node);
                     current_node->set_block((tree_block<DIMENSION> *) old_ptr_to_new_ptr[current_node->get_block()]);
-                    current_node->get_block()->Deserialize(in);
+                    in_size += current_node->get_block()->Deserialize(in);
                 }
             }
             current_level ++;   

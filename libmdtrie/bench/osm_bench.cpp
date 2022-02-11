@@ -8,10 +8,13 @@
 
 const dimension_t DIMENSION = 4;
 
-void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node, bool run_preset_query = true, bool run_search_query = false){
+void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node, bool run_preset_query = false, bool run_search_query = false, bool load_from_File = false){
 
     std::vector<int32_t> found_points;
+    std::vector<data_point<DIMENSION>> all_points;
+
     md_trie<DIMENSION> mdtrie(max_depth, trie_depth, max_tree_node);
+
     data_point<DIMENSION> leaf_point;
 
     char *line = nullptr;
@@ -65,10 +68,14 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node, 
             }            
         }
         start = GetTimestamp();
-        mdtrie.insert_trie(&leaf_point, n_points, p_key_to_treeblock_compact);
+        if (!load_from_File) {
+            mdtrie.insert_trie(&leaf_point, n_points, p_key_to_treeblock_compact);
+        }
         diff += GetTimestamp() - start;
 
         n_points ++;
+        all_points.push_back(leaf_point);
+
         if (n_points % (total_points_count / 10) == 0)
             std::cout << "Inserted - n_points: " << n_points << std::endl;
 
@@ -79,7 +86,35 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node, 
     std::cout << "Insertion Latency: " << (float) diff / total_points_count << std::endl;
     std::cout << "mdtrie storage: " << mdtrie.size(p_key_to_treeblock_compact) << std::endl;
     fclose(fp);
-    usleep(15 * 1000000);
+    // usleep(15 * 1000000);
+
+
+    if (!load_from_File) {
+
+        std::filebuf fb;
+        fb.open ("mdtrie_osm.txt",std::ios::out);
+        std::ostream os(&fb);    
+        size_t serialized_size = mdtrie.Serialize(os);
+        std::cout << "Serizlied size: " << serialized_size << std::endl;
+        fb.close();
+    }
+
+    if (load_from_File) {
+        std::filebuf fb_in;
+        fb_in.open ("mdtrie_osm.txt",std::ios::in);
+        std::istream is(&fb_in);
+        size_t in_size;
+        in_size = mdtrie.Deserialize(is);
+        std::cout << "deserilize in_size: " << in_size << std::endl;
+        fb_in.close();
+        
+        for (unsigned int i = 0; i < all_points.size(); i ++) {
+            if (!mdtrie.check(&all_points[i])) {
+                std::cout << "Check failed!\n"; 
+                exit(0);
+            }
+        }
+    }
 
     /**
      * Benchmark range search given a query selectivity (1000-2000), given a query
@@ -219,9 +254,9 @@ int main(int argc, char *argv[]) {
     level_t trie_depth = 6;
     uint32_t treeblock_size = 512;
     discount_factor = 1;
-    if (argc == 2){
-        discount_factor = atoi(argv[1]);
-    }
+    // if (argc == 2){
+    //     discount_factor = atoi(argv[1]);
+    // }
     total_points_count = 155846019 / discount_factor;
     no_dynamic_sizing = true;
 
@@ -249,7 +284,13 @@ int main(int argc, char *argv[]) {
         exit(0);
     }
     if (argc == 2){
-        run_bench(max_depth, trie_depth, treeblock_size, false, true);
+        if (atoi(argv[1]) == 2) {
+            std::cout << "load mdtrie from file" << std::endl;
+            run_bench(max_depth, trie_depth, treeblock_size, true, false, true);
+        }
+        else {
+            run_bench(max_depth, trie_depth, treeblock_size, false, true);
+        }
     }
     else 
         run_bench(max_depth, trie_depth, treeblock_size);

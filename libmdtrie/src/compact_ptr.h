@@ -145,8 +145,9 @@ class compact_ptr {
       out.write(reinterpret_cast<char const*>(&vect_size), sizeof(vect_size));
       out_size += sizeof(vect_size);
 
-      for (n_leaves_t i : *vect) {
-        out.write(reinterpret_cast<const char *>(&i), sizeof(n_leaves_t));
+      for (size_t i = 0; i < vect_size; i++) {
+        n_leaves_t val = (* vect)[i];
+        out.write(reinterpret_cast<const char *>(&val), sizeof(n_leaves_t));
         out_size += sizeof(n_leaves_t);
       }
       // out.write(reinterpret_cast<char const*>(vect->data()), vect_size * sizeof(n_leaves_t));
@@ -174,13 +175,15 @@ class compact_ptr {
       in.read(reinterpret_cast<char *>(&vect_size), sizeof(vect_size));
       in_size += sizeof(vect_size);
 
-      vect->reserve(vect_size);
+      vect->resize(vect_size);
       for (size_t i = 0; i < vect_size; i++) {
         n_leaves_t val;
         in.read(reinterpret_cast<char *>(&val), sizeof(n_leaves_t));
         (* vect)[i] = val;
         in_size += sizeof(n_leaves_t);
       }   
+
+      ptr_ = ((uintptr_t) vect) >> 4ULL;
       return in_size;
     }
     else {

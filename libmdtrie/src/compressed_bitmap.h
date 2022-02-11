@@ -557,17 +557,20 @@ class compressed_bitmap {
 
     out.write(reinterpret_cast<const char *>(&data_size_), sizeof(data_size_));
     out_size += sizeof(data_size_);
+    // dfuds_size_vect.push_back(data_size_);
 
     for (uint64_t i = 0; i < BITS2BLOCKS(data_size_); i++) {
       out.write(reinterpret_cast<const char *>(&data_[i]), sizeof(data_type));
       out_size += sizeof(data_type);
+      // dfuds_size += sizeof(data_type);
+
     }
     // out.write(reinterpret_cast<const char *>(data_),
     //           sizeof(data_type) * BITS2BLOCKS(data_size_));
     // out_size += (BITS2BLOCKS(data_size_) * sizeof(data_type));
 
-    out.write(reinterpret_cast<const char *>(&flag_size_), sizeof(size_type));
-    out_size += sizeof(size_type);
+    out.write(reinterpret_cast<const char *>(&flag_size_), sizeof(flag_size_));
+    out_size += sizeof(flag_size_);
 
     for (uint64_t i = 0; i < BITS2BLOCKS(flag_size_); i++) {
       out.write(reinterpret_cast<const char *>(&flag_[i]), sizeof(data_type));
@@ -584,23 +587,33 @@ class compressed_bitmap {
   virtual size_type Deserialize(std::istream& in) {
     size_t in_size = 0;
 
-    in.read(reinterpret_cast<char *>(&data_size_), sizeof(size_type));
-    in_size += sizeof(size_type);
+    in.read(reinterpret_cast<char *>(&data_size_), sizeof(data_size_));
+    in_size += sizeof(data_size_);
+    // if (dfuds_size_vect[dfuds_size_vect_i] != data_size_)
+      // raise(SIGINT);
+    // dfuds_size_vect_i += 1;
 
-    data_ = new data_type[BITS2BLOCKS(data_size_)];
+    // dfuds_size += data_size_;
+
+    data_ = (data_type *)calloc(BITS2BLOCKS(data_size_), sizeof(data_type));
+    // data_ = malloc() data_type[BITS2BLOCKS(data_size_)];
     for (uint64_t i = 0; i < BITS2BLOCKS(data_size_); i++) {
       in.read(reinterpret_cast<char *>(&data_[i]), sizeof(data_type));
       in_size += sizeof(data_type);
+      // dfuds_size += sizeof(data_type);
+
     }
     // in.read(reinterpret_cast<char *>(data_),
     // BITS2BLOCKS(data_size_) * sizeof(data_type));
     // in_size += (BITS2BLOCKS(data_size_) * sizeof(data_type));
 
 
-    in.read(reinterpret_cast<char *>(&flag_size_), sizeof(size_type));
-    in_size += sizeof(size_type);
+    in.read(reinterpret_cast<char *>(&flag_size_), sizeof(flag_size_));
+    in_size += sizeof(flag_size_);
 
-    flag_ = new data_type[BITS2BLOCKS(flag_size_)];
+    // flag_ = new data_type[BITS2BLOCKS(flag_size_)];
+    flag_ = (data_type *)calloc(BITS2BLOCKS(flag_size_), sizeof(data_type));
+
 
     for (uint64_t i = 0; i < BITS2BLOCKS(flag_size_); i++) {
       in.read(reinterpret_cast<char *>(&flag_[i]), sizeof(data_type));
