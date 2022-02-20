@@ -97,6 +97,10 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node, 
         size_t serialized_size = mdtrie.Serialize(os);
         std::cout << "Serizlied size: " << serialized_size << std::endl;
         fb.close();
+
+        // Just write to file
+        if (!run_preset_query && !run_search_query)
+            exit(0);
     }
 
     if (load_from_File) {
@@ -288,8 +292,15 @@ int main(int argc, char *argv[]) {
             std::cout << "load mdtrie from file" << std::endl;
             run_bench(max_depth, trie_depth, treeblock_size, true, false, true);
         }
-        else {
+        else if (atoi(argv[1]) == 1) {
             run_bench(max_depth, trie_depth, treeblock_size, false, true);
+        }
+        else if (atoi(argv[1]) == 3) {
+            run_bench(max_depth, trie_depth, treeblock_size, false, false, false);
+        }
+        else {
+            std::cerr << "wrong command!" << std::endl;
+            exit(0);
         }
     }
     else 

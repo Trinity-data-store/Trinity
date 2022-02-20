@@ -1119,7 +1119,6 @@ public:
         total_size += sizeof(num_nodes_);
         total_size += sizeof(total_nodes_bits_);
         total_size += sizeof(node_capacity_); 
-        // total_size += sizeof(bit_capacity_);
 
         total_size += sizeof(dfuds_);
         total_size += dfuds_->size();
@@ -1144,8 +1143,6 @@ public:
     size_t Serialize(std::ostream& out) {
 
         size_t out_size = 0;
-        // serialized_treeblock ++;
-
 
         out.write(reinterpret_cast<const char *>(&num_frontiers_), sizeof(num_frontiers_));
         out_size += sizeof(num_frontiers_);     
@@ -1153,7 +1150,6 @@ public:
         for (size_t i = 0; i < num_frontiers_; i++) {
             out.write(reinterpret_cast<const char *>(&frontiers_[i]), sizeof(frontier_node<DIMENSION>));
             out_size += sizeof(frontier_node<DIMENSION>);  
-            // frontier_size += sizeof(frontier_node<DIMENSION>);            
         }
       
         for (uint16_t i = 0; i < num_frontiers_; i++){
@@ -1187,25 +1183,19 @@ public:
         out.write(reinterpret_cast<const char *>(&treeblock_frontier_num_), sizeof(treeblock_frontier_num_));
         out_size += sizeof(treeblock_frontier_num_);    
         
-        // if (primary_key_size_vect.size() == 22637)
-        //     raise(SIGINT);
         uint32_t primary_key_list_size = primary_key_list.size();
         out.write(reinterpret_cast<const char*>(&primary_key_list_size), sizeof(primary_key_list_size));
         out_size += sizeof(primary_key_list_size); 
-        // primary_size += primary_key_list_size;
-        // primary_key_size_vect.push_back(primary_key_list_size);
 
         for (n_leaves_t i = 0; i < primary_key_list_size; i++) {
             bits::compact_ptr val = primary_key_list[i];
             out.write(reinterpret_cast<const char *>(&val), sizeof(bits::compact_ptr));
             out_size += sizeof(bits::compact_ptr);
-            // primary_size += sizeof(bits::compact_ptr);
         }
-        // uint64_t out_size_prev = out_size;
+
         for (n_leaves_t i = 0; i < primary_key_list_size; i++){
             out_size += primary_key_list[i].Serialize(out);
         }
-        // primary_key_size += out_size - out_size_prev;
 
         return out_size;
     }

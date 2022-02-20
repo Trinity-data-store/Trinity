@@ -12,15 +12,12 @@ class trie_node {
 public:
 
     explicit trie_node(bool is_leaf, dimension_t num_dimensions) {
-        
-        // is_leaf_ = is_leaf;
         if (!is_leaf){
             trie_or_treeblock_ptr_ = (trie_node<DIMENSION> **)calloc(sizeof(trie_node<DIMENSION> *), 1 << num_dimensions);
         }
     }
 
     inline trie_node<DIMENSION> *get_child(morton_t symbol) {
-
         auto trie_ptr = (trie_node<DIMENSION> **) trie_or_treeblock_ptr_;
         return trie_ptr[symbol];
     }
@@ -31,15 +28,11 @@ public:
     }
 
     inline tree_block<DIMENSION> *get_block() const {
-        // if (!is_leaf_)
-        //     return nullptr;
         return (tree_block<DIMENSION> *)trie_or_treeblock_ptr_;
     }
 
     inline void set_block(tree_block<DIMENSION> *block) {
-
         trie_or_treeblock_ptr_ = block;
-        // is_leaf_ = true;
     }
 
     void get_node_path(level_t level, std::vector<morton_t> &node_path){
@@ -69,18 +62,12 @@ public:
         parent_symbol_ = symbol;
     }
 
-    // bool is_leaf(){
-    //     return is_leaf_;
-    // }
-
     uint64_t size(level_t num_children, bool is_leaf) {
 
-        // uint64_t total_size = sizeof(is_leaf_) + sizeof(trie_or_treeblock_ptr_); 
         uint64_t total_size = sizeof(trie_or_treeblock_ptr_); 
         total_size += sizeof(parent_trie_node_); // parent_trie_node_
         total_size += sizeof(parent_symbol_); // parent_symbol_
 
-        // if (!is_leaf_)
         if (is_leaf)
             total_size += sizeof(trie_node<DIMENSION> *) * num_children;
 
@@ -92,7 +79,6 @@ public:
 
         size_t out_size = 0; 
 
-        // void *trie_or_treeblock_ptr_ = NULL;
         if (!is_leaf) {
 
             for (uint64_t i = 0; i < num_children; i++) {
@@ -105,14 +91,11 @@ public:
             out_size += sizeof(trie_or_treeblock_ptr_);
         }
 
-        // trie_node *parent_trie_node_;
         out.write(reinterpret_cast<const char *>(&parent_trie_node_), sizeof(parent_trie_node_));
         out_size += sizeof(parent_trie_node_);
 
-        // symbol_t parent_symbol_ = 0; 
         out.write(reinterpret_cast<const char *>(&parent_symbol_), sizeof(parent_symbol_));
         out_size += sizeof(parent_symbol_);       
-
 
         return out_size;
     } 
@@ -120,9 +103,6 @@ public:
     virtual size_t Deserialize(std::istream& in, level_t num_children, bool is_leaf) {
 
         size_t in_size = 0;
-
-
-        // void *trie_or_treeblock_ptr_ = NULL;
         if (!is_leaf) {
 
             trie_or_treeblock_ptr_ = static_cast<trie_node<DIMENSION> **>(calloc(num_children, sizeof(trie_node<DIMENSION> *)));
@@ -131,33 +111,20 @@ public:
                 trie_node<DIMENSION> * tmp;
                 in.read(reinterpret_cast<char *>(&tmp), sizeof(trie_node<DIMENSION> *));
                 ((trie_node<DIMENSION> **)trie_or_treeblock_ptr_)[i] = tmp;
-
-                // if (tmp)
-                //     raise(SIGINT);
                 in_size += sizeof(trie_node<DIMENSION> *);
-
-                // trie_node<DIMENSION> *trie_node_ptr = get_child(i);
-                // if (trie_node_ptr)
-                //     set_child(i, (trie_node<DIMENSION> *)old_ptr_to_new_ptr[(void *)trie_node_ptr]);
             }
         }
         else {
             in.read(reinterpret_cast<char *>(&trie_or_treeblock_ptr_), sizeof(trie_or_treeblock_ptr_));
-            // if (!trie_or_treeblock_ptr_)
-            //     raise(SIGINT);
-            // trie_or_treeblock_ptr_ = old_ptr_to_new_ptr[trie_or_treeblock_ptr_];
             in_size += sizeof(trie_or_treeblock_ptr_);
         }
 
-        // trie_node *parent_trie_node_;
         in.read(reinterpret_cast<char *>(&parent_trie_node_), sizeof(parent_trie_node_));
         parent_trie_node_ = (trie_node<DIMENSION> *) old_ptr_to_new_ptr[(void *)parent_trie_node_];
         in_size += sizeof(parent_trie_node_);
 
-        // symbol_t parent_symbol_ = 0; 
         in.read(reinterpret_cast<char *>(&parent_symbol_), sizeof(parent_symbol_));
         in_size += sizeof(parent_symbol_);           
-
 
         return in_size;
     } 
