@@ -75,20 +75,35 @@ public:
     }
 
 
-    virtual size_t Serialize(std::ostream& out, level_t num_children, bool is_leaf) {
-
+    virtual size_t Serialize(std::ostream& out, level_t num_children, bool is_leaf, bool use_file_offset = false) {
+        
+        ptr_to_file_offset[this] = current_file_offset;
         size_t out_size = 0; 
 
         if (!is_leaf) {
 
             for (uint64_t i = 0; i < num_children; i++) {
-                out.write(reinterpret_cast<const char *>(&((trie_node<DIMENSION> **) trie_or_treeblock_ptr_)[i]), sizeof(trie_node<DIMENSION> *));
-                out_size += sizeof(trie_node<DIMENSION> *);
+                if (!use_file_offset || !get_child(i)) {
+                    out.write(reinterpret_cast<const char *>(&((trie_node<DIMENSION> **) trie_or_treeblock_ptr_)[i]), sizeof(trie_node<DIMENSION> *));
+                    out_size += sizeof(trie_node<DIMENSION> *);
+                }
+                else {
+                    out.write(reinterpret_cast<const char *>(&ptr_to_file_offset[(void *) get_child(i)]), sizeof(ptr_to_file_offset[(void *) get_child(i)]));
+                    out_size += sizeof(ptr_to_file_offset[(void *) get_child(i)]);
+                }
+                if (out_size > 368639854)
+                    raise(SIGINT);
             }
         }
         else {
-            out.write(reinterpret_cast<const char *>(&trie_or_treeblock_ptr_), sizeof(trie_or_treeblock_ptr_));
-            out_size += sizeof(trie_or_treeblock_ptr_);
+            if (!use_file_offset) {
+                out.write(reinterpret_cast<const char *>(&trie_or_treeblock_ptr_), sizeof(trie_or_treeblock_ptr_));
+                out_size += sizeof(trie_or_treeblock_ptr_);
+            }
+            else {
+                out.write(reinterpret_cast<const char *>(&ptr_to_file_offset[trie_or_treeblock_ptr_]), sizeof(ptr_to_file_offset[trie_or_treeblock_ptr_]));
+                out_size += sizeof(ptr_to_file_offset[trie_or_treeblock_ptr_]);
+            }
         }
 
         out.write(reinterpret_cast<const char *>(&parent_trie_node_), sizeof(parent_trie_node_));
@@ -97,10 +112,11 @@ public:
         out.write(reinterpret_cast<const char *>(&parent_symbol_), sizeof(parent_symbol_));
         out_size += sizeof(parent_symbol_);       
 
+        current_file_offset += out_size;
         return out_size;
     } 
 
-    virtual size_t Deserialize(std::istream& in, level_t num_children, bool is_leaf) {
+    virtual size_t Deserialize(std::istream& in, level_t num_children, bool is_leaf, bool use_file_offset = false) {
 
         size_t in_size = 0;
         if (!is_leaf) {

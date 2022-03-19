@@ -90,11 +90,23 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node, 
     if (!load_from_File) {
 
         std::filebuf fb;
+
         fb.open ("mdtrie_fs.txt",std::ios::out);
         std::ostream os(&fb);    
         size_t serialized_size = mdtrie.Serialize(os);
-        std::cout << "Serizlied size: " << serialized_size << std::endl;
+        std::cout << "Serialized size: " << serialized_size << std::endl;
+        std::cout << "Current file offset: " << current_file_offset << std::endl;
         fb.close();
+        raise(SIGINT);
+
+        current_file_offset = 0;
+        fb.open ("mdtrie_fs.txt",std::ios::out); // Intend to overwrite
+        std::ostream os_new(&fb);    
+        serialized_size = mdtrie.Serialize(os_new, true);  
+        std::cout << "Serialized size: " << serialized_size << std::endl;
+        std::cout << "Current file offset: " << current_file_offset << std::endl;
+        fb.close();
+        exit(0);
 
         // Just write to file
         if (!run_preset_query && !run_search_query)
@@ -107,7 +119,7 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node, 
         fb_in.open ("mdtrie_fs.txt",std::ios::in);
         std::istream is(&fb_in);
         size_t in_size;
-        in_size = mdtrie.Deserialize(is);
+        in_size = mdtrie.Deserialize(is, true);  // Use offset
         std::cout << "deserilize in_size: " << in_size << std::endl;
         fb_in.close();
         
@@ -300,7 +312,7 @@ int main(int argc, char *argv[]) {
         else if (atoi(argv[1]) == 1) {
             run_bench(max_depth, trie_depth, treeblock_size, false, true);
         }
-        else if (atoi(argv[1]) == 3) {
+        else if (atoi(argv[1]) == 3) {  // Serialize
             run_bench(max_depth, trie_depth, treeblock_size, false, false, false);
         }
         else {

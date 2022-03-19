@@ -1140,21 +1140,32 @@ public:
         return total_size;
     }
 
-    size_t Serialize(std::ostream& out) {
+    size_t Serialize(std::ostream& out, bool use_file_offset = false) {
 
         size_t out_size = 0;
+        ptr_to_file_offset[this] = current_file_offset;
 
         out.write(reinterpret_cast<const char *>(&num_frontiers_), sizeof(num_frontiers_));
         out_size += sizeof(num_frontiers_);     
 
         for (size_t i = 0; i < num_frontiers_; i++) {
-            out.write(reinterpret_cast<const char *>(&frontiers_[i]), sizeof(frontier_node<DIMENSION>));
-            out_size += sizeof(frontier_node<DIMENSION>);  
+            if (!use_file_offset) {
+                out.write(reinterpret_cast<const char *>(&frontiers_[i]), sizeof(frontier_node<DIMENSION>));
+                out_size += sizeof(frontier_node<DIMENSION>);  
+            }
+            else {
+                out.write(reinterpret_cast<const char *>(&frontiers_[i].preorder_), sizeof(frontiers_[i].preorder_));
+                out.write(reinterpret_cast<const char *>(&ptr_to_file_offset[frontiers_[i].pointer_]), sizeof(ptr_to_file_offset[frontiers_[i].pointer_]));
+                out_size += sizeof(frontiers_[i].preorder_) + sizeof(ptr_to_file_offset[frontiers_[i].pointer_]);  
+            }
         }
-      
+
+        current_file_offset += out_size;
         for (uint16_t i = 0; i < num_frontiers_; i++){
-            out_size += ((frontier_node<DIMENSION> *) frontiers_)[i].pointer_->Serialize(out);
+            out_size += ((frontier_node<DIMENSION> *) frontiers_)[i].pointer_->Serialize(out, use_file_offset);
         }
+
+        size_t new_start_out_size = out_size;
 
         // level_t root_depth_;
         out.write(reinterpret_cast<const char *>(&root_depth_), sizeof(root_depth_));
@@ -1196,11 +1207,11 @@ public:
         for (n_leaves_t i = 0; i < primary_key_list_size; i++){
             out_size += primary_key_list[i].Serialize(out);
         }
-
+        current_file_offset += out_size - new_start_out_size;
         return out_size;
     }
 
-    size_t Deserialize(std::istream &in) {
+    size_t Deserialize(std::istream &in, bool use_file_offset = false) {
         size_t in_size  = 0;
 
         // serialized_treeblock ++;
@@ -1210,8 +1221,16 @@ public:
         frontiers_ = static_cast<frontier_node<DIMENSION> *>(malloc(num_frontiers_ * sizeof(frontier_node<DIMENSION>)));
 
         for (size_t i = 0; i < num_frontiers_; i++) {
-            in.read(reinterpret_cast<char *>(&frontiers_[i]), sizeof(frontier_node<DIMENSION>));
-            in_size += sizeof(frontier_node<DIMENSION>);   
+            if (!use_file_offset) {
+                in.read(reinterpret_cast<char *>(&frontiers_[i]), sizeof(frontier_node<DIMENSION>));
+                in_size += sizeof(frontier_node<DIMENSION>);   
+            }
+            else {
+                in.read(reinterpret_cast<char *>(&frontiers_[i].preorder_), sizeof(frontiers_[i].preorder_));
+                in_size += sizeof(frontiers_[i].preorder_);             
+                in.read(reinterpret_cast<char *>(&frontiers_[i].pointer_), sizeof(frontiers_[i].pointer_));
+                in_size += sizeof(frontiers_[i].pointer_);                       
+            }
             // frontier_size += sizeof(frontier_node<DIMENSION>);                     
         }
       
@@ -1222,7 +1241,7 @@ public:
             old_ptr_to_new_ptr[old_treeblock_ptr] = new_treeblock_ptr;
 
             ((frontier_node<DIMENSION> *) frontiers_)[i].pointer_ = new_treeblock_ptr;
-            in_size += new_treeblock_ptr->Deserialize(in);
+            in_size += new_treeblock_ptr->Deserialize(in, use_file_offset);
         }
 
         // level_t root_depth_;

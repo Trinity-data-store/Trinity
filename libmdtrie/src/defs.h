@@ -92,6 +92,8 @@ std::vector<level_t> dimension_to_num_bits;
 std::vector<level_t> start_dimension_bits;
 bool no_dynamic_sizing = false;
 std::map<void *, void*> old_ptr_to_new_ptr;
+std::map<void *, size_t> ptr_to_file_offset;
+size_t current_file_offset = 0; 
 n_leaves_t treeblock_ctr = 0;
 
 std::mutex cache_lock;

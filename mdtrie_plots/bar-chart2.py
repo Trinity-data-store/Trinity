@@ -2,6 +2,8 @@ import argparse
 import re
 
 import matplotlib as mpl
+mpl.use('Agg')
+
 import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.ticker import FormatStrFormatter, LogLocator, NullFormatter
@@ -12,12 +14,12 @@ mpl.rcParams['text.usetex'] = True
 mpl.rcParams["legend.framealpha"] = 1.0
 mpl.rcParams.update({'font.size': 16, 'text.latex.preamble': [r'\usepackage{amsmath}']})
 
-color_map = {"Insertion": "green", "Lookup": "indigo", "Range Query": "red", "Storage": "blue"}
-hatch_map = {"Insertion": "+++", "Lookup": "xxxx", "Range Query": "////", "Storage": "...."}
-# color_map = {"\\textsc{MdTrie}": "green", "PH-Tree": "indigo", "R*-Tree": "blue", "Lookup": "blue",
-#              "Insertion": "red"}
-# hatch_map = {"\\textsc{MdTrie}": "+++", "PH-Tree": "xxxx", "R*-Tree": "////", "Lookup": "////",
-#              "Insertion": "...."}
+# color_map = {"Insertion": "green", "Lookup": "indigo", "Range Query": "red", "Storage": "blue"}
+# hatch_map = {"Insertion": "+++", "Lookup": "xxxx", "Range Query": "////", "Storage": "...."}
+color_map = {"\\textsc{Trinity}": "green", "PH-Tree": "indigo", "R*-Tree": "blue", "Lookup": "blue",
+             "Insertion": "red", "Baselines": "indigo"}
+hatch_map = {"\\textsc{Trinity}": "+++", "PH-Tree": "xxxx", "R*-Tree": "////", "Lookup": "////",
+             "Insertion": "....", "Baselines": "xxxx"}
 
 # color_map = {"\\textsc{Trinity}": "blue", "Aerospike": "red", "MongoDB": "indigo", "Lookup": "blue",
 #              "Insertion": "red"}

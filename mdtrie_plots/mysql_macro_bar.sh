@@ -1,0 +1,11 @@
+python3 bar-chart-query.py \
+  -d mysql_macro_bar.tsv \
+  -o mysql_macro_bar.pdf \
+  --ylabel "{Latency (ms)}" \
+  --xlabel "Systems" \
+  --logscale \
+  --ymin 10 \
+  --ymax 5000000 \
+  --xscale 0.03 --yscale 0.0175 \
+  --colors "green,blue,violet,black,cyan,red" \
+  --patterns "grid,crosshatch,dots,north east lines,crosshatch dots,north west lines"

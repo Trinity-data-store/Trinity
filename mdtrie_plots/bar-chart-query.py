@@ -2,6 +2,7 @@ import argparse
 import re
 
 import matplotlib as mpl
+mpl.use('Agg')
 import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.ticker import FormatStrFormatter, LogLocator, NullFormatter

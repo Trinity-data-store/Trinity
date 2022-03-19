@@ -181,11 +181,19 @@ public:
     }
 
 
-    size_t Serialize(std::ostream& out) {
+    size_t Serialize(std::ostream& out, bool use_file_offset = false) {
  
         size_t out_size = 0;
 
-        out_size += p_key_to_treeblock_compact->Serialize(out);         
+        if (!use_file_offset) {
+            out_size += p_key_to_treeblock_compact->Serialize(out);    
+        }
+        else {
+            for (n_leaves_t i = 0; i < total_points_count; i ++) {
+                p_key_to_treeblock_compact->Set(i, (void *) ptr_to_file_offset[p_key_to_treeblock_compact->At(i)]);
+            }     
+            out_size += p_key_to_treeblock_compact->Serialize(out);    
+        }
 
         out.write(reinterpret_cast<const char *>(&root_), sizeof(root_));
         out_size += sizeof(root_);     
@@ -201,6 +209,7 @@ public:
         out.write(reinterpret_cast<char const*>(&total_points_count), sizeof(total_points_count));
         out_size += sizeof(total_points_count);     
 
+        current_file_offset = out_size;
 
         std::queue<trie_node<DIMENSION> *> trie_node_queue;
         trie_node_queue.push(root_);
@@ -214,7 +223,7 @@ public:
 
                 trie_node<DIMENSION> *current_node = trie_node_queue.front();
                 trie_node_queue.pop(); 
-                out_size += current_node->Serialize(out, 1 << level_to_num_children[current_level], current_level == trie_depth_);
+                out_size += current_node->Serialize(out, 1 << level_to_num_children[current_level], current_level == trie_depth_, use_file_offset);
                 
                 if (current_level != trie_depth_) {
                     for (int i = 0; i < (1 << level_to_num_children[current_level]); i++)
@@ -225,7 +234,7 @@ public:
                     }
                 }
                 else {
-                    out_size += current_node->get_block()->Serialize(out);
+                    out_size += current_node->get_block()->Serialize(out, use_file_offset);
                 }
             }
             current_level ++;                
@@ -234,7 +243,7 @@ public:
     }
 
 
-    size_t Deserialize(std::istream& in) {
+    size_t Deserialize(std::istream& in, bool use_file_offset = false) {
 
         size_t in_size = 0;
 
@@ -270,7 +279,7 @@ public:
                 trie_node<DIMENSION> *current_node = trie_node_queue.front();
 
                 trie_node_queue.pop(); 
-                in_size += current_node->Deserialize(in, 1 << level_to_num_children[current_level], current_level == trie_depth_);
+                in_size += current_node->Deserialize(in, 1 << level_to_num_children[current_level], current_level == trie_depth_, use_file_offset);
 
                 if (current_level != trie_depth_) {
                     for (int i = 0; i < (1 << level_to_num_children[current_level]); i++)
@@ -285,7 +294,7 @@ public:
                 else {
                     old_ptr_to_new_ptr[current_node->get_block()] = new tree_block<DIMENSION>(trie_depth_, 1 /* initial_tree_capacity_ */, 1 << level_to_num_children[trie_depth_], 1, max_depth_, max_tree_nodes_, current_node);
                     current_node->set_block((tree_block<DIMENSION> *) old_ptr_to_new_ptr[current_node->get_block()]);
-                    in_size += current_node->get_block()->Deserialize(in);
+                    in_size += current_node->get_block()->Deserialize(in, use_file_offset);
                 }
             }
             current_level ++;   
