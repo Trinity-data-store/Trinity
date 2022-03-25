@@ -117,7 +117,12 @@ public:
     } 
 
     virtual size_t Deserialize(std::istream& in, level_t num_children, bool is_leaf, bool use_file_offset = false) {
-
+        
+        if (use_file_offset) {
+            printf("not implemented!\n");
+            exit(-1);
+        }
+        
         size_t in_size = 0;
         if (!is_leaf) {
 
