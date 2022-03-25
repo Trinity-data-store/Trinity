@@ -29,7 +29,7 @@ sudo apt-get install -y libevent-dev
 
 cd ~/
 wget https://github.com/libevent/libevent/releases/download/release-2.1.10-stable/libevent-2.1.10-stable.tar.gz
-tar xvfz libevent-2.1.10-stable.tar.gz
+tar xfz libevent-2.1.10-stable.tar.gz
 cd libevent-2.1.10-stable
 sudo ./configure --prefix=/usr 
 sudo make
@@ -40,7 +40,7 @@ cd ~/
 git clone -b 0.15.0 https://github.com/apache/thrift.git
 cd thrift
 ./bootstrap.sh
-sudo ./configure --without-java --without-python
+sudo ./configure
 sudo make
 sudo make install
 cd ~/
