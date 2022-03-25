@@ -26,11 +26,20 @@ sudo apt-get install -y python3-dev  # for python3.x installs
 # make
 # sudo make install
 
+wget https://github.com/libevent/libevent/releases/download/release-2.1.10-stable/libevent-2.1.10-stable.tar.gz
+tar xvfz libevent-2.1.10-stable.tar.gz
+cd libevent-2.1.10-stable
+./configure --prefix=/usr/local/libevent/2_1_10
+make
+make install
+cd ~/
+
 git clone -b 0.15.0 https://github.com/apache/thrift.git
 cd thrift
 ./bootstrap.sh
-./configure
+./configure (--with-boost=/usr/local)
 make
 sudo make install
+cd ~/
 
-cmake -DGENERATE_THRIFT=on ..
+# cmake -DGENERATE_THRIFT=on ..
