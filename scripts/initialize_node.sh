@@ -1,5 +1,6 @@
 #!/bin/sh
 
+cd /mntData2/md-trie/
 git config --global user.name "MaoZiming"
 git config --global user.email "ziming.mao@yale.edu"
 
