@@ -6,6 +6,7 @@ git config --global user.email "ziming.mao@yale.edu"
 
 cd /mntData2/
 sudo apt update
+sudo apt install htop
 # wget https://github.com/Kitware/CMake/releases/download/v3.23.0-rc5/cmake-3.23.0-rc5-linux-x86_64.tar.gz
 
 # Install cmake
@@ -43,3 +44,6 @@ sudo make install
 cd /mntData2/
 
 # cmake -DGENERATE_THRIFT=on ..
+
+sudo apt install -y python3-pip
+pip3 install pandas
