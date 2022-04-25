@@ -1,6 +1,7 @@
 # Trinity
 
-This repository is the official implementation of [Trinity: A Fast and Space-efficient Multi-attribute Data Store]().  
+Repository for [Trinity: A Fast and Space-efficient Multi-attribute Data Store]().   
+In-progress
 
 ## Install Dependencies
 
