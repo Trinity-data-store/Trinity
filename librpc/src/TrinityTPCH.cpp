@@ -25,8 +25,7 @@ vector<vector <int32_t>> *get_data_vector(std::vector<int32_t> &max_values, std:
     Get data from the TPC-H dataset stored in a vector
 */
 
-  std::ifstream infile("../data/tpc-h/tpch_dataset.csv");
-
+  std::ifstream infile("/mntData2/tpch-dbgen/data_200/orders_lineitem_merged_by_chunk.csv");
   std::string line;
   std::getline(infile, line);
 
@@ -52,32 +51,25 @@ vector<vector <int32_t>> *get_data_vector(std::vector<int32_t> &max_values, std:
           std::getline(ss, substr, ',');
       
           int32_t num;
-          if (index == 5 || index == 6 || index == 7 || index == 16) // float with 2dp
+          // [EXTENDEDPRICE, DISCOUNT, TAX, TOTALPRICE] // float with 2dp
+          if (index == 1 || index == 2 || index == 3 || index == 7) 
           {
               num = static_cast<int32_t>(std::stof(substr) * 100);
           }
-          else if (index == 10 || index == 11 || index == 12 || index == 17) //yy-mm-dd
+          // [SHIPDATE, COMMITDATE, RECEIPTDATE, ORDERDATE]
+          else if (index == 4 || index == 5 || index == 6 || index == 8) //yy-mm-dd
           {
-              substr.erase(std::remove(substr.begin(), substr.end(), '-'), substr.end());
               num = static_cast<int32_t>(std::stoul(substr));
           }
-          else if (index == 8 || index == 9 || index == 13 || index == 15 || index == 18) //skip text
-              continue;
-          else if (index == 0 || index == 1 || index == 2 || index == 14) // secondary keys
-              continue;
-          else if (index == 19) // all 0
-              continue;
-          else if (index == 3) // lineitem
-              continue;
+          // [QUANTITY]
           else
               num = static_cast<int32_t>(std::stoul(substr));
 
-      
           point[leaf_point_index] = num;
           leaf_point_index++;
       }
       
-      if (n_points == total_points_count)
+      if (n_points == total_points_count / 10)
           break;
 
       data_vector->push_back(point);
@@ -94,14 +86,14 @@ vector<vector <int32_t>> *get_data_vector(std::vector<int32_t> &max_values, std:
 }
 
 
-
 int main(){
 
-    std::vector<std::string> server_ips = {"172.28.229.152", "172.28.229.153", "172.28.229.151", "172.28.229.149", "172.28.229.148"};
-    total_points_count = 300005812;
+    // std::vector<std::string> server_ips = {"172.28.229.152", "172.28.229.153", "172.28.229.151", "172.28.229.149", "172.28.229.148"};
+    std::vector<std::string> server_ips = {"128.110.219.63", "128.110.219.56", "128.110.219.46", "128.110.219.39", "128.110.219.70"};
+    total_points_count = 1200018434;
 
     int shard_num = 20;
-    int client_num = 128;
+    int client_num = 64;
     auto client = MDTrieClient(server_ips, shard_num);
     client_to_server_vect.resize(total_points_count);
 
@@ -254,14 +246,15 @@ int main(){
         Point Lookup given primary key
     */
 
+    
     start = GetTimestamp();
     throughput = total_client_lookup(data_vector, shard_num, client_num, server_ips);
 
     diff = GetTimestamp() - start;
     cout << "Primary Key Lookup Throughput (pt / seconds): " << throughput << endl;
+    
 
-
-    client.clear_trie();
+    // client.clear_trie();
     delete data_vector;
     return 0;
 }
