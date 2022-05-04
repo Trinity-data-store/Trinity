@@ -83,6 +83,8 @@ vector<vector <int32_t>> *get_data_vector(std::vector<int32_t> &max_values, std:
 int main(){
 
     std::vector<std::string> server_ips = {"172.28.229.152", "172.28.229.153", "172.28.229.151", "172.28.229.149", "172.28.229.148"};
+    const char *file_address = "/mntData2/tpch-dbgen/data_200/orders_lineitem_merged_by_chunk.csv";
+
     total_points_count = 14583357;
     int shard_num = 20;
     int client_num = 64;
@@ -115,7 +117,7 @@ int main(){
     vector<vector <int32_t>> *data_vector = get_data_vector(max_values, min_values);
 
     start = GetTimestamp();
-    throughput = total_client_insert(data_vector, shard_num, client_num, server_ips);
+    throughput = total_client_insert(file_address, shard_num, client_num, server_ips);
     diff = GetTimestamp() - start;
 
     cout << "Insertion Throughput (pt / seconds): " << throughput << endl;
@@ -364,7 +366,7 @@ int main(){
     */
 
     start = GetTimestamp();
-    throughput = total_client_lookup(data_vector, shard_num, client_num, server_ips);
+    throughput = total_client_lookup(shard_num, client_num, server_ips);
 
     diff = GetTimestamp() - start;
     cout << "Primary Key Lookup Throughput (pt / seconds): " << throughput << endl;
