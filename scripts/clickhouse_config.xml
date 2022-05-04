@@ -627,14 +627,14 @@
              <shard>
                 <internal_replication>false</internal_replication>
                  <replica>
-                     <host>128.110.219.148</host>
+                     <host>10.254.254.229</host>
                      <port>9000</port>
                  </replica>
              </shard>
              <shard>
                 <internal_replication>false</internal_replication>
                  <replica>
-                     <host>128.110.219.152</host>
+                     <host>10.254.254.253</host>
                      <port>9000</port>
                  </replica>
              </shard>
@@ -1091,11 +1091,11 @@
     <!-- Uncomment if you want data to be compressed 30-100% better.
          Don't do that if you just started using ClickHouse.
       -->
-    <compression>
+    <!-- <compression>
         <case>
-            <method>NONE</method>
+            <method>None</method>
         </case>
-    </compression>
+    </compression> -->
 
     <!--
     <compression>

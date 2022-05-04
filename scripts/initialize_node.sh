@@ -1,6 +1,7 @@
 #!/bin/sh
 
 # Other configuration
+cd /mntData2/md-trie
 git config --global user.name "MaoZiming"
 git config --global user.email "ziming.mao@yale.edu"
 cd /mntData2/
@@ -54,6 +55,7 @@ sudo /sbin/ldconfig
 ulimit -n 16384
 
 # Installing CLickhouse DB
+pip3 install clickhouse-driver[lz4]
 sudo apt-get install -y apt-transport-https ca-certificates dirmngr
 sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 8919F6BD2B48D754
 echo "deb https://packages.clickhouse.com/deb stable main" | sudo tee /etc/apt/sources.list.d/clickhouse.list
@@ -64,6 +66,7 @@ sudo timedatectl set-timezone America/New_York # Set time zone
 
 # Configure ClickHouse
 sudo cp /mntData2/md-trie/scripts/clickhouse_config.xml /etc/clickhouse-server/config.xml
+sudo cp /mntData2/md-trie/scripts/clickhouse_users.xml /etc/clickhouse-server/users.xml
 
 # Start clickhouse
 sudo service clickhouse-server start
@@ -113,6 +116,25 @@ alter user postgres with password 'postgres';
 
 # Distributed ClickHouse
 # https://dev.to/zergon321/creating-a-clickhouse-cluster-part-i-sharding-4j20
+
+# ClickHouse Table Size command:
+
+SELECT
+    database,
+    table,
+    formatReadableSize(sum(data_compressed_bytes) AS size) AS compressed,
+    formatReadableSize(sum(data_uncompressed_bytes) AS usize) AS uncompressed,
+    round(usize / size, 2) AS compr_rate,
+    sum(rows) AS rows,
+    count() AS part_count
+FROM system.parts
+WHERE (active = 1) AND (table LIKE '%') AND (database LIKE '%')
+GROUP BY
+    database,
+    table
+ORDER BY size DESC;
+
+# CLIENT
 CREATE TABLE IF NOT EXISTS distributed_test(
                           timestamp DateTime,
                           parameter String,
@@ -121,6 +143,7 @@ CREATE TABLE IF NOT EXISTS distributed_test(
                           PARTITION BY parameter
                           ORDER BY (timestamp, parameter)
 
+# MASTER
 CREATE TABLE IF NOT EXISTS distributed_test(
                       timestamp DateTime,
                       parameter String,
@@ -137,8 +160,8 @@ CREATE database distributed_example;
 \c distributed_example
 CREATE EXTENSION IF NOT EXISTS timescaledb;
 
-SELECT add_data_node('dn1', host => '128.110.219.152');
-SELECT add_data_node('dn2', host => '128.110.219.148');
+SELECT add_data_node('dn1', host => '10.254.254.253');
+SELECT add_data_node('dn2', host => '10.254.254.229');
 
 CREATE TABLE conditions_distributed (
    time        TIMESTAMPTZ       NOT NULL,
@@ -149,3 +172,80 @@ SELECT create_distributed_hypertable('conditions_distributed', 'time', 'location
     data_nodes => '{ "dn1", "dn2"}');
 INSERT INTO conditions_distributed VALUES ('2020-12-14 13:45', 1, '1.2.3.4');
 
+# Github Events (ClickHouse):
+
+CREATE TABLE github_events_distributed
+(
+    file_time DateTime,
+    event_type Enum('CommitCommentEvent' = 1, 'CreateEvent' = 2, 'DeleteEvent' = 3, 'ForkEvent' = 4,
+                    'GollumEvent' = 5, 'IssueCommentEvent' = 6, 'IssuesEvent' = 7, 'MemberEvent' = 8,
+                    'PublicEvent' = 9, 'PullRequestEvent' = 10, 'PullRequestReviewCommentEvent' = 11,
+                    'PushEvent' = 12, 'ReleaseEvent' = 13, 'SponsorshipEvent' = 14, 'WatchEvent' = 15,
+                    'GistEvent' = 16, 'FollowEvent' = 17, 'DownloadEvent' = 18, 'PullRequestReviewEvent' = 19,
+                    'ForkApplyEvent' = 20, 'Event' = 21, 'TeamAddEvent' = 22),
+    created_at DateTime,
+    updated_at DateTime,
+    action Enum('none' = 0, 'created' = 1, 'added' = 2, 'edited' = 3, 'deleted' = 4, 'opened' = 5, 'closed' = 6, 'reopened' = 7, 'assigned' = 8, 'unassigned' = 9,
+                'labeled' = 10, 'unlabeled' = 11, 'review_requested' = 12, 'review_request_removed' = 13, 'synchronize' = 14, 'started' = 15, 'published' = 16, 'update' = 17, 'create' = 18, 'fork' = 19, 'merged' = 20),
+    comment_id UInt64,
+    position Int32,
+    line Int32,
+    ref_type Enum('none' = 0, 'branch' = 1, 'tag' = 2, 'repository' = 3, 'unknown' = 4),
+    number UInt32,
+    state Enum('none' = 0, 'open' = 1, 'closed' = 2),
+    locked UInt8,
+    comments UInt32,
+    author_association Enum('NONE' = 0, 'CONTRIBUTOR' = 1, 'OWNER' = 2, 'COLLABORATOR' = 3, 'MEMBER' = 4, 'MANNEQUIN' = 5),
+    closed_at DateTime,
+    merged_at DateTime,
+    merged UInt8,
+    mergeable UInt8,
+    rebaseable UInt8,
+    mergeable_state Enum('unknown' = 0, 'dirty' = 1, 'clean' = 2, 'unstable' = 3, 'draft' = 4),
+    review_comments UInt32,
+    maintainer_can_modify UInt8,
+    commits UInt32,
+    additions UInt32,
+    deletions UInt32,
+    changed_files UInt32,
+    original_position UInt32,
+    push_size UInt32,
+    push_distinct_size UInt32,
+    review_state Enum('none' = 0, 'approved' = 1, 'changes_requested' = 2, 'commented' = 3, 'dismissed' = 4, 'pending' = 5)
+)
+# ENGINE = MergeTree  # For data nodes
+ENGINE = Distributed(test_trinity, default, github_events_distributed, rand())  # For Server Nodes
+# ORDER BY (event_type, created_at)  # For data nodes
+
+# Insert into table (ClickHouse)
+INSERT INTO github_events_distributed SELECT * FROM github_events;
+
+# TPC-H
+
+DROP TABLE IF EXISTS tpch_distributed;
+
+CREATE TABLE tpch_distributed (
+    ID UInt32,
+    QUANTITY UInt8,
+    EXTENDEDPRICE UInt32,
+    DISCOUNT UInt8,
+    TAX UInt8,
+    SHIPDATE UInt32,
+    COMMITDATE UInt32,
+    RECEIPTDATE UInt32,
+    TOTALPRICE UInt32,
+    ORDERDATE UInt32
+# ) Engine = MergeTree ORDER BY (ID)
+) ENGINE = Distributed(test_trinity, default, tpch_distributed, rand())  # For Server Nodes
+
+cat /mntData2/tpch-dbgen/data_200/orders_lineitem_merged_by_chunk_indexed.csv | clickhouse-client --query="INSERT INTO tpch_distributed FORMAT CSV";
+
+# cat /mntData2/tpch-dbgen/data_200/orders_lineitem_merged_by_chunk_indexed.csv | clickhouse-client --query="INSERT INTO tpch_distributed SELECT col1, toInt32(col2 * 100), toInt32(col3 * 100), toInt32(col4 * 100), col5, col6, col7, toInt32(col8 * 100), col9 FROM input('col1 UInt8, col2 Float32, col3 Float32, col4 Float32, col5 UInt32, col6 UInt32, col7 UInt32, col8 Float32, col9 UInt32')   FORMAT CSVWithNames";
+
+# tail -n +2 /mntData2/tpch-dbgen/data_200/orders_lineitem_merged_by_chunk_5.csv | clickhouse-client --query="INSERT INTO tpch_distributed SELECT col1, toInt32(col2 * 100), toInt32(col3 * 100), toInt32(col4 * 100), col5, col6, col7, toInt32(col8 * 100), col9 FROM input('col1 UInt8, col2 Decimal32, col3 Decimal32, col4 Decimal32, col5 UInt32, col6 UInt32, col7 UInt32, col8 Decimal32, col9 UInt32')   FORMAT CSV";
+
+SELECT * 
+FROM tpch_distributed
+WHERE SHIPDATE BETWEEN 19940101 AND 19950101  
+AND DISCOUNT BETWEEN 5 AND 7
+AND QUANTITY <= 24;
