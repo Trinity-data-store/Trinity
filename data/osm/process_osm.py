@@ -34,7 +34,7 @@ class NamesHandler(osmium.SimpleHandler):
         else:
             print("timestamp not found")
             return
-        if n.location:
+        if n.location and n.location.lon and n.location.lat:
             json["lon"] = round(abs(n.location.lon) * 10000000)
             json["lat"] = round(abs(n.location.lat) * 10000000)
         else:

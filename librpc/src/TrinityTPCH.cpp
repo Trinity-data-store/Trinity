@@ -18,100 +18,24 @@ using namespace apache::thrift;
 using namespace apache::thrift::protocol;
 using namespace apache::thrift::transport;
 const int DIMENSION = 9;
-
-vector<vector <int32_t>> *get_data_vector(std::vector<int32_t> &max_values, std::vector<int32_t> &min_values){
-
-/** 
-    Get data from the TPC-H dataset stored in a vector
-*/
-
-  std::ifstream infile("../data/tpc-h/tpch_dataset.csv");
-
-  std::string line;
-  std::getline(infile, line);
-
-  n_leaves_t n_points = 0;
-  auto data_vector = new vector<vector <int32_t>>;
-
-  while (std::getline(infile, line))
-  {
-      std::stringstream ss(line);
-      vector <int32_t> point(DIMENSION, 0);
-
-      // Parse string by ","
-      int leaf_point_index = 0;
-      int index = -1;
-
-      // Kept indexes: 
-      // [4, 5, 6, 7, 10, 11, 12, 16, 17]
-      // [QUANTITY, EXTENDEDPRICE, DISCOUNT, TAX, SHIPDATE, COMMITDATE, RECEIPTDATE, TOTALPRICE, ORDERDATE]
-      while (ss.good())
-      {
-          index ++;
-          std::string substr;
-          std::getline(ss, substr, ',');
-      
-          int32_t num;
-          if (index == 5 || index == 6 || index == 7 || index == 16) // float with 2dp
-          {
-              num = static_cast<int32_t>(std::stof(substr) * 100);
-          }
-          else if (index == 10 || index == 11 || index == 12 || index == 17) //yy-mm-dd
-          {
-              substr.erase(std::remove(substr.begin(), substr.end(), '-'), substr.end());
-              num = static_cast<int32_t>(std::stoul(substr));
-          }
-          else if (index == 8 || index == 9 || index == 13 || index == 15 || index == 18) //skip text
-              continue;
-          else if (index == 0 || index == 1 || index == 2 || index == 14) // secondary keys
-              continue;
-          else if (index == 19) // all 0
-              continue;
-          else if (index == 3) // lineitem
-              continue;
-          else
-              num = static_cast<int32_t>(std::stoul(substr));
-
-      
-          point[leaf_point_index] = num;
-          leaf_point_index++;
-      }
-      
-      if (n_points == total_points_count)
-          break;
-
-      data_vector->push_back(point);
-
-      for (dimension_t i = 0; i < DIMENSION; i++){
-          if (point[i] > max_values[i])
-              max_values[i] = point[i];
-          if (point[i] < min_values[i])
-              min_values[i] = point[i];         
-      }    
-      n_points ++;
-  }
-  return data_vector;
-}
-
-
+const int shard_num = 30;
+const int client_num = 64;
 
 int main(){
 
-    std::vector<std::string> server_ips = {"172.28.229.152", "172.28.229.153", "172.28.229.151", "172.28.229.149", "172.28.229.148"};
-    total_points_count = 300005812;
+    std::vector<std::string> server_ips = {"10.254.254.229", "10.254.254.253"};
+    const char *file_address = "/mntData2/tpch-dbgen/data_200/orders_lineitem_merged_by_chunk_indexed.csv";
+    
+    total_points_count = 1200018434;
 
-    int shard_num = 20;
-    int client_num = 128;
     auto client = MDTrieClient(server_ips, shard_num);
     client_to_server_vect.resize(total_points_count);
 
     for (unsigned int i = 0; i < server_ips.size(); ++i) {
       for (int j = 0; j < shard_num; j++){
-        // client_to_server.push_back({});
         server_to_client.push_back({});
       }
     }
-
     if (!client.ping(2)){
         std::cerr << "Server setting wrong!" << std::endl;
         exit(-1);
@@ -126,62 +50,31 @@ int main(){
     std::tuple<uint32_t, float> return_tuple;
     uint32_t throughput;
 
-    std::vector<int32_t> max_values(DIMENSION, 0);
-    std::vector<int32_t> min_values(DIMENSION, 2147483647);
-    vector<vector <int32_t>> *data_vector = get_data_vector(max_values, min_values);
+    // The range here is important! Must not overshoot the bit width set in the Trie!
+    // std::vector<int32_t> max_values = {255, 2147483646, 255, 255, 2147483646, 2147483646, 2147483646, 2147483646, 2147483646};
+    // std::vector<int32_t> min_values = {0, 0, 0, 0, 0, 0, 0, 0, 0};
+
+    // Narrower Range
+    std::vector<int32_t> max_values = {50, 10495000, 10, 8, 19981201, 19981031, 19981231, 58211292, 19980802};
+    std::vector<int32_t> min_values = {1, 90006, 0, 0, 19920102, 19920131, 19920103, 81347, 19920101};
+
+    // vector<vector <int32_t>> *data_vector = check_data_vector_tpch();
+    // return 0;
 
     start = GetTimestamp();
-    throughput = total_client_insert(data_vector, shard_num, client_num, server_ips);
+    throughput = total_client_insert(file_address, shard_num, client_num, server_ips);
     diff = GetTimestamp() - start;
 
     cout << "Insertion Throughput (pt / seconds): " << throughput << endl;
     cout << "End-to-end Latency (us): " << diff << endl;
     cout << "Storage: " << client.get_size() << endl;
 
-    /**   
-     * Sample Query 1:
-    */
-    client.pull_global_cache();
+    std::vector<int32_t> found_points;
     std::vector<int32_t>start_range(DIMENSION, 0);
     std::vector<int32_t>end_range(DIMENSION, 0);
 
-    start = GetTimestamp();
-
-    // [QUANTITY, EXTENDEDPRICE, DISCOUNT, TAX, SHIPDATE, COMMITDATE, RECEIPTDATE, TOTALPRICE, ORDERDATE]
-
-    for (dimension_t i = 0; i < DIMENSION; i++){
-        start_range[i] = min_values[i];
-        end_range[i] = max_values[i];
-
-        if (i == 0) 
-        {
-            start_range[i] = 20;  
-        }
-        if (i == 7){ 
-            start_range[i] = 1000000;  
-            end_range[i] = 5000000;
-        }
-        if (i == 3)
-            start_range[i] = 1;
-    }
-    std::vector<int32_t> found_points;
-    start = GetTimestamp();
-    client.range_search_trie(found_points, start_range, end_range);
-    diff = GetTimestamp() - start;
-
-    std::cout << "Query 1 end to end latency: " << diff << std::endl;       
-    std::cout << "Found points count: " << found_points.size() << std::endl;
-
-    int count = 0;
-    for (unsigned int i = 0; i < data_vector->size(); i++){
-        std::vector<int32_t> data = (* data_vector)[i];
-        if (data[0] >= 20 && data[7] <= 5000000 && data[7] >= 1000000 && data[3] >= 1)
-            count ++;
-    }
-    std::cout << "Correct Size: " << count << std::endl;
-    
-    /**   
-     * Sample Query 2:
+    /** 
+        Query 1
     */
 
     // [QUANTITY, EXTENDEDPRICE, DISCOUNT, TAX, SHIPDATE, COMMITDATE, RECEIPTDATE, TOTALPRICE, ORDERDATE]
@@ -189,50 +82,17 @@ int main(){
         start_range[i] = min_values[i];
         end_range[i] = max_values[i];
 
-        if (i == 1) 
+        if (i == 4) 
         {
-            end_range[i] = 10000000;  
+            start_range[i] = 19940101;
+            end_range[i] = 19950101;  
         }
-        if (i == 7){ 
-            start_range[i] = 5000000;
-        }
-        if (i == 3)
+        if (i == 2){ 
             start_range[i] = 5;
-    }
-    found_points.clear();
-    start = GetTimestamp();
-    client.range_search_trie(found_points, start_range, end_range);
-    diff = GetTimestamp() - start;
-
-    std::cout << "Query 2 end to end latency: " << diff << std::endl;  
-    std::cout << "Found points count: " << found_points.size() << std::endl;
-    
-    count = 0;
-    for (unsigned int i = 0; i < data_vector->size(); i++){
-        std::vector<int32_t> data = (* data_vector)[i];
-        if (data[1] <= 10000000 && data[7] >= 5000000 && data[3] >= 5)
-            count ++;
-    }
-    std::cout << "Correct Size: " << count << std::endl;
-
-    /**   
-     * Sample Query 3:
-    */
-    // [QUANTITY, EXTENDEDPRICE, DISCOUNT, TAX, SHIPDATE, COMMITDATE, RECEIPTDATE, TOTALPRICE, ORDERDATE]
-
-    for (dimension_t i = 0; i < DIMENSION; i++){
-        start_range[i] = min_values[i];
-        end_range[i] = max_values[i];
-
-        if (i == 1) 
-        {
-            end_range[i] = 5000000;  
+            end_range[i] = 7;  
         }
-        if (i == 7){ 
-            start_range[i] = 40000000;
-        }
-        if (i == 3)
-            start_range[i] = 5;
+        if (i == 0)
+            end_range[i] = 24;
     }
 
     found_points.clear();
@@ -240,28 +100,28 @@ int main(){
     client.range_search_trie(found_points, start_range, end_range);
     diff = GetTimestamp() - start;
 
-    std::cout << "Query 3 end to end latency: " << diff << std::endl;  
+    std::cout << "Query 1 end to end latency: " << diff << std::endl;  
     std::cout << "Found points count: " << found_points.size() << std::endl;
-    count = 0;
-    for (unsigned int i = 0; i < data_vector->size(); i++){
-        std::vector<int32_t> data = (* data_vector)[i];
-        if (data[1] <= 5000000 && data[7] >= 40000000 && data[3] >= 5)
-            count ++;
-    }
-    std::cout << "Correct Size: " << count << std::endl;
+    // Correct Size: 23892962 (matched by Clickhouse)
 
     /**   
         Point Lookup given primary key
     */
 
     start = GetTimestamp();
-    throughput = total_client_lookup(data_vector, shard_num, client_num, server_ips);
+    throughput = total_client_lookup(shard_num, client_num, server_ips);
 
     diff = GetTimestamp() - start;
     cout << "Primary Key Lookup Throughput (pt / seconds): " << throughput << endl;
-
-
-    client.clear_trie();
-    delete data_vector;
+    
     return 0;
 }
+
+/**   
+    Insertion Throughput (pt / seconds): 958917
+    End-to-end Latency (us): 1312271436
+    Storage: 50205921310
+    Query 1 end to end latency: 10609785
+    Found points count: 23892962
+    Primary Key Lookup Throughput (pt / seconds): 759078
+*/
