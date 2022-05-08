@@ -87,8 +87,8 @@ sudo cp /mntData2/md-trie/scripts/pg_hba.conf /etc/postgresql/14/main/pg_hba.con
 mkdir -p /mntData2/postgresql/14/main
 sudo chown -R postgres:postgres /mntData2/postgresql/14/main
 sudo -u postgres /usr/lib/postgresql/14/bin/initdb -D /mntData2/postgresql/14/main
-sudo service postgresql stop
-sudo service postgresql start
+# sudo service postgresql stop
+# sudo service postgresql start
 
 # No need whatever later
 exit 0
@@ -224,7 +224,7 @@ INSERT INTO github_events_distributed SELECT * FROM github_events;
 
 DROP TABLE IF EXISTS tpch_distributed;
 
-CREATE TABLE tpch_distributed (
+CREATE TABLE IF NOT EXISTS tpch_distributed (
     ID UInt32,
     QUANTITY UInt8,
     EXTENDEDPRICE UInt32,
@@ -238,7 +238,7 @@ CREATE TABLE tpch_distributed (
 # ) Engine = MergeTree ORDER BY (ID)
 ) ENGINE = Distributed(test_trinity, default, tpch_distributed, rand())  # For Server Nodes
 
-cat /mntData2/tpch-dbgen/data_200/orders_lineitem_merged_by_chunk_indexed.csv | clickhouse-client --query="INSERT INTO tpch_distributed FORMAT CSV";
+cat /mntData2/tpch-dbgen/data_500/orders_lineitem_merged_indexed.csv | clickhouse-client --query="INSERT INTO tpch_distributed FORMAT CSV";
 
 # cat /mntData2/tpch-dbgen/data_200/orders_lineitem_merged_by_chunk_indexed.csv | clickhouse-client --query="INSERT INTO tpch_distributed SELECT col1, toInt32(col2 * 100), toInt32(col3 * 100), toInt32(col4 * 100), col5, col6, col7, toInt32(col8 * 100), col9 FROM input('col1 UInt8, col2 Float32, col3 Float32, col4 Float32, col5 UInt32, col6 UInt32, col7 UInt32, col8 Float32, col9 UInt32')   FORMAT CSVWithNames";
 
