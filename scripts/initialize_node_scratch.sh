@@ -93,11 +93,11 @@ sudo apt update
 sudo apt install -y timescaledb-2-postgresql-14
 
 # Set up psql stuff
-sudo cp /proj/Trinity/scripts/postgresql.conf /etc/postgresql/14/main/postgresql.conf 
-sudo cp /proj/Trinity/scripts/pg_hba.conf /etc/postgresql/14/main/pg_hba.conf
-mkdir -p ~/postgresql/14/main
-sudo chown -R postgres:postgres ~/postgresql/14/main
-sudo -u postgres /usr/lib/postgresql/14/bin/initdb -D ~/postgresql/14/main
+sudo cp /mntData2/Trinity/scripts/postgresql.conf /etc/postgresql/14/main/postgresql.conf 
+sudo cp /mntData2/Trinity/scripts/pg_hba.conf /etc/postgresql/14/main/pg_hba.conf
+mkdir -p /mntData2/postgresql/14/main
+sudo chown -R postgres:postgres /mntData2/postgresql/14/main
+sudo -u postgres /usr/lib/postgresql/14/bin/initdb -D /mntData2/postgresql/14/main
 
 exit 0
 

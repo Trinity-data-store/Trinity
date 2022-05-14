@@ -6,3 +6,5 @@ sudo mv libevent-2.1.10-stable dependencies
 sudo mv thrift dependencies
 
 # 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
+
+git clone https://github.com/MaoZiming/Trinity.git
