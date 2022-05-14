@@ -95,10 +95,12 @@ sudo apt install -y timescaledb-2-postgresql-14
 # Set up psql stuff
 sudo cp /mntData2/Trinity/scripts/postgresql.conf /etc/postgresql/14/main/postgresql.conf 
 sudo cp /mntData2/Trinity/scripts/pg_hba.conf /etc/postgresql/14/main/pg_hba.conf
-mkdir -p /mntData2/postgresql/14/main
-sudo chown -R postgres:postgres /mntData2/postgresql/14/main
-sudo -u postgres /usr/lib/postgresql/14/bin/initdb -D /mntData2/postgresql/14/main
 
+if [ ! -d "/mntData2/postgresql/14/main" ]; then
+    mkdir -p /mntData2/postgresql/14/main
+    sudo chown -R postgres:postgres /mntData2/postgresql/14/main
+    sudo -u postgres /usr/lib/postgresql/14/bin/initdb -D /mntData2/postgresql/14/main
+fi
 exit 0
 
 # Start clickhouse
