@@ -5,7 +5,7 @@
 # sh /proj/Trinity/scripts/initialize_node_scratch.sh
 
 # Update Github
-cd /proj/trinity-PG0/Trinity/
+cd /mntData2/Trinity/
 git config --global user.name "MaoZiming"
 git config --global user.email "ziming.mao@yale.edu"
 git pull origin main
@@ -14,7 +14,7 @@ git pull origin main
 sudo apt update
 sudo apt install htop
 
-cd ~/
+cd /mntData2/dependencies/
 
 # Install Cmake
 if [ ! -d "cmake-3.23.0-rc5-linux-x86_64"]; then
@@ -23,8 +23,7 @@ if [ ! -d "cmake-3.23.0-rc5-linux-x86_64"]; then
 fi
 sudo cp -r cmake-3.23.0-rc5-linux-x86_64/* /usr 
 PATH=/usr/:$PATH
-
-cd ~/
+cd /mntData2/dependencies/
 
 # Install libevent
 if [ ! -d "libevent-2.1.10-stable" ] then
@@ -37,8 +36,7 @@ if [ ! -d "libevent-2.1.10-stable" ] then
 fi
 cd libevent-2.1.10-stable
 sudo make install
-
-cd ~/
+cd /mntData2/dependencies/
 
 # Install thrift
 if [ ! -d "thrift"]; then
@@ -51,6 +49,7 @@ if [ ! -d "thrift"]; then
 fi
 cd thrift
 sudo make install
+cd /mntData2/dependencies/
 
 # Install Other Packages for Trinity
 sudo apt-get install -y libboost-test-dev  
@@ -80,8 +79,8 @@ sudo apt-get install -y clickhouse-client
 sudo timedatectl set-timezone America/New_York # Set time zone
 
 # Configure clickhouse DB
-sudo cp /proj/trinity-PG0/Trinity/scripts/clickhouse_config.xml /etc/clickhouse-server/config.xml
-sudo cp /proj/trinity-PG0/Trinity/scripts/clickhouse_users.xml /etc/clickhouse-server/users.xml
+sudo cp /mntData2/Trinity/scripts/clickhouse_config.xml /etc/clickhouse-server/config.xml
+sudo cp /mntData2/Trinity/scripts/clickhouse_users.xml /etc/clickhouse-server/users.xml
 
 # Set up Timescale DB
 sudo dpkg --configure -a
