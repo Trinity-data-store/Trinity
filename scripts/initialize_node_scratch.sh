@@ -2,11 +2,13 @@
 
 # Run from Cloudlab
 # git clone https://github.com/MaoZiming/Trinity.git
-# sh ~/Trinity/scripts/initialize_node_scratch.sh
+# sh /proj/Trinity/scripts/initialize_node_scratch.sh
 
 # Basic setup
 sudo apt update
 sudo apt install htop
+
+cd ~/
 
 # Install Cmake
 wget -nc https://github.com/Kitware/CMake/releases/download/v3.23.0-rc5/cmake-3.23.0-rc5-linux-x86_64.tar.gz
@@ -60,8 +62,8 @@ sudo apt-get install -y clickhouse-client
 sudo timedatectl set-timezone America/New_York # Set time zone
 
 # Configure clickhouse DB
-sudo cp ~/Trinity/scripts/clickhouse_config.xml /etc/clickhouse-server/config.xml
-sudo cp ~/Trinity/scripts/clickhouse_users.xml /etc/clickhouse-server/users.xml
+sudo cp /proj/Trinity/scripts/clickhouse_config.xml /etc/clickhouse-server/config.xml
+sudo cp /proj/Trinity/scripts/clickhouse_users.xml /etc/clickhouse-server/users.xml
 
 # Set up Timescale DB
 sudo dpkg --configure -a
@@ -74,8 +76,8 @@ sudo apt update
 sudo apt install -y timescaledb-2-postgresql-14
 
 # Set up psql stuff
-sudo cp ~/Trinity/scripts/postgresql.conf /etc/postgresql/14/main/postgresql.conf 
-sudo cp ~/Trinity/scripts/pg_hba.conf /etc/postgresql/14/main/pg_hba.conf
+sudo cp /proj/Trinity/scripts/postgresql.conf /etc/postgresql/14/main/postgresql.conf 
+sudo cp /proj/Trinity/scripts/pg_hba.conf /etc/postgresql/14/main/pg_hba.conf
 mkdir -p ~/postgresql/14/main
 sudo chown -R postgres:postgres ~/postgresql/14/main
 sudo -u postgres /usr/lib/postgresql/14/bin/initdb -D ~/postgresql/14/main
