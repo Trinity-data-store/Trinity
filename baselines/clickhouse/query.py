@@ -2,6 +2,7 @@
 from clickhouse_driver import Client
 import time
 import random
+import sys
 
 subs = [
     ("10.254.254.229", "9000"),
@@ -55,9 +56,10 @@ def get_generated_queries_two():
     SHIPDATE_end = 19950315
 
     variable_to_change = random.choice(["ORDERDATE_start", "SHIPDATE_end"])
+    variable_to_change = "SHIPDATE_end"
 
     if variable_to_change == "ORDERDATE_start":
-        SHIPDATE_start = random.randrange(19920102, SHIPDATE_end + 1)
+        ORDERDATE_start = random.randrange(19920102, SHIPDATE_end + 1)
     if variable_to_change == "SHIPDATE_end":
         SHIPDATE_end = random.randrange(ORDERDATE_start, 19981201 + 1)
     
@@ -75,6 +77,14 @@ def get_random_full_range_one():
     return '''SELECT * FROM tpch_distributed WHERE SHIPDATE BETWEEN {} AND {} AND DISCOUNT BETWEEN {} AND {} AND QUANTITY <= {};'''.format(SHIPDATE_start, SHIPDATE_end, DISCOUNT_start, DISCOUNT_end, QUANTITY_end)
 
 if __name__ == "__main__":
+
+    template_index = 0
+    if sys.argv[1] == "1":
+        template_index = 1
+    if sys.argv[1] == "2":
+        template_index = 2
+
+    total_i = int(sys.argv[2])
 
     for sub in subs:
         continue
@@ -107,9 +117,13 @@ if __name__ == "__main__":
                         ) ENGINE = Distributed(test_trinity, default, tpch_distributed, rand())''')
 
     i = 0
-    while i < 200:
-        # query = get_generated_queries_two()
-        query = get_generated_queries_two()
+    while i < total_i:
+
+        if template_index == 2:
+            query = get_generated_queries_two()
+        if template_index == 1:
+            query = get_generated_queries_one()
+
         query_count = query.replace("*", "COUNT(*)")
         count_result = client.execute(query_count)[0][0]
 
