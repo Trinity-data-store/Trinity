@@ -8,7 +8,7 @@
 cd /mntData2/Trinity/
 git config --global user.name "MaoZiming"
 git config --global user.email "ziming.mao@yale.edu"
-git pull origin main
+# git pull origin main
 
 # Basic setup
 sudo apt update
@@ -17,7 +17,7 @@ sudo apt install htop
 cd /mntData2/dependencies/
 
 # Install Cmake
-if [ ! -d "cmake-3.23.0-rc5-linux-x86_64"]; then
+if [ ! -d "cmake-3.23.0-rc5-linux-x86_64" ]; then
     wget -nc https://github.com/Kitware/CMake/releases/download/v3.23.0-rc5/cmake-3.23.0-rc5-linux-x86_64.tar.gz
     tar -xvf cmake-3.23.0-rc5-linux-x86_64.tar.gz
 fi
@@ -26,7 +26,7 @@ PATH=/usr/:$PATH
 cd /mntData2/dependencies/
 
 # Install libevent
-if [ ! -d "libevent-2.1.10-stable" ] then
+if [ ! -d "libevent-2.1.10-stable" ]; then
     wget -nc  https://github.com/libevent/libevent/releases/download/release-2.1.10-stable/libevent-2.1.10-stable.tar.gz
     tar -xvf libevent-2.1.10-stable.tar.gz
     cd libevent-2.1.10-stable
