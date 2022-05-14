@@ -69,8 +69,8 @@ sudo apt-get install -y clickhouse-client
 sudo timedatectl set-timezone America/New_York # Set time zone
 
 # Configure clickhouse DB
-sudo cp /proj/Trinity/scripts/clickhouse_config.xml /etc/clickhouse-server/config.xml
-sudo cp /proj/Trinity/scripts/clickhouse_users.xml /etc/clickhouse-server/users.xml
+sudo cp /proj/trinity-PG0/Trinity/scripts/clickhouse_config.xml /etc/clickhouse-server/config.xml
+sudo cp /proj/trinity-PG0/Trinity/scripts/clickhouse_users.xml /etc/clickhouse-server/users.xml
 
 # Set up Timescale DB
 sudo dpkg --configure -a
@@ -93,6 +93,14 @@ exit 0
 
 # Start clickhouse
 sudo service clickhouse-server start
+
+# ClickHouse TPCH (Client Node)
+clickhouse-client --database=default --query="CREATE TABLE IF NOT EXISTS tpch_distributed (ID UInt32, QUANTITY UInt8, EXTENDEDPRICE UInt32, DISCOUNT UInt8, TAX UInt8, SHIPDATE UInt32, COMMITDATE UInt32, RECEIPTDATE UInt32, TOTALPRICE UInt32, ORDERDATE UInt32) ENGINE = Distributed(test_trinity, default, tpch_distributed, rand())";
+
+cat /mntData2/tpch-dbgen/data_500/orders_lineitem_merged_indexed.csv | clickhouse-client --query="INSERT INTO tpch_distributed FORMAT CSV";
+
+# ClickHouse TPCH (Data Node)
+clickhouse-client --database=default --query="CREATE TABLE IF NOT EXISTS tpch_distributed (ID UInt32, QUANTITY UInt8, EXTENDEDPRICE UInt32, DISCOUNT UInt8, TAX UInt8, SHIPDATE UInt32, COMMITDATE UInt32, RECEIPTDATE UInt32, TOTALPRICE UInt32, ORDERDATE UInt32) Engine = MergeTree ORDER BY (ID)";
 
 # Start postgresql
 sudo service postgresql start
