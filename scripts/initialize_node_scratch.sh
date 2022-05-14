@@ -8,11 +8,14 @@
 sudo apt update
 sudo apt install htop
 
+cd ~/
+
 # Install Cmake
 wget -nc https://github.com/Kitware/CMake/releases/download/v3.23.0-rc5/cmake-3.23.0-rc5-linux-x86_64.tar.gz
 [ ! -d "cmake-3.23.0-rc5-linux-x86_64" ] && tar -xvf cmake-3.23.0-rc5-linux-x86_64.tar.gz
 sudo cp -r cmake-3.23.0-rc5-linux-x86_64/* /usr 
 PATH=/usr/:$PATH
+cd ~/
 
 # Install libevent
 wget -nc  https://github.com/libevent/libevent/releases/download/release-2.1.10-stable/libevent-2.1.10-stable.tar.gz
