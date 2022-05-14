@@ -17,29 +17,40 @@ sudo apt install htop
 cd ~/
 
 # Install Cmake
-wget -nc https://github.com/Kitware/CMake/releases/download/v3.23.0-rc5/cmake-3.23.0-rc5-linux-x86_64.tar.gz
-[ ! -d "cmake-3.23.0-rc5-linux-x86_64" ] && tar -xvf cmake-3.23.0-rc5-linux-x86_64.tar.gz
+if [ ! -d "cmake-3.23.0-rc5-linux-x86_64"]; then
+    wget -nc https://github.com/Kitware/CMake/releases/download/v3.23.0-rc5/cmake-3.23.0-rc5-linux-x86_64.tar.gz
+    tar -xvf cmake-3.23.0-rc5-linux-x86_64.tar.gz
+fi
 sudo cp -r cmake-3.23.0-rc5-linux-x86_64/* /usr 
 PATH=/usr/:$PATH
+
 cd ~/
 
 # Install libevent
-wget -nc  https://github.com/libevent/libevent/releases/download/release-2.1.10-stable/libevent-2.1.10-stable.tar.gz
-[ ! -d "libevent-2.1.10-stable" ] && tar -xvf libevent-2.1.10-stable.tar.gz
+if [ ! -d "libevent-2.1.10-stable" ] then
+    wget -nc  https://github.com/libevent/libevent/releases/download/release-2.1.10-stable/libevent-2.1.10-stable.tar.gz
+    tar -xvf libevent-2.1.10-stable.tar.gz
+    cd libevent-2.1.10-stable
+    sudo ./configure --prefix=/usr 
+    sudo make -j
+    cd ..
+fi
 cd libevent-2.1.10-stable
-sudo ./configure --prefix=/usr 
-sudo make
 sudo make install
+
 cd ~/
 
 # Install thrift
-git clone -b 0.15.0 https://github.com/apache/thrift.git
+if [ ! -d "thrift"]; then
+    git clone -b 0.15.0 https://github.com/apache/thrift.git
+    cd thrift
+    ./bootstrap.sh
+    sudo ./configure
+    sudo make -j
+    cd ..
+fi
 cd thrift
-./bootstrap.sh
-sudo ./configure
-sudo make
 sudo make install
-cd ~/
 
 # Install Other Packages for Trinity
 sudo apt-get install -y libboost-test-dev  
