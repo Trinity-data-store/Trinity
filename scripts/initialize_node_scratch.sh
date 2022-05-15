@@ -107,12 +107,20 @@ exit 0
 sudo service clickhouse-server start
 
 # ClickHouse TPCH (Client Node)
-clickhouse-client --database=default --query="CREATE TABLE IF NOT EXISTS tpch_distributed (ID UInt32, QUANTITY UInt8, EXTENDEDPRICE UInt32, DISCOUNT UInt8, TAX UInt8, SHIPDATE UInt32, COMMITDATE UInt32, RECEIPTDATE UInt32, TOTALPRICE UInt32, ORDERDATE UInt32) ENGINE = Distributed(test_trinity, default, tpch_distributed, rand())";
 
-cat /mntData2/tpch-dbgen/data_500/orders_lineitem_merged_indexed.csv | clickhouse-client --query="INSERT INTO tpch_distributed FORMAT CSV";
+clickhouse-client --database=default --query="DROP TABLE IF EXISTS tpch_macro";
+
+clickhouse-client --database=default --query="CREATE TABLE IF NOT EXISTS tpch_macro (ID UInt32, QUANTITY UInt8, EXTENDEDPRICE UInt32, DISCOUNT UInt8, TAX UInt8, SHIPDATE UInt32, COMMITDATE UInt32, RECEIPTDATE UInt32, TOTALPRICE UInt32, ORDERDATE UInt32) ENGINE = Distributed(test_trinity, default, tpch_macro, rand())";
 
 # ClickHouse TPCH (Data Node)
-clickhouse-client --database=default --query="CREATE TABLE IF NOT EXISTS tpch_distributed (ID UInt32, QUANTITY UInt8, EXTENDEDPRICE UInt32, DISCOUNT UInt8, TAX UInt8, SHIPDATE UInt32, COMMITDATE UInt32, RECEIPTDATE UInt32, TOTALPRICE UInt32, ORDERDATE UInt32) Engine = MergeTree ORDER BY (ID)";
+
+clickhouse-client --database=default --query="DROP TABLE IF EXISTS tpch_macro";
+
+clickhouse-client --database=default --query="CREATE TABLE IF NOT EXISTS tpch_macro (ID UInt32, QUANTITY UInt8, EXTENDEDPRICE UInt32, DISCOUNT UInt8, TAX UInt8, SHIPDATE UInt32, COMMITDATE UInt32, RECEIPTDATE UInt32, TOTALPRICE UInt32, ORDERDATE UInt32) Engine = MergeTree ORDER BY (ID)";
+
+# Clickhouse TPCH (insert Data)
+
+cat /mntData2/data/tpch/data_500/orders_lineitem_merged_indexed.csv | clickhouse-client --query="INSERT INTO tpch_macro FORMAT CSV";
 
 # Start postgresql
 sudo service postgresql start
