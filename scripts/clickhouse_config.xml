@@ -363,7 +363,7 @@
     <compiled_expression_cache_elements_size>10000</compiled_expression_cache_elements_size>
 
     <!-- Path to data directory, with trailing slash. -->
-    <path>/mntData2/clickhouse/</path>
+    <path>/mntData/clickhouse/</path>
 
     <!-- Path to temporary data for processing hard queries. -->
     <tmp_path>/var/lib/clickhouse/tmp/</tmp_path>

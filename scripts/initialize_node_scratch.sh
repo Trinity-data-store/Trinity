@@ -5,16 +5,21 @@
 # sh /proj/Trinity/scripts/initialize_node_scratch.sh
 
 # Update Github
-cd /mntData2/Trinity/
+
+trinity_path="/proj/trinity-PG0/Trinity/"
+dependencies_path="/mntData2/dependencies/"
+local_path="/mntData/"
+
+cd "$trinity_path"
 git config --global user.name "MaoZiming"
 git config --global user.email "ziming.mao@yale.edu"
-# git pull origin main
+git pull origin main
 
 # Basic setup
 sudo apt update
 sudo apt install htop
 
-cd /mntData2/dependencies/
+cd $dependencies_path
 
 # Install Cmake
 if [ ! -d "cmake-3.23.0-rc5-linux-x86_64" ]; then
@@ -23,7 +28,7 @@ if [ ! -d "cmake-3.23.0-rc5-linux-x86_64" ]; then
 fi
 sudo cp -r cmake-3.23.0-rc5-linux-x86_64/* /usr 
 PATH=/usr/:$PATH
-cd /mntData2/dependencies/
+cd $dependencies_path
 
 # Install libevent
 if [ ! -d "libevent-2.1.10-stable" ]; then
@@ -36,7 +41,7 @@ if [ ! -d "libevent-2.1.10-stable" ]; then
 fi
 cd libevent-2.1.10-stable
 sudo make install
-cd /mntData2/dependencies/
+cd $dependencies_path
 
 # Install thrift
 if [ ! -d "thrift"]; then
@@ -49,7 +54,7 @@ if [ ! -d "thrift"]; then
 fi
 cd thrift
 sudo make install
-cd /mntData2/dependencies/
+cd $dependencies_path
 
 # Install Other Packages for Trinity
 sudo apt-get install -y libboost-test-dev  
@@ -79,8 +84,8 @@ sudo apt-get install -y clickhouse-client
 sudo timedatectl set-timezone America/New_York # Set time zone
 
 # Configure clickhouse DB
-sudo cp /mntData2/Trinity/scripts/clickhouse_config.xml /etc/clickhouse-server/config.xml
-sudo cp /mntData2/Trinity/scripts/clickhouse_users.xml /etc/clickhouse-server/users.xml
+sudo cp "$trinity_path"scripts/clickhouse_config.xml /etc/clickhouse-server/config.xml
+sudo cp "$trinity_path"scripts/clickhouse_users.xml /etc/clickhouse-server/users.xml
 
 # Set up Timescale DB
 sudo dpkg --configure -a
@@ -92,14 +97,17 @@ wget --quiet -O - https://packagecloud.io/timescale/timescaledb/gpgkey | sudo ap
 sudo apt update
 sudo apt install -y timescaledb-2-postgresql-14
 
-# Set up psql stuff
-sudo cp /mntData2/Trinity/scripts/postgresql.conf /etc/postgresql/14/main/postgresql.conf 
-sudo cp /mntData2/Trinity/scripts/pg_hba.conf /etc/postgresql/14/main/pg_hba.conf
+# Set up clickhouse data
+mkdir -p "$local_path"clickhouse/
 
-if [ ! -d "/mntData2/postgresql/14/main" ]; then
-    mkdir -p /mntData2/postgresql/14/main
-    sudo chown -R postgres:postgres /mntData2/postgresql/14/main
-    sudo -u postgres /usr/lib/postgresql/14/bin/initdb -D /mntData2/postgresql/14/main
+# Set up psql stuff
+sudo cp "$trinity_path"scripts/postgresql.conf /etc/postgresql/14/main/postgresql.conf 
+sudo cp "$trinity_path"scripts/pg_hba.conf /etc/postgresql/14/main/pg_hba.conf
+
+if [ ! -d "'$local_path'postgresql/14/main" ]; then
+    mkdir -p "$local_path"postgresql/14/main
+    sudo chown -R postgres:postgres "$local_path"postgresql/14/main
+    sudo -u postgres /usr/lib/postgresql/14/bin/initdb -D "$local_path"postgresql/14/main
 fi
 exit 0
 
