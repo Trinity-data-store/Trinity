@@ -12,3 +12,5 @@ git clone https://github.com/MaoZiming/Trinity.git
 # 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
 
 sudo bash /mntData2/Trinity/scripts/initialize_node_scratch.sh
+
+sudo bash /proj/trinity-PG0/Trinity/scripts/initialize_node_scratch.sh

@@ -13,7 +13,7 @@ local_path="/mntData/"
 cd "$trinity_path"
 git config --global user.name "MaoZiming"
 git config --global user.email "ziming.mao@yale.edu"
-git pull origin main
+# git pull origin main
 
 # Basic setup
 sudo apt update
@@ -99,6 +99,7 @@ sudo apt install -y timescaledb-2-postgresql-14
 
 # Set up clickhouse data
 mkdir -p "$local_path"clickhouse/
+sudo chown -R clickhouse:clickhouse "$local_path"clickhouse/
 
 # Set up psql stuff
 sudo cp "$trinity_path"scripts/postgresql.conf /etc/postgresql/14/main/postgresql.conf 
