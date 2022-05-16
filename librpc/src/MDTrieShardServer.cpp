@@ -31,7 +31,6 @@ using namespace apache::thrift::server;
 const level_t max_depth = 32;
 level_t trie_depth = 6;
 const preorder_t max_tree_node = 512;
-// const dimension_t DIMENSION = 4;
 const dimension_t DIMENSION = 9;
 unsigned int num_shards = 1;
 
@@ -68,15 +67,15 @@ public:
 
     std::vector<level_t> bit_widths = {8, 32, 16, 24, 32, 32, 32, 32, 32}; // 9 Dimensions;
     std::vector<level_t> start_bits = {0, 0, 8, 16, 0, 0, 0, 0, 0}; // 9 Dimensions;
-    num_shards = 30 * 2;
+    num_shards = 30 * 5;
     trie_depth = 6;
     no_dynamic_sizing = true;
-    total_points_count = 1200018434 / num_shards + 1; 
+    total_points_count = 3000028242 / num_shards + 1; 
 
     p_key_to_treeblock_compact_ = new bitmap::CompactPtrVector(total_points_count);
     create_level_to_num_children(bit_widths, start_bits, 32);
-
     mdtrie_ = new md_trie<DIMENSION>(max_depth, trie_depth, max_tree_node);
+
   };
 
   void clear_trie(){
