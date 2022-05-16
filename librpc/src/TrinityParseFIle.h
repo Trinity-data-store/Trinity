@@ -31,10 +31,14 @@ std::vector<int32_t> parse_line_tpch(std::string line) {
     // Parse string by ","
     int index = -1;
     bool primary_key = true;
-    // [QUANTITY, EXTENDEDPRICE, DISCOUNT, TAX, SHIPDATE, COMMITDATE, RECEIPTDATE, TOTALPRICE, ORDERDATE]
+
+    // ID
+    std::string substr;
+    std::getline(ss, substr, ',');
+
+    // [id, QUANTITY, EXTENDEDPRICE, DISCOUNT, TAX, SHIPDATE, COMMITDATE, RECEIPTDATE, TOTALPRICE, ORDERDATE]
     while (ss.good())
     {
-        std::string substr;
         std::getline(ss, substr, ',');
         if (primary_key) {
             primary_key = false;
