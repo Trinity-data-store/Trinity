@@ -7,8 +7,9 @@
 # Update Github
 
 trinity_path="/proj/trinity-PG0/Trinity/"
-dependencies_path="/mntData2/dependencies/"
+dependencies_path="/proj/trinity-PG0/dependencies/"
 local_path="/mntData/"
+data_dir="/mntData2/"
 
 cd "$trinity_path"
 git config --global user.name "MaoZiming"
@@ -18,7 +19,7 @@ git config --global user.email "ziming.mao@yale.edu"
 # Basic setup
 sudo apt update
 sudo apt install htop
-
+sudo apt-get install dstat
 cd $dependencies_path
 
 # Install Cmake
