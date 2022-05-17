@@ -31,11 +31,11 @@ int main(){
     auto client = MDTrieClient(server_ips, shard_num);
     client_to_server_vect.resize(total_points_count);
 
-    for (unsigned int i = 0; i < server_ips.size(); ++i) {
-      for (int j = 0; j < shard_num; j++){
-        server_to_client.push_back({});
-      }
-    }
+    // for (unsigned int i = 0; i < server_ips.size(); ++i) {
+    //   for (int j = 0; j < shard_num; j++){
+    //     server_to_client.push_back({});
+    //   }
+    // }
     if (!client.ping(2)){
         std::cerr << "Server setting wrong!" << std::endl;
         exit(-1);

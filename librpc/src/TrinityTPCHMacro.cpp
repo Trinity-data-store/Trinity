@@ -46,59 +46,20 @@ int main(){
         perror("Error mmapping the file");
         exit(EXIT_FAILURE);
     }   
-    /*
-    char* str_start = map;
-    char* str_end;
-    uint32_t line_num = 0;
-    for (long i = 0; i <= fileInfo.st_size; ++i) {
-        if (map[i] == '\n') {
-            str_end = map + i;
-            {
-                // C style tokenizing of the string str_start to str_end
-                // If you want, you can build a std::string like:
-                // std::string line(str_start,str_end);
-                // but note that this implies a memory copy.
-                line_num ++;
-                if (line_num % 1000000 == 0) {
-                  cerr << "current_line: " << line_num << endl;
-                }
-            }
-            str_start = map + i + 1;
-        }
-    }
-
-    return 0;
-
-    FILE * ifile = fopen("/mntData/orders_lineitem_merged_indexed.csv", "r");
-    size_t linesz = 0L;
-    char * line = nullptr;
-
-    for (uint32_t current_line = 0; current_line < 3000028242; current_line++){
-
-      if (current_line % 1000000 == 0) {
-        cerr << "current_line: " << current_line << "," << linesz << endl;
-      }
-      getline(&line, &linesz, ifile);
-    }
-    free(line);
-
-    return 0;
-    */
-
 
     std::vector<std::string> server_ips = {"10.254.254.153", "10.254.254.209", "10.254.254.229", "10.254.254.253", "10.254.254.249"};
-    const char *file_address = "/mntData/orders_lineitem_merged_indexed.csv";
+    // const char *file_address = "/mntData/orders_lineitem_merged_indexed.csv";
     
     total_points_count = 3000028242;
 
     auto client = MDTrieClient(server_ips, shard_num);
     client_to_server_vect.resize(total_points_count);
 
-    for (unsigned int i = 0; i < server_ips.size(); ++i) {
-      for (int j = 0; j < shard_num; j++){
-        server_to_client.push_back({});
-      }
-    }
+    // for (unsigned int i = 0; i < server_ips.size(); ++i) {
+    //   for (int j = 0; j < shard_num; j++){
+    //     server_to_client.push_back({});
+    //   }
+    // }
     if (!client.ping(2)){
         std::cerr << "Server setting wrong!" << std::endl;
         exit(-1);
