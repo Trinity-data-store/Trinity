@@ -86,7 +86,6 @@ int main(){
     int shard_num = 20;
     int client_num = 128;
     auto client = MDTrieClient(server_ips, shard_num);
-    client_to_server_vect.resize(total_points_count);
 
     // for (unsigned int i = 0; i < server_ips.size(); ++i) {
     //   for (int j = 0; j < shard_num; j++){
@@ -126,7 +125,6 @@ int main(){
      * (1) Find all points created between June and July of 2020 and with version 1 or 2
     */
 
-    client.pull_global_cache();
     std::vector<int32_t>start_range(DIMENSION, 0);
     std::vector<int32_t>end_range(DIMENSION, 0);
 
@@ -241,7 +239,6 @@ int main(){
         Point Lookup Test
     */
 
-    // client.pull_global_cache();
     // int sent_count = 0;
     // for (unsigned i = 0; i < data_vector->size(); i++){
 

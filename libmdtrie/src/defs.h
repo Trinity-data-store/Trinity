@@ -99,7 +99,6 @@ n_leaves_t treeblock_ctr = 0;
 std::mutex cache_lock;
 
 std::unordered_map<int32_t, int32_t> client_to_server;
-std::vector<int32_t> client_to_server_vect;
 
 bool enable_client_cache_pkey_mapping = false;
 

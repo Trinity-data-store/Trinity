@@ -98,7 +98,6 @@ uint32_t insert_each_client_mmap(char *map, int shard_number, int client_number,
         diff = GetTimestamp() - start;
       }
   }
-  client.push_global_cache();
   return ((float) (total_points_to_insert - 2 * warmup_cooldown_points) / diff) * 1000000;
 
 }
@@ -157,7 +156,6 @@ uint32_t insert_each_client_from_file(const char *file_address, int shard_number
         diff = GetTimestamp() - start;
       }
   }
-  client.push_global_cache();
   return ((float) (total_points_to_insert - 2 * warmup_cooldown_points) / diff) * 1000000;
 }
 
@@ -306,7 +304,6 @@ uint32_t insert_each_client_old(vector<vector <int32_t>> *data_vector, int shard
       }
   }
 
-  client.push_global_cache();
   return ((float) (total_points_to_insert - 2 * warmup_cooldown_points) / diff) * 1000000;
 }
 

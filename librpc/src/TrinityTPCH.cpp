@@ -29,7 +29,6 @@ int main(){
     total_points_count = 1200018434;
 
     auto client = MDTrieClient(server_ips, shard_num);
-    client_to_server_vect.resize(total_points_count);
 
     // for (unsigned int i = 0; i < server_ips.size(); ++i) {
     //   for (int j = 0; j < shard_num; j++){

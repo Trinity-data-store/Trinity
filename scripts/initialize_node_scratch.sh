@@ -1,15 +1,16 @@
-#!/bin/sh
-
 # Run from Cloudlab
 # git clone https://github.com/MaoZiming/Trinity.git
 # sh /proj/Trinity/scripts/initialize_node_scratch.sh
 
 # Update Github
 
-trinity_path="/proj/trinity-PG0/Trinity/"
-dependencies_path="/proj/trinity-PG0/dependencies/"
-local_path="/mntData/"
-data_dir="/mntData2/"
+trinity_path="/proj/trinity-PG0/Trinity"
+dependencies_path="/proj/trinity-PG0/dependencies"
+local_path="/mntData"
+data_dir="/mntData2"
+
+# cd ~/
+# git clone https://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@github.com/MaoZiming/Trinity.git
 
 cd "$trinity_path"
 git config --global user.name "MaoZiming"
@@ -85,8 +86,8 @@ sudo apt-get install -y clickhouse-client
 sudo timedatectl set-timezone America/New_York # Set time zone
 
 # Configure clickhouse DB
-sudo cp "$trinity_path"scripts/clickhouse_config.xml /etc/clickhouse-server/config.xml
-sudo cp "$trinity_path"scripts/clickhouse_users.xml /etc/clickhouse-server/users.xml
+sudo cp $trinity_path/scripts/clickhouse_config.xml /etc/clickhouse-server/config.xml
+sudo cp $trinity_path/scripts/clickhouse_users.xml /etc/clickhouse-server/users.xml
 
 # Set up Timescale DB
 sudo dpkg --configure -a
@@ -99,18 +100,22 @@ sudo apt update
 sudo apt install -y timescaledb-2-postgresql-14
 
 # Set up clickhouse data
-mkdir -p "$local_path"clickhouse/
-sudo chown -R clickhouse:clickhouse "$local_path"clickhouse/
+mkdir -p $local_path/clickhouse/
+sudo chown -R clickhouse:clickhouse $local_path/clickhouse/
 
 # Set up psql stuff
-sudo cp "$trinity_path"scripts/postgresql.conf /etc/postgresql/14/main/postgresql.conf 
-sudo cp "$trinity_path"scripts/pg_hba.conf /etc/postgresql/14/main/pg_hba.conf
+sudo cp $trinity_path/scripts/postgresql.conf /etc/postgresql/14/main/postgresql.conf 
+sudo cp $trinity_path/scripts/pg_hba.conf /etc/postgresql/14/main/pg_hba.conf
 
-if [ ! -d "'$local_path'postgresql/14/main" ]; then
-    mkdir -p "$local_path"postgresql/14/main
-    sudo chown -R postgres:postgres "$local_path"postgresql/14/main
-    sudo -u postgres /usr/lib/postgresql/14/bin/initdb -D "$local_path"postgresql/14/main
+if [ ! -d "$local_path/postgresql/14/main" ]; then
+    mkdir -p $local_path/postgresql/14/main
+    sudo chown -R postgres:postgres $local_path/postgresql/14/main
+    sudo -u postgres /usr/lib/postgresql/14/bin/initdb -D $local_path/postgresql/14/main
 fi
+
+echo "copying TPCH datafile"
+cp $data_dir/tpch/data_500/orders_lineitem_merged_indexed.csv /mntData/orders_lineitem_merged_indexed.csv
+
 exit 0
 
 # Start clickhouse

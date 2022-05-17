@@ -24,36 +24,16 @@ using namespace apache::thrift::protocol;
 using namespace apache::thrift::transport;
 const int DIMENSION = 9;
 const int shard_num = 30;
-const int client_num = 64;
+const int client_num = 40;
 
 int main(){
 
-    const char *filepath = "/mntData/orders_lineitem_merged_indexed.csv";
-    int fd = open(filepath, O_RDONLY, (mode_t)0600);
-
-    struct stat fileInfo;
-    if (fstat(fd, &fileInfo) == -1)
-    {
-        perror("Error getting the file size");
-        exit(EXIT_FAILURE);
-    }
-    
-    char *map;
-    map = static_cast<char*>(mmap(0, fileInfo.st_size, PROT_READ, MAP_SHARED, fd, 0));
-    if (map == MAP_FAILED)
-    {
-        close(fd);
-        perror("Error mmapping the file");
-        exit(EXIT_FAILURE);
-    }   
-
     std::vector<std::string> server_ips = {"10.254.254.153", "10.254.254.209", "10.254.254.229", "10.254.254.253", "10.254.254.249"};
-    // const char *file_address = "/mntData/orders_lineitem_merged_indexed.csv";
+    const char *file_address = "/mntData/orders_lineitem_merged_indexed.csv";
     
     total_points_count = 3000028242;
 
     auto client = MDTrieClient(server_ips, shard_num);
-    client_to_server_vect.resize(total_points_count);
 
     // for (unsigned int i = 0; i < server_ips.size(); ++i) {
     //   for (int j = 0; j < shard_num; j++){
@@ -73,12 +53,11 @@ int main(){
     uint32_t throughput;
 
     start = GetTimestamp();
-    // throughput = total_client_insert(file_address, shard_num, client_num, server_ips);
-    throughput = total_client_insert_mmap(map, shard_num, client_num, server_ips);
+    throughput = total_client_insert(file_address, shard_num, client_num, server_ips);
     diff = GetTimestamp() - start;
 
     cout << "Insertion Throughput (pt / seconds): " << throughput << endl;
-    cout << "End-to-end Latency (us): " << diff << endl;
+    cout << "End-to-end Latency (s): " << diff / 1000000 << endl;
     cout << "Storage: " << client.get_size() << endl;
 
     // Range Search

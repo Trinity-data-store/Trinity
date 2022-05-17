@@ -61,14 +61,11 @@ public:
     return true;
   }
 
-  void insert(vector<int32_t> point, int32_t p_key){
+  int32_t insert(vector<int32_t> point, int32_t p_key){
 
     int shard_index = p_key % shard_vector_.size();
     shard_vector_[shard_index].send_insert(point);
-    int32_t returned_key = shard_vector_[shard_index].recv_insert();
-
-    if (enable_client_cache_pkey_mapping)
-      client_to_server_[p_key] = returned_key;
+    return shard_vector_[shard_index].recv_insert();
   }
 
   void insert_send(vector<int32_t> point, int32_t p_key){
@@ -77,13 +74,10 @@ public:
     shard_vector_[shard_index].send_insert(point);
   }
 
-  void insert_rec(int32_t p_key){
+  int32_t insert_rec(int32_t p_key){
 
     int shard_index = p_key % shard_vector_.size();
-    int32_t returned_key = shard_vector_[shard_index].recv_insert();
-
-    if (enable_client_cache_pkey_mapping)
-      client_to_server_[p_key] = returned_key;
+    return shard_vector_[shard_index].recv_insert();
   }
 
   bool check(vector<int32_t> point, int32_t p_key){
@@ -108,11 +102,7 @@ public:
   void primary_key_lookup(std::vector<int32_t> & return_vect, const int32_t p_key){
 
     int shard_index = p_key % shard_vector_.size();
-    // shard_vector_[shard_index].send_primary_key_lookup(client_to_server_[shard_index][p_key]);
-    if (enable_client_cache_pkey_mapping)
-      shard_vector_[shard_index].send_primary_key_lookup(client_to_server_vect[p_key]);
-    else 
-      shard_vector_[shard_index].send_primary_key_lookup(p_key / shard_vector_.size());
+    shard_vector_[shard_index].send_primary_key_lookup(p_key / shard_vector_.size());
     shard_vector_[shard_index].recv_primary_key_lookup(return_vect);
 
   }
@@ -120,11 +110,7 @@ public:
   void primary_key_lookup_send(const int32_t p_key){
 
     int shard_index = p_key % shard_vector_.size();
-    // shard_vector_[shard_index].send_primary_key_lookup(client_to_server_[shard_index][p_key]);
-    if (enable_client_cache_pkey_mapping)
-      shard_vector_[shard_index].send_primary_key_lookup(client_to_server_vect[p_key]);
-    else 
-      shard_vector_[shard_index].send_primary_key_lookup(p_key / shard_vector_.size());
+    shard_vector_[shard_index].send_primary_key_lookup(p_key / shard_vector_.size());
   }
 
 
@@ -179,25 +165,6 @@ public:
     }        
     return count;
   }
-
-  void push_global_cache(){
-    
-    cache_lock.lock();
-
-    if (enable_client_cache_pkey_mapping) {
-      for (auto it = client_to_server_.begin(); it != client_to_server_.end(); it++)
-      {
-        client_to_server_vect[it->first] = it->second;
-      }
-    }
-    cache_lock.unlock();
-  }
-
-  void pull_global_cache(){
-    client_to_server_ = client_to_server;
-  }
-
 private:
   std::vector<MDTrieShardClient> shard_vector_; 
-  std::unordered_map<int32_t, int32_t> client_to_server_;
 };
