@@ -20,17 +20,87 @@ using namespace apache::thrift;
 using namespace apache::thrift::protocol;
 using namespace apache::thrift::transport;
 
-int BATCH_SIZE = 4096;
+int BATCH_SIZE = 4096 * 4;
 int WARMUP_FACTOR = 5;
 
 // Go to a specific line of a file (0-indexed)
-std::ifstream& GotoLine(std::ifstream& file, int num){
+void GotoLine(std::ifstream& file, int num){
 
     file.seekg(std::ios::beg);
     for(int i=0; i < num; ++i){
       file.ignore(numeric_limits<streamsize>::max(), file.widen('\n'));
     }
-    return file;
+}
+
+uint32_t insert_each_client_mmap(char *map, int shard_number, int client_number, int client_index, std::vector<std::string> server_ips) {
+
+  auto client = MDTrieClient(server_ips, shard_number);
+  // get start_file_pos, end_file_pos, 0-indexed
+  uint32_t start_line = total_points_count / client_number * client_index;  
+  uint32_t end_line = total_points_count / client_number * (client_index + 1) - 1;
+
+  if (client_index == client_number - 1)
+    end_line = total_points_count - 1;
+
+  uint32_t total_points_to_insert = end_line - start_line + 1;
+  uint32_t warmup_cooldown_points = total_points_to_insert / WARMUP_FACTOR;
+  TimeStamp start, diff = 0; 
+  int sent_count = 0;
+
+  uint32_t line_num = 0;
+  long map_index = 0;
+  while (line_num < start_line) {
+    if (map[map_index] == '\n') {
+      line_num ++;
+    }
+    map_index ++;
+  }
+  char* str_start = map + map_index;
+  char* str_end;
+  vector <int32_t> data_point;
+
+  while (line_num < end_line) {
+
+    if (map[map_index] == '\n') {
+      
+      if (line_num % 1000000 == 0) {
+        cerr << "current_line: " << line_num << "," << start_line << "," << end_line << endl;
+      }
+      str_end = map + map_index;
+      line_num ++;
+      {
+        if (line_num == start_line + warmup_cooldown_points){
+          start = GetTimestamp();
+        }
+        if (sent_count != 0 && sent_count % BATCH_SIZE == 0){
+            for (uint32_t j = line_num - sent_count; j < line_num; j++){
+                client.insert_rec(j);
+                if (j == end_line - warmup_cooldown_points){
+                  diff = GetTimestamp() - start;
+                }
+            }
+            sent_count = 0;
+        }
+        // vector <int32_t> data_point = parse_line_tpch(line);
+        // cerr << str_start - map << " " << str_end - map << endl;
+        data_point = parse_line_tpch_mmap(map, str_start - map, str_end - map);
+        client.insert_send(data_point, line_num);
+        sent_count ++;
+      }
+      str_start = map + map_index + 1;
+    }
+    map_index ++;
+  }
+
+  for (uint32_t j = end_line - sent_count + 1; j <= end_line; j++){
+      client.insert_rec(j);
+      if (j == end_line - warmup_cooldown_points){
+        diff = GetTimestamp() - start;
+      }
+  }
+  client.push_global_cache();
+  return ((float) (total_points_to_insert - 2 * warmup_cooldown_points) / diff) * 1000000;
+
 }
 
 // Each client insert lines from a file
@@ -41,11 +111,11 @@ uint32_t insert_each_client_from_file(const char *file_address, int shard_number
   std::string line;
 
   // get start_file_pos, end_file_pos, 0-indexed
-  uint32_t start_line = total_points_count / client_number * client_index + 1;  // Skip first line (header)
-  uint32_t end_line = total_points_count / client_number * (client_index + 1);
-  // std::cout << "insert: " << start_line <<  "-" << end_line << std::endl;
+  uint32_t start_line = total_points_count / client_number * client_index;  
+  uint32_t end_line = total_points_count / client_number * (client_index + 1) - 1;
+
   if (client_index == client_number - 1)
-    end_line = total_points_count;
+    end_line = total_points_count - 1;
 
   uint32_t total_points_to_insert = end_line - start_line + 1;
   uint32_t warmup_cooldown_points = total_points_to_insert / WARMUP_FACTOR;
@@ -55,9 +125,13 @@ uint32_t insert_each_client_from_file(const char *file_address, int shard_number
 
   GotoLine(file, start_line);
   for (uint32_t current_line = start_line; current_line <= end_line; current_line++){
-
+    
+    if (current_line % 1000000 == 0) {
+      cerr << "current_line: " << current_line << "," << start_line << "," << end_line << endl;
+    }
     std::getline(file, line);
 
+    // continue;
     if (current_line == start_line + warmup_cooldown_points){
       start = GetTimestamp();
     }
@@ -95,6 +169,22 @@ uint32_t total_client_insert(const char *file_address, int shard_number, int cli
   for (int i = 0; i < client_number; i++){
 
     threads.push_back(std::async(insert_each_client_from_file, file_address, shard_number, client_number, i, server_ips));
+  }  
+
+  uint32_t total_throughput = 0;
+  for (int i = 0; i < client_number; i++){
+    total_throughput += threads[i].get();
+  } 
+  return total_throughput;  
+}
+
+uint32_t total_client_insert_mmap(char *map, int shard_number, int client_number, std::vector<std::string> server_ips){
+
+  std::vector<std::future<uint32_t>> threads; 
+  threads.reserve(client_number);
+
+  for (int i = 0; i < client_number; i++){
+    threads.push_back(std::async(insert_each_client_mmap, map, shard_number, client_number, i, server_ips));
   }  
 
   uint32_t total_throughput = 0;

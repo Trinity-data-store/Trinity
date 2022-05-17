@@ -70,8 +70,8 @@ int main(){
     cout << "Storage: " << client.get_size() << endl;
 
     std::vector<int32_t> found_points;
-    std::vector<int32_t>start_range(DIMENSION, 0);
-    std::vector<int32_t>end_range(DIMENSION, 0);
+    std::vector<int32_t> start_range(DIMENSION, 0);
+    std::vector<int32_t> end_range(DIMENSION, 0);
 
     /** 
         Query 1

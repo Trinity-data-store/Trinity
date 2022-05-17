@@ -31,3 +31,7 @@ cd thrift
 sudo ./configure
 sudo make -j
 cd ..
+
+
+cd /proj/trinity-PG0/dependencies/thrift
+sudo make install
