@@ -33,6 +33,7 @@ level_t trie_depth = 6;
 const preorder_t max_tree_node = 512;
 const dimension_t DIMENSION = 9;
 unsigned int num_shards = 1;
+const int shard_num = 40;
 
 class MDTrieHandler : public MDTrieShardIf {
 public:
@@ -67,7 +68,7 @@ public:
 
     std::vector<level_t> bit_widths = {8, 32, 16, 24, 32, 32, 32, 32, 32}; // 9 Dimensions;
     std::vector<level_t> start_bits = {0, 0, 8, 16, 0, 0, 0, 0, 0}; // 9 Dimensions;
-    num_shards = 30 * 5;
+    num_shards = shard_num * 5;
     trie_depth = 6;
     no_dynamic_sizing = true;
     total_points_count = 3000028242 / num_shards + 1; 

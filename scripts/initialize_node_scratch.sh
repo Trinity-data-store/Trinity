@@ -113,9 +113,9 @@ if [ ! -d "$local_path/postgresql/14/main" ]; then
     sudo -u postgres /usr/lib/postgresql/14/bin/initdb -D $local_path/postgresql/14/main
 fi
 
-echo "copying TPCH datafile"
-cp $data_dir/tpch/data_500/orders_lineitem_merged_indexed.csv /mntData/orders_lineitem_merged_indexed.csv
-
+echo "remember to copy TPCH datafile"
+# sudo cp /mntData2/tpch/data_500/orders_lineitem_merged_indexed.csv /mntData/orders_lineitem_merged_indexed.csv
+# sudo cp /mntData2/tpch-dbgen/data_500/orders_lineitem_merged_indexed.csv /mntData/
 exit 0
 
 # Start clickhouse
@@ -136,6 +136,7 @@ clickhouse-client --database=default --query="CREATE TABLE IF NOT EXISTS tpch_ma
 # Clickhouse TPCH (insert Data)
 
 cat /mntData2/data/tpch/data_500/orders_lineitem_merged_indexed.csv | clickhouse-client --query="INSERT INTO tpch_macro FORMAT CSV";
+cat /mntData/orders_lineitem_merged_indexed.csv | clickhouse-client --query="INSERT INTO tpch_macro FORMAT CSV";
 
 # Start postgresql
 sudo service postgresql start

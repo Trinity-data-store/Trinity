@@ -627,14 +627,7 @@
              <shard>
                 <internal_replication>false</internal_replication>
                  <replica>
-                     <host>10.254.254.153</host>
-                     <port>9000</port>
-                 </replica>
-             </shard>
-             <shard>
-                <internal_replication>false</internal_replication>
-                 <replica>
-                     <host>10.254.254.209</host>
+                     <host>10.254.254.253</host>
                      <port>9000</port>
                  </replica>
              </shard>
@@ -648,7 +641,7 @@
              <shard>
                 <internal_replication>false</internal_replication>
                  <replica>
-                     <host>10.254.254.253</host>
+                     <host>10.254.254.153</host>
                      <port>9000</port>
                  </replica>
              </shard>
@@ -656,6 +649,13 @@
                 <internal_replication>false</internal_replication>
                  <replica>
                      <host>10.254.254.249</host>
+                     <port>9000</port>
+                 </replica>
+             </shard>
+             <shard>
+                <internal_replication>false</internal_replication>
+                 <replica>
+                     <host>10.254.254.221</host>
                      <port>9000</port>
                  </replica>
              </shard>

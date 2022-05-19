@@ -23,12 +23,20 @@ using namespace apache::thrift;
 using namespace apache::thrift::protocol;
 using namespace apache::thrift::transport;
 const int DIMENSION = 9;
-const int shard_num = 30;
-const int client_num = 40;
+const int shard_num = 40;
+const int client_num = 20;
 
-int main(){
+int main(int argc, char *argv[]){
 
-    std::vector<std::string> server_ips = {"10.254.254.153", "10.254.254.209", "10.254.254.229", "10.254.254.253", "10.254.254.249"};
+    if (argc != 2) {
+      cerr << "./TrinityTPCHMacro [dataset part]" << endl;
+    }
+
+    int which_part = stoi(argv[1]);
+
+    std::vector<std::string> server_ips = {"10.254.254.253", "10.254.254.229", "10.254.254.153", "10.254.254.249", "10.254.254.221"};
+    server_ips = {"10.10.1.5", "10.10.1.6", "10.10.1.7", "10.10.1.8", "10.10.1.9"};
+
     const char *file_address = "/mntData/orders_lineitem_merged_indexed.csv";
     
     total_points_count = 3000028242;
@@ -53,7 +61,8 @@ int main(){
     uint32_t throughput;
 
     start = GetTimestamp();
-    throughput = total_client_insert(file_address, shard_num, client_num, server_ips);
+    // throughput = total_client_insert(file_address, shard_num, client_num, server_ips, which_part);
+    throughput = total_client_insert_split_file(shard_num, client_num, server_ips, which_part);
     diff = GetTimestamp() - start;
 
     cout << "Insertion Throughput (pt / seconds): " << throughput << endl;

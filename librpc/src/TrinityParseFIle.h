@@ -26,23 +26,29 @@ const int DIMENSION_TPCH = 9;
 std::vector<int32_t> parse_line_tpch(std::string line) {
 
     vector <int32_t> point(DIMENSION_TPCH, 0);
-    std::stringstream ss(line);
+    // std::stringstream ss(line);
 
     // Parse string by ","
     int index = -1;
     bool primary_key = true;
+    std::string delim = ",";
+    auto start = 0U;
+    auto end = line.find(delim);
 
     // [id, QUANTITY, EXTENDEDPRICE, DISCOUNT, TAX, SHIPDATE, COMMITDATE, RECEIPTDATE, TOTALPRICE, ORDERDATE]
-    while (ss.good())
+    while (end != std::string::npos)
     {
-        std::string substr;
-        std::getline(ss, substr, ',');
+        std::string substr = line.substr(start, end - start); 
+        start = end + 1;
+        end = line.find(delim, start);
+
         if (primary_key) {
             primary_key = false;
             continue;
         }
 
         index ++;
+        /*
         int32_t num;
         
         if (index == 1 || index == 2 || index == 3 || index == 7) 
@@ -55,13 +61,19 @@ std::vector<int32_t> parse_line_tpch(std::string line) {
         }
         else
             num = static_cast<int32_t>(std::stoul(substr));  // QUANTITY
+
         point[index] = num;
+         */
+
+        point[index] = static_cast<int32_t>(std::stoul(line.substr(start, end - start)));
+        /*
         if (num < 0) {
             cout << "wrong-0" << endl;
             exit(0);
         }
+        */
     }
-
+    /*
     if (point[0] >= 256 || point[2] >= 256 || point[3] >= 256) {
         cout << point[0] << ", " << point[2] << ", " << point[3] << endl;
         cout << "wrong overflow" << endl;
@@ -72,7 +84,7 @@ std::vector<int32_t> parse_line_tpch(std::string line) {
         cout << "wrong bound" << endl;
         exit(0);
     }
-
+    */
     return point;
 }
 
