@@ -142,7 +142,7 @@ int main(){
             end_range[i] = 20200700;
         }
     }
-    std::vector<int32_t> found_points;
+    std::vector<data_point<DIMENSION>> found_points;
     start = GetTimestamp();
     client.range_search_trie(found_points, start_range, end_range);
     diff = GetTimestamp() - start;

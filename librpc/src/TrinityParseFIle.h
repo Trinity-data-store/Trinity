@@ -26,9 +26,6 @@ const int DIMENSION_TPCH = 9;
 std::vector<int32_t> parse_line_tpch(std::string line) {
 
     vector <int32_t> point(DIMENSION_TPCH, 0);
-    // std::stringstream ss(line);
-
-    // Parse string by ","
     int index = -1;
     bool primary_key = true;
     std::string delim = ",";
@@ -46,111 +43,15 @@ std::vector<int32_t> parse_line_tpch(std::string line) {
             primary_key = false;
             continue;
         }
-
         index ++;
-        /*
-        int32_t num;
-        
-        if (index == 1 || index == 2 || index == 3 || index == 7) 
-        {
-            num = static_cast<int32_t>(std::stof(substr)); // float (already converted)
-        }
-        else if (index == 4 || index == 5 || index == 6 || index == 8) //yy-mm-dd
-        {
-            num = static_cast<int32_t>(std::stoul(substr));
-        }
-        else
-            num = static_cast<int32_t>(std::stoul(substr));  // QUANTITY
-
-        point[index] = num;
-         */
-
-        point[index] = static_cast<int32_t>(std::stoul(line.substr(start, end - start)));
-        /*
-        if (num < 0) {
-            cout << "wrong-0" << endl;
-            exit(0);
-        }
-        */
+        point[index] = static_cast<int32_t>(std::stoul(substr));
     }
-    /*
-    if (point[0] >= 256 || point[2] >= 256 || point[3] >= 256) {
-        cout << point[0] << ", " << point[2] << ", " << point[3] << endl;
-        cout << "wrong overflow" << endl;
-        exit(0);
-    }
-
-    if (point[1] >= 50000000 || point[6] >= 500000000) {
-        cout << "wrong bound" << endl;
-        exit(0);
-    }
-    */
+    index ++; 
+    std::string substr = line.substr(start, end - start); 
+    point[index] = static_cast<int32_t>(std::stoul(substr));
+    
     return point;
 }
-
-// Parse one line from TPC-H file.
-std::vector<int32_t> parse_line_tpch_mmap(const char *map, long idx_start, long idx_end) {
-
-    vector <int32_t> point(DIMENSION_TPCH, 0);
-
-    // Parse string by ","
-    int index = -1;
-    bool primary_key = true;
-
-
-    // [id, QUANTITY, EXTENDEDPRICE, DISCOUNT, TAX, SHIPDATE, COMMITDATE, RECEIPTDATE, TOTALPRICE, ORDERDATE]
-    long prev_i = idx_start;
-    for (long i = idx_start; i <= idx_end; i ++)
-    {
-        if (map[i] == ',') {
-            
-            std::string substr(map + prev_i, map + i);
-
-            if (primary_key) {
-                primary_key = false;
-                prev_i = i + 1;
-                continue;
-            }
-
-            index ++;
-            int32_t num;
-            
-            if (index == 1 || index == 2 || index == 3 || index == 7) 
-            {
-                num = static_cast<int32_t>(std::stof(substr)); // float (already converted)
-            }
-            else if (index == 4 || index == 5 || index == 6 || index == 8) //yy-mm-dd
-            {
-                num = static_cast<int32_t>(std::stoul(substr));
-            }
-            else
-                num = static_cast<int32_t>(std::stoul(substr));  // QUANTITY
-
-            // cerr << index << " " << num << endl;
-            point[index] = num;
-            if (num < 0) {
-                cout << "wrong-0" << endl;
-                exit(0);
-            }
-            prev_i = i + 1;
-        }
-
-    }
-
-    if (point[0] >= 256 || point[2] >= 256 || point[3] >= 256) {
-        cout << point[0] << ", " << point[2] << ", " << point[3] << endl;
-        cout << "wrong overflow" << endl;
-        exit(0);
-    }
-
-    if (point[1] >= 50000000 || point[6] >= 500000000) {
-        cout << "wrong bound" << endl;
-        exit(0);
-    }
-
-    return point;
-}
-
 
 vector<vector <int32_t>> *get_data_vector_tpch(std::vector<int32_t> &max_values, std::vector<int32_t> &min_values){
 

@@ -2,6 +2,7 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../libmdtrie/src)
 
+if(FALSE)
 add_executable(TrinityFS
         src/TrinityFS.cpp
         src/TrinityBenchShared.h
@@ -23,6 +24,8 @@ add_executable(TrinityTPCH
         src/TrinityBenchShared.h
         src/MDTrieShard.cpp)
 
+endif()
+
 add_executable(TrinityTPCHMacro
         src/TrinityTPCHMacro.cpp
         src/MDTrieShardClient.h
@@ -39,6 +42,7 @@ set(RPC_LIBS ${THRIFT_LIBRARY}
             ${THRIFTNB_LIBRARY}
             ${LIBEVENT_LIBRARY})
 
+if(FALSE)
 target_link_libraries(TrinityFS ${MDTRIE_LIBS} ${RPC_LIBS} event thrift)
 add_dependencies(TrinityFS thrift_ep)
 
@@ -47,6 +51,8 @@ add_dependencies(TrinityOSM thrift_ep)
 
 target_link_libraries(TrinityTPCH ${MDTRIE_LIBS} ${RPC_LIBS} event thrift)
 add_dependencies(TrinityTPCH thrift_ep)
+
+endif()
 
 target_link_libraries(TrinityTPCHMacro ${MDTRIE_LIBS} ${RPC_LIBS} event thrift)
 add_dependencies(TrinityTPCHMacro thrift_ep)

@@ -36,18 +36,11 @@ int main(int argc, char *argv[]){
 
     std::vector<std::string> server_ips = {"10.254.254.253", "10.254.254.229", "10.254.254.153", "10.254.254.249", "10.254.254.221"};
     server_ips = {"10.10.1.5", "10.10.1.6", "10.10.1.7", "10.10.1.8", "10.10.1.9"};
-
-    const char *file_address = "/mntData/orders_lineitem_merged_indexed.csv";
     
     total_points_count = 3000028242;
 
     auto client = MDTrieClient(server_ips, shard_num);
 
-    // for (unsigned int i = 0; i < server_ips.size(); ++i) {
-    //   for (int j = 0; j < shard_num; j++){
-    //     server_to_client.push_back({});
-    //   }
-    // }
     if (!client.ping(2)){
         std::cerr << "Server setting wrong!" << std::endl;
         exit(-1);
@@ -58,10 +51,11 @@ int main(int argc, char *argv[]){
     */
 
     TimeStamp start, diff;
+
+    /*
     uint32_t throughput;
 
     start = GetTimestamp();
-    // throughput = total_client_insert(file_address, shard_num, client_num, server_ips, which_part);
     throughput = total_client_insert_split_file(shard_num, client_num, server_ips, which_part);
     diff = GetTimestamp() - start;
 
@@ -69,7 +63,10 @@ int main(int argc, char *argv[]){
     cout << "End-to-end Latency (s): " << diff / 1000000 << endl;
     cout << "Storage: " << client.get_size() << endl;
 
-    // Range Search
+    */
+    /** 
+        Range Search
+    */
     // [QUANTITY, EXTENDEDPRICE, DISCOUNT, TAX, SHIPDATE, COMMITDATE, RECEIPTDATE, TOTALPRICE, ORDERDATE]
     std::vector<int32_t> max_values = {50, 10494950, 10, 8, 19981201, 19981031, 19981231, 59591284, 19980802};
     std::vector<int32_t> min_values = {1, 90001, 0, 0, 19920102, 19920131, 19920103, 81602, 19920101};
@@ -79,7 +76,7 @@ int main(int argc, char *argv[]){
 
     for (int i = 0; i < 10; i ++) {
 
-      std::vector<int32_t> found_points;
+      std::vector<std::vector<int32_t>> found_points;
       std::vector<int32_t> start_range = min_values;
       std::vector<int32_t> end_range = max_values;
 
@@ -104,7 +101,6 @@ int main(int argc, char *argv[]){
           end_range[static_cast<int32_t>(std::stoul(index_str))] = static_cast<int32_t>(std::stoul(end_range_str));
         }
       }
-
       start = GetTimestamp();
       client.range_search_trie(found_points, start_range, end_range);
       diff = GetTimestamp() - start;

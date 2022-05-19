@@ -12,7 +12,7 @@ const dimension_t DIMENSION = 7;
 void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node, bool run_preset_query = false, bool run_search_query = false, bool load_from_File = false){
 
     // raise(SIGINT);
-    std::vector<int32_t> found_points;
+    std::vector<data_point<DIMENSION>> found_points;
     std::vector<data_point<DIMENSION>> all_points;
 
     md_trie<DIMENSION> mdtrie(max_depth, trie_depth, max_tree_node);
@@ -164,7 +164,7 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node, 
                 end_range.set_coordinate(6, max[6]);
             }
 
-            std::vector<int32_t> found_points_temp;
+            std::vector<data_point<DIMENSION>> found_points_temp;
             start = GetTimestamp();
             mdtrie.range_search_trie(&start_range, &end_range, mdtrie.root(), 0, found_points_temp);
             TimeStamp temp_diff =  GetTimestamp() - start; 
@@ -199,7 +199,7 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node, 
                 end_range.set_coordinate(j, start_range.get_coordinate(j) + (max[j] - start_range.get_coordinate(j) + 1) / 10 * (rand() % 10));
             }
 
-            std::vector<int32_t> found_points_temp;
+            std::vector<data_point<DIMENSION>> found_points_temp;
             start = GetTimestamp();
             mdtrie.range_search_trie(&start_range, &end_range, mdtrie.root(), 0, found_points_temp);
             diff = GetTimestamp() - start;
@@ -237,7 +237,7 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node, 
     /**
      * Point lookup given primary keys returned by range search
      */
-
+    /*
     n_leaves_t found_points_size = found_points.size();
     TimeStamp diff_primary = 0;
     n_leaves_t checked_points_size = 0;
@@ -258,6 +258,7 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node, 
         checked_points_size++;
     }
     std::cout << "Lookup Latency: " << (float) diff_primary / checked_points_size << std::endl;
+    */
 }
 
 int main(int argc, char *argv[]) {

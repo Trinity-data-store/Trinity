@@ -140,7 +140,7 @@ public:
     return inserted_points_ - 1;
   }
 
-  void range_search(std::vector<int32_t> & _return, const std::vector<int32_t> & start_range, const std::vector<int32_t> & end_range){
+  void range_search(std::vector<std::vector<int32_t>> & _return, const std::vector<int32_t> & start_range, const std::vector<int32_t> & end_range){
     
     data_point<DIMENSION> start_range_point;
     for (uint8_t i = 0; i < DIMENSION; i++)
@@ -150,7 +150,19 @@ public:
     for (uint8_t i = 0; i < DIMENSION; i++)
       end_range_point.set_coordinate(i, end_range[i]);     
     
-    mdtrie_->range_search_trie(&start_range_point, &end_range_point, mdtrie_->root(), 0, _return);
+    std::vector<data_point<DIMENSION>> return_vect;
+    mdtrie_->range_search_trie(&start_range_point, &end_range_point, mdtrie_->root(), 0, return_vect);
+
+    // _return.reserve(return_vect.size());
+    for (unsigned i = 0; i < return_vect.size(); i++) {
+      std::vector<int32_t> return_pt(DIMENSION);
+
+      for (unsigned j = 0; j < DIMENSION; j ++) {
+        return_pt[j] = return_vect[i].get_coordinate(j);
+      }
+      // _return[i] = return_pt;
+      _return.push_back(return_pt);
+    }
   }
 
   void primary_key_lookup(std::vector<int32_t> & _return, const int32_t primary_key){

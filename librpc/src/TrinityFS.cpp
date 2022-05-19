@@ -151,7 +151,7 @@ int main(){
             end_range[i] = 2147483647;
         }
     }
-    std::vector<int32_t> found_points;
+    std::vector<data_point<DIMENSION>> found_points;
 
     client.range_search_trie(found_points, start_range, end_range);
     
