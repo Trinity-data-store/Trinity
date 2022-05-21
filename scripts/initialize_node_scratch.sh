@@ -135,7 +135,7 @@ clickhouse-client --database=default --query="CREATE TABLE IF NOT EXISTS tpch_ma
 
 # Clickhouse TPCH (insert Data)
 
-cat /mntData2/data/tpch/data_500/orders_lineitem_merged_indexed.csv | clickhouse-client --query="INSERT INTO tpch_macro FORMAT CSV";
+cat /mntData2/tpch/data_500/orders_lineitem_merged_indexed.csv | clickhouse-client --query="INSERT INTO tpch_macro FORMAT CSV SETTING";
 cat /mntData/orders_lineitem_merged_indexed.csv | clickhouse-client --query="INSERT INTO tpch_macro FORMAT CSV";
 
 # Start postgresql

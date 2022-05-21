@@ -47,17 +47,18 @@ public:
   void clear_trie(){
 
     int client_count = shard_vector_.size();
-    for (uint8_t i = 0; i < client_count; i++)
+    for (uint16_t i = 0; i < client_count; i++)
       shard_vector_[i].send_clear_trie();
   }
 
   bool ping(int32_t dataset_idx){
 
     int client_count = shard_vector_.size();
-    for (uint8_t i = 0; i < client_count; i++)
+    for (uint16_t i = 0; i < client_count; i++) {
       if (!shard_vector_[i].ping(dataset_idx)){
         return false;
       }
+    }
     return true;
   }
 
@@ -124,11 +125,11 @@ public:
 
     int client_count = shard_vector_.size();
     
-    for (uint8_t i = 0; i < client_count; i++){
+    for (uint16_t i = 0; i < client_count; i++){
       shard_vector_[i].send_range_search(start_range, end_range);
     }     
 
-    for (uint8_t i = 0; i < client_count; i++){
+    for (uint16_t i = 0; i < client_count; i++){
       std::vector<std::vector<int32_t>> return_vect_tmp;
       shard_vector_[i].recv_range_search(return_vect_tmp);
       return_vect.insert(return_vect.end(), return_vect_tmp.begin(), return_vect_tmp.end());
@@ -139,7 +140,7 @@ public:
 
     int client_count = shard_vector_.size();
 
-    for (uint8_t i = 0; i < client_count; i++){
+    for (uint16_t i = 0; i < client_count; i++){
       shard_vector_[i].send_range_search(start_range, end_range);
     }     
   }
@@ -148,7 +149,8 @@ public:
 
     int client_count = shard_vector_.size();
     
-    for (uint8_t i = 0; i < client_count; i++){
+    for (uint16_t i = 0; i < client_count; i++){
+      cerr << i << " " << "recv_range_search" << endl;
       std::vector<std::vector<int32_t>> return_vect_tmp;
       shard_vector_[i].recv_range_search(return_vect_tmp);
       return_vect.insert(return_vect.end(), return_vect_tmp.begin(), return_vect_tmp.end());

@@ -1,7 +1,7 @@
 import re 
 
-datapath = "tpch_queries"
-outfile = open("tpch_queries_converted", "w")  # write mode
+datapath = "query_tpch_T1_range0.10_rerun"
+outfile = open("{}_converted".format(datapath), "w")  # write mode
 
 if __name__ == "__main__": 
 

@@ -20,7 +20,7 @@ using namespace apache::thrift;
 using namespace apache::thrift::protocol;
 using namespace apache::thrift::transport;
 
-int BATCH_SIZE = 4096 * 5;
+int BATCH_SIZE = 4096 * 30;
 int WARMUP_FACTOR = 5;
 
 // Go to a specific line of a file (0-indexed)
@@ -28,7 +28,6 @@ void GotoLine(std::ifstream& file, uint32_t num){
 
     file.seekg(std::ios::beg);
     for(uint32_t i=0; i < num; ++i){
-      // cout << "i: " << i << " num: " << num << endl;
       file.ignore(numeric_limits<streamsize>::max(), file.widen('\n'));
     }
 }
@@ -168,9 +167,9 @@ uint32_t total_client_insert_split_file(int shard_number, int client_number, std
     std::string split_address = buff;
     // const char *file_address = split_address.c_str();
     // cout << file_address << endl;
-    uint32_t points_to_insert = 50000471 / 10;
+    uint32_t points_to_insert = 50000471;
     if (i == 59) {
-      points_to_insert = 50000453 / 10;
+      points_to_insert = 50000453;
     }
     threads.push_back(std::async(insert_each_client_from_file, split_address, shard_number, 1, 0, server_ips, points_to_insert));
 

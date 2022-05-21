@@ -5,9 +5,10 @@ import random
 import sys
 import random
 from datetime import datetime
+from multiprocessing import Process
 
-master = ("10.254.254.209", "9000")
-
+master = ("10.254.254.221", "9000")
+search_range_delta = 0.10
 def get_random_full_range_one():
 
     SHIPDATE_start = random.randrange(19920102, 19981201)
@@ -20,29 +21,22 @@ def get_random_full_range_one():
 
 def get_random_full_range_two():
 
-    ORDERDATE_start = random.randrange(19920102, 19981201)
-    SHIPDATE_end = random.randrange(ORDERDATE_start, 19981201 + 1)
+    ORDERDATE_start = random.randrange(19920101, 19980802)
+    ORDERDATE_end = random.randrange(ORDERDATE_start, 19980802 + 1)
     
-    return '''SELECT * FROM tpch_macro WHERE ORDERDATE >= {} AND SHIPDATE <= {};'''.format(ORDERDATE_start, SHIPDATE_end)
+    return '''SELECT * FROM tpch_macro WHERE ORDERDATE >= {} AND ORDERDATE <= {} AND COMMITDATE < RECEIPTDATE;'''.format(ORDERDATE_start, ORDERDATE_end)
 
-if __name__ == "__main__":
+def get_random_full_range_three():
 
-    template_index = 0
-    return_start = 0
-    return_end = 0
+    RECEIPTDATE_start = random.randrange(19920103, 19981231)
+    RECEIPTDATE_end = random.randrange(RECEIPTDATE_start, 19981231 + 1)
+    
+    return '''SELECT * FROM tpch_macro WHERE COMMITDATE < RECEIPTDATE AND SHIPDATE < COMMITDATE AND RECEIPTDATE >= {} AND RECEIPTDATE <= {};'''.format(RECEIPTDATE_start, RECEIPTDATE_end)
 
-    if sys.argv[1] == "1": # get_random_full_range_one
-        template_index = 1
-        return_start = 57106873 * (1 - 0.01)
-        return_end = 57106873 * (1 + 0.01)
-    if sys.argv[1] == "2": # get_random_full_range_two
-        template_index = 2
-        return_start = 151648557 * (1 - 0.01)
-        return_end = 151648557 * (1 + 0.01)
+def func(total_i, template_index, return_start, return_end):
 
-    total_i = int(sys.argv[2])
-    client = Client(master[0], port=master[1])
     i = 0
+    client = Client(master[0], port=master[1])
 
     while i < total_i:
         random.seed(datetime.now())
@@ -51,16 +45,49 @@ if __name__ == "__main__":
             query = get_random_full_range_one()
         if template_index == 2:
             query = get_random_full_range_two()
+        if template_index == 3:
+            query = get_random_full_range_three()
 
         query_count = query.replace("*", "COUNT(*)")
-
-        start = time.time()
         count_result = client.execute(query_count)[0][0]
-        end = time.time()
 
         if count_result < return_start or count_result > return_end:
-            print("doesnt work")
             continue
 
-        print("{}, elapsed: {}s, found points: {}".format(query_count, end - start, count_result, flush=True))
+        start = time.time()
+        client.execute(query)
+        end = time.time()
+
+        print("{}, elapsed: {}s, found points: {}".format(query, end - start, count_result), flush=True)
         i += 1
+
+processes = []
+
+if __name__ == "__main__":
+
+    total_i = int(sys.argv[2])
+
+    if sys.argv[1] == "1": # get_random_full_range_one
+        template_index = 1
+        return_start = 57106873 * (1 - search_range_delta)
+        return_end = 57106873 * (1 + search_range_delta)
+    if sys.argv[1] == "2": # get_random_full_range_two
+        template_index = 2
+        return_start = 72529462 * (1 - search_range_delta)
+        return_end = 72529462 * (1 + search_range_delta)
+    if sys.argv[1] == "3":
+        template_index = 3
+        return_start = 54540146 * (1 - search_range_delta)
+        return_end = 54540146 * (1 + search_range_delta)
+
+    while sum(1 for line in open('query_tpch_T{}_range0.10'.format(template_index))) < 1000:
+
+        for i in range(10):
+            p = Process(target=func, args=(total_i, template_index, return_start, return_end))
+            p.start()
+            processes.append(p)
+
+        for p in processes:
+            p.join()
+
+    
