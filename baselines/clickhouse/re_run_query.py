@@ -7,8 +7,7 @@ from datetime import datetime
 
 master = ("10.254.254.221", "9000")
 
-template_idx = sys.argv[1]
-filename = "./query_tpch_T{}_range0.10".format(template_idx)
+filename = sys.argv[1]
 
 with open(filename) as file:
     lines = file.readlines()

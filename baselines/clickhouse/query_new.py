@@ -33,6 +33,14 @@ def get_random_full_range_three():
     
     return '''SELECT * FROM tpch_macro WHERE COMMITDATE < RECEIPTDATE AND SHIPDATE < COMMITDATE AND RECEIPTDATE >= {} AND RECEIPTDATE <= {};'''.format(RECEIPTDATE_start, RECEIPTDATE_end)
 
+def get_random_full_range_five():
+
+    SHIPDATE_start = random.randrange(19920102, 19981201)
+    SHIPDATE_end = random.randrange(SHIPDATE_start + 1, 19981201 + 1)
+    
+    return '''SELECT * FROM tpch_macro WHERE SHIPDATE >= {} AND SHIPDATE <= {};'''.format(SHIPDATE_start, SHIPDATE_end)
+
+
 def func(total_i, template_index, return_start, return_end):
 
     i = 0
@@ -48,6 +56,9 @@ def func(total_i, template_index, return_start, return_end):
         if template_index == 3:
             query = get_random_full_range_three()
 
+        if template_index == 5:
+            query = get_random_full_range_five()
+
         query_count = query.replace("*", "COUNT(*)")
         count_result = client.execute(query_count)[0][0]
 
@@ -55,7 +66,7 @@ def func(total_i, template_index, return_start, return_end):
             continue
 
         start = time.time()
-        client.execute(query)
+        # client.execute(query)
         end = time.time()
 
         print("{}, elapsed: {}s, found points: {}".format(query, end - start, count_result), flush=True)
@@ -79,15 +90,20 @@ if __name__ == "__main__":
         template_index = 3
         return_start = 54540146 * (1 - search_range_delta)
         return_end = 54540146 * (1 + search_range_delta)
+    if sys.argv[1] == "5":
+        template_index = 5
+        return_start = 37417320 * (1 - search_range_delta)
+        return_end = 37417320 * (1 + search_range_delta)
 
-    while sum(1 for line in open('query_tpch_T{}_range0.10'.format(template_index))) < 1000:
+    func(total_i, template_index, return_start, return_end)
+    # while sum(1 for line in open('query_tpch_T{}_range0.10'.format(template_index))) < 1000:
 
-        for i in range(10):
-            p = Process(target=func, args=(total_i, template_index, return_start, return_end))
-            p.start()
-            processes.append(p)
+    #     for i in range(10):
+    #         p = Process(target=func, args=(total_i, template_index, return_start, return_end))
+    #         p.start()
+    #         processes.append(p)
 
-        for p in processes:
-            p.join()
+    #     for p in processes:
+    #         p.join()
 
     
