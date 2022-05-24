@@ -13,6 +13,7 @@ if __name__ == "__main__":
     regex_template_1 = re.compile(r"WHERE SHIPDATE BETWEEN (?P<ship_date_start>[0-9.]+?) AND (?P<ship_date_end>[0-9.]+?) AND DISCOUNT BETWEEN (?P<discount_start>[0-9.]+?) AND (?P<discount_end>[0-9.]+?) AND QUANTITY <= (?P<quantity_end>[0-9.]+?);")
     regex_template_2 = re.compile(r"WHERE ORDERDATE >= (?P<order_date_start>[0-9.]+?) AND ORDERDATE <= (?P<order_date_end>[0-9.]+?) AND ")
     regex_template_5 = re.compile(r"WHERE SHIPDATE >= (?P<ship_date_start>[0-9.]+?) AND SHIPDATE <= (?P<ship_date_end>[0-9.]+?);,")
+    regex_template_4 = re.compile(r"WHERE ORDERDATE <= (?P<order_date_end>[0-9.]+?) AND SHIPDATE >= (?P<ship_date_start>[0-9.]+?);,")
 
     with open("{}".format(datapath)) as ifile:
 
@@ -28,6 +29,10 @@ if __name__ == "__main__":
                     m = regex_template_5.search(line)
                     if m:
                         out_line = "4,{},{}".format(m.group("ship_date_start"), m.group("ship_date_end"))
+                    else:
+                        m = regex_template_4.search(line)
+                        if m:
+                            out_line = "4,{},{},8,{},{}".format(m.group("ship_date_start"), -1, -1, m.group("order_date_end"))
             
             outfile.write(out_line + "\n")
 

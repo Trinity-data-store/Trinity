@@ -1,5 +1,6 @@
-Query 0 end to end latency (ms): 273259, found points count: 124699317
-Query 1 end to end latency (ms): 233148, found points count: 112245985
-Query 2 end to end latency (ms): 252490, found points count: 124692444
-Query 3 end to end latency (ms): 216920, found points count: 112239288
-Query 4 end to end latency (ms): 233109, found points count: 114693559
+Query 0 end to end latency (ms): 232064, found points count: 78841600
+Query 1 end to end latency (ms): 232503, found points count: 78841600
+Query 2 end to end latency (ms): 194188, found points count: 70961883
+Query 3 end to end latency (ms): 209718, found points count: 78836985
+Query 0 end to end latency (ms): 235849, found points count: 79870608
+Query 1 end to end latency (ms): 192241, found points count: 71888648

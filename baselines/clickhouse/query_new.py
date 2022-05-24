@@ -33,6 +33,13 @@ def get_random_full_range_three():
     
     return '''SELECT * FROM tpch_macro WHERE COMMITDATE < RECEIPTDATE AND SHIPDATE < COMMITDATE AND RECEIPTDATE >= {} AND RECEIPTDATE <= {};'''.format(RECEIPTDATE_start, RECEIPTDATE_end)
 
+def get_random_full_range_four():
+
+    ORDERDATE_end = random.randrange(19920101, 19980802)
+    SHIPDATE_start = random.randrange(19920102, 19981201)
+    
+    return '''SELECT * FROM tpch_macro WHERE ORDERDATE <= {} AND SHIPDATE >= {};'''.format(ORDERDATE_end, SHIPDATE_start)
+
 def get_random_full_range_five():
 
     SHIPDATE_start = random.randrange(19920102, 19981201)
@@ -55,7 +62,8 @@ def func(total_i, template_index, return_start, return_end):
             query = get_random_full_range_two()
         if template_index == 3:
             query = get_random_full_range_three()
-
+        if template_index == 4:
+            query = get_random_full_range_four()
         if template_index == 5:
             query = get_random_full_range_five()
 
@@ -90,20 +98,15 @@ if __name__ == "__main__":
         template_index = 3
         return_start = 54540146 * (1 - search_range_delta)
         return_end = 54540146 * (1 + search_range_delta)
+    if sys.argv[1] == "4":
+        template_index = 4
+        return_start = 74807478 * (1 - search_range_delta)
+        return_end = 74807478 * (1 + search_range_delta)
     if sys.argv[1] == "5":
         template_index = 5
         return_start = 37417320 * (1 - search_range_delta)
         return_end = 37417320 * (1 + search_range_delta)
 
     func(total_i, template_index, return_start, return_end)
-    # while sum(1 for line in open('query_tpch_T{}_range0.10'.format(template_index))) < 1000:
-
-    #     for i in range(10):
-    #         p = Process(target=func, args=(total_i, template_index, return_start, return_end))
-    #         p.start()
-    #         processes.append(p)
-
-    #     for p in processes:
-    #         p.join()
 
     

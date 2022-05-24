@@ -16,8 +16,8 @@ with open(filename) as file:
 client = Client(master[0], port=master[1])
 
 finished_line = 0
-for line in lines:
-    
+for line in lines[19:]:
+
     query = line.split(";,")[0] + ";"
 
     start = time.time()
