@@ -16,14 +16,18 @@ with open(filename) as file:
 client = Client(master[0], port=master[1])
 
 finished_line = 0
-for line in lines[19:]:
+for line in lines[12:20]:
 
     query = line.split(";,")[0] + ";"
 
     start = time.time()
-    results = client.execute(query)
+    results = client.execute(query.replace("tpch_macro", "tpch_macro_split"))
     end = time.time()
 
-    print("{}, elapsed: {}s, found points: {}".format(query, end - start, len(results)), flush=True)
+    with open(filename + "_rerun", "a") as outfile:
+        outfile.write("{}, elapsed: {}s, found points: {}\n".format(query, end - start, len(results)))
+
+    del results
+
     finished_line += 1
 
