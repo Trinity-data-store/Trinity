@@ -274,7 +274,7 @@ public:
 
     // This function takes in a node (in preorder) and a symbol (branch index)
     // Return the child node (in preorder) designated by that symbol
-    preorder_t skip_children_subtree(preorder_t node, preorder_t &node_pos, morton_t symbol, level_t current_level,
+    preorder_t skip_children_subtree_range_search(preorder_t node, preorder_t &node_pos, morton_t symbol, level_t current_level,
                                             preorder_t &current_frontier, preorder_t &current_primary)  {
 
         if (current_level == max_depth_){
