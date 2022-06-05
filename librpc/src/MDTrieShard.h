@@ -26,7 +26,7 @@ class MDTrieShardIf {
   virtual int32_t add(const int32_t num1, const int32_t num2) = 0;
   virtual int32_t insert(const std::vector<int32_t> & point) = 0;
   virtual bool check(const std::vector<int32_t> & point) = 0;
-  virtual void range_search(std::vector<std::vector<int32_t> > & _return, const std::vector<int32_t> & start_range, const std::vector<int32_t> & end_range) = 0;
+  virtual void range_search(std::vector<int32_t> & _return, const std::vector<int32_t> & start_range, const std::vector<int32_t> & end_range) = 0;
   virtual void primary_key_lookup(std::vector<int32_t> & _return, const int32_t primary_key) = 0;
   virtual int32_t get_size() = 0;
   virtual void clear_trie() = 0;
@@ -75,7 +75,7 @@ class MDTrieShardNull : virtual public MDTrieShardIf {
     bool _return = false;
     return _return;
   }
-  void range_search(std::vector<std::vector<int32_t> > & /* _return */, const std::vector<int32_t> & /* start_range */, const std::vector<int32_t> & /* end_range */) override {
+  void range_search(std::vector<int32_t> & /* _return */, const std::vector<int32_t> & /* start_range */, const std::vector<int32_t> & /* end_range */) override {
     return;
   }
   void primary_key_lookup(std::vector<int32_t> & /* _return */, const int32_t /* primary_key */) override {
@@ -617,11 +617,11 @@ class MDTrieShard_range_search_result {
   }
 
   virtual ~MDTrieShard_range_search_result() noexcept;
-  std::vector<std::vector<int32_t> >  success;
+  std::vector<int32_t>  success;
 
   _MDTrieShard_range_search_result__isset __isset;
 
-  void __set_success(const std::vector<std::vector<int32_t> > & val);
+  void __set_success(const std::vector<int32_t> & val);
 
   bool operator == (const MDTrieShard_range_search_result & rhs) const
   {
@@ -652,7 +652,7 @@ class MDTrieShard_range_search_presult {
 
 
   virtual ~MDTrieShard_range_search_presult() noexcept;
-  std::vector<std::vector<int32_t> > * success;
+  std::vector<int32_t> * success;
 
   _MDTrieShard_range_search_presult__isset __isset;
 
@@ -989,9 +989,9 @@ class MDTrieShardClientT : virtual public MDTrieShardIf {
   bool check(const std::vector<int32_t> & point) override;
   void send_check(const std::vector<int32_t> & point);
   bool recv_check();
-  void range_search(std::vector<std::vector<int32_t> > & _return, const std::vector<int32_t> & start_range, const std::vector<int32_t> & end_range) override;
+  void range_search(std::vector<int32_t> & _return, const std::vector<int32_t> & start_range, const std::vector<int32_t> & end_range) override;
   void send_range_search(const std::vector<int32_t> & start_range, const std::vector<int32_t> & end_range);
-  void recv_range_search(std::vector<std::vector<int32_t> > & _return);
+  void recv_range_search(std::vector<int32_t> & _return);
   void primary_key_lookup(std::vector<int32_t> & _return, const int32_t primary_key) override;
   void send_primary_key_lookup(const int32_t primary_key);
   void recv_primary_key_lookup(std::vector<int32_t> & _return);
@@ -1141,7 +1141,7 @@ class MDTrieShardMultiface : virtual public MDTrieShardIf {
     return ifaces_[i]->check(point);
   }
 
-  void range_search(std::vector<std::vector<int32_t> > & _return, const std::vector<int32_t> & start_range, const std::vector<int32_t> & end_range) override {
+  void range_search(std::vector<int32_t> & _return, const std::vector<int32_t> & start_range, const std::vector<int32_t> & end_range) override {
     size_t sz = ifaces_.size();
     size_t i = 0;
     for (; i < (sz - 1); ++i) {
@@ -1224,9 +1224,9 @@ class MDTrieShardConcurrentClientT : virtual public MDTrieShardIf {
   bool check(const std::vector<int32_t> & point) override;
   int32_t send_check(const std::vector<int32_t> & point);
   bool recv_check(const int32_t seqid);
-  void range_search(std::vector<std::vector<int32_t> > & _return, const std::vector<int32_t> & start_range, const std::vector<int32_t> & end_range) override;
+  void range_search(std::vector<int32_t> & _return, const std::vector<int32_t> & start_range, const std::vector<int32_t> & end_range) override;
   int32_t send_range_search(const std::vector<int32_t> & start_range, const std::vector<int32_t> & end_range);
-  void recv_range_search(std::vector<std::vector<int32_t> > & _return, const int32_t seqid);
+  void recv_range_search(std::vector<int32_t> & _return, const int32_t seqid);
   void primary_key_lookup(std::vector<int32_t> & _return, const int32_t primary_key) override;
   int32_t send_primary_key_lookup(const int32_t primary_key);
   void recv_primary_key_lookup(std::vector<int32_t> & _return, const int32_t seqid);

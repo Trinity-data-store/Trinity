@@ -124,13 +124,13 @@ sudo service clickhouse-server start
 # ClickHouse TPCH (Client Node)
 
 clickhouse-client --database=default --query="DROP TABLE IF EXISTS tpch_macro";
+clickhouse-client --database=default --query="DROP TABLE IF EXISTS tpch_macro_split";
 
 clickhouse-client --database=default --query="CREATE TABLE IF NOT EXISTS tpch_macro (ID UInt32, QUANTITY UInt8, EXTENDEDPRICE UInt32, DISCOUNT UInt8, TAX UInt8, SHIPDATE UInt32, COMMITDATE UInt32, RECEIPTDATE UInt32, TOTALPRICE UInt32, ORDERDATE UInt32) ENGINE = Distributed(test_trinity, default, tpch_macro, rand())";
 
 # ClickHouse TPCH (Data Node)
 
 clickhouse-client --database=default --query="DROP TABLE IF EXISTS tpch_macro";
-
 clickhouse-client --database=default --query="CREATE TABLE IF NOT EXISTS tpch_macro (ID UInt32, QUANTITY UInt8, EXTENDEDPRICE UInt32, DISCOUNT UInt8, TAX UInt8, SHIPDATE UInt32, COMMITDATE UInt32, RECEIPTDATE UInt32, TOTALPRICE UInt32, ORDERDATE UInt32) Engine = MergeTree ORDER BY (ID)";
 
 # Clickhouse TPCH (insert Data)

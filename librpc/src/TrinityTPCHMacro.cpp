@@ -28,14 +28,14 @@ const int client_num = 20;
 
 int main(int argc, char *argv[]){
 
-    if (argc != 2) {
-      cerr << "./TrinityTPCHMacro [dataset part]" << endl;
+    if (argc < 2) {
+      cerr << "./TrinityTPCHMacro [dataset part] [Infile] [Outfile]" << endl;
     }
 
     int which_part = stoi(argv[1]);
 
     std::vector<std::string> server_ips = {"10.254.254.225", "10.254.254.249", "10.254.254.205", "10.254.254.217", "10.254.254.209"};
-    server_ips = {"10.10.1.5", "10.10.1.6", "10.10.1.7", "10.10.1.8", "10.10.1.9"};
+    // server_ips = {"10.10.1.5", "10.10.1.6", "10.10.1.7", "10.10.1.8", "10.10.1.9"};
 
     total_points_count = 3000028242;
     auto client = MDTrieClient(server_ips, shard_num);
@@ -49,16 +49,20 @@ int main(int argc, char *argv[]){
         Insert all points
     */
 
-    TimeStamp start = GetTimestamp();
-    uint32_t throughput = total_client_insert_split_file(shard_num, client_num, server_ips, which_part);
-    TimeStamp diff = GetTimestamp() - start;
+    TimeStamp start, diff;
+    uint32_t throughput;
 
-    cout << "Insertion Throughput (pt / seconds): " << throughput << endl;
-    cout << "End-to-end Latency (s): " << diff / 1000000 << endl;
-    cout << "Storage: " << client.get_size() << endl;
-    
+    if (which_part != 0) {
+      start = GetTimestamp();
+      throughput = total_client_insert_split_tpch(shard_num, client_num, server_ips, which_part);
+      TimeStamp diff = GetTimestamp() - start;
+
+      cout << "Insertion Throughput (pt / seconds): " << throughput << endl;
+      cout << "End-to-end Latency (s): " << diff / 1000000 << endl;
+      cout << "Storage (MB): " << client.get_size() / 1048576 << endl;
+    }
     // One client does query for simplicity
-    if (which_part != 1) {
+    if (which_part == 2 || which_part == 3) {
       return 0;
     }
     
@@ -70,18 +74,34 @@ int main(int argc, char *argv[]){
     std::vector<int32_t> max_values = {50, 10494950, 10, 8, 19981201, 19981031, 19981231, 59591284, 19980802};
     std::vector<int32_t> min_values = {1, 90001, 0, 0, 19920102, 19920131, 19920103, 81602, 19920101};
 
-    std::ifstream file("../baselines/clickhouse/query_tpch_T1_range0.10_rerun_converted");
-    std::ofstream outfile("query_tpch_T1_range0.10_trinity");
+    char *infile_address = (char *)"../baselines/clickhouse/query_tpch_rerun_converted";
+    char *outfile_address = (char *)"query_tpch_trinity";
+    cout << argc << endl;
+    
+    if (argc == 4) {
+      infile_address = argv[2];
+      outfile_address = argv[3];
+    }
+    else {
+      return 0;
+    }
+    
+    cout << infile_address << endl;
+    cout << outfile_address << endl;
+    std::ifstream file(infile_address);
+    std::ofstream outfile(outfile_address, std::ios_base::app);
 
-    for (int i = 0; i < 200; i ++) {
+    for (int i = 0; i < 1000; i ++) {
 
-      std::vector<std::vector<int32_t>> found_points;
+      std::vector<int32_t> found_points;
       std::vector<int32_t> start_range = min_values;
       std::vector<int32_t> end_range = max_values;
 
       std::string line;
       std::getline(file, line);
+
       std::stringstream ss(line);
+      cout << line << endl;
       // Example: 0,-1,24,2,5,7,4,19943347,19950101
       while (ss.good()) {
 
@@ -93,6 +113,7 @@ int main(int argc, char *argv[]){
         std::string end_range_str;
         std::getline(ss, end_range_str, ',');
 
+        cout << start_range_str << " " << end_range_str << endl;
         if (start_range_str != "-1") {
           start_range[static_cast<int32_t>(std::stoul(index_str))] = static_cast<int32_t>(std::stoul(start_range_str));
         }
@@ -100,9 +121,15 @@ int main(int argc, char *argv[]){
           end_range[static_cast<int32_t>(std::stoul(index_str))] = static_cast<int32_t>(std::stoul(end_range_str));
         }
       }
+      cout << "Query " << i << " started" << endl;
       start = GetTimestamp();
-      client.range_search_trie(found_points, start_range, end_range);
-      diff = GetTimestamp() - start;
-      outfile << "Query " << i << " end to end latency (s): " << diff / 1000000 << ", found points count: " << found_points.size() << std::endl;
+
+      if (i >= 91) {
+        client.range_search_trie(found_points, start_range, end_range);
+        diff = GetTimestamp() - start;
+        // cout << "Query " << i << " end to end latency (ms): " << diff / 1000 << ", found points count: " << found_points.size() / DIMENSION << std::endl;
+        outfile << "Query " << i << " end to end latency (ms): " << diff / 1000 << ", found points count: " << found_points.size() / DIMENSION << std::endl;
+      }
+      found_points.clear();
     }
 }

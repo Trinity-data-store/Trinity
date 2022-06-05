@@ -94,7 +94,25 @@ public:
             coordinates_[j] = start_coordinate;
             end_range->coordinates_[j] = end_coordinate;
         }
+
+        // COMMITDATE < RECEIPTDATE
+        // [QUANTITY, EXTENDEDPRICE, DISCOUNT, TAX, SHIPDATE, COMMITDATE, RECEIPTDATE, TOTALPRICE, ORDERDATE]
+        // if (end_range->coordinates_[5] > end_range->coordinates_[6])
+        //     end_range->coordinates_[5] = end_range->coordinates_[6];
+        
+
     }
+
+    std::vector<int32_t> generate_vector() {
+        std::vector<int32_t> return_pt(DIMENSION);
+
+        for (unsigned i = 0; i < DIMENSION; i ++) {
+            return_pt[i] = coordinates_[i];
+        }
+
+        return return_pt;
+    }
+
 
 private:
     /**

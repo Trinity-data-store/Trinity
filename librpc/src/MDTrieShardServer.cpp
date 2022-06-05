@@ -38,43 +38,8 @@ class MDTrieHandler : public MDTrieShardIf {
 public:
 
   MDTrieHandler(){
-    
-    /** 
-        FS
-    */
-
-    // std::vector<level_t> bit_widths = {32, 32, 32, 32, 24, 24, 32}; // 7 Dimensions    
-    // std::vector<level_t> start_bits = {0, 0, 0, 0, 0, 0, 0}; // 7 Dimensions    
-    // num_shards = 20 * 5;
-    // trie_depth = 10;
-    // no_dynamic_sizing = true;
-    // total_points_count = 14583357 / num_shards + 1;    
-
-    /** 
-        OSM
-    */
-
-    // std::vector<level_t> bit_widths = {8, 32, 32, 32}; // 4 Dimensions
-    // std::vector<level_t> start_bits = {0, 0, 0, 0}; // 4 Dimensions;
-    // num_shards = 20 * 5;
-    // trie_depth = 6;
-    // no_dynamic_sizing = true;
-    // total_points_count = 152806265 / num_shards + 1; 
-
-    /** 
-        TPCH
-    */
-
-    std::vector<level_t> bit_widths = {8, 32, 16, 24, 32, 32, 32, 32, 32}; // 9 Dimensions;
-    std::vector<level_t> start_bits = {0, 0, 8, 16, 0, 0, 0, 0, 0}; // 9 Dimensions;
-    trie_depth = 6;
-    no_dynamic_sizing = true;
-    total_points_count = 3000028242 / (shard_num * 5) + 1; 
-
-    p_key_to_treeblock_compact_ = new bitmap::CompactPtrVector(total_points_count);
-    create_level_to_num_children(bit_widths, start_bits, 32);
-    mdtrie_ = new md_trie<DIMENSION>(max_depth, trie_depth, max_tree_node);
-
+    mdtrie_ = nullptr;
+    p_key_to_treeblock_compact_ = nullptr;
   };
 
   void clear_trie(){
@@ -89,24 +54,34 @@ public:
   bool ping(const int32_t dataset_idx) { 
 
     cout << "ping(): [" << dataset_idx << "]" << endl; 
+    if (mdtrie_ != nullptr && p_key_to_treeblock_compact_ != nullptr)
+      return true;
 
-    if (dataset_idx == 0) // FS
+    if (dataset_idx == 2) // TPC-H
     {
-      if (DIMENSION != 7 || DIMENSION != dimension_to_num_bits.size() || DIMENSION != start_dimension_bits.size() || total_points_count != p_key_to_treeblock_compact_->get_num_elements())
-        return false;
-    }
-    else if (dataset_idx == 1) // OSM
-    {
-      if (DIMENSION != 4 || DIMENSION != dimension_to_num_bits.size() || DIMENSION != start_dimension_bits.size() || total_points_count != p_key_to_treeblock_compact_->get_num_elements())
-        return false;
-    }
-    else if (dataset_idx == 2) // TPC-H
-    {
-      if (DIMENSION != 9 || DIMENSION != dimension_to_num_bits.size() || DIMENSION != start_dimension_bits.size() || total_points_count != p_key_to_treeblock_compact_->get_num_elements())
-        return false;
+
+      /** 
+          TPCH
+      **/
+      // [QUANTITY, EXTENDEDPRICE, DISCOUNT, TAX, SHIPDATE, COMMITDATE, RECEIPTDATE, TOTALPRICE, ORDERDATE]
+      std::vector<int32_t> max_values = {50, 10494950, 10, 8, 19981201, 19981031, 19981231, 59591284, 19980802};
+      std::vector<int32_t> min_values = {1, 90001, 0, 0, 19920102, 19920131, 19920103, 81602, 19920101};
+
+      std::vector<level_t> bit_widths = {8, 32, 16, 24, 32, 32, 32, 32, 32}; // 9 Dimensions;
+      std::vector<level_t> start_bits = {0, 0, 8, 16, 0, 0, 0, 0, 0}; // 9 Dimensions;
+      trie_depth = 6;
+      no_dynamic_sizing = true;
+      total_points_count = 3000028242 / (shard_num * 5) + 1; 
+
+      p_key_to_treeblock_compact_ = new bitmap::CompactPtrVector(total_points_count);
+      create_level_to_num_children(bit_widths, start_bits, 32);
+      mdtrie_ = new md_trie<DIMENSION>(max_depth, trie_depth, max_tree_node);
     }
     else 
+    {
+      cerr << "not implemented" << endl;
       return false;
+    }      
     return true;
   }
 
@@ -138,8 +113,9 @@ public:
     return inserted_points_ - 1;
   }
 
-  void range_search(std::vector<std::vector<int32_t>> & _return, const std::vector<int32_t> & start_range, const std::vector<int32_t> & end_range){
+  void range_search(std::vector<int32_t> & _return, const std::vector<int32_t> & start_range, const std::vector<int32_t> & end_range){
     
+    TimeStamp start = GetTimestamp();
     data_point<DIMENSION> start_range_point;
     for (uint8_t i = 0; i < DIMENSION; i++)
       start_range_point.set_coordinate(i, start_range[i]);    
@@ -148,10 +124,17 @@ public:
     for (uint8_t i = 0; i < DIMENSION; i++)
       end_range_point.set_coordinate(i, end_range[i]);     
     
-    std::vector<data_point<DIMENSION>> return_vect;
-    mdtrie_->range_search_trie(&start_range_point, &end_range_point, mdtrie_->root(), 0, return_vect);
+    // std::vector<std::vector<int32_t>> return_vect;
+    // cout << "Start range_search_trie" << endl;
+    // _return.reserve(10000000 * DIMENSION);
+    mdtrie_->range_search_trie(&start_range_point, &end_range_point, mdtrie_->root(), 0, _return);
+    cout << "elapsed time: %ld ms" << (GetTimestamp() - start) / 1000 << endl;
+    // cout << "End range_search_trie" << endl;
+
+    // _return.insert(_return.end(), return_vect.begin(), return_vect.end());
 
     // _return.reserve(return_vect.size());
+    /*
     for (unsigned i = 0; i < return_vect.size(); i++) {
       std::vector<int32_t> return_pt(DIMENSION);
 
@@ -161,6 +144,7 @@ public:
       // _return[i] = return_pt;
       _return.push_back(return_pt);
     }
+    */
   }
 
   void primary_key_lookup(std::vector<int32_t> & _return, const int32_t primary_key){

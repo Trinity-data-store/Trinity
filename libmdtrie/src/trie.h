@@ -142,7 +142,10 @@ public:
     }
 
     void range_search_trie(data_point<DIMENSION> *start_range, data_point<DIMENSION> *end_range, trie_node<DIMENSION> *current_trie_node,
-                                    level_t level, std::vector<data_point<DIMENSION>> &found_points) {
+                                    level_t level, std::vector<int32_t> &found_points) {
+
+        // if (start_range->get_coordinate(5) > end_range->get_coordinate(6) || start_range->get_coordinate(5) > end_range->get_coordinate(5))
+        //     return;
 
         if (level == trie_depth_) {
 

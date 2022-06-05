@@ -274,8 +274,114 @@ public:
 
     // This function takes in a node (in preorder) and a symbol (branch index)
     // Return the child node (in preorder) designated by that symbol
+    preorder_t skip_children_subtree(preorder_t node, preorder_t &node_pos, morton_t symbol, level_t current_level,
+                                            preorder_t &current_frontier, preorder_t &current_primary)  {
+
+        if (current_level == max_depth_){
+            return node;
+        }
+
+        int sTop = -1;
+        preorder_t n_children_skip = dfuds_->get_child_skip(node, node_pos, symbol, level_to_num_children[current_level]);
+        preorder_t n_children = dfuds_->get_num_children(node, node_pos, level_to_num_children[current_level]);
+        preorder_t diff = n_children - n_children_skip;
+        preorder_t stack[100];
+        sTop++;
+        stack[sTop] = n_children;
+
+        preorder_t current_node_pos = node_pos + dfuds_->get_num_bits(node, current_level); //TODO
+        preorder_t current_node = node + 1;
+
+        if (frontiers_ != nullptr && current_frontier < num_frontiers_ && current_node > get_preorder(current_frontier))
+            ++current_frontier;
+        preorder_t next_frontier_preorder;
+
+        if (num_frontiers_ == 0 || current_frontier >= num_frontiers_)
+            next_frontier_preorder = -1;
+        else
+            next_frontier_preorder = get_preorder(current_frontier);
+
+        current_level++;
+        while (current_node < num_nodes_ && sTop >= 0 && diff < stack[0]) {
+            if (current_node == next_frontier_preorder) {
+                current_frontier++;
+                if (num_frontiers_ == 0 || current_frontier >= num_frontiers_)
+                    next_frontier_preorder = -1;
+                else
+                    next_frontier_preorder = get_preorder(current_frontier);
+                stack[sTop]--;
+
+                current_node_pos += dfuds_->get_num_bits(current_node, current_level);
+            }
+            // It is "-1" because current_level is 0th indexed.
+            else if (current_level < max_depth_ - 1) {
+                sTop++;
+                stack[sTop] = dfuds_->get_num_children(current_node, current_node_pos, level_to_num_children[current_level]);
+
+                current_node_pos += dfuds_->get_num_bits(current_node, current_level);
+                current_level++;
+            } 
+            else {
+                stack[sTop]--;
+
+                if (current_level == max_depth_ - 1){
+
+                    current_primary += dfuds_->get_num_children(current_node, current_node_pos, level_to_num_children[current_level]);
+                }
+                current_node_pos += dfuds_->get_num_bits(current_node, current_level);
+            }
+            current_node++;
+            
+            while (sTop >= 0 && stack[sTop] == 0) {
+                sTop--;
+                current_level--;
+                if (sTop >= 0)
+                    stack[sTop]--;
+            }
+        }
+        node_pos = current_node_pos;
+        return current_node;
+    }
+
+    // This function takes in a node (in preorder) and a symbol (branch index)
+    // Return the child node (in preorder) designated by that symbol
     // This function differs from skip_children_subtree as it checks if that child node is present
     preorder_t child(tree_block<DIMENSION> *&p, preorder_t node, preorder_t &node_pos, morton_t symbol, level_t &current_level,
+                            preorder_t &current_frontier, preorder_t &current_primary) {
+
+        if (node >= num_nodes_)
+            return null_node;
+
+        auto has_child = dfuds_->has_symbol(node, node_pos, symbol, level_to_num_children[current_level]);
+        if (!has_child)
+            return null_node;
+
+        if (current_level == max_depth_ - 1)
+            return node;
+
+        preorder_t current_node;
+
+        if (frontiers_ != nullptr && current_frontier < num_frontiers_ && node == get_preorder(current_frontier)) {
+
+            p = get_pointer(current_frontier);
+            current_frontier = 0;
+            current_primary = 0;
+            preorder_t temp_node = 0;
+            preorder_t temp_node_pos = 0;
+
+            current_node = p->skip_children_subtree(temp_node, temp_node_pos, symbol, current_level, current_frontier, current_primary);
+            node_pos = temp_node_pos;
+
+        } else {
+            current_node = skip_children_subtree(node, node_pos, symbol, current_level, current_frontier, current_primary);
+        }
+        return current_node;
+    }
+
+    // This function takes in a node (in preorder) and a symbol (branch index)
+    // Return the child node (in preorder) designated by that symbol
+    // This function differs from skip_children_subtree as it checks if that child node is present
+    preorder_t child_range_search(tree_block<DIMENSION> *&p, preorder_t node, preorder_t &node_pos, morton_t symbol, level_t &current_level,
                             preorder_t &current_frontier, preorder_t &current_primary) {
 
         if (node >= num_nodes_)
@@ -1012,7 +1118,10 @@ public:
     void range_search_treeblock(data_point<DIMENSION> *start_range, data_point<DIMENSION> *end_range, tree_block<DIMENSION> *current_block, level_t level, 
                                             preorder_t current_node, preorder_t current_node_pos,
                                             preorder_t prev_node, preorder_t prev_node_pos,
-                                            preorder_t current_frontier, preorder_t current_primary, std::vector<data_point<DIMENSION>> &found_points) {
+                                            preorder_t current_frontier, preorder_t current_primary, std::vector<int32_t> &found_points) {
+
+        // if (start_range->get_coordinate(5) > end_range->get_coordinate(6) || start_range->get_coordinate(5) > end_range->get_coordinate(5))
+        //     return;
 
         if (level == max_depth_) {
             
@@ -1027,11 +1136,16 @@ public:
             n_leaves_t list_size = primary_key_list[current_primary].size();
             for (n_leaves_t i = 0; i < list_size; i++)
             {
-                auto primary_key = primary_key_list[current_primary].get(i);
+                // auto primary_key = primary_key_list[current_primary].get(i);
                 // found_points.push_back(primary_key);
             // }
-                start_range->set_primary(primary_key);
-                found_points.push_back(*start_range);
+                // start_range->set_primary(primary_key);
+                // found_points.push_back(*start_range);
+                // if (start_range->get_coordinate(5) < start_range->get_coordinate(6))
+                for (dimension_t j = 0; j < DIMENSION; j ++) {
+                    found_points.push_back(start_range->get_coordinate(j));
+                }
+                // found_points.push_back(start_range->generate_vector());
             }
             return;
         }
@@ -1082,7 +1196,7 @@ public:
                 new_current_node = current_block->child(new_current_block, current_node, new_current_node_pos, current_symbol, level,
                                                         new_current_frontier, new_current_primary);
                 
-                 start_range->update_symbol(end_range, current_symbol, level); 
+                start_range->update_symbol(end_range, current_symbol, level); 
 
                 if (new_current_block != current_block){
 

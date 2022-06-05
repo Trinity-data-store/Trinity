@@ -31,7 +31,8 @@ public:
   static MDTrieShardClient connect(const std::string &host, int port) {
 
     std::shared_ptr<TTransport> socket(new TSocket(host, port));  // Set max message size
-    std::shared_ptr<TTransport> transport(new TFramedTransport(socket));
+    std::shared_ptr<TTransport> transport(new TFramedTransport(socket, std::make_shared<TConfiguration>(1000 * 1024 * 1024, 1000 * 1024 * 1024)));
+    // cout << "getMaxFrameSize: " << transport.getMaxFrameSize() << endl;
     std::shared_ptr<TProtocol> protocol(new TBinaryProtocol(transport));
     MDTrieShardClient client(protocol);
 
@@ -121,7 +122,7 @@ public:
     shard_vector_[shard_index].recv_primary_key_lookup(return_vect);
   }
 
-  void range_search_trie(std::vector<std::vector<int32_t>> & return_vect, const std::vector<int32_t> & start_range, const std::vector<int32_t> & end_range){
+  void range_search_trie(std::vector<int32_t> & return_vect, const std::vector<int32_t> & start_range, const std::vector<int32_t> & end_range){
 
     int client_count = shard_vector_.size();
     
@@ -130,7 +131,7 @@ public:
     }     
 
     for (uint16_t i = 0; i < client_count; i++){
-      std::vector<std::vector<int32_t>> return_vect_tmp;
+      std::vector<int32_t> return_vect_tmp;
       shard_vector_[i].recv_range_search(return_vect_tmp);
       return_vect.insert(return_vect.end(), return_vect_tmp.begin(), return_vect_tmp.end());
     }    
@@ -145,13 +146,12 @@ public:
     }     
   }
 
-  void range_search_trie_rec(std::vector<std::vector<int32_t>> & return_vect){
+  void range_search_trie_rec(std::vector<int32_t> & return_vect){
 
     int client_count = shard_vector_.size();
     
     for (uint16_t i = 0; i < client_count; i++){
-      cerr << i << " " << "recv_range_search" << endl;
-      std::vector<std::vector<int32_t>> return_vect_tmp;
+      std::vector<int32_t> return_vect_tmp;
       shard_vector_[i].recv_range_search(return_vect_tmp);
       return_vect.insert(return_vect.end(), return_vect_tmp.begin(), return_vect_tmp.end());
     }    

@@ -9,7 +9,7 @@ service MDTrieShard {
 
     bool check(1:list<i32> point),
 
-    list<list<i32>> range_search(1:list<i32> start_range, 2:list<i32> end_range),
+    list<i32> range_search(1:list<i32> start_range, 2:list<i32> end_range),
 
     list<i32> primary_key_lookup(1:i32 primary_key),
 

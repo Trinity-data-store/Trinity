@@ -16,12 +16,12 @@ with open(filename) as file:
 client = Client(master[0], port=master[1])
 
 finished_line = 0
-for line in lines[12:20]:
+for line in lines:
 
     query = line.split(";,")[0] + ";"
 
     start = time.time()
-    results = client.execute(query.replace("tpch_macro", "tpch_macro_split"))
+    results = client.execute(query.replace("COUNT(*)", "*"))
     end = time.time()
 
     with open(filename + "_rerun", "a") as outfile:

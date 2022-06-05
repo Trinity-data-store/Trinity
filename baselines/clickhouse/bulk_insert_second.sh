@@ -1,8 +1,10 @@
 
 for i in `seq 20 39`
 do
-    cat /mntData/tpch_split/x$i | clickhouse-client --query="INSERT INTO tpch_macro_split FORMAT CSV" &
+    cat /mntData/tpch_split/x$i | clickhouse-client --query="INSERT INTO tpch FORMAT CSV" &
 done
+
+# python3 try_out_query.py 1
 
 exit 0
 
