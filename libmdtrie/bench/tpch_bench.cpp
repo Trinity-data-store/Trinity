@@ -8,13 +8,44 @@
 
 const dimension_t DIMENSION = 9;
 
-void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node, bool run_preset_query = false, bool run_search_query = false, bool load_from_File = false){
+// Parse one line from TPC-H file.
+data_point<DIMENSION> parse_line_tpch(std::string line) {
 
-    std::vector<std::vector<int32_t>> found_points;
+    data_point<DIMENSION> point;
+    int index = -1;
+    bool primary_key = true;
+    std::string delim = ",";
+    auto start = 0U;
+    auto end = line.find(delim);
+
+    // [id, QUANTITY, EXTENDEDPRICE, DISCOUNT, TAX, SHIPDATE, COMMITDATE, RECEIPTDATE, TOTALPRICE, ORDERDATE]
+    while (end != std::string::npos)
+    {
+        std::string substr = line.substr(start, end - start); 
+        start = end + 1;
+        end = line.find(delim, start);
+
+        if (primary_key) {
+            primary_key = false;
+            continue;
+        }
+        index ++;
+        point.set_coordinate(index, static_cast<uint32_t>(std::stoul(substr)));
+    }
+    index ++; 
+    std::string substr = line.substr(start, end - start); 
+    point.set_coordinate(index, static_cast<uint32_t>(std::stoul(substr)));
+    
+    return point;
+}
+
+void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node, bool run_preset_query = true, bool run_search_query = false, bool load_from_File = false){
+
+    std::vector<int32_t> found_points;
     md_trie<DIMENSION> mdtrie(max_depth, trie_depth, max_tree_node);
     data_point<DIMENSION> leaf_point;
 
-    std::ifstream infile("../data/tpc-h/tpch_dataset.csv");
+    std::ifstream infile("/mntData/tpch_split/x0");
 
     std::string line;
     std::getline(infile, line);
@@ -22,6 +53,7 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node, 
     std::vector<uint32_t> min(DIMENSION, 4294967295);
 
     n_leaves_t n_points = 0;
+    // total_points_count = total_points_count / discount_factor;
     total_points_count = total_points_count / discount_factor;
 
     TimeStamp start, diff;
@@ -33,52 +65,15 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node, 
 
     while (std::getline(infile, line))
     {
-        std::stringstream ss(line);
-        std::vector<std::string> string_result;
-
-        int leaf_point_index = 0;
-        int index = -1;
-
-        //  Kept indexes: [4, 5, 6, 7, 10, 11, 12, 16, 17]
-        //  [QUANTITY, EXTENDEDPRICE, DISCOUNT, TAX, SHIPDATE, COMMITDATE, RECEIPTDATE, TOTALPRICE, ORDERDATE]
-        while (ss.good())
-        {
-            index ++;
-            std::string substr;
-            std::getline(ss, substr, ',');
-        
-            uint32_t num;
-            if (index == 5 || index == 6 || index == 7 || index == 16) // float with 2dp
-            {
-                num = static_cast<uint32_t>(std::stof(substr) * 100);
-            }
-            else if (index == 10 || index == 11 || index == 12 || index == 17) //yy-mm-dd
-            {
-                substr.erase(std::remove(substr.begin(), substr.end(), '-'), substr.end());
-                num = static_cast<uint32_t>(std::stoul(substr));
-            }
-            else if (index == 8 || index == 9 || index == 13 || index == 15 || index == 18) //skip text
-                continue;
-            else if (index == 0 || index == 1 || index == 2 || index == 14) // secondary keys
-                continue;
-            else if (index == 19) // all 0
-                continue;
-            else if (index == 3) // lineitem
-                continue;
-            else
-                num = static_cast<uint32_t>(std::stoul(substr));
-
-            leaf_point.set_coordinate(leaf_point_index, num);
-            leaf_point_index++;
-            if (leaf_point_index == DIMENSION)
-                break;
-        }
+        leaf_point = parse_line_tpch(line);
         
         for (dimension_t i = 0; i < DIMENSION; i++){
-            if (leaf_point.get_coordinate(i) > max[i])
+            if (leaf_point.get_coordinate(i) > max[i]) {
                 max[i] = leaf_point.get_coordinate(i);
-            if (leaf_point.get_coordinate(i) < min[i])
-                min[i] = leaf_point.get_coordinate(i);         
+            }
+            if (leaf_point.get_coordinate(i) < min[i]) {
+                min[i] = leaf_point.get_coordinate(i);  
+            }       
         }
 
         if (n_points == total_points_count)
@@ -100,16 +95,16 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node, 
     std::cout << "Insertion Latency: " << (float) diff / total_points_count << std::endl;
     std::cout << "mdtrie storage: " << mdtrie.size(p_key_to_treeblock_compact) << std::endl;
     infile.close();
-    usleep(15 * 1000000);
+    // usleep(15 * 1000000);
 
-
+    /*
     if (!load_from_File) {
 
         std::filebuf fb;
         fb.open ("mdtrie_tpch.txt",std::ios::out);
         std::ostream os(&fb);    
         size_t serialized_size = mdtrie.Serialize(os);
-        std::cout << "Serizlied size: " << serialized_size << std::endl;
+        std::cout << "Serialized size: " << serialized_size << std::endl;
         fb.close();
 
         // Just write to file
@@ -126,13 +121,66 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node, 
         std::cout << "deserilize in_size: " << in_size << std::endl;
         fb_in.close();
     }
+    */
+
+    /**
+     * Range Search with full range
+     */
+
+    data_point<DIMENSION> start_range;
+    data_point<DIMENSION> end_range;
+
+
+
+    for (dimension_t i = 0; i < DIMENSION; i++){
+        start_range.set_coordinate(i, min[i]);
+        end_range.set_coordinate(i, max[i]);
+    }
+
+    // 0,17,19,2,0,10,4,19920102,19981201,5,19927913,19966622,6,19968479,19972109,8,19920101,19980802
+
+    start_range.set_coordinate(0, 17);
+    end_range.set_coordinate(0, 19);
+    start_range.set_coordinate(2, 0);
+    end_range.set_coordinate(2, 10);
+    start_range.set_coordinate(4, 19920102);
+    end_range.set_coordinate(4, 19981201);
+    start_range.set_coordinate(5, 19927913);
+    end_range.set_coordinate(5, 19966622);
+    start_range.set_coordinate(6, 19968479);
+    end_range.set_coordinate(6, 19972109);
+    start_range.set_coordinate(8, 19920101);
+    end_range.set_coordinate(8, 19980802);
+
+    // raise(SIGINT);
+    REUSE_RANGE_SEARCH_CHILD = true;
+    start = GetTimestamp();
+    mdtrie.range_search_trie(&start_range, &end_range, mdtrie.root(), 0, found_points);
+    diff = GetTimestamp() - start;
+
+    std::cout << "found_pts size: " << found_points.size() / DIMENSION << std::endl;
+    std::cout << "total_points_count: " << total_points_count << std::endl;
+    // std::cout << "primary_key_vect_total: " << primary_key_vect_total.size() << std::endl;
+    std::cout << "Full Range Search Latency per point: " << (float) diff / (found_points.size() / DIMENSION) << std::endl;
+
+    found_points.clear();
+    // raise(SIGINT);
+    REUSE_RANGE_SEARCH_CHILD = false;
+    start = GetTimestamp();
+    mdtrie.range_search_trie(&start_range, &end_range, mdtrie.root(), 0, found_points);
+    diff = GetTimestamp() - start;
+
+    std::cout << "found_pts size: " << found_points.size() / DIMENSION << std::endl;
+    std::cout << "total_points_count: " << total_points_count << std::endl;
+    // std::cout << "primary_key_vect_total: " << primary_key_vect_total.size() << std::endl;
+    std::cout << "Full Range Search Latency per point: " << (float) diff / (found_points.size() / DIMENSION) << std::endl;
+
+    return;
 
     /**
      * Benchmark range search given a query selectivity (1000-2000), given a query
      */
 
-    data_point<DIMENSION> start_range;
-    data_point<DIMENSION> end_range;
 
     if (run_preset_query){
 
@@ -156,12 +204,13 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node, 
                 end_range.set_coordinate(i, strtoul(token, &ptr, 10));
             }
 
-            std::vector<std::vector<int32_t>> found_points_temp;
+            std::vector<int32_t> found_points_temp;
             start = GetTimestamp();
             mdtrie.range_search_trie(&start_range, &end_range, mdtrie.root(), 0, found_points_temp);
             TimeStamp temp_diff =  GetTimestamp() - start; 
             diff += temp_diff;
             latency_vect.push_back(temp_diff);
+            std::cout << temp_diff << std::endl;
             count ++;
             found_points_temp.clear();
         }
@@ -176,7 +225,8 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node, 
    /**
      * Benchmark range search given a query selectivity (1000-2000), find new query
      */
-
+    
+    
     if (run_search_query){
 
         std::cout << "Find range query started, created range_search_tpch.csv" << std::endl;
@@ -190,14 +240,14 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node, 
                 end_range.set_coordinate(j, start_range.get_coordinate(j) + (max[j] - start_range.get_coordinate(j) + 1) / 10 * (rand() % 10));
             }
 
-            std::vector<std::vector<int32_t>> found_points_temp;
+            std::vector<int32_t> found_points_temp;
             start = GetTimestamp();
             mdtrie.range_search_trie(&start_range, &end_range, mdtrie.root(), 0, found_points_temp);
             diff = GetTimestamp() - start;
 
-            if (found_points_temp.size() >= 1000 && found_points_temp.size() <= 2000){
+            if (found_points_temp.size() >= 1000 * DIMENSION && found_points_temp.size() <= 2000 * DIMENSION){
 
-                file << found_points_temp.size() << "," << diff << ",";
+                file << found_points_temp.size() / DIMENSION << "," << diff << ",";
                 for (unsigned int i = 0; i < DIMENSION; i++){
                     file << start_range.get_coordinate(i) << "," << end_range.get_coordinate(i) << ",";
                 }
@@ -208,22 +258,8 @@ void run_bench(level_t max_depth, level_t trie_depth, preorder_t max_tree_node, 
             }
         }    
     }
+    
 
-    /**
-     * Range Search with full range
-     */
-
-    for (dimension_t i = 0; i < DIMENSION; i++){
-        start_range.set_coordinate(i, min[i]);
-        end_range.set_coordinate(i, max[i]);
-    }
-
-    start = GetTimestamp();
-    mdtrie.range_search_trie(&start_range, &end_range, mdtrie.root(), 0, found_points);
-    diff = GetTimestamp() - start;
-
-    std::cout << "found_pts size: " << found_points.size() << std::endl;
-    std::cout << "Full Range Search Latency per point: " << (float) diff / found_points.size() << std::endl;
 
     /**
      * Point lookup given primary keys returned by range search
@@ -264,11 +300,11 @@ int main(int argc, char *argv[]) {
 
     level_t trie_depth = 6;
     uint32_t treeblock_size = 512;
-    discount_factor = 1;
+    discount_factor = 10;
     // if (argc == 2){
     //     discount_factor = atoi(argv[1]);
     // }
-    total_points_count = 300005812 / discount_factor;
+    total_points_count = 50000471;
     no_dynamic_sizing = true;
 
     std::cout << "Data Dimension: " << DIMENSION << std::endl;
@@ -301,6 +337,7 @@ int main(int argc, char *argv[]) {
             run_bench(max_depth, trie_depth, treeblock_size, true, false, true);
         }
         else if (atoi(argv[1]) == 1) {
+            std::cout << "run search query" << std::endl;
             run_bench(max_depth, trie_depth, treeblock_size, false, true);
         }
         else if (atoi(argv[1]) == 3) {
@@ -311,6 +348,7 @@ int main(int argc, char *argv[]) {
             exit(0);
         }
     }
-    else 
+    else {
         run_bench(max_depth, trie_depth, treeblock_size);
+    }
 }

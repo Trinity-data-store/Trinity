@@ -274,35 +274,56 @@ public:
 
     // This function takes in a node (in preorder) and a symbol (branch index)
     // Return the child node (in preorder) designated by that symbol
-    preorder_t skip_children_subtree_range_search(preorder_t node, preorder_t &node_pos, morton_t symbol, level_t current_level,
-                                            preorder_t &current_frontier, preorder_t &current_primary)  {
+    preorder_t skip_children_subtree_range_search(preorder_t node, preorder_t &node_pos, morton_t symbol, level_t current_level, preorder_t &current_frontier, preorder_t &current_primary, preorder_t stack[100], int &sTop, preorder_t &current_node_pos, preorder_t &current_node, preorder_t &next_frontier_preorder, preorder_t &current_frontier_cont, preorder_t &current_primary_cont)  {
 
         if (current_level == max_depth_){
             return node;
         }
 
-        int sTop = -1;
         preorder_t n_children_skip = dfuds_->get_child_skip(node, node_pos, symbol, level_to_num_children[current_level]);
         preorder_t n_children = dfuds_->get_num_children(node, node_pos, level_to_num_children[current_level]);
         preorder_t diff = n_children - n_children_skip;
-        preorder_t stack[100];
-        sTop++;
-        stack[sTop] = n_children;
 
-        preorder_t current_node_pos = node_pos + dfuds_->get_num_bits(node, current_level); //TODO
-        preorder_t current_node = node + 1;
+        bool first_time = false;
+        if (sTop == -1) {
+            sTop++;
+            stack[sTop] = n_children;
+            first_time = true;
+        }
 
-        if (frontiers_ != nullptr && current_frontier < num_frontiers_ && current_node > get_preorder(current_frontier))
-            ++current_frontier;
-        preorder_t next_frontier_preorder;
+        if (first_time)
+            current_node_pos = node_pos + dfuds_->get_num_bits(node, current_level); //TODO
+        if (first_time)
+            current_node = node + 1;
 
-        if (num_frontiers_ == 0 || current_frontier >= num_frontiers_)
-            next_frontier_preorder = -1;
-        else
-            next_frontier_preorder = get_preorder(current_frontier);
+        if (first_time) {
+            if (frontiers_ != nullptr && current_frontier < num_frontiers_ && current_node > get_preorder(current_frontier))
+                ++current_frontier;
+        }
+        else {
+            current_frontier = current_frontier_cont;
+            current_primary = current_primary_cont;
+        }
 
+        if (first_time) {
+            if (num_frontiers_ == 0 || current_frontier >= num_frontiers_)
+                next_frontier_preorder = -1;
+            else
+                next_frontier_preorder = get_preorder(current_frontier);
+        }
+        /*
+        level_t level_original = current_level;
+        */
         current_level++;
-        while (current_node < num_nodes_ && sTop >= 0 && diff < stack[0]) {
+        
+        // Did not go to while loop, go to first left child
+        // if (diff == stack[0] && first_time)
+        //     stack[sTop]--;
+
+        while ((current_node < num_nodes_ && sTop >= 0 && diff < stack[0]) || !first_time) {
+            
+            // First time needs to go down first. 
+            first_time = true;
             if (current_node == next_frontier_preorder) {
                 current_frontier++;
                 if (num_frontiers_ == 0 || current_frontier >= num_frontiers_)
@@ -322,6 +343,7 @@ public:
                 current_level++;
             } 
             else {
+                // std::cout << "exceeded" << current_level << std::endl;
                 stack[sTop]--;
 
                 if (current_level == max_depth_ - 1){
@@ -339,14 +361,33 @@ public:
                     stack[sTop]--;
             }
         }
+        // raise(SIGINT);
         node_pos = current_node_pos;
+        current_frontier_cont = current_frontier;
+        current_primary_cont = current_primary;
+        /* No print out
+        if (current_level != level_original + 1) {
+            std::cout << current_level << " " << level_original << std::endl;
+            raise(SIGINT);
+        }
+
+        if (current_node == num_nodes_) {
+            std::cout << current_node << " " << num_nodes_ << std::endl;
+            raise(SIGINT);
+        }
+
+        if (sTop < 0) {
+            std::cout << sTop << std::endl;
+            raise(SIGINT);
+        }
+        */
         return current_node;
     }
 
     // This function takes in a node (in preorder) and a symbol (branch index)
     // Return the child node (in preorder) designated by that symbol
     // This function differs from skip_children_subtree as it checks if that child node is present
-    preorder_t child(tree_block<DIMENSION> *&p, preorder_t node, preorder_t &node_pos, morton_t symbol, level_t &current_level,
+    preorder_t child(tree_block<DIMENSION> *&p, preorder_t node, preorder_t &node_pos, morton_t symbol, level_t current_level,
                             preorder_t &current_frontier, preorder_t &current_primary) {
 
         if (node >= num_nodes_)
@@ -368,6 +409,10 @@ public:
             current_primary = 0;
             preorder_t temp_node = 0;
             preorder_t temp_node_pos = 0;
+            
+            /* No print out
+            std::cout << "frontier node! child" << std::endl;
+            */
 
             current_node = p->skip_children_subtree(temp_node, temp_node_pos, symbol, current_level, current_frontier, current_primary);
             node_pos = temp_node_pos;
@@ -381,8 +426,7 @@ public:
     // This function takes in a node (in preorder) and a symbol (branch index)
     // Return the child node (in preorder) designated by that symbol
     // This function differs from skip_children_subtree as it checks if that child node is present
-    preorder_t child_range_search(tree_block<DIMENSION> *&p, preorder_t node, preorder_t &node_pos, morton_t symbol, level_t &current_level,
-                            preorder_t &current_frontier, preorder_t &current_primary) {
+    preorder_t child_range_search(tree_block<DIMENSION> *&p, preorder_t node, preorder_t &node_pos, morton_t symbol, level_t current_level,preorder_t &current_frontier, preorder_t &current_primary, preorder_t stack[100], int &sTop, preorder_t &current_node_pos, preorder_t &current_node, preorder_t &next_frontier_preorder, preorder_t &current_frontier_cont, preorder_t &current_primary_cont) {
 
         if (node >= num_nodes_)
             return null_node;
@@ -390,11 +434,18 @@ public:
         auto has_child = dfuds_->has_symbol(node, node_pos, symbol, level_to_num_children[current_level]);
         if (!has_child)
             return null_node;
+        
+        /* No print out.
+        if (current_level > max_depth_ - 1) {
+            std::cout << current_level << std::endl;
+            return node;
+        }
+        */
 
         if (current_level == max_depth_ - 1)
             return node;
 
-        preorder_t current_node;
+        preorder_t current_node_ret;
 
         if (frontiers_ != nullptr && current_frontier < num_frontiers_ && node == get_preorder(current_frontier)) {
 
@@ -404,13 +455,17 @@ public:
             preorder_t temp_node = 0;
             preorder_t temp_node_pos = 0;
 
-            current_node = p->skip_children_subtree(temp_node, temp_node_pos, symbol, current_level, current_frontier, current_primary);
+            /* No print out.
+            std::cout << "frontier node! child_range_search" << std::endl;
+            */
+
+            current_node_ret = p->skip_children_subtree_range_search(temp_node, temp_node_pos, symbol, current_level, current_frontier, current_primary, stack, sTop, current_node_pos, current_node, next_frontier_preorder, current_frontier_cont, current_primary_cont);
             node_pos = temp_node_pos;
 
         } else {
-            current_node = skip_children_subtree(node, node_pos, symbol, current_level, current_frontier, current_primary);
+            current_node_ret = skip_children_subtree_range_search(node, node_pos, symbol, current_level, current_frontier, current_primary, stack, sTop, current_node_pos, current_node, next_frontier_preorder, current_frontier_cont, current_primary_cont);
         }
-        return current_node;
+        return current_node_ret;
     }
 
     void insert(preorder_t node, preorder_t node_pos, data_point<DIMENSION> *leaf_point, level_t level,
@@ -1145,6 +1200,7 @@ public:
                 for (dimension_t j = 0; j < DIMENSION; j ++) {
                     found_points.push_back(start_range->get_coordinate(j));
                 }
+                // primary_key_vect_total.push_back(primary_key);
                 // found_points.push_back(start_range->generate_vector());
             }
             return;
@@ -1180,6 +1236,15 @@ public:
 
         morton_t current_symbol = dfuds_->next_symbol(start_range_symbol, current_node, current_node_pos, end_range_symbol, level_to_num_children[level]);       
 
+        
+        preorder_t stack_range_search[100];
+        int sTop_range_search = -1;
+        preorder_t current_node_pos_range_search = 0;
+        preorder_t current_node_range_search = 0;
+        preorder_t next_frontier_preorder_range_search = 0; 
+        preorder_t current_frontier_cont = 0;
+        preorder_t current_primary_cont = 0;
+
         while (current_symbol <= end_range_symbol){
             
             if (!dfuds_->has_symbol(current_node, current_node_pos, current_symbol, level_to_num_children[level])){
@@ -1188,13 +1253,59 @@ public:
 
             if ((start_range_symbol & neg_representation) == (current_symbol & neg_representation)){
                 
+                /*
                 new_current_block = current_block;
                 new_current_frontier = current_frontier;
                 new_current_primary = current_primary;
                 new_current_node_pos = current_node_pos;
 
-                new_current_node = current_block->child(new_current_block, current_node, new_current_node_pos, current_symbol, level,
-                                                        new_current_frontier, new_current_primary);
+
+                preorder_t new_current_node_range_search = current_block->child(new_current_block, current_node, new_current_node_pos, current_symbol, level, new_current_frontier, new_current_primary);
+
+                preorder_t node_pos_range_search = new_current_node_pos;
+                preorder_t new_current_frontier_range_search = new_current_frontier;
+                preorder_t new_current_primary_range_search = new_current_primary;
+                */
+
+
+                new_current_block = current_block;
+                new_current_frontier = current_frontier;
+                new_current_primary = current_primary;
+                new_current_node_pos = current_node_pos;
+
+                if (REUSE_RANGE_SEARCH_CHILD && level < max_depth_ - 2 /*At least 2 levels to the bottom*/) {
+
+                    /*
+                    level_t level_before = level;
+                    */
+                    
+                    new_current_node = current_block->child_range_search(new_current_block, current_node, new_current_node_pos, current_symbol, level, new_current_frontier, new_current_primary, stack_range_search, sTop_range_search, current_node_pos_range_search, current_node_range_search, next_frontier_preorder_range_search, current_frontier_cont, current_primary_cont);
+
+                    /*
+                    if (new_current_node != new_current_node_range_search) {
+                        std::cout << "new_current_node: level: " << level << "n_children_skip: " << dfuds_->get_child_skip(current_node, current_node_pos, current_symbol, level_to_num_children[level]) << "n_children: " << dfuds_->get_num_children(current_node, current_node_pos, level_to_num_children[level]) << std::endl;
+                        exit(0);
+                    }
+
+                    if (new_current_node_pos != node_pos_range_search) {
+                        std::cout << "new_current_node_pos: level: " << level << "n_children_skip: " << dfuds_->get_child_skip(current_node, current_node_pos, current_symbol, level_to_num_children[level]) << "n_children: " << dfuds_->get_num_children(current_node, current_node_pos, level_to_num_children[level]) << std::endl;
+                        exit(0);
+                    }
+
+                    if (new_current_frontier != new_current_frontier_range_search) {
+                        std::cout << "new_current_frontier: level: " << level << "n_children_skip: " << dfuds_->get_child_skip(current_node, current_node_pos, current_symbol, level_to_num_children[level]) << "n_children: " << dfuds_->get_num_children(current_node, current_node_pos, level_to_num_children[level]) << std::endl;
+                        exit(0);
+                    }
+
+                    if (new_current_primary != new_current_primary_range_search) {
+                        raise(SIGINT);
+                        std::cout << "new_current_primary: level: " << level << "n_children_skip: " << dfuds_->get_child_skip(current_node, current_node_pos, current_symbol, level_to_num_children[level]) << "n_children: " << dfuds_->get_num_children(current_node, current_node_pos, level_to_num_children[level]) << std::endl;
+                        exit(0);
+                    }
+                    */
+                }
+                else 
+                    new_current_node = current_block->child(new_current_block, current_node, new_current_node_pos, current_symbol, level, new_current_frontier, new_current_primary);                   
                 
                 start_range->update_symbol(end_range, current_symbol, level); 
 

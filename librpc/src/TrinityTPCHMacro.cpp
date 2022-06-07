@@ -23,7 +23,7 @@ using namespace apache::thrift;
 using namespace apache::thrift::protocol;
 using namespace apache::thrift::transport;
 const int DIMENSION = 9;
-const int shard_num = 20;
+const int shard_num = 10;
 const int client_num = 20;
 
 int main(int argc, char *argv[]){
@@ -91,7 +91,7 @@ int main(int argc, char *argv[]){
     std::ifstream file(infile_address);
     std::ofstream outfile(outfile_address, std::ios_base::app);
 
-    for (int i = 0; i < 1000; i ++) {
+    for (int i = 0; i < 20; i ++) {
 
       std::vector<int32_t> found_points;
       std::vector<int32_t> start_range = min_values;
@@ -124,12 +124,14 @@ int main(int argc, char *argv[]){
       cout << "Query " << i << " started" << endl;
       start = GetTimestamp();
 
-      if (i >= 91) {
-        client.range_search_trie(found_points, start_range, end_range);
-        diff = GetTimestamp() - start;
-        // cout << "Query " << i << " end to end latency (ms): " << diff / 1000 << ", found points count: " << found_points.size() / DIMENSION << std::endl;
-        outfile << "Query " << i << " end to end latency (ms): " << diff / 1000 << ", found points count: " << found_points.size() / DIMENSION << std::endl;
-      }
+      // if (i == 294) {
+      client.range_search_trie(found_points, start_range, end_range);
+      diff = GetTimestamp() - start;
+      // cout << "Query " << i << " end to end latency (ms): " << diff / 1000 << ", found points count: " << found_points.size() / DIMENSION << std::endl;
+      outfile << "Query " << i << " end to end latency (ms): " << diff / 1000 << ", found points count: " << found_points.size() / DIMENSION << std::endl;
+      // return 0;
+      // }
+      
       found_points.clear();
     }
 }

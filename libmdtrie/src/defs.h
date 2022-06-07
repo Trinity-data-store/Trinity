@@ -99,8 +99,9 @@ n_leaves_t treeblock_ctr = 0;
 std::mutex cache_lock;
 
 std::unordered_map<int32_t, int32_t> client_to_server;
-
+// std::vector<int32_t> primary_key_vect_total;
 bool enable_client_cache_pkey_mapping = false;
+bool REUSE_RANGE_SEARCH_CHILD = true;
 
 void create_level_to_num_children(std::vector<level_t> bit_widths, std::vector<level_t> start_bits, level_t max_level){
 

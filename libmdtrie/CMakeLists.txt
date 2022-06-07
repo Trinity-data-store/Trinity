@@ -40,9 +40,9 @@ endif ()
 # add_executable(osm_bench
 #         bench/osm_bench.cpp)
 
-# add_executable(tpch_bench
-#         bench/tpch_bench.cpp)
+add_executable(tpch_bench
+        bench/tpch_bench.cpp)
 
 # target_link_libraries(fs_bench ${MDTRIE_LIBS})
 # target_link_libraries(osm_bench ${MDTRIE_LIBS})
-# target_link_libraries(tpch_bench ${MDTRIE_LIBS})
+target_link_libraries(tpch_bench ${MDTRIE_LIBS})
