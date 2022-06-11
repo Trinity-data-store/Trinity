@@ -23,7 +23,7 @@ using namespace apache::thrift;
 using namespace apache::thrift::protocol;
 using namespace apache::thrift::transport;
 const int DIMENSION = 9;
-const int shard_num = 10;
+const int shard_num = 20;
 const int client_num = 20;
 
 int main(int argc, char *argv[]){
@@ -31,10 +31,9 @@ int main(int argc, char *argv[]){
     if (argc < 2) {
       cerr << "./TrinityTPCHMacro [dataset part] [Infile] [Outfile]" << endl;
     }
-
     int which_part = stoi(argv[1]);
 
-    std::vector<std::string> server_ips = {"10.254.254.225", "10.254.254.249", "10.254.254.205", "10.254.254.217", "10.254.254.209"};
+    std::vector<std::string> server_ips = {"10.254.254.225", "10.254.254.213", "10.254.254.217", "10.254.254.205", "10.254.254.221"};
     // server_ips = {"10.10.1.5", "10.10.1.6", "10.10.1.7", "10.10.1.8", "10.10.1.9"};
 
     total_points_count = 3000028242;
@@ -44,7 +43,6 @@ int main(int argc, char *argv[]){
         std::cerr << "Server setting wrong!" << std::endl;
         exit(-1);
     }
-
     /** 
         Insert all points
     */
@@ -85,13 +83,14 @@ int main(int argc, char *argv[]){
     else {
       return 0;
     }
+    // client.clear_trie();
     
     cout << infile_address << endl;
     cout << outfile_address << endl;
     std::ifstream file(infile_address);
     std::ofstream outfile(outfile_address, std::ios_base::app);
 
-    for (int i = 0; i < 20; i ++) {
+    for (int i = 0; i < 1000; i ++) {
 
       std::vector<int32_t> found_points;
       std::vector<int32_t> start_range = min_values;
@@ -121,17 +120,26 @@ int main(int argc, char *argv[]){
           end_range[static_cast<int32_t>(std::stoul(index_str))] = static_cast<int32_t>(std::stoul(end_range_str));
         }
       }
+
+      for (dimension_t i = 0; i < DIMENSION; i++){
+          if (i >= 4 && i != 7) {
+              start_range[i] -= 19000000;
+              end_range[i] -= 19000000;
+          }
+      }
+        
+
       cout << "Query " << i << " started" << endl;
       start = GetTimestamp();
 
-      // if (i == 294) {
+      // if (i >= 99) {
       client.range_search_trie(found_points, start_range, end_range);
       diff = GetTimestamp() - start;
       // cout << "Query " << i << " end to end latency (ms): " << diff / 1000 << ", found points count: " << found_points.size() / DIMENSION << std::endl;
       outfile << "Query " << i << " end to end latency (ms): " << diff / 1000 << ", found points count: " << found_points.size() / DIMENSION << std::endl;
-      // return 0;
+        // return 0;
       // }
-      
       found_points.clear();
     }
+
 }

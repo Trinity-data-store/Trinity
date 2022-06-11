@@ -5,7 +5,7 @@ import sys
 import random
 from datetime import datetime
 
-master = ("10.254.254.221", "9000")
+master = ("10.254.254.209", "9000")
 
 filename = sys.argv[1]
 
@@ -16,18 +16,22 @@ with open(filename) as file:
 client = Client(master[0], port=master[1])
 
 finished_line = 0
-for line in lines:
+for line in lines[20:]:
 
     query = line.split(";,")[0] + ";"
+    result_count = client.execute(query)[0][0]
 
-    start = time.time()
-    results = client.execute(query.replace("COUNT(*)", "*"))
-    end = time.time()
+    if result_count < 100000000:
+        query_select = query.replace("COUNT(*)", "*")
+        start = time.time()
+        results = client.execute(query_select)
+        print(results[1234:1239])
+        end = time.time()
 
-    with open(filename + "_rerun", "a") as outfile:
-        outfile.write("{}, elapsed: {}s, found points: {}\n".format(query, end - start, len(results)))
+        with open(filename + "_rerun", "a") as outfile:
+            outfile.write("{}, elapsed: {}s, found points: {}\n".format(query_select, end - start, len(results)))
 
-    del results
+        del results
 
     finished_line += 1
 

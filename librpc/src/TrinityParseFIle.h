@@ -49,7 +49,14 @@ std::vector<int32_t> parse_line_tpch(std::string line) {
     index ++; 
     std::string substr = line.substr(start, end - start); 
     point[index] = static_cast<int32_t>(std::stoul(substr));
-    
+
+
+    for (dimension_t i = 0; i < DIMENSION_TPCH; i++){
+        if (i >= 4 && i != 7) {
+            point[i] -= 19000000;
+        }
+    }
+
     return point;
 }
 

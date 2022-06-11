@@ -65,6 +65,7 @@ uint32_t insert_each_client_from_file(std::string file_address, int shard_number
     }
     vector <int32_t> data_point = parse_line_tpch(line);
 
+      
     client.insert_send(data_point, current_line);
     sent_count ++;
   }

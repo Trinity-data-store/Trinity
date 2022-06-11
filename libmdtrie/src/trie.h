@@ -146,12 +146,15 @@ public:
 
         // if (start_range->get_coordinate(5) > end_range->get_coordinate(6) || start_range->get_coordinate(5) > end_range->get_coordinate(5))
         //     return;
-
+        // raise(SIGINT);
+        // branching_count[level] ++;
+        // function_call_count ++;
         if (level == trie_depth_) {
 
             auto *current_treeblock = (tree_block<DIMENSION> *) current_trie_node->get_block();
-            
+            // TimeStamp start = GetTimestamp();
             current_treeblock->range_search_treeblock(start_range, end_range, current_treeblock, level, 0, 0, 0, 0, 0, 0, found_points);
+            // std::cout << "current_treeblock->range_search_treeblock" << GetTimestamp() - start << std::endl;
             return;
         }
         
@@ -162,7 +165,6 @@ public:
 
         struct data_point<DIMENSION> original_start_range = (*start_range);
         struct data_point<DIMENSION> original_end_range = (*end_range); 
-
         for (morton_t current_symbol = start_symbol; current_symbol <= end_symbol; current_symbol++){
 
             if ((start_symbol & neg_representation) != (current_symbol & neg_representation)){
@@ -177,7 +179,6 @@ public:
 
             range_search_trie(start_range, end_range, current_trie_node->get_child(current_symbol), level + 1,
                                 found_points);
-
             (*start_range) = original_start_range;
             (*end_range) = original_end_range;                
         }

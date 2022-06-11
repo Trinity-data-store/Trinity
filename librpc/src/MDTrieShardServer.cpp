@@ -32,7 +32,7 @@ const level_t max_depth = 32;
 level_t trie_depth = 6;
 const preorder_t max_tree_node = 512;
 const dimension_t DIMENSION = 9;
-const int shard_num = 10;
+const int shard_num = 20;
 
 class MDTrieHandler : public MDTrieShardIf {
 public:
@@ -69,6 +69,8 @@ public:
 
       std::vector<level_t> bit_widths = {8, 32, 16, 24, 32, 32, 32, 32, 32}; // 9 Dimensions;
       std::vector<level_t> start_bits = {0, 0, 8, 16, 0, 0, 0, 0, 0}; // 9 Dimensions;
+      bit_widths = {8, 32, 16, 24, 20, 20, 20, 32, 20};
+      
       trie_depth = 6;
       no_dynamic_sizing = true;
       total_points_count = 3000028242 / (shard_num * 5) + 1; 
@@ -128,7 +130,20 @@ public:
     // cout << "set coordinate elapsed time: %ld ms" << (GetTimestamp() - start) / 1000 << endl;
 
     mdtrie_->range_search_trie(&start_range_point, &end_range_point, mdtrie_->root(), 0, _return);
-    // cout << "range search elapsed time: %ld ms" << (GetTimestamp() - start) / 1000 << endl;
+
+    /*
+    cout << "range search elapsed time: %ld ms" << (GetTimestamp() - start) / 1000 << endl;
+    cout << "function_call_count: %ld" << function_call_count << endl;
+    cout << "high_num_children: %ld" << high_num_children << endl;  
+    cout << "update_start_end_range_time: %ld" << update_start_end_range_time / 1000 << endl;
+    cout << "range_search_child_time: %ld" << range_search_child_time / 1000 << endl;
+    cout << "update_symbol_time: %ld" << update_symbol_time / 1000 << endl;
+    function_call_count = 0;
+    high_num_children = 0;
+    update_start_end_range_time = 0;
+    range_search_child_time = 0;
+    update_symbol_time = 0;
+    */
   }
 
   void primary_key_lookup(std::vector<int32_t> & _return, const int32_t primary_key){
@@ -216,6 +231,7 @@ int main(int argc, char *argv[]){
   }
   else {
     std::cerr << "Wrong Input! ./MdTrieShardServer [IP Address] [Number of Shards]" << std::endl;
+    // MDTrieServerCoordinator("10.254.254.221", 9090, 20);
     exit(-1);
   }
   return 0;

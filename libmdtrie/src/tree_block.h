@@ -426,7 +426,7 @@ public:
     // This function takes in a node (in preorder) and a symbol (branch index)
     // Return the child node (in preorder) designated by that symbol
     // This function differs from skip_children_subtree as it checks if that child node is present
-    preorder_t child_range_search(tree_block<DIMENSION> *&p, preorder_t node, preorder_t &node_pos, morton_t symbol, level_t current_level,preorder_t &current_frontier, preorder_t &current_primary, preorder_t stack[100], int &sTop, preorder_t &current_node_pos, preorder_t &current_node, preorder_t &next_frontier_preorder, preorder_t &current_frontier_cont, preorder_t &current_primary_cont) {
+    preorder_t child_range_search(preorder_t node, preorder_t &node_pos, morton_t symbol, level_t current_level,preorder_t &current_frontier, preorder_t &current_primary, preorder_t stack[100], int &sTop, preorder_t &current_node_pos, preorder_t &current_node, preorder_t &next_frontier_preorder, preorder_t &current_frontier_cont, preorder_t &current_primary_cont) {
 
         if (node >= num_nodes_)
             return null_node;
@@ -447,6 +447,7 @@ public:
 
         preorder_t current_node_ret;
 
+        /*
         if (frontiers_ != nullptr && current_frontier < num_frontiers_ && node == get_preorder(current_frontier)) {
 
             p = get_pointer(current_frontier);
@@ -455,16 +456,17 @@ public:
             preorder_t temp_node = 0;
             preorder_t temp_node_pos = 0;
 
-            /* No print out.
+            No print out.
             std::cout << "frontier node! child_range_search" << std::endl;
-            */
+            
 
             current_node_ret = p->skip_children_subtree_range_search(temp_node, temp_node_pos, symbol, current_level, current_frontier, current_primary, stack, sTop, current_node_pos, current_node, next_frontier_preorder, current_frontier_cont, current_primary_cont);
             node_pos = temp_node_pos;
 
         } else {
-            current_node_ret = skip_children_subtree_range_search(node, node_pos, symbol, current_level, current_frontier, current_primary, stack, sTop, current_node_pos, current_node, next_frontier_preorder, current_frontier_cont, current_primary_cont);
-        }
+        */
+        current_node_ret = skip_children_subtree_range_search(node, node_pos, symbol, current_level, current_frontier, current_primary, stack, sTop, current_node_pos, current_node, next_frontier_preorder, current_frontier_cont, current_primary_cont);
+        // }
         return current_node_ret;
     }
 
@@ -1178,6 +1180,9 @@ public:
         // if (start_range->get_coordinate(5) > end_range->get_coordinate(6) || start_range->get_coordinate(5) > end_range->get_coordinate(5))
         //     return;
 
+        // function_call_count ++;
+        // branching_count[level] ++;
+
         if (level == max_depth_) {
             
             morton_t parent_symbol = start_range->leaf_to_symbol(max_depth_ - 1);
@@ -1244,15 +1249,27 @@ public:
         preorder_t next_frontier_preorder_range_search = 0; 
         preorder_t current_frontier_cont = 0;
         preorder_t current_primary_cont = 0;
+        // preorder_t range_search_count = 0;
 
+        // if (high_num_children > symbol_diff_count) {
+        //     raise(SIGINT);
+        //     std::cout << range_search_count << std::endl;
+        // }
+        
+
+        // symbol_diff_count += end_range_symbol - current_symbol;
+
+        // bool going_down = false;
         while (current_symbol <= end_range_symbol){
-            
+
+            // range_search_count ++;
+
             if (!dfuds_->has_symbol(current_node, current_node_pos, current_symbol, level_to_num_children[level])){
                 continue;
             }
 
             if ((start_range_symbol & neg_representation) == (current_symbol & neg_representation)){
-                
+                // going_down = true;
                 /*
                 new_current_block = current_block;
                 new_current_frontier = current_frontier;
@@ -1273,14 +1290,15 @@ public:
                 new_current_primary = current_primary;
                 new_current_node_pos = current_node_pos;
 
-                if (REUSE_RANGE_SEARCH_CHILD && level < max_depth_ - 2 /*At least 2 levels to the bottom*/) {
+                if (REUSE_RANGE_SEARCH_CHILD && level < max_depth_ - 1 /*At least 1 levels to the bottom*/) {
 
                     /*
                     level_t level_before = level;
                     */
                     
-                    new_current_node = current_block->child_range_search(new_current_block, current_node, new_current_node_pos, current_symbol, level, new_current_frontier, new_current_primary, stack_range_search, sTop_range_search, current_node_pos_range_search, current_node_range_search, next_frontier_preorder_range_search, current_frontier_cont, current_primary_cont);
-
+                    // TimeStamp s = GetTimestamp();
+                    new_current_node = current_block->child_range_search(current_node, new_current_node_pos, current_symbol, level, new_current_frontier, new_current_primary, stack_range_search, sTop_range_search, current_node_pos_range_search, current_node_range_search, next_frontier_preorder_range_search, current_frontier_cont, current_primary_cont);
+                    // range_search_child_time += GetTimestamp() - s;
                     /*
                     if (new_current_node != new_current_node_range_search) {
                         std::cout << "new_current_node: level: " << level << "n_children_skip: " << dfuds_->get_child_skip(current_node, current_node_pos, current_symbol, level_to_num_children[level]) << "n_children: " << dfuds_->get_num_children(current_node, current_node_pos, level_to_num_children[level]) << std::endl;
@@ -1307,21 +1325,41 @@ public:
                 else 
                     new_current_node = current_block->child(new_current_block, current_node, new_current_node_pos, current_symbol, level, new_current_frontier, new_current_primary);                   
                 
+                // TimeStamp ss = GetTimestamp();
                 start_range->update_symbol(end_range, current_symbol, level); 
-
+                // update_symbol_time += GetTimestamp() - ss;
+                // preorder_t original_vect_size = found_points.size();
+                /*
                 if (new_current_block != current_block){
-
+                    std::cout << "new block!" << std::endl;
                     new_current_block->range_search_treeblock(start_range, end_range, new_current_block, level + 1, new_current_node, new_current_node_pos, 0, 0, new_current_frontier, new_current_primary, found_points);
                 }
-                else {
+                else {*/
+                current_block->range_search_treeblock(start_range, end_range, current_block, level + 1, new_current_node, new_current_node_pos, current_node, current_node_pos, new_current_frontier, new_current_primary, found_points);  
+                // }
+                // if (original_vect_size == found_points.size())
+                //     raise(SIGINT);
 
-                    current_block->range_search_treeblock(start_range, end_range, current_block, level + 1, new_current_node, new_current_node_pos, current_node, current_node_pos, new_current_frontier, new_current_primary, found_points);  
-                }
+                // TimeStamp start = GetTimestamp();
                 (*start_range) = original_start_range;
-                (*end_range) = original_end_range;    
+                (*end_range) = original_end_range;
+                // update_start_end_range_time += GetTimestamp() - start;    
             }
+            // TimeStamp sss = GetTimestamp();
             current_symbol = dfuds_->next_symbol(current_symbol + 1, current_node, current_node_pos, end_range_symbol, level_to_num_children[level]);
+            // next_child_time += GetTimestamp() - sss;
         }
+        // if (!going_down)
+            // not_going_down_count += level;
+
+        // if (range_search_count >= 7)
+        //     high_num_children ++;
+
+        // if (high_num_children > symbol_diff_count) {
+        //     raise(SIGINT);
+        //     std::cout << range_search_count << std::endl;
+        // }
+        // std::cout << high_num_children << " " << symbol_diff_count << std::endl;
 
     }
     

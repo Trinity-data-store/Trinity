@@ -8,12 +8,12 @@ from datetime import datetime
 from multiprocessing import Process
 from concurrent.futures import ProcessPoolExecutor
 
-master = ("10.254.254.221", "9000")
+master = ("10.254.254.209", "9000")
 
 total_num_points = 3000028242
-query_selecitivity = [0.0005, 0.0015]
-num_workers = 20
-total_num_queries = 1000
+query_selecitivity = [0.0005 / 100, 0.0015 / 100]
+num_workers = 2
+total_num_queries = 5000
 
 def generate_queries():
 
@@ -60,7 +60,7 @@ def generate_queries():
             quantity_end = random.randrange(quantity_start + 1, quantity_range[1] + 1)
 
     # Pick 6 times. From all attributes.
-    query = '''SELECT COUNT(*) FROM tpch WHERE SHIPDATE BETWEEN {} AND {} AND ORDERDATE BETWEEN {} AND {} AND COMMITDATE BETWEEN {} AND {} AND RECEIPTDATE BETWEEN {} AND {} AND DISCOUNT BETWEEN {} AND {} AND QUANTITY BETWEEN {} AND {};'''.format(ship_date_start, ship_date_end, order_date_start, order_date_end, commit_date_start, commit_date_end, receipt_date_start, receipt_date_end, discount_start, discount_end, quantity_start, quantity_end)
+    query = '''SELECT COUNT(*) FROM tpch_macro WHERE SHIPDATE BETWEEN {} AND {} AND ORDERDATE BETWEEN {} AND {} AND COMMITDATE BETWEEN {} AND {} AND RECEIPTDATE BETWEEN {} AND {} AND DISCOUNT BETWEEN {} AND {} AND QUANTITY BETWEEN {} AND {};'''.format(ship_date_start, ship_date_end, order_date_start, order_date_end, commit_date_start, commit_date_end, receipt_date_start, receipt_date_end, discount_start, discount_end, quantity_start, quantity_end)
 
     return query
 
@@ -74,14 +74,15 @@ def func(num_queries):
         query = generate_queries()
         result_count = client.execute(query)[0][0]
 
-        if result_count >= query_selecitivity[0] * total_num_points and result_count <= query_selecitivity[1] * total_num_points:
-
+        # if result_count >= query_selecitivity[0] * total_num_points and result_count <= query_selecitivity[1] * total_num_points:
+        # if result_count > 0 and result_count <= 0.001 / 100 * total_num_points:
+        if result_count > 0 and result_count < 5 * 100000000:
             print("{}, found points: {}".format(query, result_count), flush=True)
             finished_queries += 1
 
 if __name__ == "__main__":
 
-    num_lines = sum(1 for line in open('query_tpch'))
+    num_lines = sum(1 for line in open('query_tpch_small_new'))
     total_num_queries = total_num_queries - num_lines
 
     processes = []

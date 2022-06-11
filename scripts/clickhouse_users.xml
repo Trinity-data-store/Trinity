@@ -12,6 +12,9 @@
             <distributed_connections_pool_size>4096</distributed_connections_pool_size>
             <max_distributed_connections>4096</max_distributed_connections>
             <async_insert>0</async_insert>
+            <use_uncompressed_cache>0</use_uncompressed_cache>
+            <compile_expressions>0</compile_expressions>
+            <!-- <mark_cache_size -->
             <!-- How to choose between replicas during distributed query processing.
                  random - choose random replica from set of replicas with minimum number of errors
                  nearest_hostname - from set of replicas with minimum number of errors, choose replica

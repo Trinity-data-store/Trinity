@@ -27,6 +27,18 @@ typedef uint64_t point_t;
 
 const preorder_t null_node = -1;
 
+/*
+uint64_t function_call_count = 0;
+uint64_t high_num_children = 0;
+uint64_t update_start_end_range_time = 0;
+uint64_t range_search_child_time = 0;
+uint64_t update_symbol_time = 0;
+uint64_t next_child_time = 0;
+uint64_t symbol_diff_count = 0;
+uint64_t not_going_down_count = 0;
+uint64_t branching_count[33];
+*/
+
 template<dimension_t DIMENSION>
 class tree_block;
 

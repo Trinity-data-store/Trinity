@@ -3,21 +3,21 @@ import sys
 import numpy as np
 import statistics
 
-sampled_count = 167
+sampled_count = 1000
 need_diff_count = int(sys.argv[1])
-diff_count_filter = True
+diff_count_filter = False
 if __name__ == "__main__": 
 
 
     clickhouse_path = "query_tpch_rerun"
     trinity_path = "query_tpch_trinity"
-    trinity_path = "tpch_trinity_with_continue"
+    # trinity_path = "tpch_trinity_with_continue"
     trinity_path = "../../build/query_tpch_trinity"
     converted_path = "query_tpch_rerun_converted"
 
-    clickhouse_path = "query_tpch_T1_range0.10_rerun"
-    trinity_path = "../../build/query_tpch_T1_trinity"
-    converted_path = "query_tpch_T1_range0.10_rerun_converted"
+    # clickhouse_path = "query_tpch_T1_range0.10_rerun"
+    # trinity_path = "../../build/query_tpch_T1_trinity"
+    # converted_path = "query_tpch_T1_range0.10_rerun_converted"
     diff_count_list = []
 
     with open("{}".format(converted_path)) as ifile:
@@ -75,6 +75,9 @@ if __name__ == "__main__":
             if diff_count_list[idx] == need_diff_count or not diff_count_filter:
                 trinity_latencies[idx] = float(m.group("elaspsed")) / 1000
                 found_point = int(m.group("points"))
+
+                if trinity_latencies[idx] > 80:
+                    print(idx, trinity_latencies[idx])
                 if found_points[idx] != found_point:
                     print(found_points[idx], found_point, idx)
                     # print(idx)
@@ -83,7 +86,7 @@ if __name__ == "__main__":
             if idx > sampled_count:
                 break
 
-    # print(clickhouse_latencies, trinity_latencies)
+    print(clickhouse_latencies, trinity_latencies)
 
     print("clickhouse: ", sum(clickhouse_latencies.values()) / len(clickhouse_latencies.values()), "error bar: ", statistics.stdev(clickhouse_latencies.values()), "count", len(trinity_latencies.values()))
     print("trinity: ", sum(trinity_latencies.values()) / len(trinity_latencies.values()), "error bar: ", statistics.stdev(trinity_latencies.values()), "count", len(trinity_latencies.values()))

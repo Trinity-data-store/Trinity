@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # Run from Cloudlab
 # git clone https://github.com/MaoZiming/Trinity.git
 # sh /proj/Trinity/scripts/initialize_node_scratch.sh
@@ -114,18 +116,29 @@ if [ ! -d "$local_path/postgresql/14/main" ]; then
 fi
 
 echo "remember to copy TPCH datafile"
+
+exit 0
+
 # sudo cp /mntData2/tpch/data_500/orders_lineitem_merged_indexed.csv /mntData/orders_lineitem_merged_indexed.csv
 # sudo cp /mntData2/tpch-dbgen/data_500/orders_lineitem_merged_indexed.csv /mntData/
-exit 0
+# sudo split -l 50000471 /mntData2/tpch/data_500/orders_lineitem_merged_indexed.csv --numeric-suffixes
+
+sudo cp /proj/trinity-PG0/Trinity/scripts/clickhouse_config.xml /etc/clickhouse-server/config.xml
+sudo cp /proj/trinity-PG0/Trinity/scripts/clickhouse_users.xml /etc/clickhouse-server/users.xml
+sudo service clickhouse-server restart
+
+
+ulimit -n 16384
+cd /proj/trinity-PG0/Trinity/build
 
 # Start clickhouse
 sudo service clickhouse-server start
 
 # ClickHouse TPCH (Client Node)
 
-clickhouse-client --database=default --query="DROP TABLE IF EXISTS tpch_macro";
-clickhouse-client --database=default --query="DROP TABLE IF EXISTS tpch_macro_split";
+clickhouse-client --database=default --query="CREATE TABLE IF NOT EXISTS tpch_micro (ID UInt32, QUANTITY UInt8, EXTENDEDPRICE UInt32, DISCOUNT UInt8, TAX UInt8, SHIPDATE UInt32, COMMITDATE UInt32, RECEIPTDATE UInt32, TOTALPRICE UInt32, ORDERDATE UInt32) Engine = MergeTree ORDER BY (ID)";
 
+clickhouse-client --database=default --query="DROP TABLE IF EXISTS tpch_macro";
 clickhouse-client --database=default --query="CREATE TABLE IF NOT EXISTS tpch_macro (ID UInt32, QUANTITY UInt8, EXTENDEDPRICE UInt32, DISCOUNT UInt8, TAX UInt8, SHIPDATE UInt32, COMMITDATE UInt32, RECEIPTDATE UInt32, TOTALPRICE UInt32, ORDERDATE UInt32) ENGINE = Distributed(test_trinity, default, tpch_macro, rand())";
 
 # ClickHouse TPCH (Data Node)
@@ -135,8 +148,14 @@ clickhouse-client --database=default --query="CREATE TABLE IF NOT EXISTS tpch_ma
 
 # Clickhouse TPCH (insert Data)
 
-cat /mntData2/tpch/data_500/orders_lineitem_merged_indexed.csv | clickhouse-client --query="INSERT INTO tpch_macro FORMAT CSV SETTING";
+cat /mntData2/tpch/data_500/orders_lineitem_merged_indexed.csv | clickhouse-client --query="INSERT INTO tpch_macro FORMAT CSV";
 cat /mntData/orders_lineitem_merged_indexed.csv | clickhouse-client --query="INSERT INTO tpch_macro FORMAT CSV";
+
+cat /mntData2/tpch/data_500/orders_lineitem_merged_indexed.csv | clickhouse-client --query="INSERT INTO tpch_micro FORMAT CSV";
 
 # Start postgresql
 sudo service postgresql start
+
+
+################################
+# TimescaleDB stuff
