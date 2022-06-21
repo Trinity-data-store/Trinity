@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/bash 
 
 # Other configuration
 cd /mntData2/md-trie
