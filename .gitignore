@@ -88,7 +88,6 @@ target
 *.txt
 build_*
 
-baselines/phtree-cpp/build/*
 # *.log
 *_out
 *.pdf
