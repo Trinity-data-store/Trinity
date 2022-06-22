@@ -1,1 +1,0 @@
-main.o: main.cpp RStarTree.h RStarBoundingBox.h RStarVisitor.h
