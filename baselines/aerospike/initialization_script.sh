@@ -1,3 +1,4 @@
+#!/usr/bin/bash 
 
 trinity_path="/proj/trinity-PG0/Trinity"
 dependencies_path="/proj/trinity-PG0/dependencies"
@@ -21,60 +22,27 @@ fi
 cd aerospike-loader
 sudo ./build
 pip3 install aerospike
+sudo mkdir -p /var/log/aerospike/
+sudo chmod 775 /var/log/aerospike/
+sudo touch /var/log/aerospike/aerospike.log
+sudo mkdir -p /mntData/aerospike/
+
 exit 0
 
+# Control command
 sudo systemctl start aerospike
 sudo systemctl status aerospike
 sudo systemctl restart aerospike
 sudo systemctl stop aerospike
-pip3 install aerospike
-# 0 1 2 3 4
-
-asadm
-
-/proj/trinity-PG0/dependencies/aerospike/aerospike-loader/run_loader -h localhost -n tpch -c /proj/trinity-PG0/Trinity/baselines/aerospike/column.json -wa CREATE_ONLY /mntData/tpch_split
-
-/proj/trinity-PG0/dependencies/aerospike/aerospike-loader/run_loader -h localhost -n tpch -c /proj/trinity-PG0/Trinity/baselines/aerospike/column.json -wa CREATE_ONLY /mntData/tpch_split/x1
-# Might need to reinstall if loader issue
-# sudo ./build
-
-# Update IP for each of the data nodes!!
+# Remember to update IP address
 sudo cp /proj/trinity-PG0/Trinity/baselines/aerospike/aerospike.conf /etc/aerospike/aerospike.conf
-sudo systemctl restart aerospike
-sudo systemctl status aerospike
+# Force clear
+sudo rm /mntData/aerospike/tpch
 
-sudo mkdir -p /var/log/aerospike/
-sudo chmod 775 /var/log/aerospike/
-sudo touch /var/log/aerospike/aerospike.log
-sudo systemctl restart aerospike
-
-aql
-SHOW SETS
-TRUNCATE tpch.tpch_macro
-
-
-sudo mkdir /mntData/aerospike/
-sudo chmod 775 /mntData/aerospike/
-sudo cp /proj/trinity-PG0/Trinity/baselines/aerospike/aerospike.conf /etc/aerospike/aerospike.conf
-sudo systemctl restart aerospike
-sudo systemctl status aerospike
-
-sudo systemctl stop aerospike
-
-
-CREATE INDEX QUANTITY_index ON tpch.tpch_macro (QUANTITY) NUMERIC
-CREATE INDEX EXTENDEDPRICE_index ON tpch.tpch_macro (EXTENDEDPRICE) NUMERIC
-CREATE INDEX DISCOUNT_index ON tpch.tpch_macro (DISCOUNT) NUMERIC
-CREATE INDEX TAX_index ON tpch.tpch_macro (TAX) NUMERIC
-CREATE INDEX SHIPDATE_index ON tpch.tpch_macro (SHIPDATE) NUMERIC
-CREATE INDEX COMMITDATE_index ON tpch.tpch_macro (COMMITDATE) NUMERIC
-CREATE INDEX RECEIPTDATE_index ON tpch.tpch_macro (RECEIPTDATE) NUMERIC
-CREATE INDEX TOTALPRICE_index ON tpch.tpch_macro (TOTALPRICE) NUMERIC
-CREATE INDEX ORDERDATE_index ON tpch.tpch_macro (ORDERDATE) NUMERIC
-
-asadm
+# asadm
 enable
 
+# Manage Indexes
 manage sindex delete QUANTITY_index ns tpch
 manage sindex delete EXTENDEDPRICE_index ns tpch
 manage sindex delete DISCOUNT_index ns tpch
@@ -95,8 +63,14 @@ manage sindex create numeric RECEIPTDATE_index ns tpch set tpch_macro bin RECEIP
 manage sindex create numeric TOTALPRICE_index ns tpch set tpch_macro bin TOTALPRICE
 manage sindex create numeric ORDERDATE_index ns tpch set tpch_macro bin ORDERDATE
 
-sudo systemctl stop aerospike
-sudo rm /mntData/aerospike/tpch
-sudo systemctl restart aerospike
-sudo systemctl status aerospike
+# aql
+SHOW SETS
+TRUNCATE tpch.tpch_macro
+SHOW INDEXES
+
+# loader
+/proj/trinity-PG0/dependencies/aerospike/aerospike-loader/run_loader -h localhost -n tpch -c /proj/trinity-PG0/Trinity/baselines/aerospike/column.json -wa CREATE_ONLY /mntData/tpch_split
+# Might need to reinstall if loader issue
+# sudo ./build
+
 

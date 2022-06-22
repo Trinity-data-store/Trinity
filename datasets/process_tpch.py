@@ -8,7 +8,6 @@ print(df_orders.head())
 
 # [QUANTITY, EXTENDEDPRICE, DISCOUNT, TAX, SHIPDATE, COMMITDATE, RECEIPTDATE, TOTALPRICE, ORDERDATE]
 lineitem_reader = pandas.read_table(source_dir + 'lineitem.tbl', index_col=False, header=None, usecols=[0,4,5,6,7,10,11,12],names=["ORDERKEY","QUANTITY","EXTENDEDPRICE","DISCOUNT","TAX","SHIPDATE","COMMITDATE","RECEIPTDATE"], delimiter="|", chunksize=20000000)
-print(lineitem_reader.head())
 
 finished_rounds = 0
 cumulative = 0
