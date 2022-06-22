@@ -1,4 +1,4 @@
-sudo split -l 50000471 /mntData2/tpch/data_500/orders_lineitem_merged_indexed.csv --numeric-suffixes
+sudo split -l 50000471 /mntData2/tpch/data_300/tpch_processed.csv --numeric-suffixes
 cd /mntData/tpch_split
 sudo mv x00 x0
 sudo mv x01 x1
