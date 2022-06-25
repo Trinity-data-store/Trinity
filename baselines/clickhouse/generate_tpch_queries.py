@@ -8,12 +8,13 @@ from datetime import datetime
 from multiprocessing import Process
 from concurrent.futures import ProcessPoolExecutor
 
-master = ("10.254.254.209", "9000")
+master = ("10.10.1.2", "9000")
 
-total_num_points = 3000028242
-query_selecitivity = [0.0005 / 100, 0.0015 / 100]
+total_num_points = 1000000000
+query_selecitivity = [0.05 / 100, 0.15 / 100]
 num_workers = 2
-total_num_queries = 5000
+total_num_queries = 1000
+OUTFILE = "tpch_query_new"
 
 def generate_queries():
 
@@ -74,15 +75,13 @@ def func(num_queries):
         query = generate_queries()
         result_count = client.execute(query)[0][0]
 
-        # if result_count >= query_selecitivity[0] * total_num_points and result_count <= query_selecitivity[1] * total_num_points:
-        # if result_count > 0 and result_count <= 0.001 / 100 * total_num_points:
-        if result_count > 0 and result_count < 5 * 100000000:
+        if result_count >= query_selecitivity[0] * total_num_points and result_count <= query_selecitivity[1] * total_num_points:
             print("{}, found points: {}".format(query, result_count), flush=True)
             finished_queries += 1
 
 if __name__ == "__main__":
 
-    num_lines = sum(1 for line in open('query_tpch_small_new'))
+    num_lines = sum(1 for line in open(OUTFILE))
     total_num_queries = total_num_queries - num_lines
 
     processes = []

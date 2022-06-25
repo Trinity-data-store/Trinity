@@ -4,6 +4,7 @@ trinity_path="/proj/trinity-PG0/Trinity"
 dependencies_path="/proj/trinity-PG0/dependencies"
 local_path="/mntData"
 data_dir="/mntData2"
+sudo apt update
 
 cd $dependencies_path/aerospike
 
@@ -38,6 +39,10 @@ sudo systemctl stop aerospike
 sudo cp /proj/trinity-PG0/Trinity/baselines/aerospike/aerospike.conf /etc/aerospike/aerospike.conf
 # Force clear
 sudo rm /mntData/aerospike/tpch
+sudo cp /proj/trinity-PG0/Trinity/baselines/aerospike/aerospike.conf /etc/aerospike/aerospike.conf
+sudo systemctl restart aerospike
+sudo systemctl status aerospike
+sudo systemctl stop aerospike
 
 # asadm
 enable
@@ -69,8 +74,14 @@ TRUNCATE tpch.tpch_macro
 SHOW INDEXES
 
 # loader
-/proj/trinity-PG0/dependencies/aerospike/aerospike-loader/run_loader -h localhost -n tpch -c /proj/trinity-PG0/Trinity/baselines/aerospike/column.json -wa CREATE_ONLY /mntData/tpch_split
+cd /proj/trinity-PG0/dependencies/aerospike/aerospike-loader/
+sudo ./build
+/proj/trinity-PG0/dependencies/aerospike/aerospike-loader/run_loader -h 10.10.1.2 -n tpch -c /proj/trinity-PG0/Trinity/baselines/aerospike/column.json -wa CREATE_ONLY /mntData/tpch_split
+/proj/trinity-PG0/dependencies/aerospike/aerospike-loader/run_loader -h 10.10.1.2 -n tpch -c /proj/trinity-PG0/Trinity/baselines/aerospike/column.json -wa CREATE_ONLY /mntData2/tpch_split
+
 # Might need to reinstall if loader issue
 # sudo ./build
 
 
+# https://discuss.aerospike.com/t/how-to-determine-storage-per-set/6291
+asadm -e "show statistics for tpch like memory_used_bytes"

@@ -78,14 +78,15 @@ ulimit -n 16384
 # Golang
 cd $dependencies_path
 cd go
-if [ ! -d "go1.18.3.linux-amd64.tar.gz"]; then
+if [ ! -d "go1.18.3.linux-amd64.tar.gz" ]; then
     wget https://go.dev/dl/go1.18.3.linux-amd64.tar.gz
 fi
 sudo tar -C /usr/bin -xzf go1.18.3.linux-amd64.tar.gz
 export PATH=$PATH:/usr/bin/go/bin
 cd $dependencies_path
 ulimit -n 16384
+sudo apt-get install maven
 
+
+sudo apt-get install -y python3-pip
 exit 0
-
-sudo split -l 10000000 /mntData2/tpch/data_500/orders_lineitem_merged_indexed.csv --numeric-suffixes
