@@ -50,13 +50,16 @@ if [ ! -d "thrift"]; then
     git clone -b 0.15.0 https://github.com/apache/thrift.git
     cd thrift
     ./bootstrap.sh
-    sudo ./configure
+    sudo ./configure --without-erlang
     sudo make -j
     cd ..
 fi
 cd thrift
 sudo make install
 cd $dependencies_path
+
+cd /proj/trinity-PG0/dependencies/thrift
+sudo make install
 
 # Install Other Packages for Trinity
 sudo apt-get install -y libboost-test-dev  
@@ -74,6 +77,7 @@ pip3 install pandas
 echo 'include /etc/ld.so.conf.d/*.conf /usr/local/lib' | sudo tee /etc/ld.so.conf
 sudo /sbin/ldconfig
 ulimit -n 16384
+sudo cp /proj/trinity-PG0/Trinity/scripts/limits.conf  /etc/security/limits.conf
 
 # Golang
 cd $dependencies_path
@@ -84,9 +88,7 @@ fi
 sudo tar -C /usr/bin -xzf go1.18.3.linux-amd64.tar.gz
 export PATH=$PATH:/usr/bin/go/bin
 cd $dependencies_path
-ulimit -n 16384
-sudo apt-get install maven
 
-
+sudo apt-get install -y maven
 sudo apt-get install -y python3-pip
 exit 0

@@ -73,7 +73,7 @@ public:
       
       trie_depth = 6;
       no_dynamic_sizing = true;
-      total_points_count = 3000028242 / (shard_num * 5) + 1; 
+      total_points_count = 1000000000 / (shard_num * 5) + 1; 
 
       p_key_to_treeblock_compact_ = new bitmap::CompactPtrVector(total_points_count);
       create_level_to_num_children(bit_widths, start_bits, 32);

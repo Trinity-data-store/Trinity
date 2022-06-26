@@ -17,8 +17,8 @@ sudo apt update
 sudo apt install -y timescaledb-2-postgresql-14
 
 # Set up psql stuff
-sudo cp $trinity_path/scripts/postgresql.conf /etc/postgresql/14/main/postgresql.conf 
-sudo cp $trinity_path/scripts/pg_hba.conf /etc/postgresql/14/main/pg_hba.conf
+sudo cp $trinity_path/baselines/timescaleDB/postgresql.conf /etc/postgresql/14/main/postgresql.conf 
+sudo cp $trinity_path/baselines/timescaleDB/pg_hba.conf /etc/postgresql/14/main/pg_hba.conf
 
 if [ ! -d "$local_path/postgresql/14/main" ]; then
     mkdir -p $local_path/postgresql/14/main
@@ -34,36 +34,40 @@ sudo mkdir -p postgresql/14/main
 sudo chown -R postgres:postgres postgresql/14/main
 sudo -u postgres /usr/lib/postgresql/14/bin/initdb -D postgresql/14/main
 
+# for python stuff
+sudo apt-get update
+sudo apt-get install -y libpq-dev python-dev
+sudo pip3 install psycopg2
+sudo pip3 install pgcopy
+
 exit 0
 
 # Start postgresql
-sudo cp /proj/trinity-PG0/Trinity/scripts/postgresql.conf /etc/postgresql/14/main/postgresql.conf
-sudo cp /proj/trinity-PG0/Trinity/scripts/pg_hba.conf /etc/postgresql/14/main/pg_hba.conf
+sudo cp /proj/trinity-PG0/Trinity/baselines/timescaleDB/postgresql.conf /etc/postgresql/14/main/postgresql.conf
+sudo cp /proj/trinity-PG0/Trinity/baselines/timescaleDB/pg_hba.conf /etc/postgresql/14/main/pg_hba.conf
 sudo service postgresql restart
 sudo -u postgres psql postgres
 
-
-sudo service postgresql start
 sudo service postgresql stop
 
 ################################
 # TimescaleDB stuff
-sudo su - postgres
-psql
-SELECT pg_reload_conf();
+# sudo su - postgres
+# psql
+# SELECT pg_reload_conf();
 
 # Create User
-CREATE ROLE "Ziming";
-ALTER ROLE "Ziming" WITH LOGIN;
-ALTER USER "Ziming" with superuser;
-\du;
+# CREATE ROLE "Ziming";
+# ALTER ROLE "Ziming" WITH LOGIN;
+# ALTER USER "Ziming" with superuser;
+# \du;
 # Log out
 # sudo -u postgres psql postgres
 
-sudo service postgresql restart
-sudo -u postgres psql postgres
+# sudo service postgresql restart
+# sudo -u postgres psql postgres
 alter user postgres with password 'adifficultpassword';
-alter user "Ziming" with password 'ZimingZimingdifficult';
+# alter user "Ziming" with password 'ZimingZimingdifficult';
 CREATE database tpch_macro;
 \c tpch_macro;
 
@@ -81,7 +85,7 @@ CREATE EXTENSION IF NOT EXISTS timescaledb;
 #     ORDERDATE   INT NOT NULL
 # );
 
-sudo -u postgres psql postgres
+# sudo -u postgres psql postgres
 CREATE TABLE tpch_macro (
    ID           BIGINT             NOT NULL,
    QUANTITY     SMALLINT             NOT NULL,
@@ -118,41 +122,46 @@ SELECT delete_data_node('dn3');
 SELECT delete_data_node('dn4');
 SELECT delete_data_node('dn5');
 
-SELECT add_data_node('dn1', host => '10.254.254.225');
-SELECT add_data_node('dn2', host => '10.254.254.213');
-SELECT add_data_node('dn3', host => '10.254.254.217');
-SELECT add_data_node('dn4', host => '10.254.254.205');
-SELECT add_data_node('dn5', host => '10.254.254.221');
+SELECT add_data_node('dn1', host => '10.10.1.3');
+SELECT add_data_node('dn2', host => '10.10.1.4');
+SELECT add_data_node('dn3', host => '10.10.1.5');
+SELECT add_data_node('dn4', host => '10.10.1.6');
+SELECT add_data_node('dn5', host => '10.10.1.7');
 
 SELECT * FROM timescaledb_information.data_nodes;
 
 SELECT create_distributed_hypertable('tpch_macro', 'shipdate', 'id', 
     data_nodes => '{ "dn1", "dn2", "dn3", "dn4", "dn5"}');
 
-SELECT create_distributed_hypertable('tpch', 'shipdate', 'id', 
-    data_nodes => '{ "dn1", "dn2", "dn3", "dn4", "dn5"}');
+# SELECT create_distributed_hypertable('tpch', 'shipdate', 'id', 
+    # data_nodes => '{ "dn1", "dn2", "dn3", "dn4", "dn5"}');
 
 CREATE INDEX ON tpch_macro (quantity, shipdate DESC);
-CREATE INDEX ON tpch_macro (extendedprice, shipdate DESC);
+# CREATE INDEX ON tpch_macro (extendedprice, shipdate DESC);
 CREATE INDEX ON tpch_macro (discount, shipdate DESC);
-CREATE INDEX ON tpch_macro (tax, shipdate DESC);
+# CREATE INDEX ON tpch_macro (tax, shipdate DESC);
 CREATE INDEX ON tpch_macro (commitdate, shipdate DESC);
 CREATE INDEX ON tpch_macro (receiptdate, shipdate DESC);
-CREATE INDEX ON tpch_macro (totalprice, shipdate DESC);
+# CREATE INDEX ON tpch_macro (totalprice, shipdate DESC);
 CREATE INDEX ON tpch_macro (orderdate, shipdate DESC);
 
 \d+ tpch_macro
 
 # sudo -u postgres psql postgres
 timescaledb-parallel-copy --db-name tpch_macro --table tpch_macro \
-    --file /mntData2/tpch/data_500/orders_lineitem_merged_indexed.csv --copy-options "CSV" \
+    --file /mntData2/tpch/data_300/tpch_processed_1B.csv --copy-options "CSV" \
     --workers 20 --reporting-period 30s --truncate --batch-size 10000 \
     --connection "host=localhost user=postgres password=adifficultpassword sslmode=disable"
 
-\copy tpch_macro FROM '/mntData2/tpch/data_500/orders_lineitem_merged_indexed.csv' delimiter ',' csv;
+# \copy tpch_macro FROM '/mntData2/tpch/data_500/orders_lineitem_merged_indexed.csv' delimiter ',' csv;
 
 sudo pkill -9 -f kthreaddk
-# sudo pkill -9 -f  kthreadd
+sudo crontab -u postgres -r
+
+sudo pkill -9 -f /mntData/postgresql/14/main/./oka
+sudo pkill -9 -f ./oka
+
+
 sudo pkill -9 -f  aadb8de
 sudo pkill -9 -f 4e13a76a521
 sudo pkill -9 -f 77540b71aa34
@@ -227,3 +236,9 @@ sudo rm /mntData/postgresql/14/main/oka.pid
 
 ALTER TABLE tpch SET (timescaledb.compress, timescaledb.compress_orderby = 'SHIPDATE DESC');
 
+
+sudo -u postgres psql postgres
+select pg_reload_conf();
+
+
+SELECT * FROM hypertable_detailed_size('tpch_macro') ORDER BY node_name;

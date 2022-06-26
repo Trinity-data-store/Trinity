@@ -8,11 +8,11 @@ import sys
 import random
 import re
 
-CONNECTION = "dbname=tpch_macro host=localhost user=postgres password=adifficultpasswordddd sslmode=disable"
+CONNECTION = "dbname=tpch_macro host=localhost user=postgres password=adifficultpassword sslmode=disable"
 
 COLS = ['id', 'quantity', 'extendedprice', 'discount', 'tax', 'shipdate', 'commitdate', 'receiptdate', 'totalprice', 'orderdate']
-filename = "/proj/trinity-PG0/Trinity/baselines/timescaleDB/query_tpch"
-filename = "/proj/trinity-PG0/Trinity/baselines/timescaleDB/try_out_query"
+filename = "/proj/trinity-PG0/Trinity/results/tpch_aerospike_new"
+outfile_addr = "/proj/trinity-PG0/Trinity/results/tpch_timescaledb_new"
 dates = [0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
 
 if sys.argv == 2:
@@ -26,10 +26,10 @@ CONN = psycopg2.connect(CONNECTION)
 cursor = CONN.cursor()
 
 finished_line = 0
-for line in lines[:2]:
+for line in lines:
 
     query = line.split(";,")[0] + ";"
-    query_select = query.replace("COUNT(*)", "*").replace("tpch_macro", "tpch")
+    query_select = query.replace("COUNT(*)", "*")
 
     StringRegex = re.compile(r'BETWEEN \d\d\d\d\d\d\d\d AND \d\d\d\d\d\d\d\d')
     while StringRegex.search(query_select):
@@ -74,11 +74,9 @@ for line in lines[:2]:
             if i == 1 and month == 0:
                 new_dateString = str(int(new_dateString.split("-")[0]) - 1) + "-12-31"
 
-            # print(new_string, old_dateString, new_dateString)
             new_string = new_string.replace(old_dateString, "\'{}\'".format(new_dateString))
 
         query_select = query_select.replace(old_string, new_string)
-        # print(query_select)
 
     print(query_select)
 
@@ -87,14 +85,11 @@ for line in lines[:2]:
     results = cursor.fetchall()
     end = time.time()
 
-    print(len(results))
-
-    with open(filename + "_rerun", "a") as outfile:
+    with open(outfile_addr, "a") as outfile:
         outfile.write("{}, elapsed: {}s, found points: {}\n".format(query_select, end - start, len(results)))
 
     del results
     finished_line += 1
-    print(finished_line)
 
 
 

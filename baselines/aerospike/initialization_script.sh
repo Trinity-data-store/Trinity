@@ -59,13 +59,13 @@ manage sindex delete TOTALPRICE_index ns tpch
 manage sindex delete ORDERDATE_index ns tpch
 
 manage sindex create numeric QUANTITY_index ns tpch set tpch_macro bin QUANTITY
-manage sindex create numeric EXTENDEDPRICE_index ns tpch set tpch_macro bin EXTENDEDPRICE
+# manage sindex create numeric EXTENDEDPRICE_index ns tpch set tpch_macro bin EXTENDEDPRICE
 manage sindex create numeric DISCOUNT_index ns tpch set tpch_macro bin DISCOUNT
-manage sindex create numeric TAX_index ns tpch bin set tpch_macro bin TAX
+# manage sindex create numeric TAX_index ns tpch bin set tpch_macro bin TAX
 manage sindex create numeric SHIPDATE_index ns tpch set tpch_macro bin SHIPDATE
 manage sindex create numeric COMMITDATE_index ns tpch set tpch_macro bin COMMITDATE
 manage sindex create numeric RECEIPTDATE_index ns tpch set tpch_macro bin RECEIPTDATE
-manage sindex create numeric TOTALPRICE_index ns tpch set tpch_macro bin TOTALPRICE
+# manage sindex create numeric TOTALPRICE_index ns tpch set tpch_macro bin TOTALPRICE
 manage sindex create numeric ORDERDATE_index ns tpch set tpch_macro bin ORDERDATE
 
 # aql
@@ -76,8 +76,8 @@ SHOW INDEXES
 # loader
 cd /proj/trinity-PG0/dependencies/aerospike/aerospike-loader/
 sudo ./build
-/proj/trinity-PG0/dependencies/aerospike/aerospike-loader/run_loader -h 10.10.1.2 -n tpch -c /proj/trinity-PG0/Trinity/baselines/aerospike/column.json -wa CREATE_ONLY /mntData/tpch_split
-/proj/trinity-PG0/dependencies/aerospike/aerospike-loader/run_loader -h 10.10.1.2 -n tpch -c /proj/trinity-PG0/Trinity/baselines/aerospike/column.json -wa CREATE_ONLY /mntData2/tpch_split
+# /proj/trinity-PG0/dependencies/aerospike/aerospike-loader/run_loader -h 10.10.1.2 -n tpch -c /proj/trinity-PG0/Trinity/baselines/aerospike/column.json -wa CREATE_ONLY /mntData/tpch_split
+/proj/trinity-PG0/dependencies/aerospike/aerospike-loader/run_loader -h 10.10.1.2 -n tpch -c /proj/trinity-PG0/Trinity/baselines/aerospike/column.json -wa CREATE_ONLY /mntData2/tpch/data_300/tpch_processed_1B.csv
 
 # Might need to reinstall if loader issue
 # sudo ./build

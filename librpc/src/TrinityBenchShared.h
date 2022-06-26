@@ -106,9 +106,9 @@ uint32_t total_client_insert_split_tpch(int shard_number, int client_number, std
     snprintf(buff, sizeof(buff), "/mntData/tpch_split/x%d", i);
     std::string split_address = buff;
 
-    uint32_t points_to_insert = 50000471;
+    uint32_t points_to_insert = 16666667;
     if (i == 59) {
-      points_to_insert = 50000453;
+      points_to_insert = 16666647;
     }
     threads.push_back(std::async(insert_each_client_from_file, split_address, shard_number, 1, 0, server_ips, points_to_insert));
   }  

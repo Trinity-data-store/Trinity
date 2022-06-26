@@ -1,8 +1,8 @@
 import re 
 import sys
 
-datapath = sys.argv[1]
-outfile = open("{}_converted".format(datapath), "w")  # write mode
+datapath = "/proj/trinity-PG0/Trinity/results/tpch_clickhouse_new"
+outfile = open("/proj/trinity-PG0/Trinity/queries/tpch/tpch_query_new_converted", "w")  # write mode
 
 # [QUANTITY, EXTENDEDPRICE, DISCOUNT, TAX, SHIPDATE, COMMITDATE, RECEIPTDATE, TOTALPRICE, ORDERDATE]
 if __name__ == "__main__": 

@@ -33,10 +33,10 @@ int main(int argc, char *argv[]){
     }
     int which_part = stoi(argv[1]);
 
-    std::vector<std::string> server_ips = {"10.254.254.225", "10.254.254.213", "10.254.254.217", "10.254.254.205", "10.254.254.221"};
-    // server_ips = {"10.10.1.5", "10.10.1.6", "10.10.1.7", "10.10.1.8", "10.10.1.9"};
+    // std::vector<std::string> server_ips = {"10.254.254.225", "10.254.254.213", "10.254.254.217", "10.254.254.205", "10.254.254.221"};
+    std::vector<std::string> server_ips = {"10.10.1.5", "10.10.1.6", "10.10.1.7", "10.10.1.8", "10.10.1.9"};
 
-    total_points_count = 3000028242;
+    total_points_count = 1000000000;
     auto client = MDTrieClient(server_ips, shard_num);
 
     if (!client.ping(2)){
@@ -50,6 +50,10 @@ int main(int argc, char *argv[]){
     TimeStamp start, diff;
     uint32_t throughput;
 
+    if (which_part == 4) {
+      cout << "Storage (MB): " << client.get_size() / 1000000 << endl;
+      return 0;
+    }
     if (which_part != 0) {
       start = GetTimestamp();
       throughput = total_client_insert_split_tpch(shard_num, client_num, server_ips, which_part);
@@ -57,7 +61,7 @@ int main(int argc, char *argv[]){
 
       cout << "Insertion Throughput (pt / seconds): " << throughput << endl;
       cout << "End-to-end Latency (s): " << diff / 1000000 << endl;
-      cout << "Storage (MB): " << client.get_size() / 1048576 << endl;
+      cout << "Storage (MB): " << client.get_size() / 1000000 << endl;
     }
     // One client does query for simplicity
     if (which_part == 2 || which_part == 3) {
