@@ -127,7 +127,7 @@ Query 125 end to end latency (ms): 438, found points count: 612518
 Query 126 end to end latency (ms): 357, found points count: 702002
 Query 127 end to end latency (ms): 729, found points count: 1201080
 Query 128 end to end latency (ms): 761, found points count: 1304605
-Query 129 end to end latency (ms): 808, found points count: 1484828
+Query 129 end to end latency (ms): 1377, found points count: 1484829
 Query 130 end to end latency (ms): 468, found points count: 817333
 Query 131 end to end latency (ms): 518, found points count: 841891
 Query 132 end to end latency (ms): 674, found points count: 1102798

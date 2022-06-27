@@ -12,7 +12,11 @@ CONNECTION = "dbname=tpch_macro host=localhost user=postgres password=adifficult
 
 COLS = ['id', 'quantity', 'extendedprice', 'discount', 'tax', 'shipdate', 'commitdate', 'receiptdate', 'totalprice', 'orderdate']
 filename = "/proj/trinity-PG0/Trinity/results/tpch_aerospike_new"
+filename = "/proj/trinity-PG0/Trinity/queries/tpch/tryout_query_timescale"
+
 outfile_addr = "/proj/trinity-PG0/Trinity/results/tpch_timescaledb_new"
+outfile_addr = "/proj/trinity-PG0/Trinity/results/tryout_query_timescale"
+
 dates = [0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
 
 if sys.argv == 2:
@@ -41,6 +45,7 @@ for line in lines:
             old_dateString = DateRegex.search(new_string).group()
             new_dateString = old_dateString[0:4] + "-" + old_dateString[4:6] + "-" + old_dateString[6:]
             
+            year = int(new_dateString.split("-")[0])
             month = int(new_dateString.split("-")[1])
             day = int(new_dateString.split("-")[2])
             if i == 0:
@@ -50,6 +55,8 @@ for line in lines:
             if i == 1:
                 if month <= 12 and month > 0 and day > dates[month]:
                     day = dates[month]
+                    if year % 4 == 0 and month == 2:
+                        day = 29
             
             if month < 10 and month > 0:
                 month_string = "0{}".format(month)
