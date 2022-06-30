@@ -2,40 +2,86 @@ import psycopg2
 from pgcopy import CopyManager
 import pandas as pd 
 from datetime import datetime
+import time
+import sys
+import multiprocessing
+from multiprocessing import Process
+from concurrent.futures import ProcessPoolExecutor
 
-CONNECTION = "dbname =tsdb user=tsdbadmin password=secret host=host.com port=5432 sslmode=require"
 CONNECTION = "dbname=tpch_macro host=localhost user=postgres password=adifficultpassword sslmode=disable"
-
 COLS = ['id', 'quantity', 'extendedprice', 'discount', 'tax', 'shipdate', 'commitdate', 'receiptdate', 'totalprice', 'orderdate']
-FILENAME = "/mntData2/tpch/data_500/orders_lineitem_merged_indexed.csv"
 
-CHUNKSIZE = 10 ** 6
 CONN = psycopg2.connect(CONNECTION)
 cursor = CONN.cursor()
+processes = []
 
-def process(chunk):
+def insert_each_worker(worker_idx):
 
-    
-    for row_id in range(len(chunk)):
-
-        chunk[row_id][5] = datetime.strptime(str(chunk[row_id][5]), "%Y%m%d")
-        chunk[row_id][6] = datetime.strptime(str(chunk[row_id][6]), "%Y%m%d")
-        chunk[row_id][7] = datetime.strptime(str(chunk[row_id][7]), "%Y%m%d")
-        chunk[row_id][9] = datetime.strptime(str(chunk[row_id][9]), "%Y%m%d")
-
+    CONN = psycopg2.connect(CONNECTION)
+    cursor = CONN.cursor()
+    file_path = "/mntData/tpch_split/x{}".format(worker_idx)
+    cumulative_time = 0
+    line_count = 0
     mgr = CopyManager(CONN, 'tpch_macro', COLS)
-    mgr.copy(chunk)
 
+    with open(file_path) as f:
+        for line in f:
+            line_count += 1
+            string_list = line.split(",")
+            chunk = [int(entry) for entry in string_list]
+
+            chunk[5] = datetime.strptime(str(chunk[5]), "%Y%m%d")
+            chunk[6] = datetime.strptime(str(chunk[6]), "%Y%m%d")
+            chunk[7] = datetime.strptime(str(chunk[7]), "%Y%m%d")
+            chunk[9] = datetime.strptime(str(chunk[9]), "%Y%m%d")
+
+            start = time.time()
+            mgr.copy([chunk])
+            # cursor.execute("INSERT INTO tpch_macro (ID, QUANTITY, EXTENDEDPRICE, DISCOUNT, TAX, SHIPDATE, COMMITDATE, RECEIPTDATE, TOTALPRICE, ORDERDATE) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s);", chunk)
+            
+            cumulative_time += time.time() - start
+
+            if line_count % 100 == 0:
+                print(line_count)
+
+            if line_count % 10000:
+                CONN.commit()
+
+            if line_count == 100000:
+                break
     CONN.commit()
 
-cursor.execute("TRUNCATE tpch_macro;")
+    return line_count / cumulative_time
 
-for chunk in pd.read_csv(FILENAME, chunksize=CHUNKSIZE, header=None):
+def insert_worker(worker, return_dict):
 
-    # process(list(chunk.to_records(index=False)))
+    throughput = insert_each_worker(worker)
+    return_dict[worker] = throughput
 
-    process(chunk.values.tolist())
-    cursor.execute("SELECT COUNT(*) FROM tpch_macro;")
-    results = cursor.fetchall()
-    print(results)
+from_worker = 0
+to_worker = 19
 
+if len(sys.argv) == 2 and int(sys.argv[1]) == 0:
+    from_worker = 0
+    to_worker = 20
+if len(sys.argv) == 2 and int(sys.argv[1]) == 1:
+    from_worker = 20
+    to_worker = 40
+if len(sys.argv) == 2 and int(sys.argv[1]) == 2:
+    from_worker = 40
+    to_worker = 60
+
+manager = multiprocessing.Manager()
+return_dict = manager.dict()
+print(from_worker, to_worker)
+
+for worker in range(from_worker, to_worker):
+    p = Process(target=insert_worker, args=(worker, return_dict, ))
+    p.start()
+    processes.append(p)
+
+for p in processes:
+    p.join()
+
+print("total throughput", sum(return_dict.values()))
+exit(0)

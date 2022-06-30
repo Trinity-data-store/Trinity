@@ -76,8 +76,16 @@ SHOW INDEXES
 # loader
 cd /proj/trinity-PG0/dependencies/aerospike/aerospike-loader/
 sudo ./build
-# /proj/trinity-PG0/dependencies/aerospike/aerospike-loader/run_loader -h 10.10.1.2 -n tpch -c /proj/trinity-PG0/Trinity/baselines/aerospike/column.json -wa CREATE_ONLY /mntData/tpch_split
-/proj/trinity-PG0/dependencies/aerospike/aerospike-loader/run_loader -h 10.10.1.2 -n tpch -c /proj/trinity-PG0/Trinity/baselines/aerospike/column.json -wa CREATE_ONLY /mntData2/tpch/data_300/tpch_processed_1B.csv
+/proj/trinity-PG0/dependencies/aerospike/aerospike-loader/run_loader -h 10.10.1.3 -n tpch -c /proj/trinity-PG0/Trinity/baselines/aerospike/column.json /mntData/tpch_split/
+/proj/trinity-PG0/dependencies/aerospike/aerospike-loader/run_loader -h 10.10.1.3 -n tpch -c /proj/trinity-PG0/Trinity/baselines/aerospike/column.json /mntData/tpch_subset/
+
+
+/proj/trinity-PG0/dependencies/aerospike/aerospike-loader/run_loader -h 10.10.1.3 -n tpch -c /proj/trinity-PG0/Trinity/baselines/aerospike/column.json /mntData2/tpch-dbgen/data_200/orders_lineitem_merged_by_chunk_indexed.csv
+
+/proj/trinity-PG0/dependencies/aerospike/aerospike-loader/run_loader -h 10.10.1.3 -n tpch -c /proj/trinity-PG0/Trinity/baselines/aerospike/column.json -wa CREATE_ONLY /mntData2/tpch/data_300/tpch_processed_1B.csv
+
+/proj/trinity-PG0/dependencies/aerospike/aerospike-loader/run_loader -h 10.10.1.3 -n tpch -c /proj/trinity-PG0/Trinity/baselines/aerospike/column.json /mntData2/tpch/data_300/tpch_processed_1B.csv
+
 
 # Might need to reinstall if loader issue
 # sudo ./build

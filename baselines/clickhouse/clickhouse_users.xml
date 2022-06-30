@@ -10,8 +10,14 @@
             <max_memory_usage>60000000000</max_memory_usage>
             <max_distributed_depth>4000</max_distributed_depth>
             <distributed_connections_pool_size>4096</distributed_connections_pool_size>
+
+            <!--
             <max_distributed_connections>4096</max_distributed_connections>
-            <async_insert>0</async_insert>
+            <async_insert>1</async_insert>
+            <wait_for_async_insert>1</wait_for_async_insert>
+            <async_insert_threads>20</async_insert_threads>
+            -->
+            
             <use_uncompressed_cache>0</use_uncompressed_cache>
             <compile_expressions>0</compile_expressions>
             <!-- <mark_cache_size -->
