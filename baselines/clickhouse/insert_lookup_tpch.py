@@ -19,7 +19,7 @@ processes = []
 def insert_lookup_each_worker(worker_idx):
 
     client = Client(master[0], port=master[1])
-    file_path = "/mntData/tpch_split/x{}".format(worker_idx)
+    file_path = "/mntData/tpch_split/tpch_split_split/x{}".format(worker_idx)
     cumulative_time = 0
     line_count = 0
     insertion_count = 0

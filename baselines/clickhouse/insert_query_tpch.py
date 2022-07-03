@@ -78,7 +78,7 @@ with open(filename) as file:
 def insert_query_each_worker(worker_idx):
 
     client = Client(master[0], port=master[1])
-    file_path = "/mntData/tpch_split/x{}".format(worker_idx)
+    file_path = "/mntData/tpch_split/tpch_split_split/x{}".format(worker_idx)
     cumulative_time = 0
     line_count = 0
     insertion_count = 0
@@ -116,10 +116,10 @@ def insert_query_each_worker(worker_idx):
                 query_count += 1
                 query_latency_cumulative += elapsed_time
 
-            if line_count % 100 == 0:
+            if line_count % 5 == 0:
                 print(line_count)
 
-            if line_count == 30000:
+            if line_count == 200:
                 break
 
     return insertion_count, insertion_latency_cumulative, query_count, query_latency_cumulative, cumulative_time
@@ -135,7 +135,7 @@ def insert_query_worker(worker, return_dict):
     return_dict[worker] = per_worker_return_dict
 
 from_worker = 0
-to_worker = 19
+to_worker = 4
 
 manager = multiprocessing.Manager()
 return_dict = manager.dict()
