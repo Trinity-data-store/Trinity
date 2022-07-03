@@ -17,7 +17,7 @@
 #include <stdexcept>
 #include <sstream>
 #include <future>
-
+#include <fstream>
 #include "MDTrieShard.h"
 #include "trie.h"
 
@@ -37,9 +37,10 @@ const int shard_num = 20;
 class MDTrieHandler : public MDTrieShardIf {
 public:
 
-  MDTrieHandler(){
+  MDTrieHandler(int ip_address){
     mdtrie_ = nullptr;
     p_key_to_treeblock_compact_ = nullptr;
+    outfile_.open(std::to_string(ip_address) + ".log", ios::out);
   };
 
   void clear_trie(){
@@ -112,6 +113,8 @@ public:
 
     mdtrie_->insert_trie(&leaf_point, inserted_points_, p_key_to_treeblock_compact_);
     inserted_points_ ++;
+    for (const auto &coordinate : point) outfile_ << coordinate << ",";
+    outfile_ << "\n";
     return inserted_points_ - 1;
   }
 
@@ -172,6 +175,7 @@ protected:
   md_trie<DIMENSION> *mdtrie_; 
   bitmap::CompactPtrVector *p_key_to_treeblock_compact_;
   uint64_t inserted_points_ = 0;
+  ofstream outfile_;
 };
 
 class MDTrieCloneFactory : virtual public MDTrieShardIfFactory {
@@ -185,7 +189,7 @@ class MDTrieCloneFactory : virtual public MDTrieShardIfFactory {
     cout << "\tPeerHost: "    << sock->getPeerHost() << "\n";
     cout << "\tPeerAddress: " << sock->getPeerAddress() << "\n";
     cout << "\tPeerPort: "    << sock->getPeerPort() << "\n";
-    return new MDTrieHandler;
+    return new MDTrieHandler(sock->getPeerPort());
   }
   void releaseHandler( MDTrieShardIf* handler) {
     delete handler;
@@ -210,7 +214,7 @@ public:
 
     static void start_server(int port_num, std::string ip_address){
 
-        auto handler = std::make_shared<MDTrieHandler>();
+        auto handler = std::make_shared<MDTrieHandler>(port_num);
         auto processor = std::make_shared<MDTrieShardProcessor>(handler);
         auto socket = std::make_shared<TNonblockingServerSocket>(ip_address, port_num);
         auto server = std::make_shared<TNonblockingServer>(processor, socket);

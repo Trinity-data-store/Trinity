@@ -26,6 +26,7 @@ sudo cp $trinity_path/baselines/clickhouse/clickhouse_config.xml /etc/clickhouse
 sudo cp $trinity_path/baselines/clickhouse/clickhouse_users.xml /etc/clickhouse-server/users.xml
 sudo service clickhouse-server restart
 
+sudo service clickhouse-server status
 
 exit 0
 

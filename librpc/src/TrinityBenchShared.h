@@ -106,9 +106,9 @@ uint32_t total_client_insert_split_tpch(int shard_number, int client_number, std
     snprintf(buff, sizeof(buff), "/mntData/tpch_split/x%d", i);
     std::string split_address = buff;
 
-    uint32_t points_to_insert = 16666667;
+    uint32_t points_to_insert = 16666667 / 10;
     if (i == 59) {
-      points_to_insert = 16666647;
+      points_to_insert = 16666647 / 10;
     }
     threads.push_back(std::async(insert_each_client_from_file, split_address, shard_number, 1, 0, server_ips, points_to_insert));
   }  
@@ -172,12 +172,30 @@ uint32_t lookup_each_client(int shard_number, int client_number, int client_inde
   return ((float) (total_points_to_lookup - 2 * warmup_cooldown_points) / diff) * 1000000;
 }
 
-uint32_t total_client_lookup(int shard_number, int client_number, std::vector<std::string> server_ips){
+uint32_t total_client_lookup(int shard_number, int client_number, std::vector<std::string> server_ips, int which_part = 0){
 
   std::vector<std::future<uint32_t>> threads; 
   threads.reserve(client_number);
 
-  for (int i = 0; i < client_number; i++){
+  int start_split = 0;
+  int end_split = client_number - 1;
+  total_points_count /= 50;
+
+  if (which_part == 1) {
+    start_split = 0;
+    end_split = 19;
+  }
+  if (which_part == 2) {
+    start_split = 20;
+    end_split = 39;
+  }
+  if (which_part == 3) {
+    start_split = 40;
+    end_split = 59;
+  }
+
+  for (int i = start_split; i <= end_split; i++){
+
     threads.push_back(std::async(lookup_each_client, shard_number, client_number, i, server_ips));
   }  
 

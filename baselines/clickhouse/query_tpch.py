@@ -6,7 +6,7 @@ import random
 from datetime import datetime
 import re
 
-master = ("10.10.1.2", "9000")
+master = ("10.10.1.3", "9000")
 dates = [0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
 
 filename = "/proj/trinity-PG0/Trinity/queries/tpch/tpch_query_new"
