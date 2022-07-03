@@ -33,6 +33,7 @@ def lookup_each_worker(worker_idx, is_first):
     file_path = "/mntData/tpch_split/x{}".format(worker_idx)
     cumulative_time = 0
     line_count = 0
+    start_time = time.time()
 
     with open(file_path) as f:
         for line in f:
@@ -76,12 +77,13 @@ def lookup_each_worker(worker_idx, is_first):
             if line_count == 1000000:
                 break
 
-    return line_count / 2 / cumulative_time
+    end_time = time.time()
+    return line_count / 2 / (end_time - start_time), cumulative_time / line_count * 1000
 
 def lookup_worker(worker, is_first, return_dict):
 
-    throughput = lookup_each_worker(worker, is_first)
-    return_dict[worker] = throughput
+    throughput, latency = lookup_each_worker(worker, is_first)
+    return_dict[worker] = {"throughput": throughput, "latency": latency}
 
 from_worker = 0
 to_worker = 20
@@ -112,4 +114,5 @@ for worker in range(from_worker, to_worker):
 for p in processes:
     p.join()
 
-print("total throughput", sum(return_dict.values()))
+print("total throughput", sum([return_dict[worker]["throughput"] for worker in return_dict]))
+print("average latency (ms)", sum([return_dict[worker]["latency"] for worker in return_dict]) / len(return_dict.keys()))

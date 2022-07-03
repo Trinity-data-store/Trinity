@@ -21,6 +21,7 @@ def insert_each_worker(worker_idx):
     file_path = "/mntData/tpch_split/x{}".format(worker_idx)
     cumulative_time = 0
     line_count = 0
+    start_time = time.time()
 
     with open(file_path) as f:
         for line in f:
@@ -38,13 +39,13 @@ def insert_each_worker(worker_idx):
             if line_count == 100000:
                 break
 
-    return line_count / cumulative_time
-
+    end_time = time.time()
+    return line_count / (end_time - start_time), cumulative_time / line_count * 1000
 
 def insert_worker(worker, return_dict):
 
-    throughput = insert_each_worker(worker)
-    return_dict[worker] = throughput
+    throughput, latency = insert_each_worker(worker)
+    return_dict[worker] = {"throughput": throughput, "latency": latency}
 
 from_worker = 0
 to_worker = 19
@@ -76,4 +77,5 @@ for p in processes:
 
 result = client.execute("SELECT COUNT(*) FROM tpch_macro")
 print(result)
-print("total throughput", sum(return_dict.values()))
+print("total throughput", sum([return_dict[worker]["throughput"] for worker in return_dict]))
+print("average latency (ms)", sum([return_dict[worker]["latency"] for worker in return_dict]) / len(return_dict.keys()))

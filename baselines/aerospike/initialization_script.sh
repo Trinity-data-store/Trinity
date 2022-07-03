@@ -40,9 +40,15 @@ sudo cp /proj/trinity-PG0/Trinity/baselines/aerospike/aerospike.conf /etc/aerosp
 # Force clear
 sudo rm /mntData/aerospike/tpch
 sudo cp /proj/trinity-PG0/Trinity/baselines/aerospike/aerospike.conf /etc/aerospike/aerospike.conf
-sudo systemctl restart aerospike
+sudo systemctl start aerospike
 sudo systemctl status aerospike
 sudo systemctl stop aerospike
+
+
+# Cannot start debug
+sudo systemctl stop aerospike
+sudo chmod 775 /var/log/aerospike/
+sudo systemctl start aerospike
 
 # asadm
 enable
