@@ -34,7 +34,7 @@ def insert_lookup_each_worker(worker_idx):
             string_list = line.split(",")
             insert_list = [[int(entry) for entry in string_list]]
             primary_key_list.append(insert_list[0][0])
-            if line_count % 10 != 9:
+            if line_count % 20 == 19:
                 is_insert = True
             else:
                 is_insert = False

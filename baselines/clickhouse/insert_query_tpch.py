@@ -92,7 +92,7 @@ def insert_query_each_worker(worker_idx):
             string_list = line.split(",")
             insert_list = [[int(entry) for entry in string_list]]
 
-            if line_count % 10 != 9:
+            if line_count % 20 == 19:
                 is_insert = True
             else:
                 is_insert = False
