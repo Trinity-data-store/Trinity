@@ -8,7 +8,7 @@ import multiprocessing
 from multiprocessing import Process
 from concurrent.futures import ProcessPoolExecutor
 
-CONNECTION = "dbname=tpch_macro host=localhost user=postgres password=adifficultpassword sslmode=disable"
+CONNECTION = "dbname=tpch_macro host=localhost user=postgres password=adifficultpassword sslmode=disable async=1"
 COLS = ['id', 'quantity', 'extendedprice', 'discount', 'tax', 'shipdate', 'commitdate', 'receiptdate', 'totalprice', 'orderdate']
 
 CONN = psycopg2.connect(CONNECTION)

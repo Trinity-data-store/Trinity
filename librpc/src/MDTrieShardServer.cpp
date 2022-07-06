@@ -106,7 +106,7 @@ public:
     mdtrie_->insert_trie(&leaf_point, inserted_points_, p_key_to_treeblock_compact_);
     inserted_points_ ++;
     for (const auto &coordinate : point) outfile_ << coordinate << ",";
-    outfile_ << "\n";
+    outfile_ << std::endl;
     return inserted_points_ - 1;
   }
 

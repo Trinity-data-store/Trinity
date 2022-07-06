@@ -27,6 +27,7 @@ sudo cp $trinity_path/baselines/clickhouse/clickhouse_users.xml /etc/clickhouse-
 sudo service clickhouse-server restart
 
 sudo service clickhouse-server status
+pip install aioch
 
 exit 0
 
@@ -40,6 +41,7 @@ sudo service clickhouse-server restart
 
 
 # ClickHouse TPCH (Client Node)
+sudo service clickhouse-server restart
 clickhouse-client --database=default --query="DROP TABLE IF EXISTS tpch_macro";
 clickhouse-client --database=default --query="CREATE TABLE IF NOT EXISTS tpch_macro (ID UInt32, QUANTITY UInt32, EXTENDEDPRICE UInt32, DISCOUNT UInt32, TAX UInt32, SHIPDATE UInt32, COMMITDATE UInt32, RECEIPTDATE UInt32, TOTALPRICE UInt32, ORDERDATE UInt32) ENGINE = Distributed(test_trinity, default, tpch_macro, rand())";
 

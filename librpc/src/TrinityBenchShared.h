@@ -104,7 +104,7 @@ uint32_t total_client_insert_split_tpch(int shard_number, int client_number, std
   if (which_part == 3) {
     start_split = 40;
     // end_split = 59;
-    end_split = 58;
+    end_split = 59;
   }
 
   for (int i = start_split; i <= end_split; i++){
@@ -121,7 +121,7 @@ uint32_t total_client_insert_split_tpch(int shard_number, int client_number, std
   }  
 
   uint32_t total_throughput = 0;
-  for (int i = 0; i < client_number; i++){
+  for (int i = 0; i < (end_split - start_split + 1); i++){
     total_throughput += threads[i].get();
   } 
   return total_throughput;  
