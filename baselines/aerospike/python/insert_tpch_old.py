@@ -35,21 +35,19 @@ def insert_each_worker(total_num_workers, worker_idx):
     file_path = "/mntData2/tpch/data_500/orders_lineitem_merged_indexed.csv"
     cumulative_time = 0
     line_count = 0
-    effective_line_count = 0
     start_time = time.time()
 
     with open(file_path) as f:
         for line in f:
-
+            
             line_count += 1
 
-            if line_count == 50000000:
+            if line_count == 1000000:
                 break
 
             if line_count % total_num_workers != worker_idx:
                 continue
 
-            effective_line_count += 1
             string_list = line.split(",")
 
             colnum = 0
@@ -77,13 +75,13 @@ def insert_each_worker(total_num_workers, worker_idx):
 
             cumulative_time += time.time() - start
 
-            if effective_line_count % 500000 == 0:
-                print(effective_line_count)
+            if line_count % 100 == 0:
+                print(line_count)
 
 
 
     end_time = time.time()
-    return effective_line_count / (end_time - start_time), effective_line_count / line_count * 1000
+    return line_count / (end_time - start_time), cumulative_time / line_count * 1000
 
 
 def insert_worker(worker, total_num_workers, return_dict):
@@ -91,27 +89,25 @@ def insert_worker(worker, total_num_workers, return_dict):
     throughput, latency = insert_each_worker(total_num_workers, worker)
     return_dict[worker] = {"throughput": throughput, "latency": latency}
 
-if len(sys.argv) == 2 and int(sys.argv[1]) == 1:
+from_worker = 0
+to_worker = 60
+
+if len(sys.argv) == 2 and int(sys.argv[1]) == 0:
     from_worker = 0
+    to_worker = 20
+if len(sys.argv) == 2 and int(sys.argv[1]) == 1:
+    from_worker = 20
+    to_worker = 40
+if len(sys.argv) == 2 and int(sys.argv[1]) == 2:
+    from_worker = 40
     to_worker = 60
-    total_num_workers = 180
-elif len(sys.argv) == 2 and int(sys.argv[1]) == 2:
-    from_worker = 60
-    to_worker = 120
-    total_num_workers = 180
-elif len(sys.argv) == 2 and int(sys.argv[1]) == 3:
-    from_worker = 120
-    to_worker = 180
-    total_num_workers = 180
-else:
-    exit(0)
 
 manager = multiprocessing.Manager()
 return_dict = manager.dict()
 print(from_worker, to_worker)
 
 for worker in range(from_worker, to_worker):
-    p = Process(target=insert_worker, args=(worker, total_num_workers, return_dict, ))
+    p = Process(target=insert_worker, args=(worker, to_worker - from_worker + 1, return_dict, ))
     p.start()
     processes.append(p)
 

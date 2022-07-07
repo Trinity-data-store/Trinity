@@ -33,7 +33,7 @@ int main(int argc, char *argv[]){
     }
     int which_part = stoi(argv[1]);
 
-    std::vector<std::string> server_ips = {"10.10.1.3", "10.10.1.4", "10.10.1.5", "10.10.1.6", "10.10.1.7"};
+    std::vector<std::string> server_ips = {"10.10.1.5", "10.10.1.6", "10.10.1.7", "10.10.1.8", "10.10.1.9"};
 
     total_points_count = 1000000000;
     auto client = MDTrieClient(server_ips, shard_num);

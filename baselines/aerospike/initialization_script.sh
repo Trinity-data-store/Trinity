@@ -40,7 +40,7 @@ sudo cp /proj/trinity-PG0/Trinity/baselines/aerospike/aerospike.conf /etc/aerosp
 # Force clear
 sudo rm /mntData/aerospike/tpch
 sudo cp /proj/trinity-PG0/Trinity/baselines/aerospike/aerospike.conf /etc/aerospike/aerospike.conf
-sudo systemctl start aerospike
+sudo systemctl restart aerospike
 sudo systemctl status aerospike
 sudo systemctl stop aerospike
 
@@ -65,13 +65,10 @@ manage sindex delete TOTALPRICE_index ns tpch
 manage sindex delete ORDERDATE_index ns tpch
 
 manage sindex create numeric QUANTITY_index ns tpch set tpch_macro bin QUANTITY
-# manage sindex create numeric EXTENDEDPRICE_index ns tpch set tpch_macro bin EXTENDEDPRICE
 manage sindex create numeric DISCOUNT_index ns tpch set tpch_macro bin DISCOUNT
-# manage sindex create numeric TAX_index ns tpch bin set tpch_macro bin TAX
 manage sindex create numeric SHIPDATE_index ns tpch set tpch_macro bin SHIPDATE
 manage sindex create numeric COMMITDATE_index ns tpch set tpch_macro bin COMMITDATE
 manage sindex create numeric RECEIPTDATE_index ns tpch set tpch_macro bin RECEIPTDATE
-# manage sindex create numeric TOTALPRICE_index ns tpch set tpch_macro bin TOTALPRICE
 manage sindex create numeric ORDERDATE_index ns tpch set tpch_macro bin ORDERDATE
 
 # aql

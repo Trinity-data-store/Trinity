@@ -1,8 +1,13 @@
 sudo mkdir -p /mntData/tpch_split
 cd /mntData/tpch_split
 # sudo split -l 25000000 /mntData2/tpch/data_300/tpch_processed_shortened.csv --numeric-suffixes
-sudo split -l 16666667 /mntData2/tpch/data_300/tpch_processed_1B.csv --numeric-suffixes
+sudo split -l 16666667 /mntData2/tpch/data_500/tpch_processed_1B.csv --numeric-suffixes
 
+sudo mkdir -p /mntData/tpch_split
+cd /mntData/tpch_split
+sudo split -l 16666667 /mntData2/tpch/data_500/orders_lineitem_merged_indexed.csv --numeric-suffixes
+
+cd /mntData/tpch_split
 sudo mv x00 x0
 sudo mv x01 x1
 sudo mv x02 x2

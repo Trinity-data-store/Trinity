@@ -21,7 +21,7 @@ using namespace apache::thrift::protocol;
 using namespace apache::thrift::transport;
 
 // TODO: Double check BATCH_SIZE
-int BATCH_SIZE = 4096 * 10;
+int BATCH_SIZE = 1024;
 int WARMUP_FACTOR = 5;
 
 struct throughput_latency {
@@ -117,6 +117,7 @@ uint32_t total_client_insert_split_tpch(int shard_number, int client_number, std
     if (i == 59) {
       points_to_insert = 16666647;
     }
+    points_to_insert = 3000000;
     threads.push_back(std::async(insert_each_client_from_file, split_address, shard_number, 1, 0, server_ips, points_to_insert));
   }  
 
