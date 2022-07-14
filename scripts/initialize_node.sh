@@ -91,4 +91,9 @@ cd $dependencies_path
 
 sudo apt-get install -y maven
 sudo apt-get install -y python3-pip
+
+sudo mkdir -p /mntData/tpch
+sudo chmod 775 /mntData/tpch
+
+
 exit 0

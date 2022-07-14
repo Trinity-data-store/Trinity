@@ -24,7 +24,7 @@ using namespace apache::thrift::protocol;
 using namespace apache::thrift::transport;
 const int DIMENSION = 9;
 const int shard_num = 20;
-const int client_num = 20;
+const int client_num = 60;
 
 int main(int argc, char *argv[]){
 
@@ -33,7 +33,7 @@ int main(int argc, char *argv[]){
     }
     int which_part = stoi(argv[1]);
 
-    std::vector<std::string> server_ips = {"10.10.1.5", "10.10.1.6", "10.10.1.7", "10.10.1.8", "10.10.1.9"};
+    std::vector<std::string> server_ips = {"10.10.1.12", "10.10.1.13", "10.10.1.14", "10.10.1.15", "10.10.1.16"};
 
     total_points_count = 1000000000;
     auto client = MDTrieClient(server_ips, shard_num);
@@ -47,24 +47,10 @@ int main(int argc, char *argv[]){
         Insert all points
     */
 
-    TimeStamp start, diff;
     uint32_t throughput;
+    throughput = total_client_insert_split_tpch(shard_num, client_num, server_ips, which_part);
 
-    if (which_part == 4) {
-      cout << "Storage (MB): " << client.get_size() / 1000000 << endl;
-      return 0;
-    }
-    if (which_part != 0) {
-      start = GetTimestamp();
-      throughput = total_client_insert_split_tpch(shard_num, client_num, server_ips, which_part);
-      diff = GetTimestamp() - start;
-
-      cout << "Lookup Throughput (pt / seconds): " << throughput << endl;
-      cout << "End-to-end Latency (s): " << diff / 1000000 << endl;
-      cout << "Storage (MB): " << client.get_size() / 1000000 << endl;
-    }
-    else {
-      cout << "which part = 0, exits" << endl;
-    }
+    cout << "Lookup Throughput (pt / seconds): " << throughput << endl;
+    cout << "Storage (MB): " << client.get_size() / 1000000 << endl;
     
 }

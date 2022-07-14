@@ -14,7 +14,7 @@ if [ ! -d "aerospike-server-community-5.7.0.17-ubuntu18.04" ]; then
 fi
 cd aerospike-server-community-5.7.0.17-ubuntu18.04
 sudo ./asinstall
-sudo cp /proj/trinity-PG0/Trinity/baselines/aerospike/aerospike.conf /etc/aerospike/aerospike.conf
+# sudo cp /proj/trinity-PG0/Trinity/baselines/aerospike/aerospike.conf /etc/aerospike/aerospike.conf
 
 cd $dependencies_path/aerospike
 if [ ! -d "aerospike-loader" ]; then
@@ -40,6 +40,8 @@ sudo cp /proj/trinity-PG0/Trinity/baselines/aerospike/aerospike.conf /etc/aerosp
 # Force clear
 sudo rm /mntData/aerospike/tpch
 sudo cp /proj/trinity-PG0/Trinity/baselines/aerospike/aerospike.conf /etc/aerospike/aerospike.conf
+
+sudo rm /mntData/aerospike/tpch
 sudo systemctl restart aerospike
 sudo systemctl status aerospike
 sudo systemctl stop aerospike

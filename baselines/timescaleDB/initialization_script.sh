@@ -47,6 +47,10 @@ sudo cp /proj/trinity-PG0/Trinity/baselines/timescaleDB/postgresql.conf /etc/pos
 sudo cp /proj/trinity-PG0/Trinity/baselines/timescaleDB/pg_hba.conf /etc/postgresql/14/main/pg_hba.conf
 sudo service postgresql restart
 sudo -u postgres psql postgres
+CREATE database defaultdb;
+\c defaultdb
+CREATE EXTENSION IF NOT EXISTS timescaledb;
+
 
 sudo service postgresql stop
 
@@ -66,10 +70,15 @@ sudo service postgresql stop
 
 # sudo service postgresql restart
 # sudo -u postgres psql postgres
+sudo -u postgres psql postgres
 alter user postgres with password 'adifficultpassword';
-# alter user "Ziming" with password 'ZimingZimingdifficult';
 CREATE database tpch_macro;
 \c tpch_macro;
+
+sudo -u postgres psql postgres
+CREATE database defaultdb;
+\c defaultdb
+
 
 CREATE EXTENSION IF NOT EXISTS timescaledb;
 # CREATE TABLE tpch (
@@ -109,11 +118,11 @@ SELECT delete_data_node('dn3');
 SELECT delete_data_node('dn4');
 SELECT delete_data_node('dn5');
 
-SELECT add_data_node('dn1', host => '10.10.1.3');
-SELECT add_data_node('dn2', host => '10.10.1.4');
-SELECT add_data_node('dn3', host => '10.10.1.5');
-SELECT add_data_node('dn4', host => '10.10.1.6');
-SELECT add_data_node('dn5', host => '10.10.1.7');
+SELECT add_data_node('dn1', host => '10.10.1.5');
+SELECT add_data_node('dn2', host => '10.10.1.6');
+SELECT add_data_node('dn3', host => '10.10.1.7');
+SELECT add_data_node('dn4', host => '10.10.1.8');
+SELECT add_data_node('dn5', host => '10.10.1.9');
 
 SELECT * FROM timescaledb_information.data_nodes;
 

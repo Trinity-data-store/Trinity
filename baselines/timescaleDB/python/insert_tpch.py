@@ -8,7 +8,9 @@ import multiprocessing
 from multiprocessing import Process
 from concurrent.futures import ProcessPoolExecutor
 
-CONNECTION = "dbname=tpch_macro host=localhost user=postgres password=adifficultpassword sslmode=disable async=1"
+CONNECTION = "dbname=tpch_macro host=localhost user=postgres password=adifficultpassword sslmode=disable"
+CONNECTION = "dbname=defaultdb host=localhost user=postgres password=adifficultpassword sslmode=disable"
+
 COLS = ['id', 'quantity', 'extendedprice', 'discount', 'tax', 'shipdate', 'commitdate', 'receiptdate', 'totalprice', 'orderdate']
 
 CONN = psycopg2.connect(CONNECTION)
@@ -61,7 +63,7 @@ def insert_worker(worker, return_dict):
     return_dict[worker] = {"throughput": throughput, "latency": latency}
 
 from_worker = 0
-to_worker = 19
+to_worker = 60
 
 if len(sys.argv) == 2 and int(sys.argv[1]) == 0:
     from_worker = 0

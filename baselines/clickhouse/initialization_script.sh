@@ -22,17 +22,19 @@ sudo mkdir -p $local_path/clickhouse/
 sudo chown -R clickhouse:clickhouse $local_path/clickhouse/
 
 # Configure clickhouse DB
-sudo cp $trinity_path/baselines/clickhouse/clickhouse_config.xml /etc/clickhouse-server/config.xml
-sudo cp $trinity_path/baselines/clickhouse/clickhouse_users.xml /etc/clickhouse-server/users.xml
+sudo cp /proj/trinity-PG0/Trinity/baselines/clickhouse/clickhouse_config.xml /etc/clickhouse-server/config.xml
+sudo cp /proj/trinity-PG0/Trinity/baselines/clickhouse/clickhouse_users.xml /etc/clickhouse-server/users.xml
 sudo service clickhouse-server restart
+clickhouse-client --database=default --query="DROP TABLE IF EXISTS tpch_macro";
 
-sudo service clickhouse-server status
-pip install aioch
+# sudo service clickhouse-server status
+pip3 install aioch
 
 exit 0
 
 # Start clickhouse
 sudo service clickhouse-server start
+sudo service clickhouse-server status
 sudo service clickhouse-server stop
 
 sudo cp /proj/trinity-PG0/Trinity/baselines/clickhouse/clickhouse_config.xml /etc/clickhouse-server/config.xml
@@ -56,3 +58,4 @@ clickhouse-client --database=default --query="SELECT COUNT(*) FROM tpch_macro";
 
 # Clickhouse TPCH (insert Data)
 cat /mntData2/tpch/data_300/tpch_processed_1B.csv | clickhouse-client --query="INSERT INTO tpch_macro FORMAT CSV";
+
