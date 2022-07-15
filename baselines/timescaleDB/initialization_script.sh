@@ -5,7 +5,7 @@ trinity_path="/proj/trinity-PG0/Trinity"
 dependencies_path="/proj/trinity-PG0/dependencies"
 local_path="/mntData"
 data_dir="/mntData2"
-
+export PGPASSWORD=adifficultpassword
 # Set up Timescale DB
 sudo dpkg --configure -a
 sudo apt install -y gnupg postgresql-common apt-transport-https lsb-release wget
@@ -37,7 +37,9 @@ sudo -u postgres /usr/lib/postgresql/14/bin/initdb -D postgresql/14/main
 # for python stuff
 sudo apt-get update
 sudo apt-get install -y libpq-dev python-dev
+sudo apt install -y python3-pip
 sudo pip3 install psycopg2
+sudo pip3 install pandas
 sudo pip3 install pgcopy
 
 exit 0
@@ -45,14 +47,26 @@ exit 0
 # Start postgresql
 sudo cp /proj/trinity-PG0/Trinity/baselines/timescaleDB/postgresql.conf /etc/postgresql/14/main/postgresql.conf
 sudo cp /proj/trinity-PG0/Trinity/baselines/timescaleDB/pg_hba.conf /etc/postgresql/14/main/pg_hba.conf
+sudo cp /proj/trinity-PG0/Trinity/baselines/timescaleDB/sysctl.conf /etc/sysctl.conf
 sudo service postgresql restart
 sudo -u postgres psql postgres
+alter user postgres with password 'adifficultpassword';
 CREATE database defaultdb;
 \c defaultdb
 CREATE EXTENSION IF NOT EXISTS timescaledb;
+CREATE TABLE tpch_macro (
+   ID           BIGINT             NOT NULL,
+   QUANTITY     SMALLINT             NOT NULL,
+    EXTENDEDPRICE  INT       NOT NULL,
+    DISCOUNT    SMALLINT    NOT NULL,
+    TAX SMALLINT    NOT NULL,
+    SHIPDATE   TIMESTAMP NOT NULL,
+    COMMITDATE TIMESTAMP NOT NULL,
+    RECEIPTDATE TIMESTAMP NOT NULL,
+    TOTALPRICE  INT NOT NULL,
+    ORDERDATE   TIMESTAMP NOT NULL
+);
 
-
-sudo service postgresql stop
 
 ################################
 # TimescaleDB stuff
@@ -70,17 +84,17 @@ sudo service postgresql stop
 
 # sudo service postgresql restart
 # sudo -u postgres psql postgres
-sudo -u postgres psql postgres
-alter user postgres with password 'adifficultpassword';
-CREATE database tpch_macro;
-\c tpch_macro;
+# sudo -u postgres psql postgres
+# alter user postgres with password 'adifficultpassword';
+# CREATE database tpch_macro;
+# \c tpch_macro;
 
-sudo -u postgres psql postgres
-CREATE database defaultdb;
-\c defaultdb
+# sudo -u postgres psql postgres
+# CREATE database defaultdb;
+# \c defaultdb
 
 
-CREATE EXTENSION IF NOT EXISTS timescaledb;
+# CREATE EXTENSION IF NOT EXISTS timescaledb;
 # CREATE TABLE tpch (
 #    ID           INT             NOT NULL,
 #    QUANTITY     SMALLINT             NOT NULL,
@@ -118,11 +132,11 @@ SELECT delete_data_node('dn3');
 SELECT delete_data_node('dn4');
 SELECT delete_data_node('dn5');
 
-SELECT add_data_node('dn1', host => '10.10.1.5');
-SELECT add_data_node('dn2', host => '10.10.1.6');
-SELECT add_data_node('dn3', host => '10.10.1.7');
-SELECT add_data_node('dn4', host => '10.10.1.8');
-SELECT add_data_node('dn5', host => '10.10.1.9');
+SELECT add_data_node('dn1', host => '10.10.1.12');
+SELECT add_data_node('dn2', host => '10.10.1.13');
+SELECT add_data_node('dn3', host => '10.10.1.14');
+SELECT add_data_node('dn4', host => '10.10.1.15');
+SELECT add_data_node('dn5', host => '10.10.1.16');
 
 SELECT * FROM timescaledb_information.data_nodes;
 

@@ -129,7 +129,6 @@ uint32_t total_client_insert_split_tpch(int shard_number, int client_number, std
   int start_split = which_part * client_number;
   int end_split = which_part * client_number + client_number;
   
-
   /*
   if (which_part == 1) {
     start_split = 0;
@@ -151,17 +150,14 @@ uint32_t total_client_insert_split_tpch(int shard_number, int client_number, std
     char buff[100];
     snprintf(buff, sizeof(buff), "/mntData/tpch_split_600/x%d", i);
     std::string split_address = buff;
-
     uint32_t points_to_insert = 1666667;
     if (i == 599) {
       points_to_insert = 1666467;
     }
-    // points_to_insert = 1666667;
     // threads.push_back(std::async(insert_each_client_from_file, split_address, shard_number, 1, 0, server_ips, points_to_insert));
     threads.push_back(std::async(insert_each_client_sync, split_address, shard_number, 1, 0, server_ips, points_to_insert));
 
   }  
-
   uint32_t total_throughput = 0;
   for (int i = 0; i < end_split - start_split; i++){
     total_throughput += threads[i].get();

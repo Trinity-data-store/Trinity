@@ -76,8 +76,10 @@ sudo apt install -y python3-pip
 pip3 install pandas
 echo 'include /etc/ld.so.conf.d/*.conf /usr/local/lib' | sudo tee /etc/ld.so.conf
 sudo /sbin/ldconfig
-ulimit -n 16384
+# ulimit -n 163840
+ulimit -n 100000
 sudo cp /proj/trinity-PG0/Trinity/scripts/limits.conf  /etc/security/limits.conf
+sudo cp /proj/trinity-PG0/Trinity/scripts/user.conf  /etc/systemd/user.conf
 
 # Golang
 cd $dependencies_path
@@ -94,6 +96,6 @@ sudo apt-get install -y python3-pip
 
 sudo mkdir -p /mntData/tpch
 sudo chmod 775 /mntData/tpch
-
+sudo apt -y install pixz
 
 exit 0

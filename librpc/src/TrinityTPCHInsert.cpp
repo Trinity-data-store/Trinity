@@ -5,7 +5,8 @@
 #include <thrift/transport/TTransportUtils.h>
 
 #include "MDTrieShardClient.h"
-#include "TrinityBenchShared.h"
+// #include "TrinityBenchShared.h"
+#include "TrinityNewBench.h"
 #include "trie.h"
 #include <future>
 #include <atomic>
@@ -24,12 +25,12 @@ using namespace apache::thrift::protocol;
 using namespace apache::thrift::transport;
 const int DIMENSION = 9;
 const int shard_num = 20;
-const int client_num = 60;
+const int client_num = 120;
 
 int main(int argc, char *argv[]){
 
-    if (argc < 2) {
-      cerr << "./TrinityTPCHMacro [dataset part] [Infile] [Outfile]" << endl;
+    if (argc != 2) {
+      cerr << "./TrinityTPCHInsert [dataset part]" << endl;
     }
     int which_part = stoi(argv[1]);
 
@@ -48,9 +49,6 @@ int main(int argc, char *argv[]){
     */
 
     uint32_t throughput;
-    throughput = total_client_insert_split_tpch(shard_num, client_num, server_ips, which_part);
-
-    cout << "Lookup Throughput (pt / seconds): " << throughput << endl;
-    cout << "Storage (MB): " << client.get_size() / 1000000 << endl;
-    
+    throughput = total_client_insert(shard_num, client_num, server_ips, which_part);
+    cout << which_part << ": Lookup Throughput (pt / seconds): " << throughput << endl;    
 }

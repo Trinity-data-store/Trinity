@@ -9,7 +9,7 @@ sudo mv x06 x6
 sudo mv x07 x7 
 sudo mv x08 x8 
 sudo mv x09 x9 
-for i in {90..600}
+for i in {90..599}
 do
     sudo mv "x$(( 8910 + $i ))" "x$(( $i ))"
 done

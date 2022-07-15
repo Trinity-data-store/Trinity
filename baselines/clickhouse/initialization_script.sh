@@ -7,6 +7,7 @@ local_path="/mntData"
 data_dir="/mntData2"
 
 # Installing CLickhouse DB
+sudo apt install -y python3-pip
 pip3 install clickhouse-driver[lz4]
 sudo apt-get install -y apt-transport-https ca-certificates dirmngr
 sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 8919F6BD2B48D754
@@ -25,10 +26,9 @@ sudo chown -R clickhouse:clickhouse $local_path/clickhouse/
 sudo cp /proj/trinity-PG0/Trinity/baselines/clickhouse/clickhouse_config.xml /etc/clickhouse-server/config.xml
 sudo cp /proj/trinity-PG0/Trinity/baselines/clickhouse/clickhouse_users.xml /etc/clickhouse-server/users.xml
 sudo service clickhouse-server restart
-clickhouse-client --database=default --query="DROP TABLE IF EXISTS tpch_macro";
 
 # sudo service clickhouse-server status
-pip3 install aioch
+# pip3 install aioch
 
 exit 0
 

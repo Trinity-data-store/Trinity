@@ -11,7 +11,7 @@
 sudo mkdir -p /mntData/tpch_split_600
 cd /mntData/tpch_split_600
 sudo rm ./*
-sudo split -l 1666667 /mntData/tpch/tpch_processed_1B.csv --numeric-suffixes
+sudo split -l 1666667 /mntData2/tpch/data_300/tpch_processed_1B.csv --numeric-suffixes
 
 cd /mntData/tpch_split
 sudo mv x00 x0
@@ -32,7 +32,10 @@ do
     fi
 done
 
-
+sudo mkdir -p /mntData/tpch_split_10
+cd /mntData/tpch_split_10
+# sudo rm ./*
+sudo split -l 100000000 /mntData2/tpch/data_300/tpch_processed_1B.csv --numeric-suffixes
 # for i in {101..210}
 # do
 #     sudo mv "x$(( 9000 + $i ))" "x$(( 90 + $i ))"
