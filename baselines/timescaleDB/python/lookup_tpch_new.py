@@ -7,16 +7,13 @@ import sys
 import multiprocessing
 from multiprocessing import Process
 from concurrent.futures import ProcessPoolExecutor
-from random import randrange
-
-COLS = ['id', 'quantity', 'extendedprice', 'discount', 'tax', 'shipdate', 'commitdate', 'receiptdate', 'totalprice', 'orderdate']
 
 processes = []
 total_vect = []
-num_data_nodes = 5
 total_points = int(100000000 / 100)
+num_data_nodes = 5
 
-def insert_each_worker(worker_idx, total_workers):
+def lookup_each_worker(worker_idx, total_workers):
 
     connection_list = []
     cursor_list = []
@@ -24,7 +21,6 @@ def insert_each_worker(worker_idx, total_workers):
         client_ip = "10.10.1.{}".format(12 + data_node_idx)
         CONNECTION = "dbname=defaultdb host={} user=postgres password=adifficultpassword sslmode=disable".format(client_ip)
         CONN = psycopg2.connect(CONNECTION)
-        # CONN.autocommit = True
         connection_list.append(CONN)
         cursor_list.append(CONN.cursor())
 
@@ -33,29 +29,26 @@ def insert_each_worker(worker_idx, total_workers):
 
     for i in range(worker_idx, total_points, total_workers):
 
-        chunk = total_vect[i]
-        line_count += 1
+        start = time.time()
         hash_i = hash(i)
-        cursor_list[hash_i % 5].execute("INSERT INTO tpch_macro (ID, QUANTITY, EXTENDEDPRICE, DISCOUNT, TAX, SHIPDATE, COMMITDATE, RECEIPTDATE, TOTALPRICE, ORDERDATE) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s);", chunk)
-        connection_list[hash_i % 5].commit() # Needed for atomic transaction.
-
-        if line_count and line_count % (total_points / 10) == 0:
+        cursor_list[hash_i % 5].execute("SELECT * FROM tpch_macro WHERE ID = {}".format(total_vect[i]))
+        results = cursor_list[hash_i % 5].fetchone()
+    
+        if line_count and line_count % 10000 == 0:
             print(line_count, flush=True)
-            
-    end_time = time.time()
+        
+        line_count += 1
 
+    end_time = time.time()
     return line_count / (end_time - start_time)
 
-def insert_worker(worker, total_workers, return_dict):
+def lookup_worker(worker, total_workers, return_dict):
 
-    throughput = insert_each_worker(worker, total_workers)
+    throughput = lookup_each_worker(worker, total_workers)
     return_dict[worker] = {"throughput": throughput}
 
-threads_per_node = 60
+threads_per_node = 20
 total_num_nodes = 10
-
-manager = multiprocessing.Manager()
-return_dict = manager.dict()
 
 def load_all_points(client_idx):
     file_path = "/mntData/tpch_split_10/x{}".format(client_idx)
@@ -63,22 +56,19 @@ def load_all_points(client_idx):
     with open(file_path) as f:
         for line in f:
             string_list = line.split(",")
-            chunk = [int(entry) for entry in string_list]
-
-            chunk[5] = datetime.strptime(str(chunk[5]), "%Y%m%d")
-            chunk[6] = datetime.strptime(str(chunk[6]), "%Y%m%d")
-            chunk[7] = datetime.strptime(str(chunk[7]), "%Y%m%d")
-            chunk[9] = datetime.strptime(str(chunk[9]), "%Y%m%d")
-
-            total_vect.append(chunk)
+            id = int(string_list[0])
+            total_vect.append(id)
             loaded_lines += 1
             if loaded_lines == total_points:
                 break
 
 load_all_points(int(sys.argv[1]))
 
+manager = multiprocessing.Manager()
+return_dict = manager.dict()
+
 for worker in range(threads_per_node):
-    p = Process(target=insert_worker, args=(worker, threads_per_node, return_dict, ))
+    p = Process(target=lookup_worker, args=(worker, threads_per_node, return_dict, ))
     p.start()
     processes.append(p)
 
@@ -86,5 +76,5 @@ for p in processes:
     p.join()
 
 print("total throughput", sum([return_dict[worker]["throughput"] for worker in return_dict]))
-with open('/proj/trinity-PG0/Trinity/baselines/timescaleDB/python/tpch_insert_throughput.txt', 'a') as f:
+with open('/proj/trinity-PG0/Trinity/baselines/timescaleDB/python/tpch_lookup_throughput.txt', 'a') as f:
     print(sum([return_dict[worker]["throughput"] for worker in return_dict]), file=f)

@@ -40,6 +40,7 @@ sudo cp /proj/trinity-PG0/Trinity/baselines/aerospike/aerospike.conf /etc/aerosp
 # Force clear
 sudo rm /mntData/aerospike/tpch
 sudo cp /proj/trinity-PG0/Trinity/baselines/aerospike/aerospike.conf /etc/aerospike/aerospike.conf
+sudo systemctl restart aerospike
 
 sudo rm /mntData/aerospike/tpch
 sudo systemctl restart aerospike
@@ -98,3 +99,4 @@ sudo ./build
 
 # https://discuss.aerospike.com/t/how-to-determine-storage-per-set/6291
 asadm -e "show statistics for tpch like memory_used_bytes"
+asinfo -v "truncate:namespace=tpch;set=tpch_macro"

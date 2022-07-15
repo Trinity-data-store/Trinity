@@ -108,7 +108,9 @@ CREATE TABLE tpch_macro (
 #     ORDERDATE   INT NOT NULL
 # );
 
-# sudo -u postgres psql postgres
+sudo -u postgres psql postgres
+\c defaultdb
+DROP TABLE tpch_macro;
 CREATE TABLE tpch_macro (
    ID           BIGINT             NOT NULL,
    QUANTITY     SMALLINT             NOT NULL,
@@ -119,7 +121,8 @@ CREATE TABLE tpch_macro (
     COMMITDATE TIMESTAMP NOT NULL,
     RECEIPTDATE TIMESTAMP NOT NULL,
     TOTALPRICE  INT NOT NULL,
-    ORDERDATE   TIMESTAMP NOT NULL
+    ORDERDATE   TIMESTAMP NOT NULL,
+    CONSTRAINT id_pk PRIMARY KEY (ID)
 );
 
 # CLient

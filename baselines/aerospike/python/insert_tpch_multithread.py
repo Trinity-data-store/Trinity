@@ -67,6 +67,7 @@ def insert_each_worker(total_num_workers, worker_idx):
             # start = time.time()
             if rec:
                 try:
+                    print(key, rec)
                     client.put(key, rec)
                 except Exception as e:
                     import sys
