@@ -30,13 +30,11 @@ def insert_each_worker(worker_idx, total_workers):
     for i in range(worker_idx, total_points, total_workers):
 
         hash_i = hash(i)
-        try:
-            client_list[hash_i % num_data_nodes].execute("INSERT INTO tpch_macro (ID, QUANTITY, EXTENDEDPRICE, DISCOUNT, TAX, SHIPDATE, COMMITDATE, RECEIPTDATE, TOTALPRICE, ORDERDATE) VALUES", [total_vect[i]])
-        except Exception as e:
-            import sys
-            print(len(total_vect), i)
-            print("error: {0}".format(e), file=sys.stderr)
+        results = client_list[hash_i % num_data_nodes].execute("SELECT * FROM tpch_macro WHERE ID = {}".format(total_vect[i]))
+        if not results:
+            print("failed!", total_vect)
             exit(0)
+        del results
         line_count += 1
         if line_count % 5000 == 0:
             print(line_count)
@@ -62,7 +60,7 @@ def load_all_points(client_idx):
     with open(file_path) as f:
         for line in f:
             string_list = line.split(",")
-            total_vect.append([int(entry) for entry in string_list])
+            total_vect.append(string_list[0])
             loaded_lines += 1
             if loaded_lines == total_points:
                 break
@@ -79,5 +77,5 @@ for p in processes:
 
 print("total throughput", sum([return_dict[worker]["throughput"] for worker in return_dict]))
 
-with open('/proj/trinity-PG0/Trinity/baselines/clickhouse/python/tpch_insert_throughput.txt', 'a') as f:
+with open('/proj/trinity-PG0/Trinity/baselines/clickhouse/python/tpch_lookup_throughput.txt', 'a') as f:
     print(sum([return_dict[worker]["throughput"] for worker in return_dict]), file=f)
