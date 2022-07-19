@@ -9,3 +9,7 @@ do
 done
 
 /proj/trinity-PG0/Trinity/build/librpc/TrinityTPCHInsert 0 >> /proj/trinity-PG0/Trinity/build/trinity_sync_insert
+
+
+# ulimit -n 100000
+# cd /proj/trinity-PG0/Trinity/build

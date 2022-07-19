@@ -10,7 +10,7 @@ from concurrent.futures import ProcessPoolExecutor
 
 processes = []
 total_vect = []
-total_points = int(100000000 / 100)
+total_points = int(1000000) # 1M
 num_data_nodes = 5
 
 def lookup_each_worker(worker_idx, total_workers):
@@ -29,8 +29,7 @@ def lookup_each_worker(worker_idx, total_workers):
 
     for i in range(worker_idx, total_points, total_workers):
 
-        start = time.time()
-        hash_i = hash(i)
+        hash_i = hash(total_vect[i])
         cursor_list[hash_i % 5].execute("SELECT * FROM tpch_macro WHERE ID = {}".format(total_vect[i]))
         results = cursor_list[hash_i % 5].fetchone()
     
@@ -47,7 +46,7 @@ def lookup_worker(worker, total_workers, return_dict):
     throughput = lookup_each_worker(worker, total_workers)
     return_dict[worker] = {"throughput": throughput}
 
-threads_per_node = 20
+threads_per_node = 60
 total_num_nodes = 10
 
 def load_all_points(client_idx):

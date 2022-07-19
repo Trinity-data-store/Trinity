@@ -78,8 +78,10 @@ echo 'include /etc/ld.so.conf.d/*.conf /usr/local/lib' | sudo tee /etc/ld.so.con
 sudo /sbin/ldconfig
 # ulimit -n 163840
 ulimit -n 100000
+sudo rm -r /etc/security/limits.d/
 sudo cp /proj/trinity-PG0/Trinity/scripts/limits.conf  /etc/security/limits.conf
 sudo cp /proj/trinity-PG0/Trinity/scripts/user.conf  /etc/systemd/user.conf
+sudo cp /proj/trinity-PG0/Trinity/scripts/system.conf  /etc/security/system.conf
 
 # Golang
 cd $dependencies_path
@@ -99,3 +101,8 @@ sudo chmod 775 /mntData/tpch
 sudo apt -y install pixz
 
 exit 0
+
+# FILE DESCRIPTOR!!
+# https://unix.stackexchange.com/a/691947
+# WTF!!!
+# Why is VScode terminal showing different behaviors

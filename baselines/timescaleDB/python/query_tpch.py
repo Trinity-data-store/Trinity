@@ -12,10 +12,8 @@ CONNECTION = "dbname=tpch_macro host=localhost user=postgres password=adifficult
 
 COLS = ['id', 'quantity', 'extendedprice', 'discount', 'tax', 'shipdate', 'commitdate', 'receiptdate', 'totalprice', 'orderdate']
 filename = "/proj/trinity-PG0/Trinity/results/tpch_aerospike_new"
-filename = "/proj/trinity-PG0/Trinity/queries/tpch/tryout_query_timescale"
 
 outfile_addr = "/proj/trinity-PG0/Trinity/results/tpch_timescaledb_new"
-outfile_addr = "/proj/trinity-PG0/Trinity/results/tryout_query_timescale"
 
 dates = [0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
 

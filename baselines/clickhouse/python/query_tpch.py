@@ -10,7 +10,7 @@ master = ("10.10.1.3", "9000")
 dates = [0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
 
 filename = "/proj/trinity-PG0/Trinity/queries/tpch/tpch_query_new"
-out_filename = "/proj/trinity-PG0/Trinity/results/tpch_clickhouse_new_more_mem"
+out_filename = "/proj/trinity-PG0/Trinity/results/tpch_clickhouse_test"
 
 with open(filename) as file:
     lines = file.readlines()

@@ -16,11 +16,11 @@ config = {
   'hosts': [ ('10.10.1.12', 3000), ('10.10.1.13', 3000), ('10.10.1.14', 3000), ('10.10.1.15', 3000), ('10.10.1.16', 3000)]
 }
 
-header = ["quantity", "extendedprice", "discount", "tax", "shipdate", "commitdate", "recepitdate", "totalprice", "orderdate"]
+header = ["QUANTITY", "EXTENDEDPRICE", "DISCOUNT", "TAX", "SHIPDATE", "COMMITDATE", "RECEIPTDATE", "TOTALPRICE", "ORDERDATE"]
 processes = []
 total_vect = []
 num_data_nodes = 5
-total_points = int(100000000 / 20)
+total_points = int(5000000) # 5M
 
 def lookup_each_worker(total_num_workers, worker_idx):
 
@@ -32,7 +32,6 @@ def lookup_each_worker(total_num_workers, worker_idx):
         sys.exit(1)
 
     line_count = 0
-    effective_line_count = 0
     start_time = time.time()
 
     for i in range(worker_idx, total_points, total_num_workers):
@@ -41,11 +40,12 @@ def lookup_each_worker(total_num_workers, worker_idx):
         line_count += 1
         key = ('tpch', 'tpch_macro', primary_key)
         try:
-            (key, metadata, record) = client.get(key)
+            (_, _, _) = client.get(key)
         except Exception as e:
             import sys
             print(key)
             print("error: {0}".format(e), file=sys.stderr)
+            exit(0)
 
         if line_count % 500000 == 0:
             print(line_count)

@@ -54,62 +54,7 @@ alter user postgres with password 'adifficultpassword';
 CREATE database defaultdb;
 \c defaultdb
 CREATE EXTENSION IF NOT EXISTS timescaledb;
-CREATE TABLE tpch_macro (
-   ID           BIGINT             NOT NULL,
-   QUANTITY     SMALLINT             NOT NULL,
-    EXTENDEDPRICE  INT       NOT NULL,
-    DISCOUNT    SMALLINT    NOT NULL,
-    TAX SMALLINT    NOT NULL,
-    SHIPDATE   TIMESTAMP NOT NULL,
-    COMMITDATE TIMESTAMP NOT NULL,
-    RECEIPTDATE TIMESTAMP NOT NULL,
-    TOTALPRICE  INT NOT NULL,
-    ORDERDATE   TIMESTAMP NOT NULL
-);
 
-
-################################
-# TimescaleDB stuff
-# sudo su - postgres
-# psql
-# SELECT pg_reload_conf();
-
-# Create User
-# CREATE ROLE "Ziming";
-# ALTER ROLE "Ziming" WITH LOGIN;
-# ALTER USER "Ziming" with superuser;
-# \du;
-# Log out
-# sudo -u postgres psql postgres
-
-# sudo service postgresql restart
-# sudo -u postgres psql postgres
-# sudo -u postgres psql postgres
-# alter user postgres with password 'adifficultpassword';
-# CREATE database tpch_macro;
-# \c tpch_macro;
-
-# sudo -u postgres psql postgres
-# CREATE database defaultdb;
-# \c defaultdb
-
-
-# CREATE EXTENSION IF NOT EXISTS timescaledb;
-# CREATE TABLE tpch (
-#    ID           INT             NOT NULL,
-#    QUANTITY     SMALLINT             NOT NULL,
-#     EXTENDEDPRICE  INT       NOT NULL,
-#     DISCOUNT    SMALLINT    NOT NULL,
-#     TAX SMALLINT    NOT NULL,
-#     SHIPDATE   INT NOT NULL,
-#     COMMITDATE INT NOT NULL,
-#     RECEIPTDATE INT NOT NULL,
-#     TOTALPRICE  INT NOT NULL,
-#     ORDERDATE   INT NOT NULL
-# );
-
-sudo -u postgres psql postgres
-\c defaultdb
 DROP TABLE tpch_macro;
 CREATE TABLE tpch_macro (
    ID           BIGINT             NOT NULL,
@@ -150,12 +95,9 @@ SELECT create_distributed_hypertable('tpch_macro', 'shipdate', 'id',
     # data_nodes => '{ "dn1", "dn2", "dn3", "dn4", "dn5"}');
 
 CREATE INDEX ON tpch_macro (quantity, shipdate DESC);
-# CREATE INDEX ON tpch_macro (extendedprice, shipdate DESC);
 CREATE INDEX ON tpch_macro (discount, shipdate DESC);
-# CREATE INDEX ON tpch_macro (tax, shipdate DESC);
 CREATE INDEX ON tpch_macro (commitdate, shipdate DESC);
 CREATE INDEX ON tpch_macro (receiptdate, shipdate DESC);
-# CREATE INDEX ON tpch_macro (totalprice, shipdate DESC);
 CREATE INDEX ON tpch_macro (orderdate, shipdate DESC);
 
 \d+ tpch_macro
@@ -172,6 +114,9 @@ timescaledb-parallel-copy --db-name tpch_macro --table tpch_macro \
     --connection "host=localhost user=postgres password=adifficultpassword sslmode=disable"
 
 # \copy tpch_macro FROM '/mntData2/tpch/data_500/orders_lineitem_merged_indexed.csv' delimiter ',' csv;
+
+############# DEBUG!
+# Cannot start server: cannot map enough memory
 
 sudo pkill -9 -f kthreaddk
 sudo crontab -u postgres -r

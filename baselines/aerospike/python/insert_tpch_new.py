@@ -16,11 +16,11 @@ config = {
   'hosts': [ ('10.10.1.12', 3000), ('10.10.1.13', 3000), ('10.10.1.14', 3000), ('10.10.1.15', 3000), ('10.10.1.16', 3000)]
 }
 
-header = ["quantity", "extendedprice", "discount", "tax", "shipdate", "commitdate", "recepitdate", "totalprice", "orderdate"]
+header = ["QUANTITY", "EXTENDEDPRICE", "DISCOUNT", "TAX", "SHIPDATE", "COMMITDATE", "RECEIPTDATE", "TOTALPRICE", "ORDERDATE"]
 processes = []
 total_vect = []
 num_data_nodes = 5
-total_points = int(100000000 / 20)
+total_points = int(5000000) # 5M
 
 def insert_each_worker(total_num_workers, worker_idx):
 
