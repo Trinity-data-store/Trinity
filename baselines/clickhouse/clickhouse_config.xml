@@ -366,7 +366,8 @@
     <path>/mntData/clickhouse/</path>
 
     <!-- Path to temporary data for processing hard queries. -->
-    <tmp_path>/var/lib/clickhouse/tmp/</tmp_path>
+    <!-- <tmp_path>/var/lib/clickhouse/tmp/</tmp_path> -->
+    <tmp_path>/mntData/clickhouse/tmp/</tmp_path>
     
     <!-- Disable AuthType plaintext_password and no_password for ACL. -->
     <!-- <allow_plaintext_password>0</allow_plaintext_password> -->

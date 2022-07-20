@@ -7,7 +7,8 @@
         <!-- Default settings. -->
         <default>
             <!-- Maximum memory usage for processing single query, in bytes. -->
-            <max_memory_usage>60000000000</max_memory_usage>
+            <max_memory_usage>50000000000</max_memory_usage>
+            <max_bytes_before_external_group_by>10000000000</max_bytes_before_external_group_by>
             <max_distributed_depth>4000</max_distributed_depth>
             <distributed_connections_pool_size>4096</distributed_connections_pool_size>
 

@@ -92,6 +92,12 @@ sudo ./build
 
 /proj/trinity-PG0/dependencies/aerospike/aerospike-loader/run_loader -h 10.10.1.3 -n tpch -c /proj/trinity-PG0/Trinity/baselines/aerospike/column.json /mntData2/tpch/data_300/tpch_processed_1B.csv
 
+/proj/trinity-PG0/dependencies/aerospike/aerospike-loader/run_loader -h 10.10.1.12 -n tpch -c /proj/trinity-PG0/Trinity/baselines/aerospike/column.json /mntData2/tpch/data_300/tpch_processed_1B.csv
+
+
+
+/proj/trinity-PG0/dependencies/aerospike/aerospike-loader/run_loader -h 10.10.1.12 -n github -c /proj/trinity-PG0/Trinity/baselines/aerospike/column_github.json /mntData2/github/github_events_processed.csv
+
 
 # Might need to reinstall if loader issue
 # sudo ./build
@@ -100,3 +106,7 @@ sudo ./build
 # https://discuss.aerospike.com/t/how-to-determine-storage-per-set/6291
 asadm -e "show statistics for tpch like memory_used_bytes"
 asinfo -v "truncate:namespace=tpch;set=tpch_macro"
+
+asinfo -v "set-config:context=namespace;id=github;set=tpch_macro;set-delete=true;"
+
+asinfo -v "drop:namespace=github;set=tpch_macro"
