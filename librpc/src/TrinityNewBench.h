@@ -34,6 +34,21 @@ std::vector<std::vector<int32_t>> load_dataset_vector_tpch(std::string file_addr
     return points_vect;
 }
 
+std::vector<std::vector<int32_t>> load_dataset_vector_github(std::string file_address, uint32_t total_points) 
+{
+    std::ifstream file(file_address);
+    std::vector<std::vector<int32_t>> points_vect;
+    std::string line;
+    for (uint32_t i = 0; i < total_points; i++){
+        std::getline(file, line);
+        points_vect.push_back(parse_line_github(line));
+        // for (auto j : points_vect[i]) 
+        //     std::cout << j << " ";
+        // exit(0);
+    }
+    return points_vect;
+}
+
 uint32_t insert_each_client(std::vector<std::vector<int32_t>> *total_points_stored, int shard_number, int client_number, int client_index, std::vector<std::string> server_ips, uint32_t points_to_insert)
 {
     auto client = MDTrieClient(server_ips, shard_number);
@@ -58,13 +73,30 @@ uint32_t insert_each_client(std::vector<std::vector<int32_t>> *total_points_stor
 
 uint32_t total_client_insert(int shard_number, int client_number, std::vector<std::string> server_ips, int which_part = 0){
 
-    std::string file_address = "/mntData/tpch_split_10/x" + std::to_string(which_part);
-    uint32_t points_to_insert = 100000000 / 10;
-    std::vector<std::vector<int32_t>> total_points_stored = load_dataset_vector_tpch(file_address, points_to_insert);
+    std::string file_address;
+    if (current_dataset_idx == 1)
+        file_address = "/mntData/tpch_split_10/x" + std::to_string(which_part);
+    if (current_dataset_idx == 2)
+        file_address = "/mntData/github_split_10/x" + std::to_string(which_part);
+
+    uint32_t points_to_insert;
+    points_to_insert = 100000000 / 100;
+    if (current_dataset_idx == 2)
+        points_to_insert = 82805630;
+
+    if (current_dataset_idx == 2 && which_part == 9)
+        points_to_insert = 82805625;
+
+    std::vector<std::vector<int32_t>> total_points_stored;
+    if (current_dataset_idx == 1)
+        total_points_stored = load_dataset_vector_tpch(file_address, points_to_insert);
+    if (current_dataset_idx == 2)
+        total_points_stored = load_dataset_vector_github(file_address, points_to_insert);
 
     std::vector<std::future<uint32_t>> threads; 
     threads.reserve(client_number);
     for (int i = 0; i < client_number; i++){
+
         threads.push_back(std::async(insert_each_client, &total_points_stored, shard_number, client_number, i, server_ips, points_to_insert));
     }
     uint32_t total_throughput = 0;
@@ -123,7 +155,12 @@ uint32_t insert_lookup_each_client(std::vector<std::vector<int32_t>> *total_poin
 
 uint32_t total_client_insert_lookup(int shard_number, int client_number, std::vector<std::string> server_ips, int which_part = 0){
 
-    std::string file_address = "/mntData/tpch_split_10/x" + std::to_string(which_part);
+    std::string file_address;
+    if (current_dataset_idx == 1)
+        file_address = "/mntData/tpch_split_10/x" + std::to_string(which_part);
+    if (current_dataset_idx == 2)
+        file_address = "/mntData/github_split_10/x" + std::to_string(which_part);
+
     uint32_t points_to_operate = 100000000 / 10; 
     points_to_skip = points_to_operate / 2;
     std::vector<std::vector<int32_t>> total_points_stored = load_dataset_vector_tpch(file_address, points_to_operate);

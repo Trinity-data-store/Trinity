@@ -84,6 +84,9 @@ for line in lines:
     results = client.execute(query_select)
     end = time.time()
 
+    print("select *", end - start, results[0], len(results))
+    continue
+
     with open(out_filename, "a") as outfile:
         outfile.write("{}, elapsed: {}s, found points: {}\n".format(query_select, end - start, len(results)))
 

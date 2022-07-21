@@ -33,6 +33,13 @@ add_executable(TrinityTPCHQuery
         src/TrinityBenchShared.h
         src/MDTrieShard.cpp)
 
+add_executable(TrinityGithubQuery
+        src/TrinityGithubQuery.cpp
+        src/MDTrieShardClient.h
+        src/MDTrieShard.h
+        src/TrinityBenchShared.h
+        src/MDTrieShard.cpp)
+
 add_executable(TrinityTPCHLookup
         src/TrinityTPCHLookup.cpp
         src/MDTrieShardClient.h
@@ -42,6 +49,20 @@ add_executable(TrinityTPCHLookup
 
 add_executable(TrinityTPCHInsert
         src/TrinityTPCHInsert.cpp
+        src/MDTrieShardClient.h
+        src/MDTrieShard.h
+        src/TrinityBenchShared.h
+        src/MDTrieShard.cpp)
+
+add_executable(TrinityGithubInsert
+        src/TrinityGithubInsert.cpp
+        src/MDTrieShardClient.h
+        src/MDTrieShard.h
+        src/TrinityBenchShared.h
+        src/MDTrieShard.cpp)
+
+add_executable(TrinityGithubStorage
+        src/TrinityGithubStorage.cpp
         src/MDTrieShardClient.h
         src/MDTrieShard.h
         src/TrinityBenchShared.h
@@ -85,6 +106,12 @@ endif()
 target_link_libraries(TrinityTPCHQuery ${MDTRIE_LIBS} ${RPC_LIBS} event thrift)
 add_dependencies(TrinityTPCHQuery thrift_ep)
 
+target_link_libraries(TrinityGithubQuery ${MDTRIE_LIBS} ${RPC_LIBS} event thrift)
+add_dependencies(TrinityGithubQuery thrift_ep)
+
+target_link_libraries(TrinityGithubStorage ${MDTRIE_LIBS} ${RPC_LIBS} event thrift)
+add_dependencies(TrinityGithubStorage thrift_ep)
+
 target_link_libraries(TrinityTPCHLookup ${MDTRIE_LIBS} ${RPC_LIBS} event thrift)
 add_dependencies(TrinityTPCHLookup thrift_ep)
 
@@ -96,6 +123,9 @@ add_dependencies(TrinityTPCHInsertQuery thrift_ep)
 
 target_link_libraries(TrinityTPCHInsertLookup ${MDTRIE_LIBS} ${RPC_LIBS} event thrift)
 add_dependencies(TrinityTPCHInsertLookup thrift_ep)
+
+target_link_libraries(TrinityGithubInsert ${MDTRIE_LIBS} ${RPC_LIBS} event thrift)
+add_dependencies(TrinityGithubInsert thrift_ep)
 
 target_link_libraries(MDTrieShardServer ${MDTRIE_LIBS} ${RPC_LIBS} event thrift)
 add_dependencies(MDTrieShardServer thrift_ep)

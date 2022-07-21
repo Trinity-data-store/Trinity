@@ -1,3 +1,5 @@
+clickhouse-client --database=default --query="DROP TABLE IF EXISTS tpch_macro" && clickhouse-client --database=default --query="CREATE TABLE IF NOT EXISTS tpch_macro (ID UInt32, QUANTITY UInt32, EXTENDEDPRICE UInt32, DISCOUNT UInt32, TAX UInt32, SHIPDATE UInt32, COMMITDATE UInt32, RECEIPTDATE UInt32, TOTALPRICE UInt32, ORDERDATE UInt32) ENGINE = Distributed(test_trinity, default, tpch_macro, rand());"
+
 for i in {1..9}
 do
     ssh -o StrictHostKeyChecking=no -i /proj/trinity-PG0/Trinity/scripts/key -l Ziming 10.10.1.$(($i + 2)) 'clickhouse-client --database=default --query="DROP TABLE IF EXISTS tpch_macro"; && clickhouse-client --database=default --query="CREATE TABLE IF NOT EXISTS tpch_macro (ID UInt32, QUANTITY UInt32, EXTENDEDPRICE UInt32, DISCOUNT UInt32, TAX UInt32, SHIPDATE UInt32, COMMITDATE UInt32, RECEIPTDATE UInt32, TOTALPRICE UInt32, ORDERDATE UInt32) ENGINE = Distributed(test_trinity, default, tpch_macro, rand());"'
@@ -8,12 +10,8 @@ do
     ssh -o StrictHostKeyChecking=no -i /proj/trinity-PG0/Trinity/scripts/key -l Ziming 10.10.1.$(($i + 2)) 'clickhouse-client --database=default --query="DROP TABLE IF EXISTS tpch_macro"; && clickhouse-client --database=default --query="CREATE TABLE IF NOT EXISTS tpch_macro (ID UInt32, QUANTITY UInt32, EXTENDEDPRICE UInt32, DISCOUNT UInt32, TAX UInt32, SHIPDATE UInt32, COMMITDATE UInt32, RECEIPTDATE UInt32, TOTALPRICE UInt32, ORDERDATE UInt32) Engine = MergeTree ORDER BY (ID)";'
 done
 
-sleep 5
-
 for i in {0..9}
 do
     echo "inserting datasets: $i"
-    # ssh -o StrictHostKeyChecking=no -i /proj/trinity-PG0/Trinity/scripts/key -l Ziming 10.10.1.$(($i + 2)) "head -n 5000000 /mntData/tpch_split_10/x$i | clickhouse-client --query=\"INSERT INTO tpch_macro FORMAT CSV\""
-    ssh -o StrictHostKeyChecking=no -i /proj/trinity-PG0/Trinity/scripts/key -l Ziming 10.10.1.$(($i + 2)) "cat /mntData/tpch_split_10/x$i | clickhouse-client --query=\"INSERT INTO tpch_macro FORMAT CSV\""
+    cat /mntData/tpch_split_10/x$i | clickhouse-client --query="INSERT INTO tpch_macro FORMAT CSV"
 done
-

@@ -17,7 +17,7 @@
 #include <fcntl.h>
 #include <unistd.h>
 
-typedef uint16_t preorder_t;
+typedef uint32_t preorder_t;
 typedef uint32_t n_leaves_t;
 typedef uint64_t node_pos_t;
 typedef uint8_t level_t;
@@ -114,6 +114,8 @@ std::unordered_map<int32_t, int32_t> client_to_server;
 // std::vector<int32_t> primary_key_vect_total;
 bool enable_client_cache_pkey_mapping = false;
 bool REUSE_RANGE_SEARCH_CHILD = true;
+
+int current_dataset_idx = 0;
 
 void create_level_to_num_children(std::vector<level_t> bit_widths, std::vector<level_t> start_bits, level_t max_level){
 

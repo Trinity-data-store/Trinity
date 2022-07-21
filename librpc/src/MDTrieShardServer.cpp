@@ -31,7 +31,7 @@ using namespace apache::thrift::server;
 const level_t max_depth = 32;
 level_t trie_depth = 6;
 const preorder_t max_tree_node = 512;
-const dimension_t DIMENSION = 9;
+const dimension_t DIMENSION = 13;
 const int shard_num = 20;
 
 class MDTrieHandler : public MDTrieShardIf {
@@ -68,6 +68,30 @@ public:
       no_dynamic_sizing = true;
       total_points_count = 1000000000 / (shard_num * 5) + 1; 
 
+      if (DIMENSION != 9) {
+        std::cerr << "wrong config!\n" << std::endl;
+      }
+      p_key_to_treeblock_compact_ = new bitmap::CompactPtrVector(total_points_count);
+      create_level_to_num_children(bit_widths, start_bits, 32);
+      mdtrie_ = new md_trie<DIMENSION>(max_depth, trie_depth, max_tree_node);
+    }
+
+
+    else if (dataset_idx == 1) // Github
+    {
+      // [events_count, authors_count, forks, stars, issues, pushes, pulls, downloads, adds, dels, add_del_ratio, start_date, end_date]
+      // MIN: [1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 20110211, 20110211]
+      // MAX: [7451541, 737170, 262926, 354850, 379379, 3097263, 703341, 8745, 3176317839, 1006504276, 117942850, 20201206, 20201206]
+      std::vector<level_t> bit_widths = {24, 24, 24, 24, 24, 24, 24, 16, 32, 32, 32, 24, 24}; // 13 Dimensions;
+      std::vector<level_t> start_bits = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}; // 13 Dimensions;
+      
+      trie_depth = 6;
+      no_dynamic_sizing = true;
+      total_points_count = 828056295 / (shard_num * 5) + 1; 
+
+      if (DIMENSION != 13) {
+        std::cerr << "wrong config!\n" << std::endl;
+      }
       p_key_to_treeblock_compact_ = new bitmap::CompactPtrVector(total_points_count);
       create_level_to_num_children(bit_widths, start_bits, 32);
       mdtrie_ = new md_trie<DIMENSION>(max_depth, trie_depth, max_tree_node);
@@ -100,13 +124,24 @@ public:
 
     data_point<DIMENSION> leaf_point;
 
-    for (uint8_t i = 0; i < DIMENSION; i++)
+    for (uint8_t i = 0; i < DIMENSION; i++) {
       leaf_point.set_coordinate(i, point[i]);
+      // std::cout << point[i] << " ";
+    }
+  
+    // std::cout << std::endl;
+    // for (uint8_t i = 0; i < 32; i ++)
+    //   std::cout << level_to_num_children[i] << " ";
+    // std::cout << std::endl << "finished insertion" << std::endl;
 
+    // exit(0);
+  
     mdtrie_->insert_trie(&leaf_point, inserted_points_, p_key_to_treeblock_compact_);
     inserted_points_ ++;
     for (const auto &coordinate : point) outfile_ << coordinate << ",";
-    outfile_ << std::endl;
+    // outfile_ << std::endl;
+
+
     return inserted_points_ - 1;
   }
 

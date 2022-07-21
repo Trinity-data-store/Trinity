@@ -89,7 +89,7 @@ public:
         node_stack_top++;
         node_to_depth[0] = root_depth_;
         preorder_t prev_depth = root_depth_;
-        preorder_t depth = root_depth_ + 1;
+        level_t depth = root_depth_ + 1;
         preorder_t next_frontier_preorder;
 
         if (num_frontiers_ == 0 || current_frontier >= num_frontiers_)
@@ -542,6 +542,7 @@ public:
 
         else if (num_nodes_ + (max_depth_ - level) - 1 <= node_capacity_) {
             
+            // std::cout << "total_nodes_bits_ before: " << total_nodes_bits_ << std::endl;
             morton_t current_symbol = leaf_point->leaf_to_symbol(level);
             node = skip_children_subtree(node, node_pos, current_symbol, level, current_frontier, current_primary);
 
@@ -597,7 +598,7 @@ public:
                 }
 
             insert_primary_key_at_index(current_primary, primary_key, p_key_to_treeblock_compact);
-
+            // std::cout << "total_nodes_bits_ after: " << total_nodes_bits_ << std::endl;
             return;
         } 
         else if (num_nodes_ + (max_depth_ - level) - 1 <= max_tree_nodes) 
