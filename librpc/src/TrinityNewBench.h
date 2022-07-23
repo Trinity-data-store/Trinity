@@ -80,13 +80,17 @@ uint32_t total_client_insert(int shard_number, int client_number, std::vector<st
         file_address = "/mntData/github_split_10/x" + std::to_string(which_part);
 
     uint32_t points_to_insert;
-    points_to_insert = 100000000 / 100;
+
+    if (current_dataset_idx == 1)
+        points_to_insert = 100000000;
+        
     if (current_dataset_idx == 2)
         points_to_insert = 82805630;
 
     if (current_dataset_idx == 2 && which_part == 9)
         points_to_insert = 82805625;
 
+    // points_to_insert /= 10;
     std::vector<std::vector<int32_t>> total_points_stored;
     if (current_dataset_idx == 1)
         total_points_stored = load_dataset_vector_tpch(file_address, points_to_insert);

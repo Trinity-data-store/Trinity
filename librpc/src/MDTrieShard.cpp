@@ -26,22 +26,6 @@ MDTrieShard_ping_presult::~MDTrieShard_ping_presult() noexcept {
 }
 
 
-MDTrieShard_add_args::~MDTrieShard_add_args() noexcept {
-}
-
-
-MDTrieShard_add_pargs::~MDTrieShard_add_pargs() noexcept {
-}
-
-
-MDTrieShard_add_result::~MDTrieShard_add_result() noexcept {
-}
-
-
-MDTrieShard_add_presult::~MDTrieShard_add_presult() noexcept {
-}
-
-
 MDTrieShard_insert_args::~MDTrieShard_insert_args() noexcept {
 }
 

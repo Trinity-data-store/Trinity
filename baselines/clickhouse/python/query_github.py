@@ -8,8 +8,8 @@ import re
 
 master = ("10.10.1.2", "9000")
 
-filename = "/proj/trinity-PG0/Trinity/queries/github/github_query"
-out_filename = "/proj/trinity-PG0/Trinity/results/github_clickhouse_new"
+filename = "/proj/trinity-PG0/Trinity/queries/github/github_query_new"
+out_filename = "/proj/trinity-PG0/Trinity/results/github_clickhouse_new_timestamps"
 
 with open(filename) as file:
     lines = file.readlines()

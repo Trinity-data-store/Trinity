@@ -1,6 +1,0 @@
-Select * from github_events_final where start_date <= 20181122 AND end_date >= 20190304 AND stars >= 147;, elapsed: 0.6332492828369141s, found points: 680965
-Select * from github_events_final where stars >= 52 and forks >= 37;, elapsed: 0.9104785919189453s, found points: 1018495
-Select * from github_events_final where start_date <= 20190419 AND end_date >= 20180501 AND stars >= 239;, elapsed: 0.43575549125671387s, found points: 495345
-Select * from github_events_final where events_count <= 18006 and issues >= 5 AND stars >= 122;, elapsed: 0.7429962158203125s, found points: 823685
-Select * from github_events_final where stars >= 192 and forks >= 4;, elapsed: 0.6009848117828369s, found points: 702305
-Select * from github_events_final where events_count <= 7224 and issues >= 10 AND stars >= 100;, elapsed: 0.6979868412017822s, found points: 768915

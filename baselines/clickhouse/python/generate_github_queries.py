@@ -45,6 +45,13 @@ add_del_ratio_range = [0, 20]
 start_date_range = [20180101, 20201206]
 end_date_range = [20180101, 20201206]
 
+# query_selecitivity = {
+#     1: [3 * 1000000 * 0.5, 3 * 1000000 * 1.5],
+#     2: [3 * 1000000 * 0.5, 3 * 1000000 * 1.5],
+#     3: [3 * 1000000 * 0.5, 3 * 1000000 * 1.5],
+#     4: [3 * 1000000 * 0.5, 3 * 1000000 * 1.5]
+# }
+
 def generate_date_int(start, end):
 
     date_candidate = 0
@@ -72,6 +79,23 @@ def generate_queries(template_id):
         query = "Select COUNT(*) from github_events_final where start_date <= {} AND end_date >= {} AND stars >= {}".format(generate_date_int(start_date_range[0], start_date_range[1]), generate_date_int(end_date_range[0], end_date_range[1]), randrange(stars_range[0], stars_range[1] + 1))
     return query
 
+def generate_test_queries(template_id):
+
+    if template_id == 2:
+
+        # query = "Select COUNT(*) from github_events_final where start_date <= {} AND end_date >= {} AND stars >= {}".format(generate_date_int(start_date_range[0], start_date_range[1]), generate_date_int(end_date_range[0], end_date_range[1]), stars_range[0])
+
+        
+        start_date_start = generate_date_int(start_date_range[0], start_date_range[1])
+        start_date_end = generate_date_int(start_date_start, start_date_range[1])
+        end_date_start = generate_date_int(end_date_range[0], end_date_range[1])
+        end_date_end = generate_date_int(end_date_start, end_date_range[1])
+
+        query = "Select COUNT(*) from github_events_final where start_date >= {} AND start_date <= {} AND end_date >= {} AND end_date <= {}".format(start_date_start, start_date_end, end_date_start, end_date_end)
+        
+
+    return query
+
 def find_queries_per_process(num_queries):
 
     finished_queries = 0
@@ -80,14 +104,21 @@ def find_queries_per_process(num_queries):
     while finished_queries < num_queries:
 
         query_template = randrange(1, 4 + 1)
-        query = generate_queries(query_template)
+
+        # query = generate_queries(query_template)
+
+        query_template = 2
+        query = generate_test_queries(query_template)
+
         result_count = client.execute(query)[0][0]
         # print(query_template, query, result_count)
 
         if result_count >= query_selecitivity[0] * total_num_points and result_count <= query_selecitivity[1] * total_num_points:
+        # if result_count >= query_selecitivity[query_template][0] and result_count <= query_selecitivity[query_template][1]:
             print("{}, found points: {}".format(query, result_count), flush=True)
             finished_queries += 1
-
+        # print("{}, found points: {}".format(query, result_count), flush=True)
+        # exit(0)
 if __name__ == "__main__":
 
     processes = []

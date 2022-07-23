@@ -21,7 +21,7 @@ using namespace apache::thrift::protocol;
 using namespace apache::thrift::transport;
 
 const int DIMENSION_TPCH = 9;
-const int DIMENSION_GITHUB = 13;
+const int DIMENSION_GITHUB = 10;
 // Parse one line from TPC-H file.
 std::vector<int32_t> parse_line_tpch(std::string line) {
 
@@ -226,7 +226,7 @@ std::vector<int32_t> parse_line_github(std::string line) {
     std::string delim = ",";
     auto start = 0U;
     auto end = line.find(delim);
-
+    int real_index = -1;
     // [id, events_count, authors_count, forks, stars, issues, pushes, pulls, downloads, adds, dels, add_del_ratio, start_date, end_date]
     while (end != std::string::npos)
     {
@@ -239,15 +239,19 @@ std::vector<int32_t> parse_line_github(std::string line) {
             continue;
         }
         index ++;
-        point[index] = static_cast<int32_t>(std::stoul(substr));
+        if (index == 8 || index == 9 || index == 10)
+            continue;
+        real_index ++;
+        point[real_index] = static_cast<int32_t>(std::stoul(substr));
     }
     index ++; 
+    real_index ++;
     std::string substr = line.substr(start, end - start); 
-    point[index] = static_cast<int32_t>(std::stoul(substr));
+    point[real_index] = static_cast<int32_t>(std::stoul(substr));
 
 
     for (dimension_t i = 0; i < DIMENSION_GITHUB; i++){
-        if (i == 11 || i == 12) {
+        if (i == 8 || i == 9) {
             point[i] -= 20110000;
         }
     }

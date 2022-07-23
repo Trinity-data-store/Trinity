@@ -156,3 +156,30 @@ SELECT * FROM github_events_final INTO OUTFILE '/mntData2/github/github_events.c
 
 
 (pkey UInt32, events_count UInt32, authors_count UInt32, forks UInt32, stars UInt32, issues UInt32, pushes UInt32, pulls UInt32, downloads UInt32, adds UInt32, dels UInt32, add_del_ratio Float32, start_date UInt32, end_date UInt32)
+
+
+SELECT
+                              exp10(floor(log10(stars))) AS stars,
+                              uniq(pkey)
+                          FROM github_events_final
+                          GROUP BY stars
+                          ORDER BY stars ASC
+
+
+CREATE TABLE github_events_testing ENGINE = MergeTree ORDER BY (events_count, authors_count) AS SELECT
+    rowNumberInAllBlocks() AS pkey,
+    count() AS events_count,
+    uniq(actor_login) AS authors_count,
+    sum(event_type = 'ForkEvent') AS forks,
+    sum(event_type = 'WatchEvent') AS stars,
+    sum(event_type = 'IssuesEvent') AS issues,
+    sum(event_type = 'PushEvent') AS pushes,
+    sum(event_type = 'PullRequestEvent') AS pulls,
+    sum(event_type = 'DownloadEvent') AS downloads,
+    sum(additions) AS adds,
+    sum(deletions) AS dels,
+    if(dels != 0, adds / dels, 0) AS add_del_ratio,
+    toDate(min(created_at)) AS start_date,
+    toDate(max(created_at)) AS end_date
+FROM github_events_small
+GROUP BY repo_name;

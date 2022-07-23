@@ -108,6 +108,12 @@ timescaledb-parallel-copy --db-name tpch_macro --table tpch_macro \
     --workers 20 --reporting-period 30s --truncate --batch-size 10000 \
     --connection "host=localhost user=postgres password=adifficultpassword sslmode=disable"
 
+timescaledb-parallel-copy --db-name defaultdb --table github_events \
+    --file /mntData2/github/github_events_processed_9.csv --copy-options "CSV" \
+    --workers 20 --reporting-period 10s --truncate --batch-size 50000 \
+    --connection "host=localhost user=postgres password=adifficultpassword sslmode=disable"
+
+
 timescaledb-parallel-copy --db-name tpch_macro --table tpch_macro \
     --file /mntData/tpch_split/x1 --copy-options "CSV" \
     --workers 20 --reporting-period 30s --truncate --batch-size 1 \

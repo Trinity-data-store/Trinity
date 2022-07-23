@@ -23,7 +23,6 @@ class MDTrieShardIf {
  public:
   virtual ~MDTrieShardIf() {}
   virtual bool ping(const int32_t dataset_idx) = 0;
-  virtual int32_t add(const int32_t num1, const int32_t num2) = 0;
   virtual int32_t insert(const std::vector<int32_t> & point) = 0;
   virtual bool check(const std::vector<int32_t> & point) = 0;
   virtual void range_search(std::vector<int32_t> & _return, const std::vector<int32_t> & start_range, const std::vector<int32_t> & end_range) = 0;
@@ -61,10 +60,6 @@ class MDTrieShardNull : virtual public MDTrieShardIf {
   virtual ~MDTrieShardNull() {}
   bool ping(const int32_t /* dataset_idx */) override {
     bool _return = false;
-    return _return;
-  }
-  int32_t add(const int32_t /* num1 */, const int32_t /* num2 */) override {
-    int32_t _return = 0;
     return _return;
   }
   int32_t insert(const std::vector<int32_t> & /* point */) override {
@@ -196,126 +191,6 @@ class MDTrieShard_ping_presult {
   bool* success;
 
   _MDTrieShard_ping_presult__isset __isset;
-
-  template <class Protocol_>
-  uint32_t read(Protocol_* iprot);
-
-};
-
-typedef struct _MDTrieShard_add_args__isset {
-  _MDTrieShard_add_args__isset() : num1(false), num2(false) {}
-  bool num1 :1;
-  bool num2 :1;
-} _MDTrieShard_add_args__isset;
-
-class MDTrieShard_add_args {
- public:
-
-  MDTrieShard_add_args(const MDTrieShard_add_args&) noexcept;
-  MDTrieShard_add_args& operator=(const MDTrieShard_add_args&) noexcept;
-  MDTrieShard_add_args() noexcept
-                       : num1(0),
-                         num2(0) {
-  }
-
-  virtual ~MDTrieShard_add_args() noexcept;
-  int32_t num1;
-  int32_t num2;
-
-  _MDTrieShard_add_args__isset __isset;
-
-  void __set_num1(const int32_t val);
-
-  void __set_num2(const int32_t val);
-
-  bool operator == (const MDTrieShard_add_args & rhs) const
-  {
-    if (!(num1 == rhs.num1))
-      return false;
-    if (!(num2 == rhs.num2))
-      return false;
-    return true;
-  }
-  bool operator != (const MDTrieShard_add_args &rhs) const {
-    return !(*this == rhs);
-  }
-
-  bool operator < (const MDTrieShard_add_args & ) const;
-
-  template <class Protocol_>
-  uint32_t read(Protocol_* iprot);
-  template <class Protocol_>
-  uint32_t write(Protocol_* oprot) const;
-
-};
-
-
-class MDTrieShard_add_pargs {
- public:
-
-
-  virtual ~MDTrieShard_add_pargs() noexcept;
-  const int32_t* num1;
-  const int32_t* num2;
-
-  template <class Protocol_>
-  uint32_t write(Protocol_* oprot) const;
-
-};
-
-typedef struct _MDTrieShard_add_result__isset {
-  _MDTrieShard_add_result__isset() : success(false) {}
-  bool success :1;
-} _MDTrieShard_add_result__isset;
-
-class MDTrieShard_add_result {
- public:
-
-  MDTrieShard_add_result(const MDTrieShard_add_result&) noexcept;
-  MDTrieShard_add_result& operator=(const MDTrieShard_add_result&) noexcept;
-  MDTrieShard_add_result() noexcept
-                         : success(0) {
-  }
-
-  virtual ~MDTrieShard_add_result() noexcept;
-  int32_t success;
-
-  _MDTrieShard_add_result__isset __isset;
-
-  void __set_success(const int32_t val);
-
-  bool operator == (const MDTrieShard_add_result & rhs) const
-  {
-    if (!(success == rhs.success))
-      return false;
-    return true;
-  }
-  bool operator != (const MDTrieShard_add_result &rhs) const {
-    return !(*this == rhs);
-  }
-
-  bool operator < (const MDTrieShard_add_result & ) const;
-
-  template <class Protocol_>
-  uint32_t read(Protocol_* iprot);
-  template <class Protocol_>
-  uint32_t write(Protocol_* oprot) const;
-
-};
-
-typedef struct _MDTrieShard_add_presult__isset {
-  _MDTrieShard_add_presult__isset() : success(false) {}
-  bool success :1;
-} _MDTrieShard_add_presult__isset;
-
-class MDTrieShard_add_presult {
- public:
-
-
-  virtual ~MDTrieShard_add_presult() noexcept;
-  int32_t* success;
-
-  _MDTrieShard_add_presult__isset __isset;
 
   template <class Protocol_>
   uint32_t read(Protocol_* iprot);
@@ -980,9 +855,6 @@ class MDTrieShardClientT : virtual public MDTrieShardIf {
   bool ping(const int32_t dataset_idx) override;
   void send_ping(const int32_t dataset_idx);
   bool recv_ping();
-  int32_t add(const int32_t num1, const int32_t num2) override;
-  void send_add(const int32_t num1, const int32_t num2);
-  int32_t recv_add();
   int32_t insert(const std::vector<int32_t> & point) override;
   void send_insert(const std::vector<int32_t> & point);
   int32_t recv_insert();
@@ -1031,8 +903,6 @@ class MDTrieShardProcessorT : public ::apache::thrift::TDispatchProcessorT<Proto
   ProcessMap processMap_;
   void process_ping(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
   void process_ping(int32_t seqid, Protocol_* iprot, Protocol_* oprot, void* callContext);
-  void process_add(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
-  void process_add(int32_t seqid, Protocol_* iprot, Protocol_* oprot, void* callContext);
   void process_insert(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
   void process_insert(int32_t seqid, Protocol_* iprot, Protocol_* oprot, void* callContext);
   void process_check(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
@@ -1051,9 +921,6 @@ class MDTrieShardProcessorT : public ::apache::thrift::TDispatchProcessorT<Proto
     processMap_["ping"] = ProcessFunctions(
       &MDTrieShardProcessorT::process_ping,
       &MDTrieShardProcessorT::process_ping);
-    processMap_["add"] = ProcessFunctions(
-      &MDTrieShardProcessorT::process_add,
-      &MDTrieShardProcessorT::process_add);
     processMap_["insert"] = ProcessFunctions(
       &MDTrieShardProcessorT::process_insert,
       &MDTrieShardProcessorT::process_insert);
@@ -1112,15 +979,6 @@ class MDTrieShardMultiface : virtual public MDTrieShardIf {
       ifaces_[i]->ping(dataset_idx);
     }
     return ifaces_[i]->ping(dataset_idx);
-  }
-
-  int32_t add(const int32_t num1, const int32_t num2) override {
-    size_t sz = ifaces_.size();
-    size_t i = 0;
-    for (; i < (sz - 1); ++i) {
-      ifaces_[i]->add(num1, num2);
-    }
-    return ifaces_[i]->add(num1, num2);
   }
 
   int32_t insert(const std::vector<int32_t> & point) override {
@@ -1215,9 +1073,6 @@ class MDTrieShardConcurrentClientT : virtual public MDTrieShardIf {
   bool ping(const int32_t dataset_idx) override;
   int32_t send_ping(const int32_t dataset_idx);
   bool recv_ping(const int32_t seqid);
-  int32_t add(const int32_t num1, const int32_t num2) override;
-  int32_t send_add(const int32_t num1, const int32_t num2);
-  int32_t recv_add(const int32_t seqid);
   int32_t insert(const std::vector<int32_t> & point) override;
   int32_t send_insert(const std::vector<int32_t> & point);
   int32_t recv_insert(const int32_t seqid);

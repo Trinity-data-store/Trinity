@@ -105,6 +105,7 @@ sudo ./build
 
 # https://discuss.aerospike.com/t/how-to-determine-storage-per-set/6291
 asadm -e "show statistics for tpch like memory_used_bytes"
+asadm -e "show statistics for github like memory_used_bytes"
 asinfo -v "truncate:namespace=tpch;set=tpch_macro"
 
 asinfo -v "set-config:context=namespace;id=github;set=tpch_macro;set-delete=true;"

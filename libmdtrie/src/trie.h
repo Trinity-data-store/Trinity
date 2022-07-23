@@ -126,7 +126,7 @@ public:
         // Global variables in def.h
         total_size += sizeof(total_points_count);
         total_size += sizeof(discount_factor);
-        total_size += sizeof(level_to_num_children) + 32 * sizeof(morton_t);
+        total_size += sizeof(level_to_num_children) + max_depth_ * sizeof(morton_t);
         total_size += sizeof(max_tree_nodes_);
         total_size += sizeof(max_depth_);
         total_size += sizeof(trie_depth_);

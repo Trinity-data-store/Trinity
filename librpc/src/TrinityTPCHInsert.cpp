@@ -44,6 +44,8 @@ int main(int argc, char *argv[]){
         exit(-1);
     }
 
+    current_dataset_idx = 1;
+
     /** 
         Insert all points
     */

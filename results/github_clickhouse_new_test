@@ -1,0 +1,1000 @@
+Select * from github_events_test_9 where start_date <= 20181122 AND end_date >= 20190304 AND stars >= 147;, elapsed: 0.5119547843933105s, found points: 680965
+Select * from github_events_test_9 where stars >= 52 and forks >= 37;, elapsed: 0.765143871307373s, found points: 1018495
+Select * from github_events_test_9 where start_date <= 20190419 AND end_date >= 20180501 AND stars >= 239;, elapsed: 0.37096738815307617s, found points: 495345
+Select * from github_events_test_9 where events_count <= 18006 and issues >= 5 AND stars >= 122;, elapsed: 0.6224181652069092s, found points: 823685
+Select * from github_events_test_9 where stars >= 192 and forks >= 4;, elapsed: 0.523993730545044s, found points: 702305
+Select * from github_events_test_9 where events_count <= 7224 and issues >= 10 AND stars >= 100;, elapsed: 0.5770494937896729s, found points: 768915
+Select * from github_events_test_9 where stars >= 344 and forks >= 14;, elapsed: 0.35106658935546875s, found points: 417855
+Select * from github_events_test_9 where events_count <= 19420 and issues >= 8 AND stars >= 170;, elapsed: 0.4941291809082031s, found points: 606150
+Select * from github_events_test_9 where events_count <= 15100 and issues >= 8 AND stars >= 62;, elapsed: 0.8019800186157227s, found points: 1130380
+Select * from github_events_test_9 where start_date <= 20180928 AND end_date >= 20191001 AND stars >= 136;, elapsed: 0.47435474395751953s, found points: 686370
+Select * from github_events_test_9 where start_date <= 20190303 AND end_date >= 20180331 AND stars >= 104;, elapsed: 0.630194902420044s, found points: 953445
+Select * from github_events_test_9 where stars >= 48 and forks >= 61;, elapsed: 0.5517008304595947s, found points: 680925
+Select * from github_events_test_9 where start_date <= 20190908 AND end_date >= 20190204 AND stars >= 252;, elapsed: 0.36321353912353516s, found points: 484265
+Select * from github_events_test_9 where events_count <= 18860 and issues >= 8 AND stars >= 277;, elapsed: 0.38279008865356445s, found points: 418680
+Select * from github_events_test_9 where start_date <= 20180622 AND end_date >= 20180801 AND stars >= 239;, elapsed: 0.3386402130126953s, found points: 440670
+Select * from github_events_test_9 where events_count <= 11024 and issues >= 3 AND stars >= 218;, elapsed: 0.4664793014526367s, found points: 540835
+Select * from github_events_test_9 where events_count <= 19144 and issues >= 2 AND stars >= 274;, elapsed: 0.4211428165435791s, found points: 473120
+Select * from github_events_test_9 where events_count <= 11277 and issues >= 7 AND stars >= 70;, elapsed: 0.7755639553070068s, found points: 1079615
+Select * from github_events_test_9 where stars >= 30 and forks >= 47;, elapsed: 0.6797189712524414s, found points: 893910
+Select * from github_events_test_9 where events_count <= 8919 and issues >= 0 AND stars >= 188;, elapsed: 0.5168068408966064s, found points: 669785
+Select * from github_events_test_9 where stars >= 227 and forks >= 17;, elapsed: 0.4435110092163086s, found points: 591195
+Select * from github_events_test_9 where start_date <= 20180722 AND end_date >= 20190202 AND stars >= 204;, elapsed: 0.3983724117279053s, found points: 499625
+Select * from github_events_test_9 where stars >= 339 and forks >= 16;, elapsed: 0.35611844062805176s, found points: 421970
+Select * from github_events_test_9 where stars >= 73 and forks >= 44;, elapsed: 0.6119630336761475s, found points: 833700
+Select * from github_events_test_9 where start_date <= 20181105 AND end_date >= 20190824 AND stars >= 175;, elapsed: 0.41975831985473633s, found points: 574160
+Select * from github_events_test_9 where stars >= 277 and forks >= 48;, elapsed: 0.36818408966064453s, found points: 439445
+Select * from github_events_test_9 where start_date <= 20190917 AND end_date >= 20190813 AND stars >= 167;, elapsed: 0.4569392204284668s, found points: 667120
+Select * from github_events_test_9 where events_count <= 11443 and issues >= 1 AND stars >= 215;, elapsed: 0.4826343059539795s, found points: 575335
+Select * from github_events_test_9 where start_date <= 20191023 AND end_date >= 20180316 AND stars >= 195;, elapsed: 0.4375183582305908s, found points: 621055
+Select * from github_events_test_9 where events_count <= 12205 and issues >= 7 AND stars >= 155;, elapsed: 0.5154500007629395s, found points: 646150
+Select * from github_events_test_9 where start_date <= 20190926 AND end_date >= 20180613 AND stars >= 98;, elapsed: 0.6866331100463867s, found points: 1065230
+Select * from github_events_test_9 where stars >= 68 and forks >= 59;, elapsed: 0.5234339237213135s, found points: 673630
+Select * from github_events_test_9 where stars >= 146 and forks >= 75;, elapsed: 0.41588735580444336s, found points: 478455
+Select * from github_events_test_9 where stars >= 165 and forks >= 52;, elapsed: 0.46988630294799805s, found points: 571460
+Select * from github_events_test_9 where events_count <= 2139 and issues >= 4 AND stars >= 62;, elapsed: 0.7827091217041016s, found points: 1121520
+Select * from github_events_test_9 where start_date <= 20191001 AND end_date >= 20190526 AND stars >= 194;, elapsed: 0.42772412300109863s, found points: 596825
+Select * from github_events_test_9 where start_date <= 20180324 AND end_date >= 20190906 AND stars >= 191;, elapsed: 0.3786046504974365s, found points: 486005
+Select * from github_events_test_9 where events_count <= 17288 and issues >= 1 AND stars >= 169;, elapsed: 0.557713508605957s, found points: 722180
+Select * from github_events_test_9 where events_count <= 15926 and issues >= 7 AND stars >= 188;, elapsed: 0.4591245651245117s, found points: 569080
+Select * from github_events_test_9 where events_count <= 10466 and issues >= 5 AND stars >= 94;, elapsed: 0.7023189067840576s, found points: 960110
+Select * from github_events_test_9 where stars >= 42 and forks >= 103;, elapsed: 0.4057934284210205s, found points: 417100
+Select * from github_events_test_9 where start_date <= 20190122 AND end_date >= 20190626 AND stars >= 87;, elapsed: 0.7065002918243408s, found points: 1021565
+Select * from github_events_test_9 where stars >= 4 and forks >= 68;, elapsed: 0.5870001316070557s, found points: 672145
+Select * from github_events_test_9 where events_count <= 13833 and issues >= 8 AND stars >= 103;, elapsed: 0.6189866065979004s, found points: 834810
+Select * from github_events_test_9 where stars >= 243 and forks >= 30;, elapsed: 0.405689001083374s, found points: 530315
+Select * from github_events_test_9 where events_count <= 18240 and issues >= 9 AND stars >= 208;, elapsed: 0.4333176612854004s, found points: 510480
+Select * from github_events_test_9 where events_count <= 12501 and issues >= 3 AND stars >= 226;, elapsed: 0.47159624099731445s, found points: 529810
+Select * from github_events_test_9 where events_count <= 10945 and issues >= 1 AND stars >= 194;, elapsed: 0.4916353225708008s, found points: 626510
+Select * from github_events_test_9 where stars >= 51 and forks >= 54;, elapsed: 0.6008765697479248s, found points: 753910
+Select * from github_events_test_9 where stars >= 77 and forks >= 78;, elapsed: 0.439772367477417s, found points: 519840
+Select * from github_events_test_9 where events_count <= 10923 and issues >= 3 AND stars >= 95;, elapsed: 0.7363801002502441s, found points: 1030095
+Select * from github_events_test_9 where start_date <= 20191027 AND end_date >= 20190607 AND stars >= 120;, elapsed: 0.5781676769256592s, found points: 884380
+Select * from github_events_test_9 where start_date <= 20181025 AND end_date >= 20191119 AND stars >= 222;, elapsed: 0.379533052444458s, found points: 466305
+Select * from github_events_test_9 where start_date <= 20190104 AND end_date >= 20180607 AND stars >= 244;, elapsed: 0.3568704128265381s, found points: 467205
+Select * from github_events_test_9 where events_count <= 15919 and issues >= 6 AND stars >= 218;, elapsed: 0.4336700439453125s, found points: 520300
+Select * from github_events_test_9 where events_count <= 9641 and issues >= 10 AND stars >= 137;, elapsed: 0.5235745906829834s, found points: 644235
+Select * from github_events_test_9 where start_date <= 20190909 AND end_date >= 20191020 AND stars >= 145;, elapsed: 0.5015580654144287s, found points: 738470
+Select * from github_events_test_9 where events_count <= 16809 and issues >= 7 AND stars >= 107;, elapsed: 0.6149256229400635s, found points: 843730
+Select * from github_events_test_9 where stars >= 261 and forks >= 55;, elapsed: 0.37245917320251465s, found points: 438575
+Select * from github_events_test_9 where events_count <= 12367 and issues >= 7 AND stars >= 220;, elapsed: 0.44382452964782715s, found points: 496620
+Select * from github_events_test_9 where events_count <= 6664 and issues >= 3 AND stars >= 270;, elapsed: 0.40016818046569824s, found points: 422305
+Select * from github_events_test_9 where start_date <= 20180121 AND end_date >= 20181231 AND stars >= 146;, elapsed: 0.4512054920196533s, found points: 599515
+Select * from github_events_test_9 where stars >= 51 and forks >= 54;, elapsed: 0.6011025905609131s, found points: 753910
+Select * from github_events_test_9 where start_date <= 20180831 AND end_date >= 20180214 AND stars >= 81;, elapsed: 0.7135519981384277s, found points: 1078010
+Select * from github_events_test_9 where events_count <= 14350 and issues >= 1 AND stars >= 245;, elapsed: 0.4448869228363037s, found points: 520885
+Select * from github_events_test_9 where start_date <= 20180107 AND end_date >= 20180430 AND stars >= 201;, elapsed: 0.3693714141845703s, found points: 471655
+Select * from github_events_test_9 where stars >= 139 and forks >= 81;, elapsed: 0.4011728763580322s, found points: 457675
+Select * from github_events_test_9 where start_date <= 20180102 AND end_date >= 20191115 AND stars >= 151;, elapsed: 0.4311258792877197s, found points: 553275
+Select * from github_events_test_9 where start_date <= 20190702 AND end_date >= 20190220 AND stars >= 224;, elapsed: 0.38880491256713867s, found points: 523860
+Select * from github_events_test_9 where events_count <= 7345 and issues >= 6 AND stars >= 197;, elapsed: 0.44870829582214355s, found points: 527050
+Select * from github_events_test_9 where events_count <= 12034 and issues >= 7 AND stars >= 203;, elapsed: 0.4466993808746338s, found points: 527760
+Select * from github_events_test_9 where events_count <= 17840 and issues >= 0 AND stars >= 308;, elapsed: 0.39584827423095703s, found points: 447635
+Select * from github_events_test_9 where start_date <= 20190915 AND end_date >= 20180813 AND stars >= 271;, elapsed: 0.3348348140716553s, found points: 460950
+Select * from github_events_test_9 where stars >= 252 and forks >= 52;, elapsed: 0.3895440101623535s, found points: 456295
+Select * from github_events_test_9 where events_count <= 13334 and issues >= 10 AND stars >= 72;, elapsed: 0.6894431114196777s, found points: 972085
+Select * from github_events_test_9 where events_count <= 15412 and issues >= 4 AND stars >= 224;, elapsed: 0.4443824291229248s, found points: 531000
+Select * from github_events_test_9 where events_count <= 11062 and issues >= 9 AND stars >= 124;, elapsed: 0.5373585224151611s, found points: 711985
+Select * from github_events_test_9 where stars >= 112 and forks >= 15;, elapsed: 0.6934013366699219s, found points: 1021520
+Select * from github_events_test_9 where events_count <= 947 and issues >= 7 AND stars >= 92;, elapsed: 0.4523448944091797s, found points: 517730
+Select * from github_events_test_9 where start_date <= 20190217 AND end_date >= 20190525 AND stars >= 78;, elapsed: 0.7506158351898193s, found points: 1125725
+Select * from github_events_test_9 where start_date <= 20180604 AND end_date >= 20180213 AND stars >= 115;, elapsed: 0.5645630359649658s, found points: 794300
+Select * from github_events_test_9 where events_count <= 6262 and issues >= 0 AND stars >= 233;, elapsed: 0.44207286834716797s, found points: 527325
+Select * from github_events_test_9 where events_count <= 16520 and issues >= 8 AND stars >= 170;, elapsed: 0.4823586940765381s, found points: 601755
+Select * from github_events_test_9 where start_date <= 20180203 AND end_date >= 20191204 AND stars >= 119;, elapsed: 0.49983644485473633s, found points: 671305
+Select * from github_events_test_9 where stars >= 77 and forks >= 37;, elapsed: 0.6570765972137451s, found points: 920990
+Select * from github_events_test_9 where start_date <= 20190921 AND end_date >= 20180421 AND stars >= 171;, elapsed: 0.48348140716552734s, found points: 686330
+Select * from github_events_test_9 where stars >= 256 and forks >= 48;, elapsed: 0.3814518451690674s, found points: 462755
+Select * from github_events_test_9 where start_date <= 20190416 AND end_date >= 20190309 AND stars >= 120;, elapsed: 0.5915493965148926s, found points: 844545
+Select * from github_events_test_9 where events_count <= 5924 and issues >= 9 AND stars >= 220;, elapsed: 0.4035978317260742s, found points: 435355
+Select * from github_events_test_9 where stars >= 313 and forks >= 36;, elapsed: 0.35228872299194336s, found points: 425500
+Select * from github_events_test_9 where start_date <= 20190711 AND end_date >= 20190130 AND stars >= 136;, elapsed: 0.5546379089355469s, found points: 792475
+Select * from github_events_test_9 where start_date <= 20181212 AND end_date >= 20190928 AND stars >= 72;, elapsed: 0.7831361293792725s, found points: 1138385
+Select * from github_events_test_9 where start_date <= 20190611 AND end_date >= 20181023 AND stars >= 202;, elapsed: 0.4022645950317383s, found points: 573120
+Select * from github_events_test_9 where start_date <= 20181207 AND end_date >= 20190912 AND stars >= 244;, elapsed: 0.3433234691619873s, found points: 443020
+Select * from github_events_test_9 where stars >= 324 and forks >= 28;, elapsed: 0.3656337261199951s, found points: 426355
+Select * from github_events_test_9 where start_date <= 20180417 AND end_date >= 20190422 AND stars >= 185;, elapsed: 0.40269899368286133s, found points: 513935
+Select * from github_events_test_9 where start_date <= 20180520 AND end_date >= 20191226 AND stars >= 198;, elapsed: 0.37806057929992676s, found points: 477985
+Select * from github_events_test_9 where events_count <= 3277 and issues >= 8 AND stars >= 151;, elapsed: 0.46915721893310547s, found points: 537100
+Select * from github_events_test_9 where stars >= 226 and forks >= 43;, elapsed: 0.4098241329193115s, found points: 516285
+Select * from github_events_test_9 where start_date <= 20180426 AND end_date >= 20190416 AND stars >= 97;, elapsed: 0.626636266708374s, found points: 849255
+Select * from github_events_test_9 where start_date <= 20180910 AND end_date >= 20190421 AND stars >= 94;, elapsed: 0.6581897735595703s, found points: 924215
+Select * from github_events_test_9 where stars >= 183 and forks >= 5;, elapsed: 0.5268638134002686s, found points: 730395
+Select * from github_events_test_9 where start_date <= 20190228 AND end_date >= 20181218 AND stars >= 150;, elapsed: 0.4957754611968994s, found points: 699545
+Select * from github_events_test_9 where stars >= 13 and forks >= 78;, elapsed: 0.5304882526397705s, found points: 572800
+Select * from github_events_test_9 where events_count <= 6808 and issues >= 5 AND stars >= 199;, elapsed: 0.4482238292694092s, found points: 529035
+Select * from github_events_test_9 where events_count <= 1696 and issues >= 8 AND stars >= 133;, elapsed: 0.43387866020202637s, found points: 481040
+Select * from github_events_test_9 where events_count <= 3682 and issues >= 9 AND stars >= 201;, elapsed: 0.39875078201293945s, found points: 423260
+Select * from github_events_test_9 where events_count <= 18642 and issues >= 8 AND stars >= 154;, elapsed: 0.5265414714813232s, found points: 648760
+Select * from github_events_test_9 where start_date <= 20180909 AND end_date >= 20180301 AND stars >= 225;, elapsed: 0.36649584770202637s, found points: 483250
+Select * from github_events_test_9 where stars >= 298 and forks >= 7;, elapsed: 0.38863635063171387s, found points: 479060
+Select * from github_events_test_9 where start_date <= 20180618 AND end_date >= 20180430 AND stars >= 68;, elapsed: 0.7797465324401855s, found points: 1180215
+Select * from github_events_test_9 where stars >= 76 and forks >= 86;, elapsed: 0.41820549964904785s, found points: 477395
+Select * from github_events_test_9 where stars >= 77 and forks >= 56;, elapsed: 0.5406064987182617s, found points: 688745
+Select * from github_events_test_9 where stars >= 298 and forks >= 2;, elapsed: 0.40372800827026367s, found points: 480755
+Select * from github_events_test_9 where events_count <= 1902 and issues >= 7 AND stars >= 63;, elapsed: 0.6932039260864258s, found points: 922250
+Select * from github_events_test_9 where events_count <= 13474 and issues >= 4 AND stars >= 98;, elapsed: 0.6941046714782715s, found points: 984055
+Select * from github_events_test_9 where start_date <= 20180214 AND end_date >= 20180110 AND stars >= 100;, elapsed: 0.5696301460266113s, found points: 836015
+Select * from github_events_test_9 where start_date <= 20191105 AND end_date >= 20180525 AND stars >= 142;, elapsed: 0.5435423851013184s, found points: 804750
+Select * from github_events_test_9 where stars >= 103 and forks >= 13;, elapsed: 0.7408797740936279s, found points: 1103195
+Select * from github_events_test_9 where start_date <= 20181128 AND end_date >= 20180331 AND stars >= 255;, elapsed: 0.34070444107055664s, found points: 447930
+Select * from github_events_test_9 where events_count <= 19662 and issues >= 6 AND stars >= 224;, elapsed: 0.4449172019958496s, found points: 514995
+Select * from github_events_test_9 where start_date <= 20180109 AND end_date >= 20190417 AND stars >= 72;, elapsed: 0.7069356441497803s, found points: 995485
+Select * from github_events_test_9 where events_count <= 18068 and issues >= 2 AND stars >= 241;, elapsed: 0.43100428581237793s, found points: 526940
+Select * from github_events_test_9 where start_date <= 20180503 AND end_date >= 20180805 AND stars >= 72;, elapsed: 0.7353503704071045s, found points: 1094695
+Select * from github_events_test_9 where events_count <= 4273 and issues >= 2 AND stars >= 111;, elapsed: 0.655916690826416s, found points: 888890
+Select * from github_events_test_9 where events_count <= 13712 and issues >= 7 AND stars >= 102;, elapsed: 0.6185472011566162s, found points: 863055
+Select * from github_events_test_9 where start_date <= 20190707 AND end_date >= 20191120 AND stars >= 131;, elapsed: 0.543297290802002s, found points: 780390
+Select * from github_events_test_9 where stars >= 83 and forks >= 51;, elapsed: 0.5429260730743408s, found points: 727260
+Select * from github_events_test_9 where events_count <= 6599 and issues >= 0 AND stars >= 295;, elapsed: 0.39278173446655273s, found points: 421610
+Select * from github_events_test_9 where start_date <= 20180603 AND end_date >= 20180506 AND stars >= 104;, elapsed: 0.5846459865570068s, found points: 849950
+Select * from github_events_test_9 where stars >= 209 and forks >= 41;, elapsed: 0.46625590324401855s, found points: 550250
+Select * from github_events_test_9 where stars >= 249 and forks >= 26;, elapsed: 0.4350130558013916s, found points: 530810
+Select * from github_events_test_9 where start_date <= 20180120 AND end_date >= 20190131 AND stars >= 130;, elapsed: 0.4665989875793457s, found points: 652900
+Select * from github_events_test_9 where stars >= 289 and forks >= 53;, elapsed: 0.36847972869873047s, found points: 416070
+Select * from github_events_test_9 where events_count <= 1936 and issues >= 7 AND stars >= 86;, elapsed: 0.5843186378479004s, found points: 745015
+Select * from github_events_test_9 where events_count <= 19310 and issues >= 6 AND stars >= 232;, elapsed: 0.4462409019470215s, found points: 500760
+Select * from github_events_test_9 where start_date <= 20190813 AND end_date >= 20190209 AND stars >= 227;, elapsed: 0.399944543838501s, found points: 524730
+Select * from github_events_test_9 where events_count <= 11963 and issues >= 4 AND stars >= 176;, elapsed: 0.5119071006774902s, found points: 635470
+Select * from github_events_test_9 where events_count <= 9789 and issues >= 5 AND stars >= 141;, elapsed: 0.5462090969085693s, found points: 719525
+Select * from github_events_test_9 where start_date <= 20190815 AND end_date >= 20191027 AND stars >= 152;, elapsed: 0.4818241596221924s, found points: 705170
+Select * from github_events_test_9 where stars >= 47 and forks >= 98;, elapsed: 0.4267902374267578s, found points: 436230
+Select * from github_events_test_9 where stars >= 178 and forks >= 21;, elapsed: 0.5136866569519043s, found points: 701190
+Select * from github_events_test_9 where start_date <= 20190602 AND end_date >= 20180904 AND stars >= 211;, elapsed: 0.4022514820098877s, found points: 553335
+Select * from github_events_test_9 where stars >= 173 and forks >= 63;, elapsed: 0.4199514389038086s, found points: 506230
+Select * from github_events_test_9 where events_count <= 8185 and issues >= 4 AND stars >= 135;, elapsed: 0.5639927387237549s, found points: 758900
+Select * from github_events_test_9 where events_count <= 10129 and issues >= 8 AND stars >= 151;, elapsed: 0.5198392868041992s, found points: 634785
+Select * from github_events_test_9 where start_date <= 20190819 AND end_date >= 20180402 AND stars >= 266;, elapsed: 0.35230112075805664s, found points: 470240
+Select * from github_events_test_9 where events_count <= 9865 and issues >= 10 AND stars >= 241;, elapsed: 0.38710665702819824s, found points: 427800
+Select * from github_events_test_9 where events_count <= 14163 and issues >= 7 AND stars >= 63;, elapsed: 0.820410966873169s, found points: 1156960
+Select * from github_events_test_9 where start_date <= 20180530 AND end_date >= 20190707 AND stars >= 138;, elapsed: 0.4771230220794678s, found points: 651730
+Select * from github_events_test_9 where stars >= 219 and forks >= 59;, elapsed: 0.389298677444458s, found points: 470060
+Select * from github_events_test_9 where start_date <= 20180704 AND end_date >= 20190522 AND stars >= 77;, elapsed: 0.7310235500335693s, found points: 1033520
+Select * from github_events_test_9 where start_date <= 20180809 AND end_date >= 20191024 AND stars >= 206;, elapsed: 0.3745920658111572s, found points: 482900
+Select * from github_events_test_9 where start_date <= 20191226 AND end_date >= 20181121 AND stars >= 180;, elapsed: 0.4729197025299072s, found points: 660515
+Select * from github_events_test_9 where events_count <= 19685 and issues >= 4 AND stars >= 230;, elapsed: 0.4420011043548584s, found points: 526360
+Select * from github_events_test_9 where start_date <= 20191020 AND end_date >= 20190110 AND stars >= 208;, elapsed: 0.4189150333404541s, found points: 575350
+Select * from github_events_test_9 where events_count <= 13511 and issues >= 2 AND stars >= 215;, elapsed: 0.4935605525970459s, found points: 571475
+Select * from github_events_test_9 where start_date <= 20180929 AND end_date >= 20190602 AND stars >= 135;, elapsed: 0.5201237201690674s, found points: 702055
+Select * from github_events_test_9 where events_count <= 7285 and issues >= 8 AND stars >= 123;, elapsed: 0.5573363304138184s, found points: 711065
+Select * from github_events_test_9 where events_count <= 18078 and issues >= 7 AND stars >= 234;, elapsed: 0.4165465831756592s, found points: 485300
+Select * from github_events_test_9 where start_date <= 20191206 AND end_date >= 20191027 AND stars >= 82;, elapsed: 0.7776000499725342s, found points: 1170500
+Select * from github_events_test_9 where stars >= 332 and forks >= 20;, elapsed: 0.3549649715423584s, found points: 426855
+Select * from github_events_test_9 where start_date <= 20190121 AND end_date >= 20191019 AND stars >= 145;, elapsed: 0.5161159038543701s, found points: 680300
+Select * from github_events_test_9 where start_date <= 20180403 AND end_date >= 20180815 AND stars >= 166;, elapsed: 0.433591365814209s, found points: 570465
+Select * from github_events_test_9 where events_count <= 11531 and issues >= 4 AND stars >= 182;, elapsed: 0.5016236305236816s, found points: 616840
+Select * from github_events_test_9 where start_date <= 20191122 AND end_date >= 20181122 AND stars >= 89;, elapsed: 0.7744245529174805s, found points: 1151470
+Select * from github_events_test_9 where events_count <= 17481 and issues >= 2 AND stars >= 261;, elapsed: 0.4154491424560547s, found points: 491335
+Select * from github_events_test_9 where events_count <= 5893 and issues >= 5 AND stars >= 72;, elapsed: 0.7756309509277344s, found points: 1100165
+Select * from github_events_test_9 where events_count <= 6059 and issues >= 5 AND stars >= 125;, elapsed: 0.5994892120361328s, found points: 752895
+Select * from github_events_test_9 where events_count <= 12138 and issues >= 6 AND stars >= 276;, elapsed: 0.38933849334716797s, found points: 421780
+Select * from github_events_test_9 where events_count <= 12912 and issues >= 6 AND stars >= 128;, elapsed: 0.5731148719787598s, found points: 764945
+Select * from github_events_test_9 where events_count <= 17541 and issues >= 0 AND stars >= 330;, elapsed: 0.38755273818969727s, found points: 419210
+Select * from github_events_test_9 where stars >= 162 and forks >= 45;, elapsed: 0.47745537757873535s, found points: 614800
+Select * from github_events_test_9 where stars >= 94 and forks >= 83;, elapsed: 0.4186222553253174s, found points: 480275
+Select * from github_events_test_9 where events_count <= 11850 and issues >= 0 AND stars >= 263;, elapsed: 0.4274284839630127s, found points: 505180
+Select * from github_events_test_9 where start_date <= 20190924 AND end_date >= 20190512 AND stars >= 250;, elapsed: 0.358187198638916s, found points: 483060
+Select * from github_events_test_9 where stars >= 280 and forks >= 56;, elapsed: 0.3591132164001465s, found points: 417610
+Select * from github_events_test_9 where stars >= 133 and forks >= 88;, elapsed: 0.3973379135131836s, found points: 433050
+Select * from github_events_test_9 where start_date <= 20180809 AND end_date >= 20190219 AND stars >= 258;, elapsed: 0.3237884044647217s, found points: 415080
+Select * from github_events_test_9 where events_count <= 2601 and issues >= 4 AND stars >= 115;, elapsed: 0.5857639312744141s, found points: 727610
+Select * from github_events_test_9 where events_count <= 12731 and issues >= 0 AND stars >= 197;, elapsed: 0.5118260383605957s, found points: 659130
+Select * from github_events_test_9 where events_count <= 8618 and issues >= 2 AND stars >= 280;, elapsed: 0.39163851737976074s, found points: 434335
+Select * from github_events_test_9 where start_date <= 20190731 AND end_date >= 20190301 AND stars >= 246;, elapsed: 0.36423516273498535s, found points: 488095
+Select * from github_events_test_9 where start_date <= 20190213 AND end_date >= 20180521 AND stars >= 136;, elapsed: 0.5400588512420654s, found points: 765550
+Select * from github_events_test_9 where start_date <= 20180930 AND end_date >= 20180226 AND stars >= 249;, elapsed: 0.3449704647064209s, found points: 448635
+Select * from github_events_test_9 where events_count <= 19262 and issues >= 7 AND stars >= 57;, elapsed: 0.8765637874603271s, found points: 1233450
+Select * from github_events_test_9 where start_date <= 20180902 AND end_date >= 20180829 AND stars >= 248;, elapsed: 0.3323488235473633s, found points: 438550
+Select * from github_events_test_9 where stars >= 2 and forks >= 66;, elapsed: 0.6344916820526123s, found points: 701225
+Select * from github_events_test_9 where start_date <= 20180412 AND end_date >= 20190115 AND stars >= 120;, elapsed: 0.5285115242004395s, found points: 726515
+Select * from github_events_test_9 where events_count <= 4582 and issues >= 0 AND stars >= 272;, elapsed: 0.39772605895996094s, found points: 427700
+Select * from github_events_test_9 where stars >= 65 and forks >= 65;, elapsed: 0.5092008113861084s, found points: 622780
+Select * from github_events_test_9 where start_date <= 20181116 AND end_date >= 20180703 AND stars >= 160;, elapsed: 0.4849274158477783s, found points: 648820
+Select * from github_events_test_9 where start_date <= 20180211 AND end_date >= 20180311 AND stars >= 94;, elapsed: 0.6075754165649414s, found points: 869365
+Select * from github_events_test_9 where start_date <= 20180626 AND end_date >= 20181022 AND stars >= 123;, elapsed: 0.5370142459869385s, found points: 744770
+Select * from github_events_test_9 where events_count <= 10200 and issues >= 8 AND stars >= 84;, elapsed: 0.6781208515167236s, found points: 933905
+Select * from github_events_test_9 where events_count <= 4273 and issues >= 2 AND stars >= 246;, elapsed: 0.41095781326293945s, found points: 436065
+Select * from github_events_test_9 where events_count <= 12800 and issues >= 9 AND stars >= 87;, elapsed: 0.6556169986724854s, found points: 896065
+Select * from github_events_test_9 where events_count <= 15176 and issues >= 2 AND stars >= 200;, elapsed: 0.5146713256835938s, found points: 611345
+Select * from github_events_test_9 where events_count <= 6327 and issues >= 1 AND stars >= 139;, elapsed: 0.5946509838104248s, found points: 795250
+Select * from github_events_test_9 where events_count <= 6857 and issues >= 2 AND stars >= 215;, elapsed: 0.4591670036315918s, found points: 536375
+Select * from github_events_test_9 where start_date <= 20191213 AND end_date >= 20190205 AND stars >= 139;, elapsed: 0.5519289970397949s, found points: 809965
+Select * from github_events_test_9 where events_count <= 12195 and issues >= 0 AND stars >= 315;, elapsed: 0.3856320381164551s, found points: 426435
+Select * from github_events_test_9 where events_count <= 19880 and issues >= 3 AND stars >= 175;, elapsed: 0.5335984230041504s, found points: 669090
+Select * from github_events_test_9 where start_date <= 20191121 AND end_date >= 20180203 AND stars >= 211;, elapsed: 0.42533421516418457s, found points: 586665
+Select * from github_events_test_9 where events_count <= 5558 and issues >= 5 AND stars >= 112;, elapsed: 0.6208376884460449s, found points: 807460
+Select * from github_events_test_9 where stars >= 189 and forks >= 68;, elapsed: 0.39624571800231934s, found points: 467685
+Select * from github_events_test_9 where start_date <= 20180906 AND end_date >= 20181010 AND stars >= 176;, elapsed: 0.4250071048736572s, found points: 579045
+Select * from github_events_test_9 where events_count <= 17077 and issues >= 9 AND stars >= 209;, elapsed: 0.44913244247436523s, found points: 507010
+Select * from github_events_test_9 where events_count <= 9106 and issues >= 9 AND stars >= 181;, elapsed: 0.44919681549072266s, found points: 537155
+Select * from github_events_test_9 where events_count <= 2346 and issues >= 9 AND stars >= 166;, elapsed: 0.4026458263397217s, found points: 434225
+Select * from github_events_test_9 where stars >= 249 and forks >= 58;, elapsed: 0.3746483325958252s, found points: 442105
+Select * from github_events_test_9 where stars >= 210 and forks >= 4;, elapsed: 0.4875979423522949s, found points: 651040
+Select * from github_events_test_9 where events_count <= 7858 and issues >= 8 AND stars >= 193;, elapsed: 0.46576547622680664s, found points: 515660
+Select * from github_events_test_9 where start_date <= 20190124 AND end_date >= 20190327 AND stars >= 117;, elapsed: 0.5720977783203125s, found points: 831230
+Select * from github_events_test_9 where start_date <= 20190717 AND end_date >= 20190912 AND stars >= 140;, elapsed: 0.5293469429016113s, found points: 751425
+Select * from github_events_test_9 where stars >= 96 and forks >= 10;, elapsed: 0.7650268077850342s, found points: 1191810
+Select * from github_events_test_9 where start_date <= 20180605 AND end_date >= 20181029 AND stars >= 173;, elapsed: 0.4250311851501465s, found points: 564690
+Select * from github_events_test_9 where events_count <= 1525 and issues >= 5 AND stars >= 155;, elapsed: 0.4127786159515381s, found points: 441555
+Select * from github_events_test_9 where start_date <= 20180523 AND end_date >= 20180520 AND stars >= 249;, elapsed: 0.33472180366516113s, found points: 423290
+Select * from github_events_test_9 where start_date <= 20190202 AND end_date >= 20180124 AND stars >= 248;, elapsed: 0.37132835388183594s, found points: 470730
+Select * from github_events_test_9 where events_count <= 14393 and issues >= 6 AND stars >= 244;, elapsed: 0.4154670238494873s, found points: 473125
+Select * from github_events_test_9 where stars >= 278 and forks >= 47;, elapsed: 0.3694765567779541s, found points: 440710
+Select * from github_events_test_9 where events_count <= 5990 and issues >= 9 AND stars >= 86;, elapsed: 0.6454904079437256s, found points: 853175
+Select * from github_events_test_9 where stars >= 293 and forks >= 37;, elapsed: 0.3684816360473633s, found points: 446410
+Select * from github_events_test_9 where events_count <= 299 and issues >= 3 AND stars >= 46;, elapsed: 0.5658445358276367s, found points: 592010
+Select * from github_events_test_9 where start_date <= 20180722 AND end_date >= 20191003 AND stars >= 241;, elapsed: 0.33849477767944336s, found points: 423705
+Select * from github_events_test_9 where events_count <= 4859 and issues >= 10 AND stars >= 167;, elapsed: 0.4438462257385254s, found points: 512330
+Select * from github_events_test_9 where events_count <= 18393 and issues >= 3 AND stars >= 294;, elapsed: 0.40907859802246094s, found points: 433895
+Select * from github_events_test_9 where events_count <= 17049 and issues >= 0 AND stars >= 129;, elapsed: 0.6953108310699463s, found points: 963740
+Select * from github_events_test_9 where events_count <= 8361 and issues >= 1 AND stars >= 232;, elapsed: 0.46530842781066895s, found points: 522185
+Select * from github_events_test_9 where stars >= 55 and forks >= 76;, elapsed: 0.48932528495788574s, found points: 549745
+Select * from github_events_test_9 where start_date <= 20180219 AND end_date >= 20190122 AND stars >= 219;, elapsed: 0.3706834316253662s, found points: 440075
+Select * from github_events_test_9 where events_count <= 18761 and issues >= 6 AND stars >= 272;, elapsed: 0.4098215103149414s, found points: 440190
+Select * from github_events_test_9 where start_date <= 20190618 AND end_date >= 20180604 AND stars >= 88;, elapsed: 0.7358343601226807s, found points: 1126545
+Select * from github_events_test_9 where start_date <= 20191230 AND end_date >= 20190529 AND stars >= 142;, elapsed: 0.5315630435943604s, found points: 785700
+Select * from github_events_test_9 where events_count <= 12663 and issues >= 1 AND stars >= 281;, elapsed: 0.40112924575805664s, found points: 456715
+Select * from github_events_test_9 where stars >= 219 and forks >= 66;, elapsed: 0.381044864654541s, found points: 446080
+Select * from github_events_test_9 where start_date <= 20180103 AND end_date >= 20190901 AND stars >= 126;, elapsed: 0.4712531566619873s, found points: 641805
+Select * from github_events_test_9 where start_date <= 20181011 AND end_date >= 20190715 AND stars >= 92;, elapsed: 0.6715235710144043s, found points: 935615
+Select * from github_events_test_9 where events_count <= 14526 and issues >= 6 AND stars >= 130;, elapsed: 0.5684831142425537s, found points: 760700
+Select * from github_events_test_9 where start_date <= 20191112 AND end_date >= 20181209 AND stars >= 247;, elapsed: 0.3788115978240967s, found points: 501645
+Select * from github_events_test_9 where stars >= 219 and forks >= 6;, elapsed: 0.4791066646575928s, found points: 626270
+Select * from github_events_test_9 where stars >= 24 and forks >= 68;, elapsed: 0.5553967952728271s, found points: 641605
+Select * from github_events_test_9 where start_date <= 20190507 AND end_date >= 20190907 AND stars >= 243;, elapsed: 0.37210941314697266s, found points: 469975
+Select * from github_events_test_9 where events_count <= 8089 and issues >= 6 AND stars >= 77;, elapsed: 0.7218866348266602s, found points: 1041775
+Select * from github_events_test_9 where stars >= 66 and forks >= 87;, elapsed: 0.4405100345611572s, found points: 478660
+Select * from github_events_test_9 where events_count <= 15265 and issues >= 0 AND stars >= 328;, elapsed: 0.38042616844177246s, found points: 417660
+Select * from github_events_test_9 where start_date <= 20190521 AND end_date >= 20180111 AND stars >= 275;, elapsed: 0.3443880081176758s, found points: 448630
+Select * from github_events_test_9 where start_date <= 20190226 AND end_date >= 20181221 AND stars >= 242;, elapsed: 0.36284518241882324s, found points: 472285
+Select * from github_events_test_9 where start_date <= 20190725 AND end_date >= 20181024 AND stars >= 158;, elapsed: 0.49863624572753906s, found points: 711005
+Select * from github_events_test_9 where events_count <= 12106 and issues >= 6 AND stars >= 151;, elapsed: 0.5229520797729492s, found points: 676950
+Select * from github_events_test_9 where start_date <= 20190824 AND end_date >= 20191106 AND stars >= 229;, elapsed: 0.39052271842956543s, found points: 504755
+Select * from github_events_test_9 where start_date <= 20190307 AND end_date >= 20190119 AND stars >= 129;, elapsed: 0.5477514266967773s, found points: 788705
+Select * from github_events_test_9 where stars >= 86 and forks >= 93;, elapsed: 0.41292810440063477s, found points: 438590
+Select * from github_events_test_9 where start_date <= 20180410 AND end_date >= 20191004 AND stars >= 220;, elapsed: 0.3452877998352051s, found points: 436040
+Select * from github_events_test_9 where start_date <= 20180825 AND end_date >= 20190825 AND stars >= 123;, elapsed: 0.5270748138427734s, found points: 733890
+Select * from github_events_test_9 where start_date <= 20190620 AND end_date >= 20180315 AND stars >= 143;, elapsed: 0.5258469581604004s, found points: 776265
+Select * from github_events_test_9 where events_count <= 18481 and issues >= 6 AND stars >= 151;, elapsed: 0.5362048149108887s, found points: 691180
+Select * from github_events_test_9 where stars >= 317 and forks >= 9;, elapsed: 0.39177966117858887s, found points: 452330
+Select * from github_events_test_9 where stars >= 118 and forks >= 63;, elapsed: 0.4563257694244385s, found points: 573220
+Select * from github_events_test_9 where stars >= 212 and forks >= 54;, elapsed: 0.40831756591796875s, found points: 496475
+Select * from github_events_test_9 where start_date <= 20180803 AND end_date >= 20190820 AND stars >= 188;, elapsed: 0.3968312740325928s, found points: 522675
+Select * from github_events_test_9 where events_count <= 7077 and issues >= 4 AND stars >= 240;, elapsed: 0.4116184711456299s, found points: 465405
+Select * from github_events_test_9 where stars >= 238 and forks >= 53;, elapsed: 0.38874220848083496s, found points: 468645
+Select * from github_events_test_9 where start_date <= 20190831 AND end_date >= 20180517 AND stars >= 114;, elapsed: 0.6281228065490723s, found points: 943705
+Select * from github_events_test_9 where events_count <= 5640 and issues >= 8 AND stars >= 83;, elapsed: 0.666201114654541s, found points: 896880
+Select * from github_events_test_9 where events_count <= 16771 and issues >= 1 AND stars >= 208;, elapsed: 0.4804050922393799s, found points: 605255
+Select * from github_events_test_9 where stars >= 257 and forks >= 40;, elapsed: 0.39945507049560547s, found points: 483680
+Select * from github_events_test_9 where start_date <= 20181117 AND end_date >= 20190823 AND stars >= 90;, elapsed: 0.6697502136230469s, found points: 960755
+Select * from github_events_test_9 where stars >= 42 and forks >= 52;, elapsed: 0.624849796295166s, found points: 794595
+Select * from github_events_test_9 where events_count <= 11156 and issues >= 2 AND stars >= 122;, elapsed: 0.6298716068267822s, found points: 897390
+Select * from github_events_test_9 where stars >= 246 and forks >= 44;, elapsed: 0.4021623134613037s, found points: 486175
+Select * from github_events_test_9 where stars >= 292 and forks >= 48;, elapsed: 0.36705636978149414s, found points: 424035
+Select * from github_events_test_9 where start_date <= 20191024 AND end_date >= 20191207 AND stars >= 173;, elapsed: 0.45643091201782227s, found points: 643255
+Select * from github_events_test_9 where start_date <= 20180830 AND end_date >= 20190116 AND stars >= 169;, elapsed: 0.44900012016296387s, found points: 592095
+Select * from github_events_test_9 where events_count <= 15555 and issues >= 4 AND stars >= 256;, elapsed: 0.42273426055908203s, found points: 476295
+Select * from github_events_test_9 where stars >= 217 and forks >= 61;, elapsed: 0.38791823387145996s, found points: 465580
+Select * from github_events_test_9 where events_count <= 11804 and issues >= 3 AND stars >= 215;, elapsed: 0.4754917621612549s, found points: 550425
+Select * from github_events_test_9 where events_count <= 4929 and issues >= 9 AND stars >= 130;, elapsed: 0.5144586563110352s, found points: 632845
+Select * from github_events_test_9 where start_date <= 20190312 AND end_date >= 20191202 AND stars >= 164;, elapsed: 0.4721970558166504s, found points: 625765
+Select * from github_events_test_9 where start_date <= 20180515 AND end_date >= 20181012 AND stars >= 163;, elapsed: 0.4433584213256836s, found points: 587510
+Select * from github_events_test_9 where events_count <= 1158 and issues >= 3 AND stars >= 149;, elapsed: 0.41600608825683594s, found points: 433140
+Select * from github_events_test_9 where events_count <= 16958 and issues >= 9 AND stars >= 131;, elapsed: 0.5620172023773193s, found points: 702650
+Select * from github_events_test_9 where start_date <= 20191207 AND end_date >= 20190910 AND stars >= 117;, elapsed: 0.5886507034301758s, found points: 899495
+Select * from github_events_test_9 where start_date <= 20190718 AND end_date >= 20190603 AND stars >= 290;, elapsed: 0.33791065216064453s, found points: 416910
+Select * from github_events_test_9 where start_date <= 20190717 AND end_date >= 20180911 AND stars >= 99;, elapsed: 0.6776089668273926s, found points: 1027975
+Select * from github_events_test_9 where events_count <= 19122 and issues >= 5 AND stars >= 229;, elapsed: 0.44373416900634766s, found points: 514950
+Select * from github_events_test_9 where events_count <= 1767 and issues >= 6 AND stars >= 74;, elapsed: 0.6469693183898926s, found points: 850615
+Select * from github_events_test_9 where start_date <= 20190111 AND end_date >= 20181006 AND stars >= 83;, elapsed: 0.7258894443511963s, found points: 1092910
+Select * from github_events_test_9 where events_count <= 12953 and issues >= 5 AND stars >= 249;, elapsed: 0.40439295768737793s, found points: 470310
+Select * from github_events_test_9 where events_count <= 13865 and issues >= 6 AND stars >= 84;, elapsed: 0.743157148361206s, found points: 1014210
+Select * from github_events_test_9 where start_date <= 20190305 AND end_date >= 20190216 AND stars >= 196;, elapsed: 0.4033818244934082s, found points: 561020
+Select * from github_events_test_9 where start_date <= 20190603 AND end_date >= 20181231 AND stars >= 120;, elapsed: 0.5877935886383057s, found points: 866765
+Select * from github_events_test_9 where start_date <= 20190419 AND end_date >= 20181004 AND stars >= 290;, elapsed: 0.3262317180633545s, found points: 415225
+Select * from github_events_test_9 where events_count <= 5954 and issues >= 1 AND stars >= 145;, elapsed: 0.5905847549438477s, found points: 762170
+Select * from github_events_test_9 where events_count <= 10786 and issues >= 5 AND stars >= 195;, elapsed: 0.46469974517822266s, found points: 564790
+Select * from github_events_test_9 where stars >= 115 and forks >= 63;, elapsed: 0.4734025001525879s, found points: 576875
+Select * from github_events_test_9 where stars >= 190 and forks >= 68;, elapsed: 0.3985140323638916s, found points: 466705
+Select * from github_events_test_9 where events_count <= 13045 and issues >= 1 AND stars >= 149;, elapsed: 0.5913774967193604s, found points: 791445
+Select * from github_events_test_9 where start_date <= 20190804 AND end_date >= 20190830 AND stars >= 200;, elapsed: 0.4588479995727539s, found points: 566990
+Select * from github_events_test_9 where stars >= 264 and forks >= 7;, elapsed: 0.4206407070159912s, found points: 533245
+Select * from github_events_test_9 where stars >= 320 and forks >= 21;, elapsed: 0.3565082550048828s, found points: 439755
+Select * from github_events_test_9 where events_count <= 14773 and issues >= 1 AND stars >= 307;, elapsed: 0.4034762382507324s, found points: 425830
+Select * from github_events_test_9 where start_date <= 20181129 AND end_date >= 20180112 AND stars >= 202;, elapsed: 0.39641690254211426s, found points: 546675
+Select * from github_events_test_9 where events_count <= 6753 and issues >= 4 AND stars >= 219;, elapsed: 0.4399404525756836s, found points: 500565
+Select * from github_events_test_9 where events_count <= 17629 and issues >= 3 AND stars >= 152;, elapsed: 0.5616517066955566s, found points: 743420
+Select * from github_events_test_9 where start_date <= 20191114 AND end_date >= 20180223 AND stars >= 204;, elapsed: 0.4343726634979248s, found points: 601905
+Select * from github_events_test_9 where stars >= 233 and forks >= 40;, elapsed: 0.4164278507232666s, found points: 516405
+Select * from github_events_test_9 where events_count <= 4435 and issues >= 4 AND stars >= 76;, elapsed: 0.7675459384918213s, found points: 1086000
+Select * from github_events_test_9 where stars >= 253 and forks >= 46;, elapsed: 0.3829152584075928s, found points: 471705
+Select * from github_events_test_9 where stars >= 315 and forks >= 18;, elapsed: 0.36898064613342285s, found points: 448645
+Select * from github_events_test_9 where start_date <= 20180702 AND end_date >= 20180316 AND stars >= 233;, elapsed: 0.35426831245422363s, found points: 456915
+Select * from github_events_test_9 where stars >= 34 and forks >= 50;, elapsed: 0.6999895572662354s, found points: 838230
+Select * from github_events_test_9 where start_date <= 20181205 AND end_date >= 20190216 AND stars >= 130;, elapsed: 0.5362823009490967s, found points: 754935
+Select * from github_events_test_9 where events_count <= 7745 and issues >= 6 AND stars >= 68;, elapsed: 0.8139863014221191s, found points: 1120790
+Select * from github_events_test_9 where events_count <= 8320 and issues >= 9 AND stars >= 135;, elapsed: 0.5298051834106445s, found points: 657560
+Select * from github_events_test_9 where start_date <= 20180423 AND end_date >= 20190510 AND stars >= 199;, elapsed: 0.37626171112060547s, found points: 483855
+Select * from github_events_test_9 where start_date <= 20191213 AND end_date >= 20190204 AND stars >= 93;, elapsed: 0.7487940788269043s, found points: 1110155
+Select * from github_events_test_9 where start_date <= 20191010 AND end_date >= 20181004 AND stars >= 238;, elapsed: 0.3801734447479248s, found points: 515845
+Select * from github_events_test_9 where start_date <= 20180722 AND end_date >= 20191013 AND stars >= 135;, elapsed: 0.48874998092651367s, found points: 669375
+Select * from github_events_test_9 where events_count <= 534 and issues >= 4 AND stars >= 79;, elapsed: 0.49021100997924805s, found points: 493245
+Select * from github_events_test_9 where events_count <= 13464 and issues >= 2 AND stars >= 137;, elapsed: 0.6266975402832031s, found points: 827755
+Select * from github_events_test_9 where start_date <= 20191117 AND end_date >= 20191021 AND stars >= 247;, elapsed: 0.37509870529174805s, found points: 484550
+Select * from github_events_test_9 where start_date <= 20190707 AND end_date >= 20191212 AND stars >= 83;, elapsed: 0.7290990352630615s, found points: 1099800
+Select * from github_events_test_9 where stars >= 104 and forks >= 15;, elapsed: 0.7070605754852295s, found points: 1074765
+Select * from github_events_test_9 where stars >= 110 and forks >= 85;, elapsed: 0.4063560962677002s, found points: 459995
+Select * from github_events_test_9 where start_date <= 20180314 AND end_date >= 20180320 AND stars >= 195;, elapsed: 0.38635754585266113s, found points: 501920
+Select * from github_events_test_9 where start_date <= 20190314 AND end_date >= 20190718 AND stars >= 189;, elapsed: 0.41130948066711426s, found points: 568345
+Select * from github_events_test_9 where start_date <= 20190411 AND end_date >= 20180804 AND stars >= 141;, elapsed: 0.5451548099517822s, found points: 756555
+Select * from github_events_test_9 where start_date <= 20190121 AND end_date >= 20190208 AND stars >= 206;, elapsed: 0.3925166130065918s, found points: 530750
+Select * from github_events_test_9 where stars >= 271 and forks >= 1;, elapsed: 0.40707945823669434s, found points: 523840
+Select * from github_events_test_9 where stars >= 251 and forks >= 5;, elapsed: 0.447068452835083s, found points: 558025
+Select * from github_events_test_9 where events_count <= 15248 and issues >= 8 AND stars >= 106;, elapsed: 0.6204042434692383s, found points: 823100
+Select * from github_events_test_9 where events_count <= 11964 and issues >= 5 AND stars >= 187;, elapsed: 0.5005395412445068s, found points: 588580
+Select * from github_events_test_9 where start_date <= 20180104 AND end_date >= 20180425 AND stars >= 107;, elapsed: 0.5741822719573975s, found points: 768335
+Select * from github_events_test_9 where stars >= 242 and forks >= 5;, elapsed: 0.45966601371765137s, found points: 575865
+Select * from github_events_test_9 where events_count <= 4045 and issues >= 4 AND stars >= 222;, elapsed: 0.40352845191955566s, found points: 450985
+Select * from github_events_test_9 where events_count <= 3065 and issues >= 6 AND stars >= 103;, elapsed: 0.5974252223968506s, found points: 758630
+Select * from github_events_test_9 where start_date <= 20190415 AND end_date >= 20181121 AND stars >= 163;, elapsed: 0.47559523582458496s, found points: 668635
+Select * from github_events_test_9 where start_date <= 20190428 AND end_date >= 20190409 AND stars >= 142;, elapsed: 0.5117402076721191s, found points: 740690
+Select * from github_events_test_9 where events_count <= 2808 and issues >= 5 AND stars >= 202;, elapsed: 0.405184268951416s, found points: 432630
+Select * from github_events_test_9 where start_date <= 20190413 AND end_date >= 20181020 AND stars >= 161;, elapsed: 0.47747349739074707s, found points: 676650
+Select * from github_events_test_9 where events_count <= 6822 and issues >= 5 AND stars >= 175;, elapsed: 0.5018136501312256s, found points: 588190
+Select * from github_events_test_9 where start_date <= 20180505 AND end_date >= 20190409 AND stars >= 211;, elapsed: 0.3715705871582031s, found points: 467615
+Select * from github_events_test_9 where start_date <= 20180312 AND end_date >= 20180606 AND stars >= 191;, elapsed: 0.38039159774780273s, found points: 506050
+Select * from github_events_test_9 where start_date <= 20190626 AND end_date >= 20191208 AND stars >= 154;, elapsed: 0.4753451347351074s, found points: 683570
+Select * from github_events_test_9 where stars >= 176 and forks >= 84;, elapsed: 0.3720550537109375s, found points: 419765
+Select * from github_events_test_9 where stars >= 32 and forks >= 53;, elapsed: 0.6353776454925537s, found points: 799360
+Select * from github_events_test_9 where start_date <= 20180526 AND end_date >= 20181006 AND stars >= 220;, elapsed: 0.36446595191955566s, found points: 463225
+Select * from github_events_test_9 where stars >= 88 and forks >= 47;, elapsed: 0.5773987770080566s, found points: 758130
+Select * from github_events_test_9 where events_count <= 10544 and issues >= 1 AND stars >= 88;, elapsed: 0.8256194591522217s, found points: 1187380
+Select * from github_events_test_9 where start_date <= 20190605 AND end_date >= 20191203 AND stars >= 81;, elapsed: 0.7283403873443604s, found points: 1109715
+Select * from github_events_test_9 where start_date <= 20191212 AND end_date >= 20180411 AND stars >= 167;, elapsed: 0.4761962890625s, found points: 713665
+Select * from github_events_test_9 where start_date <= 20190801 AND end_date >= 20190906 AND stars >= 268;, elapsed: 0.3426094055175781s, found points: 443365
+Select * from github_events_test_9 where events_count <= 10416 and issues >= 7 AND stars >= 137;, elapsed: 0.5576832294464111s, found points: 698025
+Select * from github_events_test_9 where start_date <= 20190517 AND end_date >= 20180816 AND stars >= 136;, elapsed: 0.5549330711364746s, found points: 789805
+Select * from github_events_test_9 where stars >= 263 and forks >= 13;, elapsed: 0.4264397621154785s, found points: 530085
+Select * from github_events_test_9 where events_count <= 12125 and issues >= 2 AND stars >= 285;, elapsed: 0.3842024803161621s, found points: 443090
+Select * from github_events_test_9 where start_date <= 20190224 AND end_date >= 20180405 AND stars >= 131;, elapsed: 0.5558609962463379s, found points: 794765
+Select * from github_events_test_9 where start_date <= 20190531 AND end_date >= 20181228 AND stars >= 150;, elapsed: 0.5129146575927734s, found points: 725195
+Select * from github_events_test_9 where stars >= 316 and forks >= 30;, elapsed: 0.3770308494567871s, found points: 432060
+Select * from github_events_test_9 where events_count <= 15459 and issues >= 8 AND stars >= 273;, elapsed: 0.3700399398803711s, found points: 418175
+Select * from github_events_test_9 where events_count <= 8220 and issues >= 9 AND stars >= 159;, elapsed: 0.4882795810699463s, found points: 585315
+Select * from github_events_test_9 where events_count <= 14763 and issues >= 0 AND stars >= 300;, elapsed: 0.4129674434661865s, found points: 453470
+Select * from github_events_test_9 where start_date <= 20180406 AND end_date >= 20191030 AND stars >= 60;, elapsed: 0.835669994354248s, found points: 1144255
+Select * from github_events_test_9 where events_count <= 9330 and issues >= 0 AND stars >= 105;, elapsed: 0.7494652271270752s, found points: 1115075
+Select * from github_events_test_9 where start_date <= 20180425 AND end_date >= 20190614 AND stars >= 225;, elapsed: 0.3621091842651367s, found points: 436765
+Select * from github_events_test_9 where start_date <= 20180925 AND end_date >= 20190930 AND stars >= 118;, elapsed: 0.5420777797698975s, found points: 763555
+Select * from github_events_test_9 where stars >= 78 and forks >= 91;, elapsed: 0.40597057342529297s, found points: 451925
+Select * from github_events_test_9 where stars >= 74 and forks >= 95;, elapsed: 0.41672706604003906s, found points: 436175
+Select * from github_events_test_9 where events_count <= 18742 and issues >= 7 AND stars >= 84;, elapsed: 0.6768045425415039s, found points: 987000
+Select * from github_events_test_9 where start_date <= 20191215 AND end_date >= 20180611 AND stars >= 310;, elapsed: 0.3296968936920166s, found points: 418690
+Select * from github_events_test_9 where start_date <= 20191007 AND end_date >= 20190822 AND stars >= 173;, elapsed: 0.44881296157836914s, found points: 650290
+Select * from github_events_test_9 where start_date <= 20180501 AND end_date >= 20190615 AND stars >= 111;, elapsed: 0.5693132877349854s, found points: 759155
+Select * from github_events_test_9 where stars >= 252 and forks >= 40;, elapsed: 0.38796186447143555s, found points: 490150
+Select * from github_events_test_9 where start_date <= 20181002 AND end_date >= 20180226 AND stars >= 174;, elapsed: 0.4395155906677246s, found points: 602400
+Select * from github_events_test_9 where events_count <= 13379 and issues >= 0 AND stars >= 127;, elapsed: 0.695340633392334s, found points: 968160
+Select * from github_events_test_9 where start_date <= 20181216 AND end_date >= 20190703 AND stars >= 166;, elapsed: 0.4490952491760254s, found points: 612345
+Select * from github_events_test_9 where events_count <= 8010 and issues >= 6 AND stars >= 63;, elapsed: 0.8224294185638428s, found points: 1176035
+Select * from github_events_test_9 where start_date <= 20180316 AND end_date >= 20180223 AND stars >= 194;, elapsed: 0.40179944038391113s, found points: 505795
+Select * from github_events_test_9 where start_date <= 20190102 AND end_date >= 20190506 AND stars >= 262;, elapsed: 0.34353160858154297s, found points: 427680
+Select * from github_events_test_9 where stars >= 47 and forks >= 87;, elapsed: 0.438521146774292s, found points: 490105
+Select * from github_events_test_9 where start_date <= 20190328 AND end_date >= 20181209 AND stars >= 104;, elapsed: 0.64736008644104s, found points: 942685
+Select * from github_events_test_9 where events_count <= 6932 and issues >= 4 AND stars >= 189;, elapsed: 0.49713921546936035s, found points: 569855
+Select * from github_events_test_9 where events_count <= 18267 and issues >= 9 AND stars >= 145;, elapsed: 0.5347859859466553s, found points: 658785
+Select * from github_events_test_9 where stars >= 28 and forks >= 35;, elapsed: 0.8419642448425293s, found points: 1164085
+Select * from github_events_test_9 where start_date <= 20180201 AND end_date >= 20180428 AND stars >= 102;, elapsed: 0.5854737758636475s, found points: 809020
+Select * from github_events_test_9 where start_date <= 20190104 AND end_date >= 20180628 AND stars >= 177;, elapsed: 0.44324731826782227s, found points: 607845
+Select * from github_events_test_9 where events_count <= 10288 and issues >= 10 AND stars >= 138;, elapsed: 0.5367586612701416s, found points: 644435
+Select * from github_events_test_9 where events_count <= 17088 and issues >= 1 AND stars >= 219;, elapsed: 0.4708559513092041s, found points: 579385
+Select * from github_events_test_9 where events_count <= 6859 and issues >= 5 AND stars >= 85;, elapsed: 0.7386257648468018s, found points: 999065
+Select * from github_events_test_9 where start_date <= 20190411 AND end_date >= 20190916 AND stars >= 82;, elapsed: 0.7349247932434082s, found points: 1090140
+Select * from github_events_test_9 where events_count <= 7911 and issues >= 8 AND stars >= 66;, elapsed: 0.7488377094268799s, found points: 1058225
+Select * from github_events_test_9 where events_count <= 11836 and issues >= 6 AND stars >= 228;, elapsed: 0.41960740089416504s, found points: 492285
+Select * from github_events_test_9 where start_date <= 20190918 AND end_date >= 20180717 AND stars >= 160;, elapsed: 0.49616122245788574s, found points: 719760
+Select * from github_events_test_9 where stars >= 76 and forks >= 82;, elapsed: 0.4511411190032959s, found points: 498085
+Select * from github_events_test_9 where stars >= 264 and forks >= 33;, elapsed: 0.3981492519378662s, found points: 491695
+Select * from github_events_test_9 where stars >= 249 and forks >= 62;, elapsed: 0.3687858581542969s, found points: 430980
+Select * from github_events_test_9 where start_date <= 20190907 AND end_date >= 20181127 AND stars >= 173;, elapsed: 0.48728466033935547s, found points: 666205
+Select * from github_events_test_9 where start_date <= 20180204 AND end_date >= 20180612 AND stars >= 78;, elapsed: 0.6869819164276123s, found points: 985690
+Select * from github_events_test_9 where start_date <= 20180906 AND end_date >= 20181205 AND stars >= 223;, elapsed: 0.38019704818725586s, found points: 475230
+Select * from github_events_test_9 where stars >= 43 and forks >= 88;, elapsed: 0.4465670585632324s, found points: 487340
+Select * from github_events_test_9 where stars >= 159 and forks >= 38;, elapsed: 0.4949626922607422s, found points: 662670
+Select * from github_events_test_9 where events_count <= 19641 and issues >= 9 AND stars >= 151;, elapsed: 0.5188083648681641s, found points: 642835
+Select * from github_events_test_9 where stars >= 134 and forks >= 45;, elapsed: 0.5074679851531982s, found points: 671735
+Select * from github_events_test_9 where events_count <= 7970 and issues >= 1 AND stars >= 164;, elapsed: 0.5652899742126465s, found points: 706570
+Select * from github_events_test_9 where start_date <= 20180614 AND end_date >= 20181023 AND stars >= 92;, elapsed: 0.6430189609527588s, found points: 922570
+Select * from github_events_test_9 where events_count <= 13740 and issues >= 8 AND stars >= 123;, elapsed: 0.5669970512390137s, found points: 744950
+Select * from github_events_test_9 where events_count <= 12134 and issues >= 3 AND stars >= 227;, elapsed: 0.45315027236938477s, found points: 526735
+Select * from github_events_test_9 where events_count <= 2446 and issues >= 8 AND stars >= 141;, elapsed: 0.45843052864074707s, found points: 522890
+Select * from github_events_test_9 where start_date <= 20190803 AND end_date >= 20191106 AND stars >= 159;, elapsed: 0.48938751220703125s, found points: 677115
+Select * from github_events_test_9 where start_date <= 20190913 AND end_date >= 20191211 AND stars >= 120;, elapsed: 0.595996618270874s, found points: 850230
+Select * from github_events_test_9 where start_date <= 20180219 AND end_date >= 20190217 AND stars >= 75;, elapsed: 0.7007076740264893s, found points: 998765
+Select * from github_events_test_9 where events_count <= 5561 and issues >= 6 AND stars >= 98;, elapsed: 0.6622016429901123s, found points: 858815
+Select * from github_events_test_9 where events_count <= 9910 and issues >= 6 AND stars >= 196;, elapsed: 0.4645264148712158s, found points: 546325
+Select * from github_events_test_9 where start_date <= 20190610 AND end_date >= 20190228 AND stars >= 200;, elapsed: 0.43086934089660645s, found points: 571965
+Select * from github_events_test_9 where start_date <= 20190115 AND end_date >= 20190104 AND stars >= 161;, elapsed: 0.47337865829467773s, found points: 650075
+Select * from github_events_test_9 where events_count <= 16237 and issues >= 10 AND stars >= 254;, elapsed: 0.3966693878173828s, found points: 429060
+Select * from github_events_test_9 where events_count <= 11744 and issues >= 1 AND stars >= 248;, elapsed: 0.44702816009521484s, found points: 508265
+Select * from github_events_test_9 where start_date <= 20180818 AND end_date >= 20180223 AND stars >= 243;, elapsed: 0.35170674324035645s, found points: 450265
+Select * from github_events_test_9 where events_count <= 3819 and issues >= 8 AND stars >= 123;, elapsed: 0.5172338485717773s, found points: 649480
+Select * from github_events_test_9 where events_count <= 10717 and issues >= 0 AND stars >= 258;, elapsed: 0.4455087184906006s, found points: 509870
+Select * from github_events_test_9 where stars >= 277 and forks >= 16;, elapsed: 0.41138434410095215s, found points: 503425
+Select * from github_events_test_9 where events_count <= 16908 and issues >= 1 AND stars >= 265;, elapsed: 0.4261653423309326s, found points: 490810
+Select * from github_events_test_9 where start_date <= 20190824 AND end_date >= 20190408 AND stars >= 218;, elapsed: 0.3975944519042969s, found points: 541540
+Select * from github_events_test_9 where stars >= 70 and forks >= 66;, elapsed: 0.5058226585388184s, found points: 608805
+Select * from github_events_test_9 where start_date <= 20180407 AND end_date >= 20190618 AND stars >= 229;, elapsed: 0.36957478523254395s, found points: 426800
+Select * from github_events_test_9 where stars >= 14 and forks >= 77;, elapsed: 0.5552370548248291s, found points: 578960
+Select * from github_events_test_9 where start_date <= 20180809 AND end_date >= 20190308 AND stars >= 206;, elapsed: 0.3887617588043213s, found points: 497840
+Select * from github_events_test_9 where events_count <= 14657 and issues >= 9 AND stars >= 64;, elapsed: 0.7841963768005371s, found points: 1070260
+Select * from github_events_test_9 where stars >= 302 and forks >= 28;, elapsed: 0.373246431350708s, found points: 452035
+Select * from github_events_test_9 where stars >= 261 and forks >= 55;, elapsed: 0.37715864181518555s, found points: 438575
+Select * from github_events_test_9 where start_date <= 20190722 AND end_date >= 20190124 AND stars >= 233;, elapsed: 0.3818061351776123s, found points: 511030
+Select * from github_events_test_9 where start_date <= 20190308 AND end_date >= 20190228 AND stars >= 192;, elapsed: 0.4271049499511719s, found points: 570795
+Select * from github_events_test_9 where events_count <= 19844 and issues >= 5 AND stars >= 297;, elapsed: 0.3970646858215332s, found points: 416915
+Select * from github_events_test_9 where start_date <= 20180309 AND end_date >= 20190923 AND stars >= 136;, elapsed: 0.4647824764251709s, found points: 626125
+Select * from github_events_test_9 where events_count <= 6542 and issues >= 2 AND stars >= 117;, elapsed: 0.6758053302764893s, found points: 893150
+Select * from github_events_test_9 where stars >= 44 and forks >= 72;, elapsed: 0.5098536014556885s, found points: 587375
+Select * from github_events_test_9 where events_count <= 11100 and issues >= 7 AND stars >= 249;, elapsed: 0.4208261966705322s, found points: 446150
+Select * from github_events_test_9 where stars >= 164 and forks >= 15;, elapsed: 0.5656278133392334s, found points: 772735
+Select * from github_events_test_9 where start_date <= 20180201 AND end_date >= 20180523 AND stars >= 200;, elapsed: 0.37143397331237793s, found points: 478760
+Select * from github_events_test_9 where stars >= 248 and forks >= 17;, elapsed: 0.44394779205322266s, found points: 550555
+Select * from github_events_test_9 where events_count <= 5643 and issues >= 5 AND stars >= 193;, elapsed: 0.44498276710510254s, found points: 528370
+Select * from github_events_test_9 where stars >= 70 and forks >= 50;, elapsed: 0.5806777477264404s, found points: 764825
+Select * from github_events_test_9 where events_count <= 11955 and issues >= 2 AND stars >= 225;, elapsed: 0.4644603729248047s, found points: 544925
+Select * from github_events_test_9 where start_date <= 20180302 AND end_date >= 20190321 AND stars >= 147;, elapsed: 0.4508533477783203s, found points: 604540
+Select * from github_events_test_9 where start_date <= 20180906 AND end_date >= 20190415 AND stars >= 167;, elapsed: 0.44198179244995117s, found points: 594755
+Select * from github_events_test_9 where start_date <= 20180216 AND end_date >= 20190928 AND stars >= 127;, elapsed: 0.48909592628479004s, found points: 650710
+Select * from github_events_test_9 where stars >= 198 and forks >= 69;, elapsed: 0.38660287857055664s, found points: 455395
+Select * from github_events_test_9 where start_date <= 20190906 AND end_date >= 20190817 AND stars >= 77;, elapsed: 0.8402841091156006s, found points: 1212630
+Select * from github_events_test_9 where stars >= 313 and forks >= 40;, elapsed: 0.37306904792785645s, found points: 418555
+Select * from github_events_test_9 where events_count <= 4700 and issues >= 0 AND stars >= 151;, elapsed: 0.5839173793792725s, found points: 764175
+Select * from github_events_test_9 where start_date <= 20180210 AND end_date >= 20181223 AND stars >= 116;, elapsed: 0.5460243225097656s, found points: 722695
+Select * from github_events_test_9 where stars >= 241 and forks >= 5;, elapsed: 0.47353339195251465s, found points: 577860
+Select * from github_events_test_9 where events_count <= 3196 and issues >= 2 AND stars >= 240;, elapsed: 0.3919546604156494s, found points: 414870
+Select * from github_events_test_9 where start_date <= 20181108 AND end_date >= 20191006 AND stars >= 150;, elapsed: 0.4815521240234375s, found points: 645470
+Select * from github_events_test_9 where start_date <= 20180514 AND end_date >= 20190216 AND stars >= 132;, elapsed: 0.5053656101226807s, found points: 684115
+Select * from github_events_test_9 where start_date <= 20190726 AND end_date >= 20190115 AND stars >= 142;, elapsed: 0.5478405952453613s, found points: 769765
+Select * from github_events_test_9 where events_count <= 4721 and issues >= 4 AND stars >= 185;, elapsed: 0.46278929710388184s, found points: 548430
+Select * from github_events_test_9 where events_count <= 8985 and issues >= 10 AND stars >= 187;, elapsed: 0.43743109703063965s, found points: 513100
+Select * from github_events_test_9 where stars >= 194 and forks >= 37;, elapsed: 0.45542049407958984s, found points: 592355
+Select * from github_events_test_9 where start_date <= 20181113 AND end_date >= 20190723 AND stars >= 136;, elapsed: 0.508312463760376s, found points: 705195
+Select * from github_events_test_9 where start_date <= 20190504 AND end_date >= 20190312 AND stars >= 89;, elapsed: 0.7298121452331543s, found points: 1069050
+Select * from github_events_test_9 where events_count <= 2709 and issues >= 8 AND stars >= 168;, elapsed: 0.418656587600708s, found points: 465510
+Select * from github_events_test_9 where start_date <= 20180404 AND end_date >= 20190407 AND stars >= 127;, elapsed: 0.522197961807251s, found points: 686920
+Select * from github_events_test_9 where start_date <= 20181230 AND end_date >= 20190213 AND stars >= 106;, elapsed: 0.6231977939605713s, found points: 890655
+Select * from github_events_test_9 where start_date <= 20191230 AND end_date >= 20191130 AND stars >= 135;, elapsed: 0.5563926696777344s, found points: 797605
+Select * from github_events_test_9 where start_date <= 20190106 AND end_date >= 20191006 AND stars >= 123;, elapsed: 0.544966459274292s, found points: 769465
+Select * from github_events_test_9 where events_count <= 10548 and issues >= 10 AND stars >= 135;, elapsed: 0.5467004776000977s, found points: 655590
+Select * from github_events_test_9 where events_count <= 17133 and issues >= 1 AND stars >= 93;, elapsed: 0.8506472110748291s, found points: 1156560
+Select * from github_events_test_9 where events_count <= 2719 and issues >= 4 AND stars >= 73;, elapsed: 0.7578129768371582s, found points: 1043265
+Select * from github_events_test_9 where stars >= 236 and forks >= 49;, elapsed: 0.41466379165649414s, found points: 483210
+Select * from github_events_test_9 where start_date <= 20191027 AND end_date >= 20181010 AND stars >= 231;, elapsed: 0.3957231044769287s, found points: 530875
+Select * from github_events_test_9 where start_date <= 20190430 AND end_date >= 20180815 AND stars >= 124;, elapsed: 0.6106057167053223s, found points: 842760
+Select * from github_events_test_9 where start_date <= 20180609 AND end_date >= 20191008 AND stars >= 62;, elapsed: 0.8541407585144043s, found points: 1163600
+Select * from github_events_test_9 where stars >= 41 and forks >= 74;, elapsed: 0.5134081840515137s, found points: 575535
+Select * from github_events_test_9 where start_date <= 20180107 AND end_date >= 20190617 AND stars >= 195;, elapsed: 0.3679502010345459s, found points: 463590
+Select * from github_events_test_9 where events_count <= 19281 and issues >= 6 AND stars >= 162;, elapsed: 0.5487096309661865s, found points: 658230
+Select * from github_events_test_9 where stars >= 69 and forks >= 75;, elapsed: 0.4826340675354004s, found points: 545150
+Select * from github_events_test_9 where stars >= 251 and forks >= 44;, elapsed: 0.39849400520324707s, found points: 479875
+Select * from github_events_test_9 where events_count <= 2413 and issues >= 9 AND stars >= 162;, elapsed: 0.42090606689453125s, found points: 448040
+Select * from github_events_test_9 where events_count <= 3192 and issues >= 6 AND stars >= 211;, elapsed: 0.40009641647338867s, found points: 421600
+Select * from github_events_test_9 where start_date <= 20190514 AND end_date >= 20190927 AND stars >= 201;, elapsed: 0.40939784049987793s, found points: 549270
+Select * from github_events_test_9 where stars >= 57 and forks >= 36;, elapsed: 0.7630269527435303s, found points: 1018320
+Select * from github_events_test_9 where start_date <= 20180316 AND end_date >= 20181119 AND stars >= 162;, elapsed: 0.42472243309020996s, found points: 571220
+Select * from github_events_test_9 where start_date <= 20190722 AND end_date >= 20180114 AND stars >= 224;, elapsed: 0.4203023910522461s, found points: 542715
+Select * from github_events_test_9 where events_count <= 6081 and issues >= 7 AND stars >= 131;, elapsed: 0.5396254062652588s, found points: 684450
+Select * from github_events_test_9 where start_date <= 20190522 AND end_date >= 20190911 AND stars >= 198;, elapsed: 0.4418470859527588s, found points: 558640
+Select * from github_events_test_9 where events_count <= 15154 and issues >= 1 AND stars >= 192;, elapsed: 0.5198910236358643s, found points: 644565
+Select * from github_events_test_9 where events_count <= 8566 and issues >= 6 AND stars >= 69;, elapsed: 0.8180086612701416s, found points: 1118035
+Select * from github_events_test_9 where events_count <= 14314 and issues >= 5 AND stars >= 129;, elapsed: 0.5982210636138916s, found points: 784960
+Select * from github_events_test_9 where start_date <= 20181115 AND end_date >= 20180804 AND stars >= 210;, elapsed: 0.40865397453308105s, found points: 518245
+Select * from github_events_test_9 where stars >= 341 and forks >= 22;, elapsed: 0.3624889850616455s, found points: 415070
+Select * from github_events_test_9 where events_count <= 15184 and issues >= 10 AND stars >= 57;, elapsed: 0.8554975986480713s, found points: 1104380
+Select * from github_events_test_9 where start_date <= 20190816 AND end_date >= 20191025 AND stars >= 169;, elapsed: 0.47768068313598633s, found points: 648005
+Select * from github_events_test_9 where events_count <= 2092 and issues >= 2 AND stars >= 172;, elapsed: 0.4469492435455322s, found points: 511060
+Select * from github_events_test_9 where events_count <= 19922 and issues >= 0 AND stars >= 185;, elapsed: 0.5458106994628906s, found points: 711360
+Select * from github_events_test_9 where events_count <= 4808 and issues >= 1 AND stars >= 150;, elapsed: 0.5606014728546143s, found points: 720475
+Select * from github_events_test_9 where start_date <= 20180330 AND end_date >= 20190729 AND stars >= 75;, elapsed: 0.7102305889129639s, found points: 990955
+Select * from github_events_test_9 where events_count <= 11912 and issues >= 6 AND stars >= 109;, elapsed: 0.6294577121734619s, found points: 849200
+Select * from github_events_test_9 where stars >= 189 and forks >= 49;, elapsed: 0.456862211227417s, found points: 547265
+Select * from github_events_test_9 where start_date <= 20190512 AND end_date >= 20180218 AND stars >= 126;, elapsed: 0.6014354228973389s, found points: 848995
+Select * from github_events_test_9 where events_count <= 2616 and issues >= 6 AND stars >= 176;, elapsed: 0.416456937789917s, found points: 468405
+Select * from github_events_test_9 where stars >= 64 and forks >= 47;, elapsed: 0.6219310760498047s, found points: 815585
+Select * from github_events_test_9 where events_count <= 8989 and issues >= 0 AND stars >= 153;, elapsed: 0.6042399406433105s, found points: 806325
+Select * from github_events_test_9 where events_count <= 14151 and issues >= 7 AND stars >= 86;, elapsed: 0.7268514633178711s, found points: 963600
+Select * from github_events_test_9 where stars >= 237 and forks >= 53;, elapsed: 0.4291541576385498s, found points: 469925
+Select * from github_events_test_9 where start_date <= 20180623 AND end_date >= 20190929 AND stars >= 191;, elapsed: 0.3941457271575928s, found points: 505435
+Select * from github_events_test_9 where events_count <= 8408 and issues >= 6 AND stars >= 218;, elapsed: 0.4750204086303711s, found points: 493300
+Select * from github_events_test_9 where stars >= 339 and forks >= 3;, elapsed: 0.3694326877593994s, found points: 427125
+Select * from github_events_test_9 where start_date <= 20180213 AND end_date >= 20190323 AND stars >= 228;, elapsed: 0.3407731056213379s, found points: 422725
+Select * from github_events_test_9 where events_count <= 11519 and issues >= 4 AND stars >= 238;, elapsed: 0.45478010177612305s, found points: 495110
+Select * from github_events_test_9 where events_count <= 9003 and issues >= 7 AND stars >= 94;, elapsed: 0.6546237468719482s, found points: 888645
+Select * from github_events_test_9 where events_count <= 1449 and issues >= 3 AND stars >= 134;, elapsed: 0.48854899406433105s, found points: 544630
+Select * from github_events_test_9 where events_count <= 18884 and issues >= 1 AND stars >= 107;, elapsed: 0.7509891986846924s, found points: 1041740
+Select * from github_events_test_9 where stars >= 224 and forks >= 21;, elapsed: 0.461353063583374s, found points: 588190
+Select * from github_events_test_9 where start_date <= 20180905 AND end_date >= 20180902 AND stars >= 242;, elapsed: 0.34901952743530273s, found points: 447880
+Select * from github_events_test_9 where start_date <= 20190813 AND end_date >= 20180314 AND stars >= 111;, elapsed: 0.6723520755767822s, found points: 963435
+Select * from github_events_test_9 where events_count <= 3087 and issues >= 5 AND stars >= 202;, elapsed: 0.4005088806152344s, found points: 445570
+Select * from github_events_test_9 where events_count <= 3918 and issues >= 3 AND stars >= 164;, elapsed: 0.5226302146911621s, found points: 604570
+Select * from github_events_test_9 where start_date <= 20191017 AND end_date >= 20180216 AND stars >= 131;, elapsed: 0.592963695526123s, found points: 861655
+Select * from github_events_test_9 where start_date <= 20180213 AND end_date >= 20180502 AND stars >= 147;, elapsed: 0.46010732650756836s, found points: 616810
+Select * from github_events_test_9 where stars >= 233 and forks >= 26;, elapsed: 0.4484984874725342s, found points: 558155
+Select * from github_events_test_9 where stars >= 257 and forks >= 60;, elapsed: 0.37024545669555664s, found points: 429180
+Select * from github_events_test_9 where stars >= 8 and forks >= 71;, elapsed: 0.5950675010681152s, found points: 635140
+Select * from github_events_test_9 where events_count <= 6197 and issues >= 1 AND stars >= 284;, elapsed: 0.3962399959564209s, found points: 414295
+Select * from github_events_test_9 where start_date <= 20180503 AND end_date >= 20180213 AND stars >= 134;, elapsed: 0.5095322132110596s, found points: 695365
+Select * from github_events_test_9 where start_date <= 20180111 AND end_date >= 20180416 AND stars >= 101;, elapsed: 0.6003704071044922s, found points: 806395
+Select * from github_events_test_9 where stars >= 2 and forks >= 54;, elapsed: 0.7389435768127441s, found points: 856405
+Select * from github_events_test_9 where events_count <= 16119 and issues >= 7 AND stars >= 231;, elapsed: 0.43570780754089355s, found points: 486795
+Select * from github_events_test_9 where start_date <= 20190721 AND end_date >= 20180502 AND stars >= 156;, elapsed: 0.49862217903137207s, found points: 727495
+Select * from github_events_test_9 where stars >= 15 and forks >= 38;, elapsed: 0.8785996437072754s, found points: 1133670
+Select * from github_events_test_9 where events_count <= 13705 and issues >= 7 AND stars >= 161;, elapsed: 0.48760390281677246s, found points: 633480
+Select * from github_events_test_9 where start_date <= 20180605 AND end_date >= 20180224 AND stars >= 161;, elapsed: 0.455380916595459s, found points: 611860
+Select * from github_events_test_9 where events_count <= 5182 and issues >= 3 AND stars >= 103;, elapsed: 0.6736876964569092s, found points: 917545
+Select * from github_events_test_9 where start_date <= 20180730 AND end_date >= 20180502 AND stars >= 176;, elapsed: 0.4375269412994385s, found points: 578555
+Select * from github_events_test_9 where stars >= 115 and forks >= 36;, elapsed: 0.5700044631958008s, found points: 798685
+Select * from github_events_test_9 where start_date <= 20190920 AND end_date >= 20190422 AND stars >= 292;, elapsed: 0.36524391174316406s, found points: 424210
+Select * from github_events_test_9 where events_count <= 11489 and issues >= 5 AND stars >= 178;, elapsed: 0.5003724098205566s, found points: 610165
+Select * from github_events_test_9 where events_count <= 8214 and issues >= 8 AND stars >= 130;, elapsed: 0.5427768230438232s, found points: 692545
+Select * from github_events_test_9 where start_date <= 20180418 AND end_date >= 20190409 AND stars >= 211;, elapsed: 0.37268948554992676s, found points: 463920
+Select * from github_events_test_9 where stars >= 214 and forks >= 8;, elapsed: 0.48824620246887207s, found points: 637215
+Select * from github_events_test_9 where events_count <= 3058 and issues >= 4 AND stars >= 114;, elapsed: 0.6114554405212402s, found points: 759310
+Select * from github_events_test_9 where start_date <= 20190724 AND end_date >= 20190711 AND stars >= 174;, elapsed: 0.45905184745788574s, found points: 637375
+Select * from github_events_test_9 where start_date <= 20190222 AND end_date >= 20190107 AND stars >= 223;, elapsed: 0.38968944549560547s, found points: 503880
+Select * from github_events_test_9 where stars >= 8 and forks >= 82;, elapsed: 0.5306205749511719s, found points: 550950
+Select * from github_events_test_9 where stars >= 75 and forks >= 60;, elapsed: 0.5412366390228271s, found points: 654695
+Select * from github_events_test_9 where events_count <= 4481 and issues >= 1 AND stars >= 171;, elapsed: 0.5351893901824951s, found points: 634535
+Select * from github_events_test_9 where start_date <= 20191120 AND end_date >= 20190306 AND stars >= 140;, elapsed: 0.5486657619476318s, found points: 799180
+Select * from github_events_test_9 where start_date <= 20190820 AND end_date >= 20180128 AND stars >= 150;, elapsed: 0.537217378616333s, found points: 762215
+Select * from github_events_test_9 where start_date <= 20190913 AND end_date >= 20180207 AND stars >= 272;, elapsed: 0.356640100479126s, found points: 465550
+Select * from github_events_test_9 where stars >= 66 and forks >= 93;, elapsed: 0.4235954284667969s, found points: 449030
+Select * from github_events_test_9 where stars >= 138 and forks >= 14;, elapsed: 0.6111290454864502s, found points: 885560
+Select * from github_events_test_9 where events_count <= 12929 and issues >= 0 AND stars >= 160;, elapsed: 0.6101734638214111s, found points: 793645
+Select * from github_events_test_9 where start_date <= 20190825 AND end_date >= 20180306 AND stars >= 243;, elapsed: 0.3725473880767822s, found points: 509940
+Select * from github_events_test_9 where start_date <= 20181201 AND end_date >= 20191220 AND stars >= 233;, elapsed: 0.35892176628112793s, found points: 453000
+Select * from github_events_test_9 where stars >= 98 and forks >= 51;, elapsed: 0.5630402565002441s, found points: 697060
+Select * from github_events_test_9 where events_count <= 18124 and issues >= 2 AND stars >= 148;, elapsed: 0.5959794521331787s, found points: 787800
+Select * from github_events_test_9 where start_date <= 20190410 AND end_date >= 20191228 AND stars >= 80;, elapsed: 0.7531723976135254s, found points: 1088730
+Select * from github_events_test_9 where start_date <= 20191211 AND end_date >= 20190211 AND stars >= 283;, elapsed: 0.3450348377227783s, found points: 446150
+Select * from github_events_test_9 where start_date <= 20190429 AND end_date >= 20181104 AND stars >= 123;, elapsed: 0.6027512550354004s, found points: 842145
+Select * from github_events_test_9 where start_date <= 20181209 AND end_date >= 20180205 AND stars >= 147;, elapsed: 0.48404979705810547s, found points: 708805
+Select * from github_events_test_9 where events_count <= 12914 and issues >= 1 AND stars >= 147;, elapsed: 0.6388888359069824s, found points: 799790
+Select * from github_events_test_9 where events_count <= 18166 and issues >= 9 AND stars >= 267;, elapsed: 0.3910853862762451s, found points: 422295
+Select * from github_events_test_9 where events_count <= 9253 and issues >= 8 AND stars >= 117;, elapsed: 0.5977597236633301s, found points: 751285
+Select * from github_events_test_9 where start_date <= 20191011 AND end_date >= 20180820 AND stars >= 212;, elapsed: 0.4244520664215088s, found points: 571250
+Select * from github_events_test_9 where events_count <= 18909 and issues >= 9 AND stars >= 243;, elapsed: 0.40572118759155273s, found points: 455555
+Select * from github_events_test_9 where start_date <= 20181114 AND end_date >= 20180105 AND stars >= 114;, elapsed: 0.6069655418395996s, found points: 859240
+Select * from github_events_test_9 where start_date <= 20190814 AND end_date >= 20180708 AND stars >= 145;, elapsed: 0.5376548767089844s, found points: 772725
+Select * from github_events_test_9 where stars >= 158 and forks >= 44;, elapsed: 0.49118542671203613s, found points: 628520
+Select * from github_events_test_9 where events_count <= 11233 and issues >= 8 AND stars >= 69;, elapsed: 0.7741034030914307s, found points: 1053105
+Select * from github_events_test_9 where events_count <= 15033 and issues >= 3 AND stars >= 156;, elapsed: 0.5530760288238525s, found points: 723930
+Select * from github_events_test_9 where start_date <= 20191019 AND end_date >= 20181021 AND stars >= 126;, elapsed: 0.6340394020080566s, found points: 872125
+Select * from github_events_test_9 where events_count <= 14940 and issues >= 3 AND stars >= 240;, elapsed: 0.43786025047302246s, found points: 509785
+Select * from github_events_test_9 where start_date <= 20181230 AND end_date >= 20180928 AND stars >= 269;, elapsed: 0.3369936943054199s, found points: 425990
+Select * from github_events_test_9 where events_count <= 11953 and issues >= 6 AND stars >= 96;, elapsed: 0.6995551586151123s, found points: 923620
+Select * from github_events_test_9 where start_date <= 20190426 AND end_date >= 20190722 AND stars >= 153;, elapsed: 0.48952651023864746s, found points: 685045
+Select * from github_events_test_9 where start_date <= 20190703 AND end_date >= 20180206 AND stars >= 179;, elapsed: 0.4719851016998291s, found points: 650325
+Select * from github_events_test_9 where start_date <= 20190210 AND end_date >= 20190402 AND stars >= 192;, elapsed: 0.4167823791503906s, found points: 563215
+Select * from github_events_test_9 where start_date <= 20190309 AND end_date >= 20191225 AND stars >= 92;, elapsed: 0.6777405738830566s, found points: 967185
+Select * from github_events_test_9 where start_date <= 20190503 AND end_date >= 20190518 AND stars >= 169;, elapsed: 0.46293163299560547s, found points: 639265
+Select * from github_events_test_9 where events_count <= 6453 and issues >= 8 AND stars >= 116;, elapsed: 0.5824065208435059s, found points: 730785
+Select * from github_events_test_9 where start_date <= 20180105 AND end_date >= 20180708 AND stars >= 178;, elapsed: 0.395125150680542s, found points: 516450
+Select * from github_events_test_9 where events_count <= 11153 and issues >= 10 AND stars >= 253;, elapsed: 0.38684988021850586s, found points: 417340
+Select * from github_events_test_9 where events_count <= 3392 and issues >= 6 AND stars >= 75;, elapsed: 0.718421459197998s, found points: 967555
+Select * from github_events_test_9 where events_count <= 16995 and issues >= 8 AND stars >= 195;, elapsed: 0.46483540534973145s, found points: 544935
+Select * from github_events_test_9 where start_date <= 20181026 AND end_date >= 20181020 AND stars >= 104;, elapsed: 0.6373624801635742s, found points: 890515
+Select * from github_events_test_9 where start_date <= 20191016 AND end_date >= 20190812 AND stars >= 235;, elapsed: 0.3887355327606201s, found points: 505900
+Select * from github_events_test_9 where start_date <= 20180504 AND end_date >= 20190315 AND stars >= 188;, elapsed: 0.4098203182220459s, found points: 514230
+Select * from github_events_test_9 where start_date <= 20181012 AND end_date >= 20180816 AND stars >= 206;, elapsed: 0.4000129699707031s, found points: 519055
+Select * from github_events_test_9 where events_count <= 2604 and issues >= 7 AND stars >= 159;, elapsed: 0.4451117515563965s, found points: 495555
+Select * from github_events_test_9 where stars >= 292 and forks >= 31;, elapsed: 0.39084935188293457s, found points: 459205
+Select * from github_events_test_9 where start_date <= 20190424 AND end_date >= 20180314 AND stars >= 155;, elapsed: 0.5000183582305908s, found points: 712850
+Select * from github_events_test_9 where events_count <= 15175 and issues >= 4 AND stars >= 148;, elapsed: 0.5905230045318604s, found points: 735785
+Select * from github_events_test_9 where start_date <= 20180121 AND end_date >= 20190511 AND stars >= 78;, elapsed: 0.6807832717895508s, found points: 938955
+Select * from github_events_test_9 where stars >= 223 and forks >= 8;, elapsed: 0.47708916664123535s, found points: 614920
+Select * from github_events_test_9 where stars >= 121 and forks >= 31;, elapsed: 0.5792665481567383s, found points: 825875
+Select * from github_events_test_9 where events_count <= 1987 and issues >= 9 AND stars >= 40;, elapsed: 0.8172166347503662s, found points: 1111660
+Select * from github_events_test_9 where stars >= 163 and forks >= 77;, elapsed: 0.391207218170166s, found points: 455565
+Select * from github_events_test_9 where stars >= 100 and forks >= 68;, elapsed: 0.4787020683288574s, found points: 561425
+Select * from github_events_test_9 where start_date <= 20180914 AND end_date >= 20180905 AND stars >= 251;, elapsed: 0.3493809700012207s, found points: 436115
+Select * from github_events_test_9 where start_date <= 20180623 AND end_date >= 20180802 AND stars >= 125;, elapsed: 0.5501055717468262s, found points: 739995
+Select * from github_events_test_9 where events_count <= 8240 and issues >= 2 AND stars >= 158;, elapsed: 0.5593883991241455s, found points: 714705
+Select * from github_events_test_9 where events_count <= 1921 and issues >= 10 AND stars >= 115;, elapsed: 0.46323561668395996s, found points: 533360
+Select * from github_events_test_9 where start_date <= 20180124 AND end_date >= 20181008 AND stars >= 151;, elapsed: 0.45893049240112305s, found points: 588955
+Select * from github_events_test_9 where stars >= 176 and forks >= 28;, elapsed: 0.5115218162536621s, found points: 674810
+Select * from github_events_test_9 where events_count <= 13514 and issues >= 2 AND stars >= 244;, elapsed: 0.4492218494415283s, found points: 512800
+Select * from github_events_test_9 where stars >= 112 and forks >= 11;, elapsed: 0.7182350158691406s, found points: 1055925
+Select * from github_events_test_9 where start_date <= 20190930 AND end_date >= 20180201 AND stars >= 186;, elapsed: 0.46921682357788086s, found points: 644930
+Select * from github_events_test_9 where start_date <= 20190814 AND end_date >= 20180912 AND stars >= 144;, elapsed: 0.5292718410491943s, found points: 772885
+Select * from github_events_test_9 where events_count <= 1795 and issues >= 7 AND stars >= 51;, elapsed: 0.782745361328125s, found points: 1040290
+Select * from github_events_test_9 where start_date <= 20190506 AND end_date >= 20180605 AND stars >= 174;, elapsed: 0.4557182788848877s, found points: 647040
+Select * from github_events_test_9 where start_date <= 20190511 AND end_date >= 20180606 AND stars >= 212;, elapsed: 0.40566158294677734s, found points: 550780
+Select * from github_events_test_9 where events_count <= 2565 and issues >= 1 AND stars >= 220;, elapsed: 0.4115712642669678s, found points: 431870
+Select * from github_events_test_9 where stars >= 124 and forks >= 6;, elapsed: 0.7083330154418945s, found points: 1004095
+Select * from github_events_test_9 where stars >= 327 and forks >= 20;, elapsed: 0.36521482467651367s, found points: 432625
+Select * from github_events_test_9 where events_count <= 5314 and issues >= 7 AND stars >= 193;, elapsed: 0.43605518341064453s, found points: 497680
+Select * from github_events_test_9 where events_count <= 5401 and issues >= 3 AND stars >= 219;, elapsed: 0.4455091953277588s, found points: 493730
+Select * from github_events_test_9 where events_count <= 4446 and issues >= 3 AND stars >= 69;, elapsed: 0.8843154907226562s, found points: 1210025
+Select * from github_events_test_9 where stars >= 17 and forks >= 64;, elapsed: 0.597585916519165s, found points: 689755
+Select * from github_events_test_9 where start_date <= 20191009 AND end_date >= 20191206 AND stars >= 234;, elapsed: 0.3748328685760498s, found points: 499565
+Select * from github_events_test_9 where start_date <= 20190928 AND end_date >= 20180607 AND stars >= 245;, elapsed: 0.39225316047668457s, found points: 506500
+Select * from github_events_test_9 where start_date <= 20190220 AND end_date >= 20180623 AND stars >= 166;, elapsed: 0.4719083309173584s, found points: 652605
+Select * from github_events_test_9 where stars >= 180 and forks >= 50;, elapsed: 0.4612619876861572s, found points: 556875
+Select * from github_events_test_9 where start_date <= 20190422 AND end_date >= 20190517 AND stars >= 201;, elapsed: 0.4182419776916504s, found points: 552430
+Select * from github_events_test_9 where start_date <= 20190311 AND end_date >= 20190712 AND stars >= 246;, elapsed: 0.3610260486602783s, found points: 457415
+Select * from github_events_test_9 where start_date <= 20190528 AND end_date >= 20190629 AND stars >= 100;, elapsed: 0.6635005474090576s, found points: 967260
+Select * from github_events_test_9 where stars >= 43 and forks >= 101;, elapsed: 0.4188568592071533s, found points: 424820
+Select * from github_events_test_9 where events_count <= 16463 and issues >= 1 AND stars >= 235;, elapsed: 0.4860191345214844s, found points: 544105
+Select * from github_events_test_9 where start_date <= 20180317 AND end_date >= 20191101 AND stars >= 181;, elapsed: 0.39696383476257324s, found points: 501170
+Select * from github_events_test_9 where stars >= 162 and forks >= 65;, elapsed: 0.4307422637939453s, found points: 509800
+Select * from github_events_test_9 where start_date <= 20180302 AND end_date >= 20190405 AND stars >= 81;, elapsed: 0.696054220199585s, found points: 944240
+Select * from github_events_test_9 where start_date <= 20190624 AND end_date >= 20181128 AND stars >= 254;, elapsed: 0.3589131832122803s, found points: 474140
+Select * from github_events_test_9 where start_date <= 20190627 AND end_date >= 20181204 AND stars >= 86;, elapsed: 0.7789895534515381s, found points: 1132005
+Select * from github_events_test_9 where start_date <= 20180809 AND end_date >= 20190423 AND stars >= 175;, elapsed: 0.41866111755371094s, found points: 564835
+Select * from github_events_test_9 where stars >= 104 and forks >= 13;, elapsed: 0.739130973815918s, found points: 1095540
+Select * from github_events_test_9 where start_date <= 20190312 AND end_date >= 20190522 AND stars >= 70;, elapsed: 0.8193421363830566s, found points: 1233875
+Select * from github_events_test_9 where stars >= 119 and forks >= 2;, elapsed: 0.7572448253631592s, found points: 1049845
+Select * from github_events_test_9 where start_date <= 20180925 AND end_date >= 20180905 AND stars >= 232;, elapsed: 0.3639333248138428s, found points: 467010
+Select * from github_events_test_9 where events_count <= 9698 and issues >= 6 AND stars >= 205;, elapsed: 0.4578094482421875s, found points: 526085
+Select * from github_events_test_9 where events_count <= 1416 and issues >= 8 AND stars >= 43;, elapsed: 0.7752447128295898s, found points: 1031775
+Select * from github_events_test_9 where start_date <= 20190528 AND end_date >= 20181001 AND stars >= 253;, elapsed: 0.36472058296203613s, found points: 473670
+Select * from github_events_test_9 where events_count <= 16635 and issues >= 6 AND stars >= 191;, elapsed: 0.4949519634246826s, found points: 577820
+Select * from github_events_test_9 where stars >= 90 and forks >= 77;, elapsed: 0.4472346305847168s, found points: 514935
+Select * from github_events_test_9 where start_date <= 20180628 AND end_date >= 20190917 AND stars >= 204;, elapsed: 0.38739466667175293s, found points: 481380
+Select * from github_events_test_9 where events_count <= 15909 and issues >= 1 AND stars >= 142;, elapsed: 0.6201345920562744s, found points: 829825
+Select * from github_events_test_9 where events_count <= 19923 and issues >= 6 AND stars >= 208;, elapsed: 0.4450857639312744s, found points: 546025
+Select * from github_events_test_9 where start_date <= 20180420 AND end_date >= 20181206 AND stars >= 197;, elapsed: 0.3930373191833496s, found points: 496010
+Select * from github_events_test_9 where events_count <= 18434 and issues >= 9 AND stars >= 54;, elapsed: 0.8378860950469971s, found points: 1177295
+Select * from github_events_test_9 where events_count <= 9331 and issues >= 3 AND stars >= 256;, elapsed: 0.4188072681427002s, found points: 463960
+Select * from github_events_test_9 where start_date <= 20190513 AND end_date >= 20180703 AND stars >= 173;, elapsed: 0.47073936462402344s, found points: 651020
+Select * from github_events_test_9 where stars >= 90 and forks >= 17;, elapsed: 0.7982981204986572s, found points: 1156960
+Select * from github_events_test_9 where start_date <= 20180812 AND end_date >= 20180104 AND stars >= 97;, elapsed: 0.6719484329223633s, found points: 934480
+Select * from github_events_test_9 where start_date <= 20190619 AND end_date >= 20190531 AND stars >= 114;, elapsed: 0.6049075126647949s, found points: 886900
+Select * from github_events_test_9 where start_date <= 20191226 AND end_date >= 20180528 AND stars >= 164;, elapsed: 0.5104930400848389s, found points: 723260
+Select * from github_events_test_9 where start_date <= 20180817 AND end_date >= 20190806 AND stars >= 186;, elapsed: 0.4120664596557617s, found points: 530680
+Select * from github_events_test_9 where events_count <= 10737 and issues >= 4 AND stars >= 217;, elapsed: 0.45350217819213867s, found points: 531565
+Select * from github_events_test_9 where events_count <= 6407 and issues >= 3 AND stars >= 91;, elapsed: 0.7464587688446045s, found points: 1026965
+Select * from github_events_test_9 where events_count <= 12391 and issues >= 7 AND stars >= 63;, elapsed: 0.8504462242126465s, found points: 1151695
+Select * from github_events_test_9 where start_date <= 20181103 AND end_date >= 20190123 AND stars >= 71;, elapsed: 0.8260862827301025s, found points: 1182045
+Select * from github_events_test_9 where events_count <= 9605 and issues >= 10 AND stars >= 177;, elapsed: 0.4517695903778076s, found points: 538015
+Select * from github_events_test_9 where start_date <= 20190228 AND end_date >= 20190724 AND stars >= 274;, elapsed: 0.355086088180542s, found points: 415270
+Select * from github_events_test_9 where start_date <= 20190524 AND end_date >= 20180620 AND stars >= 227;, elapsed: 0.40545034408569336s, found points: 521735
+Select * from github_events_test_9 where stars >= 198 and forks >= 47;, elapsed: 0.4438650608062744s, found points: 541905
+Select * from github_events_test_9 where events_count <= 17061 and issues >= 1 AND stars >= 250;, elapsed: 0.4433727264404297s, found points: 516880
+Select * from github_events_test_9 where events_count <= 13153 and issues >= 9 AND stars >= 137;, elapsed: 0.541529655456543s, found points: 673835
+Select * from github_events_test_9 where start_date <= 20180128 AND end_date >= 20191210 AND stars >= 82;, elapsed: 0.6390600204467773s, found points: 874850
+Select * from github_events_test_9 where events_count <= 10773 and issues >= 3 AND stars >= 150;, elapsed: 0.5698788166046143s, found points: 732680
+Select * from github_events_test_9 where stars >= 158 and forks >= 39;, elapsed: 0.49721240997314453s, found points: 658635
+Select * from github_events_test_9 where events_count <= 2122 and issues >= 0 AND stars >= 187;, elapsed: 0.4624190330505371s, found points: 516420
+Select * from github_events_test_9 where start_date <= 20180504 AND end_date >= 20180310 AND stars >= 92;, elapsed: 0.6581213474273682s, found points: 924535
+Select * from github_events_test_9 where start_date <= 20190717 AND end_date >= 20190302 AND stars >= 211;, elapsed: 0.42301177978515625s, found points: 552755
+Select * from github_events_test_9 where events_count <= 16009 and issues >= 8 AND stars >= 58;, elapsed: 0.8790426254272461s, found points: 1174160
+Select * from github_events_test_9 where start_date <= 20180530 AND end_date >= 20180324 AND stars >= 250;, elapsed: 0.34059572219848633s, found points: 425265
+Select * from github_events_test_9 where stars >= 161 and forks >= 3;, elapsed: 0.5794641971588135s, found points: 817165
+Select * from github_events_test_9 where stars >= 41 and forks >= 91;, elapsed: 0.4451608657836914s, found points: 472275
+Select * from github_events_test_9 where start_date <= 20190125 AND end_date >= 20181114 AND stars >= 253;, elapsed: 0.3572831153869629s, found points: 451410
+Select * from github_events_test_9 where events_count <= 19355 and issues >= 8 AND stars >= 123;, elapsed: 0.6076047420501709s, found points: 755640
+Select * from github_events_test_9 where start_date <= 20190218 AND end_date >= 20190622 AND stars >= 182;, elapsed: 0.42716312408447266s, found points: 582005
+Select * from github_events_test_9 where start_date <= 20180625 AND end_date >= 20190921 AND stars >= 194;, elapsed: 0.39856410026550293s, found points: 500125
+Select * from github_events_test_9 where start_date <= 20181117 AND end_date >= 20180226 AND stars >= 192;, elapsed: 0.436603307723999s, found points: 565250
+Select * from github_events_test_9 where start_date <= 20180212 AND end_date >= 20191102 AND stars >= 168;, elapsed: 0.4125182628631592s, found points: 522835
+Select * from github_events_test_9 where events_count <= 11379 and issues >= 6 AND stars >= 114;, elapsed: 0.6446623802185059s, found points: 822570
+Select * from github_events_test_9 where stars >= 236 and forks >= 0;, elapsed: 0.4634101390838623s, found points: 592840
+Select * from github_events_test_9 where start_date <= 20190213 AND end_date >= 20191022 AND stars >= 84;, elapsed: 0.746100664138794s, found points: 1037495
+Select * from github_events_test_9 where stars >= 250 and forks >= 12;, elapsed: 0.4364645481109619s, found points: 554415
+Select * from github_events_test_9 where events_count <= 16730 and issues >= 9 AND stars >= 148;, elapsed: 0.546410083770752s, found points: 647250
+Select * from github_events_test_9 where start_date <= 20180712 AND end_date >= 20180309 AND stars >= 208;, elapsed: 0.3924088478088379s, found points: 503745
+Select * from github_events_test_9 where stars >= 106 and forks >= 49;, elapsed: 0.5438082218170166s, found points: 698820
+Select * from github_events_test_9 where events_count <= 7584 and issues >= 0 AND stars >= 177;, elapsed: 0.5561971664428711s, found points: 697595
+Select * from github_events_test_9 where start_date <= 20180731 AND end_date >= 20180209 AND stars >= 141;, elapsed: 0.5047526359558105s, found points: 695355
+Select * from github_events_test_9 where events_count <= 6549 and issues >= 1 AND stars >= 181;, elapsed: 0.5323429107666016s, found points: 634230
+Select * from github_events_test_9 where events_count <= 12251 and issues >= 5 AND stars >= 114;, elapsed: 0.6288390159606934s, found points: 849710
+Select * from github_events_test_9 where stars >= 34 and forks >= 38;, elapsed: 0.8081455230712891s, found points: 1064895
+Select * from github_events_test_9 where start_date <= 20190612 AND end_date >= 20190927 AND stars >= 215;, elapsed: 0.3940606117248535s, found points: 524445
+Select * from github_events_test_9 where stars >= 158 and forks >= 56;, elapsed: 0.46106410026550293s, found points: 560615
+Select * from github_events_test_9 where start_date <= 20180316 AND end_date >= 20180402 AND stars >= 168;, elapsed: 0.42905163764953613s, found points: 566475
+Select * from github_events_test_9 where start_date <= 20180225 AND end_date >= 20190819 AND stars >= 102;, elapsed: 0.5923497676849365s, found points: 773090
+Select * from github_events_test_9 where events_count <= 19881 and issues >= 8 AND stars >= 130;, elapsed: 0.569849967956543s, found points: 729420
+Select * from github_events_test_9 where events_count <= 11057 and issues >= 3 AND stars >= 216;, elapsed: 0.48239755630493164s, found points: 545240
+Select * from github_events_test_9 where stars >= 198 and forks >= 12;, elapsed: 0.5087883472442627s, found points: 672645
+Select * from github_events_test_9 where start_date <= 20191031 AND end_date >= 20191003 AND stars >= 217;, elapsed: 0.4363248348236084s, found points: 539400
+Select * from github_events_test_9 where start_date <= 20190606 AND end_date >= 20190610 AND stars >= 244;, elapsed: 0.37898969650268555s, found points: 477450
+Select * from github_events_test_9 where stars >= 144 and forks >= 74;, elapsed: 0.4332132339477539s, found points: 484840
+Select * from github_events_test_9 where events_count <= 15034 and issues >= 2 AND stars >= 296;, elapsed: 0.40261268615722656s, found points: 435180
+Select * from github_events_test_9 where stars >= 64 and forks >= 46;, elapsed: 0.6451864242553711s, found points: 829400
+Select * from github_events_test_9 where stars >= 245 and forks >= 46;, elapsed: 0.40056395530700684s, found points: 481305
+Select * from github_events_test_9 where start_date <= 20181016 AND end_date >= 20181113 AND stars >= 210;, elapsed: 0.40801000595092773s, found points: 508050
+Select * from github_events_test_9 where events_count <= 17948 and issues >= 6 AND stars >= 127;, elapsed: 0.5920944213867188s, found points: 780015
+Select * from github_events_test_9 where start_date <= 20180731 AND end_date >= 20190302 AND stars >= 118;, elapsed: 0.5718553066253662s, found points: 770840
+Select * from github_events_test_9 where events_count <= 17274 and issues >= 8 AND stars >= 109;, elapsed: 0.6279175281524658s, found points: 812690
+Select * from github_events_test_9 where events_count <= 11738 and issues >= 2 AND stars >= 119;, elapsed: 0.6871335506439209s, found points: 917795
+Select * from github_events_test_9 where start_date <= 20190406 AND end_date >= 20190331 AND stars >= 85;, elapsed: 0.7718112468719482s, found points: 1092575
+Select * from github_events_test_9 where start_date <= 20190602 AND end_date >= 20190724 AND stars >= 273;, elapsed: 0.3303706645965576s, found points: 431180
+Select * from github_events_test_9 where events_count <= 16841 and issues >= 5 AND stars >= 208;, elapsed: 0.4577901363372803s, found points: 552410
+Select * from github_events_test_9 where start_date <= 20180214 AND end_date >= 20180814 AND stars >= 189;, elapsed: 0.412125825881958s, found points: 501255
+Select * from github_events_test_9 where events_count <= 11486 and issues >= 9 AND stars >= 156;, elapsed: 0.5048491954803467s, found points: 611145
+Select * from github_events_test_9 where start_date <= 20191122 AND end_date >= 20191227 AND stars >= 134;, elapsed: 0.5553014278411865s, found points: 792545
+Select * from github_events_test_9 where stars >= 139 and forks >= 90;, elapsed: 0.39522266387939453s, found points: 421320
+Select * from github_events_test_9 where events_count <= 16044 and issues >= 3 AND stars >= 286;, elapsed: 0.41190028190612793s, found points: 440700
+Select * from github_events_test_9 where start_date <= 20180521 AND end_date >= 20190314 AND stars >= 63;, elapsed: 0.8387727737426758s, found points: 1189040
+Select * from github_events_test_9 where events_count <= 7910 and issues >= 7 AND stars >= 180;, elapsed: 0.4760923385620117s, found points: 556235
+Select * from github_events_test_9 where start_date <= 20191020 AND end_date >= 20190402 AND stars >= 146;, elapsed: 0.5556490421295166s, found points: 765130
+Select * from github_events_test_9 where stars >= 242 and forks >= 50;, elapsed: 0.4072990417480469s, found points: 473205
+Select * from github_events_test_9 where events_count <= 8464 and issues >= 5 AND stars >= 225;, elapsed: 0.43650364875793457s, found points: 490585
+Select * from github_events_test_9 where start_date <= 20191018 AND end_date >= 20190214 AND stars >= 114;, elapsed: 0.6333780288696289s, found points: 934700
+Select * from github_events_test_9 where stars >= 72 and forks >= 62;, elapsed: 0.6065154075622559s, found points: 640305
+Select * from github_events_test_9 where start_date <= 20191111 AND end_date >= 20181014 AND stars >= 185;, elapsed: 0.4496619701385498s, found points: 641510
+Select * from github_events_test_9 where start_date <= 20180413 AND end_date >= 20190825 AND stars >= 142;, elapsed: 0.4634215831756592s, found points: 619330
+Select * from github_events_test_9 where start_date <= 20181024 AND end_date >= 20191121 AND stars >= 80;, elapsed: 0.7114260196685791s, found points: 1021535
+Select * from github_events_test_9 where stars >= 140 and forks >= 25;, elapsed: 0.602320671081543s, found points: 804925
+Select * from github_events_test_9 where start_date <= 20180714 AND end_date >= 20180627 AND stars >= 71;, elapsed: 0.7883241176605225s, found points: 1149350
+Select * from github_events_test_9 where events_count <= 6326 and issues >= 10 AND stars >= 44;, elapsed: 0.8693234920501709s, found points: 1197715
+Select * from github_events_test_9 where start_date <= 20180705 AND end_date >= 20190626 AND stars >= 159;, elapsed: 0.4504709243774414s, found points: 594615
+Select * from github_events_test_9 where events_count <= 8311 and issues >= 4 AND stars >= 70;, elapsed: 0.8584160804748535s, found points: 1206965
+Select * from github_events_test_9 where stars >= 228 and forks >= 42;, elapsed: 0.42055535316467285s, found points: 517000
+Select * from github_events_test_9 where events_count <= 3501 and issues >= 1 AND stars >= 160;, elapsed: 0.5305767059326172s, found points: 645630
+Select * from github_events_test_9 where events_count <= 4829 and issues >= 1 AND stars >= 249;, elapsed: 0.43282175064086914s, found points: 450200
+Select * from github_events_test_9 where stars >= 124 and forks >= 89;, elapsed: 0.39829516410827637s, found points: 434485
+Select * from github_events_test_9 where start_date <= 20181227 AND end_date >= 20190705 AND stars >= 182;, elapsed: 0.4223363399505615s, found points: 570060
+Select * from github_events_test_9 where events_count <= 13497 and issues >= 0 AND stars >= 266;, elapsed: 0.4569418430328369s, found points: 504505
+Select * from github_events_test_9 where start_date <= 20190527 AND end_date >= 20190817 AND stars >= 127;, elapsed: 0.5624170303344727s, found points: 800605
+Select * from github_events_test_9 where events_count <= 16975 and issues >= 0 AND stars >= 134;, elapsed: 0.6964056491851807s, found points: 933445
+Select * from github_events_test_9 where start_date <= 20180728 AND end_date >= 20190123 AND stars >= 145;, elapsed: 0.4850740432739258s, found points: 658880
+Select * from github_events_test_9 where stars >= 159 and forks >= 44;, elapsed: 0.5017044544219971s, found points: 626595
+Select * from github_events_test_9 where start_date <= 20180701 AND end_date >= 20190623 AND stars >= 126;, elapsed: 0.5250084400177002s, found points: 709735
+Select * from github_events_test_9 where events_count <= 10761 and issues >= 6 AND stars >= 242;, elapsed: 0.4307558536529541s, found points: 465315
+Select * from github_events_test_9 where stars >= 278 and forks >= 35;, elapsed: 0.4283936023712158s, found points: 468410
+Select * from github_events_test_9 where start_date <= 20190422 AND end_date >= 20180818 AND stars >= 179;, elapsed: 0.46376967430114746s, found points: 625050
+Select * from github_events_test_9 where events_count <= 5713 and issues >= 0 AND stars >= 252;, elapsed: 0.4265470504760742s, found points: 481985
+Select * from github_events_test_9 where start_date <= 20180427 AND end_date >= 20190411 AND stars >= 133;, elapsed: 0.5099091529846191s, found points: 671075
+Select * from github_events_test_9 where events_count <= 12518 and issues >= 5 AND stars >= 230;, elapsed: 0.43619537353515625s, found points: 500335
+Select * from github_events_test_9 where events_count <= 3981 and issues >= 0 AND stars >= 260;, elapsed: 0.4111328125s, found points: 434490
+Select * from github_events_test_9 where events_count <= 13485 and issues >= 6 AND stars >= 132;, elapsed: 0.5815780162811279s, found points: 750000
+Select * from github_events_test_9 where stars >= 225 and forks >= 20;, elapsed: 0.45603084564208984s, found points: 588685
+Select * from github_events_test_9 where stars >= 155 and forks >= 69;, elapsed: 0.4280521869659424s, found points: 497945
+Select * from github_events_test_9 where start_date <= 20181231 AND end_date >= 20180817 AND stars >= 201;, elapsed: 0.40944886207580566s, found points: 544905
+Select * from github_events_test_9 where events_count <= 12706 and issues >= 2 AND stars >= 275;, elapsed: 0.41245055198669434s, found points: 459505
+Select * from github_events_test_9 where events_count <= 8368 and issues >= 1 AND stars >= 180;, elapsed: 0.5374422073364258s, found points: 653975
+Select * from github_events_test_9 where stars >= 176 and forks >= 39;, elapsed: 0.485060453414917s, found points: 619345
+Select * from github_events_test_9 where stars >= 21 and forks >= 46;, elapsed: 0.7568104267120361s, found points: 932945
+Select * from github_events_test_9 where start_date <= 20180302 AND end_date >= 20191126 AND stars >= 80;, elapsed: 0.6770186424255371s, found points: 910385
+Select * from github_events_test_9 where events_count <= 3709 and issues >= 3 AND stars >= 132;, elapsed: 0.5674052238464355s, found points: 720520
+Select * from github_events_test_9 where start_date <= 20190514 AND end_date >= 20191129 AND stars >= 195;, elapsed: 0.4234437942504883s, found points: 557830
+Select * from github_events_test_9 where events_count <= 11212 and issues >= 9 AND stars >= 156;, elapsed: 0.5089313983917236s, found points: 610010
+Select * from github_events_test_9 where events_count <= 9255 and issues >= 7 AND stars >= 235;, elapsed: 0.4140346050262451s, found points: 458215
+Select * from github_events_test_9 where events_count <= 18021 and issues >= 5 AND stars >= 136;, elapsed: 0.5961599349975586s, found points: 763160
+Select * from github_events_test_9 where stars >= 24 and forks >= 87;, elapsed: 0.47079038619995117s, found points: 505550
+Select * from github_events_test_9 where events_count <= 6268 and issues >= 9 AND stars >= 211;, elapsed: 0.412372350692749s, found points: 455155
+Select * from github_events_test_9 where events_count <= 15265 and issues >= 9 AND stars >= 250;, elapsed: 0.4085078239440918s, found points: 439765
+Select * from github_events_test_9 where events_count <= 7280 and issues >= 1 AND stars >= 252;, elapsed: 0.4257488250732422s, found points: 476015
+Select * from github_events_test_9 where events_count <= 13845 and issues >= 6 AND stars >= 122;, elapsed: 0.6078639030456543s, found points: 793260
+Select * from github_events_test_9 where start_date <= 20180324 AND end_date >= 20190214 AND stars >= 154;, elapsed: 0.4519486427307129s, found points: 592150
+Select * from github_events_test_9 where start_date <= 20190911 AND end_date >= 20181108 AND stars >= 138;, elapsed: 0.5522861480712891s, found points: 802650
+Select * from github_events_test_9 where start_date <= 20181114 AND end_date >= 20180309 AND stars >= 77;, elapsed: 0.8037347793579102s, found points: 1154215
+Select * from github_events_test_9 where stars >= 79 and forks >= 29;, elapsed: 0.7528645992279053s, found points: 1039290
+Select * from github_events_test_9 where stars >= 44 and forks >= 59;, elapsed: 0.584378719329834s, found points: 707445
+Select * from github_events_test_9 where events_count <= 9929 and issues >= 5 AND stars >= 106;, elapsed: 0.6747839450836182s, found points: 881745
+Select * from github_events_test_9 where start_date <= 20191214 AND end_date >= 20180504 AND stars >= 119;, elapsed: 0.6297774314880371s, found points: 937705
+Select * from github_events_test_9 where events_count <= 14940 and issues >= 5 AND stars >= 254;, elapsed: 0.41556572914123535s, found points: 467295
+Select * from github_events_test_9 where events_count <= 1979 and issues >= 2 AND stars >= 70;, elapsed: 0.8335468769073486s, found points: 1138920
+Select * from github_events_test_9 where start_date <= 20180710 AND end_date >= 20191208 AND stars >= 165;, elapsed: 0.42949819564819336s, found points: 566005
+Select * from github_events_test_9 where start_date <= 20181018 AND end_date >= 20191111 AND stars >= 75;, elapsed: 0.7597031593322754s, found points: 1070665
+Select * from github_events_test_9 where start_date <= 20181025 AND end_date >= 20190726 AND stars >= 164;, elapsed: 0.4652431011199951s, found points: 604490
+Select * from github_events_test_9 where start_date <= 20181022 AND end_date >= 20180822 AND stars >= 264;, elapsed: 0.3536102771759033s, found points: 424250
+Select * from github_events_test_9 where events_count <= 5125 and issues >= 7 AND stars >= 215;, elapsed: 0.43339991569519043s, found points: 452025
+Select * from github_events_test_9 where start_date <= 20191211 AND end_date >= 20190518 AND stars >= 278;, elapsed: 0.34897518157958984s, found points: 447575
+Select * from github_events_test_9 where start_date <= 20180725 AND end_date >= 20180107 AND stars >= 121;, elapsed: 0.5927143096923828s, found points: 783940
+Select * from github_events_test_9 where stars >= 30 and forks >= 34;, elapsed: 0.8671588897705078s, found points: 1183910
+Select * from github_events_test_9 where start_date <= 20180916 AND end_date >= 20190621 AND stars >= 187;, elapsed: 0.41818928718566895s, found points: 537825
+Select * from github_events_test_9 where events_count <= 3189 and issues >= 10 AND stars >= 115;, elapsed: 0.5283925533294678s, found points: 619490
+Select * from github_events_test_9 where events_count <= 18159 and issues >= 6 AND stars >= 114;, elapsed: 0.6620614528656006s, found points: 839465
+Select * from github_events_test_9 where start_date <= 20190907 AND end_date >= 20180215 AND stars >= 161;, elapsed: 0.5087451934814453s, found points: 722830
+Select * from github_events_test_9 where events_count <= 2051 and issues >= 1 AND stars >= 170;, elapsed: 0.4689478874206543s, found points: 528215
+Select * from github_events_test_9 where start_date <= 20190822 AND end_date >= 20180430 AND stars >= 82;, elapsed: 0.779444694519043s, found points: 1218145
+Select * from github_events_test_9 where events_count <= 8122 and issues >= 5 AND stars >= 211;, elapsed: 0.4462466239929199s, found points: 515340
+Select * from github_events_test_9 where start_date <= 20190618 AND end_date >= 20181105 AND stars >= 156;, elapsed: 0.5051724910736084s, found points: 710250
+Select * from github_events_test_9 where events_count <= 16537 and issues >= 4 AND stars >= 247;, elapsed: 0.44011998176574707s, found points: 492095
+Select * from github_events_test_9 where stars >= 59 and forks >= 74;, elapsed: 0.4950070381164551s, found points: 560130
+Select * from github_events_test_9 where start_date <= 20180123 AND end_date >= 20191129 AND stars >= 149;, elapsed: 0.43560004234313965s, found points: 564075
+Select * from github_events_test_9 where start_date <= 20190918 AND end_date >= 20180717 AND stars >= 211;, elapsed: 0.4217195510864258s, found points: 571600
+Select * from github_events_test_9 where start_date <= 20180726 AND end_date >= 20190309 AND stars >= 126;, elapsed: 0.5315518379211426s, found points: 730685
+Select * from github_events_test_9 where events_count <= 19413 and issues >= 3 AND stars >= 248;, elapsed: 0.4521346092224121s, found points: 503120
+Select * from github_events_test_9 where start_date <= 20181025 AND end_date >= 20180323 AND stars >= 266;, elapsed: 0.3450305461883545s, found points: 427110
+Select * from github_events_test_9 where start_date <= 20190225 AND end_date >= 20190520 AND stars >= 104;, elapsed: 0.6776046752929688s, found points: 909170
+Select * from github_events_test_9 where events_count <= 3944 and issues >= 7 AND stars >= 153;, elapsed: 0.4979283809661865s, found points: 568155
+Select * from github_events_test_9 where events_count <= 13259 and issues >= 4 AND stars >= 243;, elapsed: 0.4346446990966797s, found points: 492080
+Select * from github_events_test_9 where start_date <= 20180904 AND end_date >= 20180615 AND stars >= 199;, elapsed: 0.4195215702056885s, found points: 528215
+Select * from github_events_test_9 where events_count <= 13854 and issues >= 1 AND stars >= 153;, elapsed: 0.6018874645233154s, found points: 776505
+Select * from github_events_test_9 where start_date <= 20190711 AND end_date >= 20180218 AND stars >= 144;, elapsed: 0.5663721561431885s, found points: 777835
+Select * from github_events_test_9 where events_count <= 10835 and issues >= 2 AND stars >= 133;, elapsed: 0.6336097717285156s, found points: 837760
+Select * from github_events_test_9 where stars >= 266 and forks >= 22;, elapsed: 0.43117642402648926s, found points: 511890
+Select * from github_events_test_9 where start_date <= 20190203 AND end_date >= 20180927 AND stars >= 130;, elapsed: 0.5614049434661865s, found points: 781575
+Select * from github_events_test_9 where start_date <= 20191004 AND end_date >= 20190701 AND stars >= 166;, elapsed: 0.5061922073364258s, found points: 676670
+Select * from github_events_test_9 where start_date <= 20191213 AND end_date >= 20191216 AND stars >= 111;, elapsed: 0.657304048538208s, found points: 922575
+Select * from github_events_test_9 where stars >= 162 and forks >= 4;, elapsed: 0.5935733318328857s, found points: 811530
+Select * from github_events_test_9 where start_date <= 20191223 AND end_date >= 20181120 AND stars >= 197;, elapsed: 0.4384586811065674s, found points: 612260
+Select * from github_events_test_9 where events_count <= 7082 and issues >= 8 AND stars >= 75;, elapsed: 0.7355678081512451s, found points: 974660
+Select * from github_events_test_9 where stars >= 211 and forks >= 48;, elapsed: 0.4099113941192627s, found points: 519855
+Select * from github_events_test_9 where events_count <= 9833 and issues >= 4 AND stars >= 155;, elapsed: 0.5597701072692871s, found points: 692195
+Select * from github_events_test_9 where events_count <= 11085 and issues >= 4 AND stars >= 159;, elapsed: 0.5360758304595947s, found points: 684880
+Select * from github_events_test_9 where events_count <= 9005 and issues >= 4 AND stars >= 138;, elapsed: 0.5960161685943604s, found points: 751815
+Select * from github_events_test_9 where events_count <= 4061 and issues >= 1 AND stars >= 207;, elapsed: 0.4484825134277344s, found points: 520140
+Select * from github_events_test_9 where events_count <= 13171 and issues >= 7 AND stars >= 176;, elapsed: 0.4914383888244629s, found points: 591560
+Select * from github_events_test_9 where start_date <= 20181013 AND end_date >= 20190809 AND stars >= 152;, elapsed: 0.48365259170532227s, found points: 637095
+Select * from github_events_test_9 where stars >= 89 and forks >= 70;, elapsed: 0.4750347137451172s, found points: 559375
+Select * from github_events_test_9 where events_count <= 8398 and issues >= 1 AND stars >= 98;, elapsed: 0.7844345569610596s, found points: 1078030
+Select * from github_events_test_9 where start_date <= 20180603 AND end_date >= 20180615 AND stars >= 97;, elapsed: 0.6374626159667969s, found points: 891395
+Select * from github_events_test_9 where stars >= 166 and forks >= 12;, elapsed: 0.5595192909240723s, found points: 776940
+Select * from github_events_test_9 where events_count <= 13626 and issues >= 6 AND stars >= 180;, elapsed: 0.4964113235473633s, found points: 597910
+Select * from github_events_test_9 where start_date <= 20181028 AND end_date >= 20190321 AND stars >= 128;, elapsed: 0.5391831398010254s, found points: 749665
+Select * from github_events_test_9 where events_count <= 15432 and issues >= 4 AND stars >= 279;, elapsed: 0.40353870391845703s, found points: 442260
+Select * from github_events_test_9 where start_date <= 20180528 AND end_date >= 20191020 AND stars >= 119;, elapsed: 0.5398650169372559s, found points: 717915
+Select * from github_events_test_9 where stars >= 24 and forks >= 35;, elapsed: 0.8948478698730469s, found points: 1181395
+Select * from github_events_test_9 where start_date <= 20180723 AND end_date >= 20190409 AND stars >= 194;, elapsed: 0.3909792900085449s, found points: 517220
+Select * from github_events_test_9 where stars >= 94 and forks >= 34;, elapsed: 0.6674339771270752s, found points: 896355
+Select * from github_events_test_9 where events_count <= 7754 and issues >= 10 AND stars >= 108;, elapsed: 0.5691723823547363s, found points: 737675
+Select * from github_events_test_9 where start_date <= 20191116 AND end_date >= 20191112 AND stars >= 184;, elapsed: 0.4485156536102295s, found points: 616945
+Select * from github_events_test_9 where stars >= 104 and forks >= 38;, elapsed: 0.5994837284088135s, found points: 813545
+Select * from github_events_test_9 where events_count <= 19726 and issues >= 3 AND stars >= 298;, elapsed: 0.39710354804992676s, found points: 430360
+Select * from github_events_test_9 where events_count <= 19938 and issues >= 5 AND stars >= 131;, elapsed: 0.627460241317749s, found points: 786400
+Select * from github_events_test_9 where start_date <= 20180415 AND end_date >= 20190920 AND stars >= 123;, elapsed: 0.5092806816101074s, found points: 688275
+Select * from github_events_test_9 where stars >= 171 and forks >= 70;, elapsed: 0.42547154426574707s, found points: 477605
+Select * from github_events_test_9 where events_count <= 4662 and issues >= 6 AND stars >= 213;, elapsed: 0.41965413093566895s, found points: 459160
+Select * from github_events_test_9 where events_count <= 9845 and issues >= 5 AND stars >= 72;, elapsed: 0.8432674407958984s, found points: 1138455
+Select * from github_events_test_9 where stars >= 41 and forks >= 70;, elapsed: 0.5218935012817383s, found points: 606405
+Select * from github_events_test_9 where start_date <= 20180310 AND end_date >= 20190806 AND stars >= 87;, elapsed: 0.6466686725616455s, found points: 878295
+Select * from github_events_test_9 where start_date <= 20190505 AND end_date >= 20190328 AND stars >= 221;, elapsed: 0.38779735565185547s, found points: 517720
+Select * from github_events_test_9 where events_count <= 12129 and issues >= 6 AND stars >= 176;, elapsed: 0.4971778392791748s, found points: 604000
+Select * from github_events_test_9 where start_date <= 20180125 AND end_date >= 20180410 AND stars >= 58;, elapsed: 0.8742451667785645s, found points: 1227270
+Select * from github_events_test_9 where stars >= 204 and forks >= 67;, elapsed: 0.39563965797424316s, found points: 457100
+Select * from github_events_test_9 where events_count <= 10340 and issues >= 4 AND stars >= 212;, elapsed: 0.4625248908996582s, found points: 540465
+Select * from github_events_test_9 where events_count <= 14465 and issues >= 10 AND stars >= 169;, elapsed: 0.4761791229248047s, found points: 573895
+Select * from github_events_test_9 where stars >= 104 and forks >= 28;, elapsed: 0.6554303169250488s, found points: 926410
+Select * from github_events_test_9 where events_count <= 18967 and issues >= 6 AND stars >= 170;, elapsed: 0.5053017139434814s, found points: 634820
+Select * from github_events_test_9 where start_date <= 20191125 AND end_date >= 20190220 AND stars >= 297;, elapsed: 0.33970093727111816s, found points: 426265
+Select * from github_events_test_9 where start_date <= 20190423 AND end_date >= 20181209 AND stars >= 169;, elapsed: 0.46358299255371094s, found points: 649760
+Select * from github_events_test_9 where start_date <= 20180601 AND end_date >= 20180120 AND stars >= 229;, elapsed: 0.3675658702850342s, found points: 459515
+Select * from github_events_test_9 where start_date <= 20181210 AND end_date >= 20181016 AND stars >= 80;, elapsed: 0.7479352951049805s, found points: 1108760
+Select * from github_events_test_9 where stars >= 49 and forks >= 40;, elapsed: 0.7250843048095703s, found points: 970375
+Select * from github_events_test_9 where stars >= 222 and forks >= 70;, elapsed: 0.3694460391998291s, found points: 430600
+Select * from github_events_test_9 where start_date <= 20181031 AND end_date >= 20180705 AND stars >= 252;, elapsed: 0.35017871856689453s, found points: 444295
+Select * from github_events_test_9 where events_count <= 10604 and issues >= 7 AND stars >= 155;, elapsed: 0.5271632671356201s, found points: 639775
+Select * from github_events_test_9 where start_date <= 20180422 AND end_date >= 20180609 AND stars >= 61;, elapsed: 0.8872077465057373s, found points: 1235440
+Select * from github_events_test_9 where stars >= 91 and forks >= 43;, elapsed: 0.586174488067627s, found points: 795670
+Select * from github_events_test_9 where start_date <= 20190127 AND end_date >= 20190810 AND stars >= 80;, elapsed: 0.7536969184875488s, found points: 1081715
+Select * from github_events_test_9 where stars >= 178 and forks >= 83;, elapsed: 0.37800121307373047s, found points: 421845
+Select * from github_events_test_9 where start_date <= 20190104 AND end_date >= 20190602 AND stars >= 84;, elapsed: 0.7297110557556152s, found points: 1045375
+Select * from github_events_test_9 where stars >= 243 and forks >= 34;, elapsed: 0.4263038635253906s, found points: 519095
+Select * from github_events_test_9 where events_count <= 13805 and issues >= 6 AND stars >= 213;, elapsed: 0.4936671257019043s, found points: 525770
+Select * from github_events_test_9 where start_date <= 20190203 AND end_date >= 20181201 AND stars >= 221;, elapsed: 0.39107751846313477s, found points: 505585
+Select * from github_events_test_9 where start_date <= 20191122 AND end_date >= 20191030 AND stars >= 262;, elapsed: 0.3790900707244873s, found points: 461295
+Select * from github_events_test_9 where start_date <= 20190714 AND end_date >= 20190320 AND stars >= 242;, elapsed: 0.3859524726867676s, found points: 491725
+Select * from github_events_test_9 where events_count <= 14446 and issues >= 5 AND stars >= 83;, elapsed: 0.7537791728973389s, found points: 1057355
+Select * from github_events_test_9 where stars >= 183 and forks >= 77;, elapsed: 0.3899867534637451s, found points: 438855
+Select * from github_events_test_9 where events_count <= 19577 and issues >= 3 AND stars >= 260;, elapsed: 0.42900848388671875s, found points: 484000
+Select * from github_events_test_9 where start_date <= 20181123 AND end_date >= 20181227 AND stars >= 240;, elapsed: 0.3575606346130371s, found points: 460140
+Select * from github_events_test_9 where events_count <= 14508 and issues >= 10 AND stars >= 241;, elapsed: 0.4364748001098633s, found points: 443275
+Select * from github_events_test_9 where stars >= 113 and forks >= 13;, elapsed: 0.7004671096801758s, found points: 1033205
+Select * from github_events_test_9 where events_count <= 10073 and issues >= 7 AND stars >= 208;, elapsed: 0.46373963356018066s, found points: 509800
+Select * from github_events_test_9 where start_date <= 20191110 AND end_date >= 20190729 AND stars >= 109;, elapsed: 0.6411621570587158s, found points: 948380
+Select * from github_events_test_9 where start_date <= 20190426 AND end_date >= 20190815 AND stars >= 251;, elapsed: 0.3668801784515381s, found points: 455925
+Select * from github_events_test_9 where stars >= 137 and forks >= 46;, elapsed: 0.5041017532348633s, found points: 658090
+Select * from github_events_test_9 where events_count <= 8982 and issues >= 10 AND stars >= 245;, elapsed: 0.39198994636535645s, found points: 417525
+Select * from github_events_test_9 where start_date <= 20180927 AND end_date >= 20181209 AND stars >= 260;, elapsed: 0.3528931140899658s, found points: 422750
+Select * from github_events_test_9 where start_date <= 20190306 AND end_date >= 20190222 AND stars >= 83;, elapsed: 0.7406375408172607s, found points: 1102095
+Select * from github_events_test_9 where start_date <= 20190705 AND end_date >= 20181001 AND stars >= 173;, elapsed: 0.47214388847351074s, found points: 656960
+Select * from github_events_test_9 where start_date <= 20181010 AND end_date >= 20191106 AND stars >= 118;, elapsed: 0.5635123252868652s, found points: 763480
+Select * from github_events_test_9 where events_count <= 12937 and issues >= 2 AND stars >= 279;, elapsed: 0.42684435844421387s, found points: 454215
+Select * from github_events_test_9 where events_count <= 16468 and issues >= 9 AND stars >= 65;, elapsed: 0.7781274318695068s, found points: 1065320
+Select * from github_events_test_9 where stars >= 261 and forks >= 47;, elapsed: 0.3934156894683838s, found points: 459680
+Select * from github_events_test_9 where stars >= 148 and forks >= 21;, elapsed: 0.5675644874572754s, found points: 800730
+Select * from github_events_test_9 where events_count <= 19719 and issues >= 6 AND stars >= 129;, elapsed: 0.5994796752929688s, found points: 774280
+Select * from github_events_test_9 where start_date <= 20180307 AND end_date >= 20180221 AND stars >= 222;, elapsed: 0.35243797302246094s, found points: 451465
+Select * from github_events_test_9 where events_count <= 6282 and issues >= 3 AND stars >= 244;, elapsed: 0.4000570774078369s, found points: 459485
+Select * from github_events_test_9 where stars >= 330 and forks >= 9;, elapsed: 0.36688971519470215s, found points: 436300
+Select * from github_events_test_9 where start_date <= 20180203 AND end_date >= 20180619 AND stars >= 218;, elapsed: 0.3483884334564209s, found points: 445775
+Select * from github_events_test_9 where start_date <= 20191001 AND end_date >= 20181014 AND stars >= 202;, elapsed: 0.41977787017822266s, found points: 590665
+Select * from github_events_test_9 where start_date <= 20180211 AND end_date >= 20190224 AND stars >= 206;, elapsed: 0.3673701286315918s, found points: 459590
+Select * from github_events_test_9 where start_date <= 20181026 AND end_date >= 20190713 AND stars >= 68;, elapsed: 0.8383617401123047s, found points: 1177825
+Select * from github_events_test_9 where events_count <= 19991 and issues >= 2 AND stars >= 173;, elapsed: 0.540769100189209s, found points: 697760
+Select * from github_events_test_9 where start_date <= 20180914 AND end_date >= 20181119 AND stars >= 75;, elapsed: 0.7456653118133545s, found points: 1118505
+Select * from github_events_test_9 where stars >= 269 and forks >= 61;, elapsed: 0.3600926399230957s, found points: 415795
+Select * from github_events_test_9 where start_date <= 20190320 AND end_date >= 20190830 AND stars >= 221;, elapsed: 0.3903014659881592s, found points: 498415
+Select * from github_events_test_9 where stars >= 296 and forks >= 41;, elapsed: 0.3704249858856201s, found points: 434730
+Select * from github_events_test_9 where events_count <= 7577 and issues >= 9 AND stars >= 126;, elapsed: 0.5439817905426025s, found points: 682850
+Select * from github_events_test_9 where stars >= 269 and forks >= 35;, elapsed: 0.3928844928741455s, found points: 480120
+Select * from github_events_test_9 where start_date <= 20191223 AND end_date >= 20180701 AND stars >= 314;, elapsed: 0.3250119686126709s, found points: 414205
+Select * from github_events_test_9 where stars >= 177 and forks >= 68;, elapsed: 0.40324974060058594s, found points: 479825
+Select * from github_events_test_9 where start_date <= 20180101 AND end_date >= 20190902 AND stars >= 95;, elapsed: 0.603989839553833s, found points: 788745
+Select * from github_events_test_9 where events_count <= 9911 and issues >= 8 AND stars >= 69;, elapsed: 0.7489204406738281s, found points: 1046215
+Select * from github_events_test_9 where stars >= 104 and forks >= 2;, elapsed: 0.7838685512542725s, found points: 1168690
+Select * from github_events_test_9 where start_date <= 20190126 AND end_date >= 20190420 AND stars >= 269;, elapsed: 0.33099365234375s, found points: 422630
+Select * from github_events_test_9 where stars >= 100 and forks >= 39;, elapsed: 0.5984625816345215s, found points: 815020
+Select * from github_events_test_9 where start_date <= 20190327 AND end_date >= 20190112 AND stars >= 228;, elapsed: 0.3793933391571045s, found points: 500810
+Select * from github_events_test_9 where stars >= 222 and forks >= 11;, elapsed: 0.4956390857696533s, found points: 613500
+Select * from github_events_test_9 where events_count <= 9292 and issues >= 1 AND stars >= 135;, elapsed: 0.6338913440704346s, found points: 841230
+Select * from github_events_test_9 where events_count <= 821 and issues >= 2 AND stars >= 95;, elapsed: 0.5242176055908203s, found points: 630235
+Select * from github_events_test_9 where start_date <= 20191223 AND end_date >= 20181225 AND stars >= 118;, elapsed: 0.6293232440948486s, found points: 928285
+Select * from github_events_test_9 where stars >= 48 and forks >= 37;, elapsed: 0.7573387622833252s, found points: 1033835
+Select * from github_events_test_9 where events_count <= 7324 and issues >= 6 AND stars >= 111;, elapsed: 0.6245682239532471s, found points: 810840
+Select * from github_events_test_9 where events_count <= 2841 and issues >= 2 AND stars >= 168;, elapsed: 0.4705667495727539s, found points: 573095
+Select * from github_events_test_9 where start_date <= 20191107 AND end_date >= 20181228 AND stars >= 157;, elapsed: 0.5062212944030762s, found points: 730560
+Select * from github_events_test_9 where stars >= 67 and forks >= 48;, elapsed: 0.6119303703308105s, found points: 795510
+Select * from github_events_test_9 where events_count <= 13133 and issues >= 8 AND stars >= 119;, elapsed: 0.6002581119537354s, found points: 760185
+Select * from github_events_test_9 where stars >= 277 and forks >= 12;, elapsed: 0.41362905502319336s, found points: 507805
+Select * from github_events_test_9 where events_count <= 10881 and issues >= 8 AND stars >= 73;, elapsed: 0.7536740303039551s, found points: 1018420
+Select * from github_events_test_9 where events_count <= 3969 and issues >= 1 AND stars >= 243;, elapsed: 0.4048502445220947s, found points: 441835
+Select * from github_events_test_9 where start_date <= 20180323 AND end_date >= 20180929 AND stars >= 126;, elapsed: 0.5079927444458008s, found points: 698845
+Select * from github_events_test_9 where start_date <= 20191005 AND end_date >= 20181231 AND stars >= 152;, elapsed: 0.5167005062103271s, found points: 743775
+Select * from github_events_test_9 where events_count <= 12099 and issues >= 5 AND stars >= 284;, elapsed: 0.39927077293395996s, found points: 418335
+Select * from github_events_test_9 where stars >= 26 and forks >= 58;, elapsed: 0.6382603645324707s, found points: 744660
+Select * from github_events_test_9 where stars >= 4 and forks >= 79;, elapsed: 0.5404767990112305s, found points: 579200
+Select * from github_events_test_9 where start_date <= 20191120 AND end_date >= 20190829 AND stars >= 160;, elapsed: 0.49017333984375s, found points: 700000
+Select * from github_events_test_9 where events_count <= 6386 and issues >= 4 AND stars >= 233;, elapsed: 0.42819929122924805s, found points: 470785
+Select * from github_events_test_9 where stars >= 221 and forks >= 39;, elapsed: 0.42116808891296387s, found points: 537660
+Select * from github_events_test_9 where events_count <= 6026 and issues >= 8 AND stars >= 152;, elapsed: 0.5069761276245117s, found points: 597805
+Select * from github_events_test_9 where events_count <= 7156 and issues >= 6 AND stars >= 217;, elapsed: 0.4271690845489502s, found points: 485090
+Select * from github_events_test_9 where stars >= 97 and forks >= 73;, elapsed: 0.45097994804382324s, found points: 532720
+Select * from github_events_test_9 where stars >= 310 and forks >= 1;, elapsed: 0.39642906188964844s, found points: 464360
+Select * from github_events_test_9 where events_count <= 18364 and issues >= 3 AND stars >= 85;, elapsed: 0.7893109321594238s, found points: 1135465
+Select * from github_events_test_9 where start_date <= 20180914 AND end_date >= 20181115 AND stars >= 188;, elapsed: 0.41667842864990234s, found points: 549195
+Select * from github_events_test_9 where start_date <= 20180517 AND end_date >= 20190110 AND stars >= 96;, elapsed: 0.6150925159454346s, found points: 874780
+Select * from github_events_test_9 where stars >= 38 and forks >= 34;, elapsed: 0.8302156925201416s, found points: 1147400
+Select * from github_events_test_9 where events_count <= 13511 and issues >= 1 AND stars >= 113;, elapsed: 0.7190093994140625s, found points: 988775
+Select * from github_events_test_9 where stars >= 61 and forks >= 41;, elapsed: 0.6755187511444092s, found points: 913875
+Select * from github_events_test_9 where start_date <= 20180922 AND end_date >= 20191004 AND stars >= 179;, elapsed: 0.4226052761077881s, found points: 551440
+Select * from github_events_test_9 where start_date <= 20190926 AND end_date >= 20190109 AND stars >= 301;, elapsed: 0.326946496963501s, found points: 417490
+Select * from github_events_test_9 where start_date <= 20180510 AND end_date >= 20191018 AND stars >= 94;, elapsed: 0.631683349609375s, found points: 846745
+Select * from github_events_test_9 where events_count <= 12903 and issues >= 10 AND stars >= 57;, elapsed: 0.7965283393859863s, found points: 1098130
+Select * from github_events_test_9 where stars >= 105 and forks >= 75;, elapsed: 0.43922996520996094s, found points: 514050
+Select * from github_events_test_9 where events_count <= 12310 and issues >= 1 AND stars >= 274;, elapsed: 0.42854785919189453s, found points: 466490
+Select * from github_events_test_9 where events_count <= 17366 and issues >= 4 AND stars >= 113;, elapsed: 0.6699049472808838s, found points: 900290
+Select * from github_events_test_9 where start_date <= 20180809 AND end_date >= 20190426 AND stars >= 192;, elapsed: 0.3916943073272705s, found points: 523645
+Select * from github_events_test_9 where events_count <= 8774 and issues >= 6 AND stars >= 235;, elapsed: 0.41178417205810547s, found points: 465815
+Select * from github_events_test_9 where stars >= 299 and forks >= 39;, elapsed: 0.37868618965148926s, found points: 435405
+Select * from github_events_test_9 where start_date <= 20190617 AND end_date >= 20181122 AND stars >= 148;, elapsed: 0.518866777420044s, found points: 739300
+Select * from github_events_test_9 where events_count <= 14745 and issues >= 7 AND stars >= 216;, elapsed: 0.44281840324401855s, found points: 510120
+Select * from github_events_test_9 where start_date <= 20190402 AND end_date >= 20181223 AND stars >= 125;, elapsed: 0.5606467723846436s, found points: 819425
+Select * from github_events_test_9 where start_date <= 20190412 AND end_date >= 20190917 AND stars >= 97;, elapsed: 0.6676626205444336s, found points: 959825
+Select * from github_events_test_9 where start_date <= 20190128 AND end_date >= 20181223 AND stars >= 198;, elapsed: 0.4078559875488281s, found points: 551545
+Select * from github_events_test_9 where events_count <= 16887 and issues >= 2 AND stars >= 241;, elapsed: 0.4483921527862549s, found points: 525030
+Select * from github_events_test_9 where events_count <= 14830 and issues >= 8 AND stars >= 91;, elapsed: 0.6766722202301025s, found points: 904845
+Select * from github_events_test_9 where start_date <= 20190830 AND end_date >= 20190302 AND stars >= 202;, elapsed: 0.4155576229095459s, found points: 580020
+Select * from github_events_test_9 where stars >= 237 and forks >= 56;, elapsed: 0.3941981792449951s, found points: 460550
+Select * from github_events_test_9 where events_count <= 10726 and issues >= 4 AND stars >= 99;, elapsed: 0.6880605220794678s, found points: 967025
+Select * from github_events_test_9 where stars >= 238 and forks >= 54;, elapsed: 0.38582539558410645s, found points: 465615
+Select * from github_events_test_9 where events_count <= 19233 and issues >= 4 AND stars >= 203;, elapsed: 0.47989392280578613s, found points: 581590
+Select * from github_events_test_9 where start_date <= 20190820 AND end_date >= 20181003 AND stars >= 168;, elapsed: 0.5006103515625s, found points: 682020
+Select * from github_events_test_9 where stars >= 108 and forks >= 56;, elapsed: 0.50433349609375s, found points: 637340
+Select * from github_events_test_9 where start_date <= 20180710 AND end_date >= 20181019 AND stars >= 100;, elapsed: 0.632011890411377s, found points: 876115
+Select * from github_events_test_9 where start_date <= 20180416 AND end_date >= 20190803 AND stars >= 222;, elapsed: 0.36324334144592285s, found points: 437095
+Select * from github_events_test_9 where start_date <= 20180202 AND end_date >= 20181221 AND stars >= 88;, elapsed: 0.6355776786804199s, found points: 885055
+Select * from github_events_test_9 where events_count <= 15766 and issues >= 5 AND stars >= 82;, elapsed: 0.7715318202972412s, found points: 1068505
+Select * from github_events_test_9 where events_count <= 12270 and issues >= 6 AND stars >= 191;, elapsed: 0.4872159957885742s, found points: 567600
+Select * from github_events_test_9 where stars >= 169 and forks >= 41;, elapsed: 0.4765150547027588s, found points: 623370
+Select * from github_events_test_9 where events_count <= 3887 and issues >= 10 AND stars >= 141;, elapsed: 0.4714925289154053s, found points: 556795
+Select * from github_events_test_9 where events_count <= 14472 and issues >= 9 AND stars >= 193;, elapsed: 0.46423888206481934s, found points: 532165
+Select * from github_events_test_9 where events_count <= 1930 and issues >= 3 AND stars >= 138;, elapsed: 0.4984097480773926s, found points: 590610
+Select * from github_events_test_9 where events_count <= 10933 and issues >= 9 AND stars >= 214;, elapsed: 0.4273097515106201s, found points: 482740
+Select * from github_events_test_9 where events_count <= 10442 and issues >= 7 AND stars >= 181;, elapsed: 0.4767141342163086s, found points: 569195
+Select * from github_events_test_9 where events_count <= 13624 and issues >= 4 AND stars >= 234;, elapsed: 0.432816743850708s, found points: 508475
+Select * from github_events_test_9 where start_date <= 20180320 AND end_date >= 20191121 AND stars >= 207;, elapsed: 0.36753249168395996s, found points: 450360
+Select * from github_events_test_9 where stars >= 298 and forks >= 12;, elapsed: 0.3929286003112793s, found points: 476400
+Select * from github_events_test_9 where start_date <= 20190429 AND end_date >= 20181108 AND stars >= 169;, elapsed: 0.4665055274963379s, found points: 652945
+Select * from github_events_test_9 where start_date <= 20180301 AND end_date >= 20181002 AND stars >= 209;, elapsed: 0.37454676628112793s, found points: 463635
+Select * from github_events_test_9 where start_date <= 20190413 AND end_date >= 20190622 AND stars >= 245;, elapsed: 0.357280969619751s, found points: 465930
+Select * from github_events_test_9 where start_date <= 20190304 AND end_date >= 20180612 AND stars >= 95;, elapsed: 0.6994695663452148s, found points: 1015360
+Select * from github_events_test_9 where events_count <= 2167 and issues >= 8 AND stars >= 158;, elapsed: 0.4185929298400879s, found points: 455130
+Select * from github_events_test_9 where events_count <= 7053 and issues >= 5 AND stars >= 149;, elapsed: 0.5309758186340332s, found points: 670130
+Select * from github_events_test_9 where start_date <= 20180926 AND end_date >= 20191023 AND stars >= 135;, elapsed: 0.5129406452178955s, found points: 687100
+Select * from github_events_test_9 where start_date <= 20190529 AND end_date >= 20190408 AND stars >= 180;, elapsed: 0.4416649341583252s, found points: 619105
+Select * from github_events_test_9 where start_date <= 20180422 AND end_date >= 20190324 AND stars >= 217;, elapsed: 0.3724541664123535s, found points: 454970
+Select * from github_events_test_9 where start_date <= 20190329 AND end_date >= 20180930 AND stars >= 171;, elapsed: 0.46016526222229004s, found points: 640905
+Select * from github_events_test_9 where start_date <= 20180411 AND end_date >= 20190715 AND stars >= 86;, elapsed: 0.6778650283813477s, found points: 904745
+Select * from github_events_test_9 where events_count <= 6982 and issues >= 7 AND stars >= 178;, elapsed: 0.45943212509155273s, found points: 552805
+Select * from github_events_test_9 where start_date <= 20190312 AND end_date >= 20180628 AND stars >= 136;, elapsed: 0.5555040836334229s, found points: 771145
+Select * from github_events_test_9 where stars >= 159 and forks >= 51;, elapsed: 0.46393465995788574s, found points: 586390
+Select * from github_events_test_9 where events_count <= 17071 and issues >= 6 AND stars >= 145;, elapsed: 0.5523850917816162s, found points: 709155
+Select * from github_events_test_9 where events_count <= 16546 and issues >= 3 AND stars >= 227;, elapsed: 0.46086978912353516s, found points: 537085

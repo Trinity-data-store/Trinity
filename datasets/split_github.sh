@@ -1,7 +1,7 @@
-sudo mkdir -p /mntData2/github_split
-cd /mntData2/github_split
+sudo mkdir -p /mntData2/github_split_10
+cd /mntData2/github_split_10
 sudo rm ./*
-sudo split -l 20000000 /mntData2/github/github_events_processed.csv --numeric-suffixes
+sudo split -l 20000000 /mntData2/github/github_events_processed_9.csv --numeric-suffixes
 sudo split -l 82805630 /mntData2/github/github_events_processed.csv --numeric-suffixes
 
 sudo mv x00 x0

@@ -21,6 +21,21 @@ CREATE TABLE github_events (
     PRIMARY KEY (start_date, pkey)
 );
 
+CREATE TABLE github_events (
+    pkey           BIGINT             NOT NULL,
+    events_count     INT             NOT NULL,
+    authors_count     INT             NOT NULL,
+    forks     INT             NOT NULL,
+    stars     INT             NOT NULL,
+    issues     INT             NOT NULL,
+    pushes     INT             NOT NULL,
+    pulls     INT             NOT NULL,
+    downloads     INT             NOT NULL,
+    start_date   TIMESTAMP NOT NULL,
+    end_date TIMESTAMP NOT NULL,
+    PRIMARY KEY (start_date, pkey)
+);
+
 SELECT add_data_node('dn1', host => '10.10.1.12');
 SELECT add_data_node('dn2', host => '10.10.1.13');
 SELECT add_data_node('dn3', host => '10.10.1.14');
@@ -32,9 +47,9 @@ SELECT create_distributed_hypertable('github_events', 'start_date', 'pkey',
 
 CREATE INDEX ON github_events (stars, start_date DESC);
 CREATE INDEX ON github_events (forks, start_date DESC);
-CREATE INDEX ON github_events (adds, start_date DESC);
-CREATE INDEX ON github_events (dels, start_date DESC);
-CREATE INDEX ON github_events (add_del_ratio, start_date DESC);
+# CREATE INDEX ON github_events (adds, start_date DESC);
+# CREATE INDEX ON github_events (dels, start_date DESC);
+# CREATE INDEX ON github_events (add_del_ratio, start_date DESC);
 CREATE INDEX ON github_events (events_count, start_date DESC);
 CREATE INDEX ON github_events (issues, start_date DESC);
 CREATE INDEX ON github_events (end_date, start_date DESC);
