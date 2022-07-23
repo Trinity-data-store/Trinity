@@ -14,6 +14,11 @@ COLS = ["pkey", "events_count", "authors_count", "forks", "stars", "issues", "pu
 filename = "/proj/trinity-PG0/Trinity/results/github_clickhouse"
 outfile_addr = "/proj/trinity-PG0/Trinity/results/github_timescale"
 
+
+filename = "/proj/trinity-PG0/Trinity/results/github_clickhouse_new_timestamps"
+outfile_addr = "/proj/trinity-PG0/Trinity/results/github_timescale_timestamps_tryout"
+
+
 dates = [0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
 
 if sys.argv == 2:
@@ -31,14 +36,20 @@ for line in lines:
 
     query = line.split(";,")[0] + ";"
     query_select = query.replace("COUNT(*)", "*").replace("github_events_final", "github_events")
+    # print(query_select)
 
-    StringRegex = re.compile(r'start_date <= \d\d\d\d\d\d\d\d AND end_date >= \d\d\d\d\d\d\d\d')
+    # StringRegex = re.compile(r'start_date <= \d\d\d\d\d\d\d\d AND end_date >= \d\d\d\d\d\d\d\d')
+    StringRegex = re.compile(r'where start_date >= \d\d\d\d\d\d\d\d AND start_date <= \d\d\d\d\d\d\d\d AND end_date >= \d\d\d\d\d\d\d\d AND end_date <= \d\d\d\d\d\d\d\d;')
     while StringRegex.search(query_select):
         old_string = StringRegex.search(query_select).group()
         new_string = old_string
         DateRegex = re.compile(r'\d\d\d\d\d\d\d\d')
 
-        for i in range(2):
+        # for i in range(4):
+        i = -1
+        while DateRegex.search(new_string):
+            i += 1
+
             old_dateString = DateRegex.search(new_string).group()
             new_dateString = old_dateString[0:4] + "-" + old_dateString[4:6] + "-" + old_dateString[6:]
             
