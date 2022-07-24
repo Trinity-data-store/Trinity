@@ -22,6 +22,7 @@ using namespace apache::thrift::transport;
 
 const int DIMENSION_TPCH = 9;
 const int DIMENSION_GITHUB = 10;
+const int DIMENSION_NYC = 15;
 // Parse one line from TPC-H file.
 std::vector<int32_t> parse_line_tpch(std::string line) {
 
@@ -259,5 +260,50 @@ std::vector<int32_t> parse_line_github(std::string line) {
     return point;
 }
 
+std::vector<int32_t> parse_line_nyc(std::string line) {
+
+    vector <int32_t> point(DIMENSION_NYC, 0);
+    bool primary_key = true;
+    std::string delim = ",";
+    auto start = 0U;
+    auto end = line.find(delim);
+    int real_index = -1;
+    // pickup_date, dropoff_date, pickup_longitude, pickup_latitude, dropoff_longitude, dropoff_latitude, passenger_count, trip_distance, fare_amount, extra, mta_tax, tip_amount, tolls_amount, ehail_fee, improvement_surcharge, total_amount
+    while (end != std::string::npos)
+    {
+        std::string substr = line.substr(start, end - start); 
+        start = end + 1;
+        end = line.find(delim, start);
+
+        if (primary_key) {
+            primary_key = false;
+            continue;
+        }
+
+        real_index ++;
+
+        if (real_index >= 2 && real_index != 6){
+            float num_float = std::stof(substr);
+            point[real_index] = static_cast<int32_t>(num_float * 10);
+        }
+        else {
+            point[real_index] = static_cast<int32_t>(std::stoul(substr));
+        }
+    }
+
+    real_index ++;
+    std::string substr = line.substr(start, end - start); 
+    point[real_index] = static_cast<int32_t>(std::stoul(substr));
+
+    point[0] -= 20090000;
+    point[1] -= 19700000;
+
+
+    // for (int i = 0; i < DIMENSION_NYC; i++) 
+    //     std::cout << point[i] << " ";
+    // std::cout << std::endl;
+    // exit(0);
+    return point;
+}
 
 #endif //TrinityParseFile_H

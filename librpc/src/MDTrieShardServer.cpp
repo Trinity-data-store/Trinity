@@ -31,7 +31,7 @@ using namespace apache::thrift::server;
 level_t max_depth = 32;
 level_t trie_depth = 6;
 const preorder_t max_tree_node = 512;
-const dimension_t DIMENSION = 9;
+const dimension_t DIMENSION = 15;
 const int shard_num = 20;
 
 class MDTrieHandler : public MDTrieShardIf {
@@ -54,7 +54,6 @@ public:
 
   bool ping(const int32_t dataset_idx) { 
 
-    cout << "ping(): [" << dataset_idx << "]" << endl; 
     if (mdtrie_ != nullptr && p_key_to_treeblock_compact_ != nullptr)
       return true;
 
@@ -76,10 +75,12 @@ public:
 
       if (DIMENSION != 9) {
         std::cerr << "wrong config!\n" << std::endl;
+        exit(-1);
       }
       p_key_to_treeblock_compact_ = new bitmap::CompactPtrVector(total_points_count);
       create_level_to_num_children(bit_widths, start_bits, max_depth);
       mdtrie_ = new md_trie<DIMENSION>(max_depth, trie_depth, max_tree_node);
+      std::cout << "Tpch experiment started" << std::endl; 
     }
 
     else if (dataset_idx == 1) // Github
@@ -100,10 +101,38 @@ public:
 
       if (DIMENSION != 10) {
         std::cerr << "wrong config!\n" << std::endl;
+        exit(-1);
       }
       p_key_to_treeblock_compact_ = new bitmap::CompactPtrVector(total_points_count);
       create_level_to_num_children(bit_widths, start_bits, 24);
       mdtrie_ = new md_trie<DIMENSION>(max_depth, trie_depth, max_tree_node);
+
+      std::cout << "Github experiment started" << std::endl; 
+    }
+
+    else if (dataset_idx == 3) // NYC Taxi
+    {
+      // pickup_date, dropoff_date, pickup_longitude, pickup_latitude, dropoff_longitude, dropoff_latitude, passenger_count, trip_distance, fare_amount, extra, mta_tax, tip_amount, tolls_amount, ehail_fee, improvement_surcharge, total_amount
+      // MIN: [20090101, 19700101, 0, 0, ... 0 ]
+      // MAX: [20160630, 20221220, 89.9, 89.8, 89.9, 89.8, 255, 198623000, 21474808, 1000, 1311.2,  3950588.8, 21474836, 137.6, 21474830]
+
+      std::vector<level_t> bit_widths = {18, 20, 10, 10, 10, 10, 8, 32, 28, 14, 14, 26, 28, 12, 28}; // 15 Dimensions;
+      std::vector<level_t> start_bits = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}; // 15 Dimensions;
+
+      trie_depth = 6;
+      max_depth = 32;
+      no_dynamic_sizing = true;
+      total_points_count = 1298919650 / (shard_num * 5) + 1; 
+
+      if (DIMENSION != 15) {
+        std::cerr << "wrong config!\n" << std::endl;
+        exit(-1);
+      }
+      p_key_to_treeblock_compact_ = new bitmap::CompactPtrVector(total_points_count);
+      create_level_to_num_children(bit_widths, start_bits, max_depth);
+      mdtrie_ = new md_trie<DIMENSION>(max_depth, trie_depth, max_tree_node);
+
+      std::cout << "NYC experiment started" << std::endl; 
     }
     else 
     {

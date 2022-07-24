@@ -49,6 +49,19 @@ std::vector<std::vector<int32_t>> load_dataset_vector_github(std::string file_ad
     return points_vect;
 }
 
+std::vector<std::vector<int32_t>> load_dataset_vector_nyc(std::string file_address, uint32_t total_points) 
+{
+    std::ifstream file(file_address);
+    std::vector<std::vector<int32_t>> points_vect;
+    std::string line;
+    for (uint32_t i = 0; i < total_points; i++){
+        std::getline(file, line);
+        points_vect.push_back(parse_line_nyc(line));
+    }
+    return points_vect;
+}
+
+
 uint32_t insert_each_client(std::vector<std::vector<int32_t>> *total_points_stored, int shard_number, int client_number, int client_index, std::vector<std::string> server_ips, uint32_t points_to_insert)
 {
     auto client = MDTrieClient(server_ips, shard_number);
@@ -78,17 +91,24 @@ uint32_t total_client_insert(int shard_number, int client_number, std::vector<st
         file_address = "/mntData/tpch_split_10/x" + std::to_string(which_part);
     if (current_dataset_idx == 2)
         file_address = "/mntData/github_split_10/x" + std::to_string(which_part);
+    if (current_dataset_idx == 3)
+        file_address = "/mntData/nyc_split_10/x" + std::to_string(which_part);
 
     uint32_t points_to_insert;
 
     if (current_dataset_idx == 1)
         points_to_insert = 100000000;
         
-    if (current_dataset_idx == 2)
+    if (current_dataset_idx == 2) {
         points_to_insert = 82805630;
+        if (which_part == 9)
+            points_to_insert = 82805625;
+    }
 
-    if (current_dataset_idx == 2 && which_part == 9)
-        points_to_insert = 82805625;
+    if (current_dataset_idx == 3) {
+        points_to_insert = 129891965;
+    }
+        
 
     // points_to_insert /= 10;
     std::vector<std::vector<int32_t>> total_points_stored;
@@ -96,6 +116,8 @@ uint32_t total_client_insert(int shard_number, int client_number, std::vector<st
         total_points_stored = load_dataset_vector_tpch(file_address, points_to_insert);
     if (current_dataset_idx == 2)
         total_points_stored = load_dataset_vector_github(file_address, points_to_insert);
+    if (current_dataset_idx == 3)
+        total_points_stored = load_dataset_vector_nyc(file_address, points_to_insert);
 
     std::vector<std::future<uint32_t>> threads; 
     threads.reserve(client_number);
