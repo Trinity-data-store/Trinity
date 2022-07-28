@@ -59,6 +59,7 @@ public:
 
     if (dataset_idx == 2) // TPC-H
     {
+      use_hybrid_ = false;
       std::vector<level_t> bit_widths = {8, 32, 16, 24, 32, 32, 32, 32, 32}; // 9 Dimensions;
       std::vector<level_t> start_bits = {0, 0, 8, 16, 0, 0, 0, 0, 0}; // 9 Dimensions;
       // [QUANTITY, EXTENDEDPRICE, DISCOUNT, TAX, SHIPDATE, COMMITDATE, RECEIPTDATE, TOTALPRICE, ORDERDATE]
@@ -90,7 +91,7 @@ public:
       // MAX: [7451541, 737170, 262926, 354850, 379379, 3097263, 703341, 8745, 3176317839, 1006504276, 117942850, 20201206, 20201206]
       // std::vector<level_t> bit_widths = {24, 24, 24, 24, 24, 24, 24, 16, 32, 32, 32, 24, 24}; // 13 Dimensions;
       // std::vector<level_t> start_bits = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}; // 13 Dimensions;
-
+      use_hybrid_ = false;
       std::vector<level_t> bit_widths = {24, 24, 24, 24, 24, 24, 24, 16, 24, 24}; // 10 Dimensions;
       std::vector<level_t> start_bits = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0}; // 10 Dimensions;
 
@@ -112,17 +113,42 @@ public:
 
     else if (dataset_idx == 3) // NYC Taxi
     {
-      // pickup_date, dropoff_date, pickup_longitude, pickup_latitude, dropoff_longitude, dropoff_latitude, passenger_count, trip_distance, fare_amount, extra, mta_tax, tip_amount, tolls_amount, ehail_fee, improvement_surcharge, total_amount
+      use_hybrid_ = true;
+      // pickup_date, dropoff_date, pickup_longitude, pickup_latitude, dropoff_longitude, dropoff_latitude, passenger_count, trip_distance, fare_amount, extra, mta_tax, tip_amount, tolls_amount, improvement_surcharge, total_amount
       // MIN: [20090101, 19700101, 0, 0, ... 0 ]
       // MAX: [20160630, 20221220, 89.9, 89.8, 89.9, 89.8, 255, 198623000, 21474808, 1000, 1311.2,  3950588.8, 21474836, 137.6, 21474830]
 
       std::vector<level_t> bit_widths = {18, 20, 10, 10, 10, 10, 8, 32, 28, 14, 14, 26, 28, 12, 28}; // 15 Dimensions;
       std::vector<level_t> start_bits = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}; // 15 Dimensions;
 
+      // queried: trip_distance, fare_amount, tip_amount, pickup_date, dropoff_date, passenger_count. pickup_longitude, pickup_latitude
+
+      /*
+      bit_widths = {18, 20, 10, 10, 10, 10, 8, 28, 25, 10 + 18, 11 + 17, 22, 25, 8 + 20, 25}; // 15 Dimensions;
+      start_bits = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0 + 18, 0 + 17, 0, 0, 0 + 20, 0}; // 15 Dimensions;  ... GB, float
+      */
+
+
+      // trip_distance >= 25 and trip_distance <= 248 and fare_amount <= 211 and tip_amount <= 29;
+      bit_widths = {18, 20, 10, 10, 10 + 21, 10 + 21, 8, 28, 25, 10 + 21, 11 + 20, 22, 25 + 7, 8 + 23, 25 + 6}; // 15 Dimensions;
+      start_bits = {0, 0, 0, 0, 0 + 21, 0 + 21, 0, 0, 0, 0 + 21, 0 + 20, 0, 0 + 7, 0 + 23, 0 + 6}; // 15 Dimensions; 24.54 GB, int
+
+      bit_widths = {18, 20, 10, 10, 10 + 10, 10 + 10, 8, 13, 10, 10 + 10, 11 + 9, 10, 10 + 10, 8, 10 + 10}; // 15 Dimensions;
+      start_bits = {0, 0, 0, 0, 0 + 10, 0 + 10, 0, 0, 0, 0 + 10, 0 + 9, 0, 0 + 10, 0, 0 + 10}; // 15 Dimensions; 24.54 GB, int
+
+      /*
+      bit_widths = {18 + 6, 20 + 6, 10 + 6, 10 + 6, 10 + 18, 10 + 18, 8 + 6, 28, 25, 10 + 18, 11 + 17, 22, 25, 8 + 20, 25}; // 15 Dimensions;
+      start_bits = {0 + 6, 0 + 6, 0 + 6, 0 + 6, 0 + 18, 0 + 18, 0 + 6, 0, 0, 0 + 18, 0 + 17, 0, 0, 0 + 20, 0}; // 15 Dimensions;  GB, int TOO SLOW
+      */
+      
+      //  max_values = {20160630, 20221220, 899, 898, 899, 898, 255, 198623000, 21474808, 1000, 1312, 3950589, 21474836, 138, 21474830};
+      max_values_ = {20160630 - 20090000, 20221220 - 19700000, 899, 898, 899, 898, 255, 5000, 1000, 1000, 1312, 1000, 1000, 138, 1000};
+      // min_values_ = {20090101, 19700101, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
       trie_depth = 6;
-      max_depth = 32;
+
+      max_depth = 20;
       no_dynamic_sizing = true;
-      total_points_count = 1298919650 / (shard_num * 5) + 1; 
+      total_points_count = 675200000 / (shard_num * 5) + 1; 
 
       if (DIMENSION != 15) {
         std::cerr << "wrong config!\n" << std::endl;
@@ -157,12 +183,31 @@ public:
 
     data_point<DIMENSION> leaf_point;
 
-    for (uint8_t i = 0; i < DIMENSION; i++) {
+    for (uint8_t i = 0; i <= 6 ; i++) {
       leaf_point.set_coordinate(i, point[i]);
+    }
+
+    for (uint8_t i = 7; i < DIMENSION; i++) {
+
+      leaf_point.set_coordinate(i, point[i]);
+
+      if (use_hybrid_ && point[i] > max_values_[i])
+      {
+        std::vector<int32_t> new_point = point;
+        new_point.push_back(inserted_points_);
+        backup_points_.push_back(new_point);
+        inserted_points_ ++;
+
+        for (const auto &coordinate : point) outfile_ << coordinate << ",";
+        outfile_ << std::endl;
+
+        return inserted_points_ - 1;
+      }
     }
 
     mdtrie_->insert_trie(&leaf_point, inserted_points_, p_key_to_treeblock_compact_);
     inserted_points_ ++;
+
     for (const auto &coordinate : point) outfile_ << coordinate << ",";
     outfile_ << std::endl;
 
@@ -173,18 +218,56 @@ public:
     
     data_point<DIMENSION> start_range_point;
     for (uint8_t i = 0; i < DIMENSION; i++)
-      start_range_point.set_coordinate(i, start_range[i]);    
+      start_range_point.set_coordinate(i, start_range[i]);   
+
 
     data_point<DIMENSION> end_range_point;
-    for (uint8_t i = 0; i < DIMENSION; i++)
-      end_range_point.set_coordinate(i, end_range[i]);     
+    for (uint8_t i = 0; i < DIMENSION; i++) {
+      end_range_point.set_coordinate(i, end_range[i]);   
+      if (end_range[i] > max_values_[i])
+        end_range_point.set_coordinate(i, max_values_[i]);
+    }  
 
     mdtrie_->range_search_trie(&start_range_point, &end_range_point, mdtrie_->root(), 0, _return);
+
+    if (!use_hybrid_)
+      return;
+
+    unsigned int backup_points_size = backup_points_.size();
+    // std::cout << "backup_points_size: " << backup_points_.size() << std::endl;
+    for (unsigned int i = 0; i < backup_points_size; i ++ ){
+      bool not_met = false;
+      for (uint8_t j = 0; j < DIMENSION; j++) {
+        if (backup_points_[i][j] < start_range[j] || backup_points_[i][j] > end_range[j])
+        {
+          not_met = true;
+          break;
+        }
+      }
+      if (!not_met) {
+        for (uint8_t k = 0; k < DIMENSION; k++) {
+          _return.push_back(backup_points_[i][k]);
+        }
+      }  
+    }
   }
 
   void primary_key_lookup(std::vector<int32_t> & _return, const int32_t primary_key){
 
+
     _return.reserve(DIMENSION);
+
+    if (use_hybrid_) {
+      unsigned int backup_points_size = backup_points_.size();
+      for (unsigned int i = 0; i < backup_points_size; i ++ ){
+        if (backup_points_[i][DIMENSION] == primary_key) {
+          for (uint8_t j = 0; i < DIMENSION; i++) {
+            _return[j] = backup_points_[i][j];
+          }
+          return;
+        }
+      }
+    }
 
     std::vector<morton_t> node_path_from_primary(max_depth + 1);
     tree_block<DIMENSION> *t_ptr = (tree_block<DIMENSION> *) (p_key_to_treeblock_compact_->At(primary_key));
@@ -200,7 +283,7 @@ public:
   }
 
   int32_t get_size(){
-    return mdtrie_->size(p_key_to_treeblock_compact_);
+    return mdtrie_->size(p_key_to_treeblock_compact_) + sizeof(int32_t) * (DIMENSION + 1) * backup_points_.size();
   }
 
 protected:
@@ -208,7 +291,11 @@ protected:
   md_trie<DIMENSION> *mdtrie_; 
   bitmap::CompactPtrVector *p_key_to_treeblock_compact_;
   uint64_t inserted_points_ = 0;
+  std::vector<int32_t> max_values_;
+  std::vector<std::vector<int32_t>> backup_points_;
+  // std::vector<int32_t> min_values_;
   ofstream outfile_;
+  bool use_hybrid_;
 };
 
 class MDTrieCloneFactory : virtual public MDTrieShardIfFactory {

@@ -106,7 +106,7 @@ uint32_t total_client_insert(int shard_number, int client_number, std::vector<st
     }
 
     if (current_dataset_idx == 3) {
-        points_to_insert = 129891965;
+        points_to_insert = 675200000 / 10;
     }
         
 
@@ -116,8 +116,10 @@ uint32_t total_client_insert(int shard_number, int client_number, std::vector<st
         total_points_stored = load_dataset_vector_tpch(file_address, points_to_insert);
     if (current_dataset_idx == 2)
         total_points_stored = load_dataset_vector_github(file_address, points_to_insert);
-    if (current_dataset_idx == 3)
+    if (current_dataset_idx == 3) {
+        // points_to_insert /= 10;
         total_points_stored = load_dataset_vector_nyc(file_address, points_to_insert);
+    }
 
     std::vector<std::future<uint32_t>> threads; 
     threads.reserve(client_number);

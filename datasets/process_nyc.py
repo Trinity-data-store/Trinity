@@ -4,32 +4,33 @@
 
 processed_lines = 0
 
-with open("/mntData2/nyc_taxi/nyc_taxi_processed.csv", 'a') as outfile:
-    with open("/mntData2/nyc_taxi/nyc_taxi.csv") as infile:
+with open("/mntData2/nyc_taxi/nyc_taxi_processed_675.csv", 'a') as outfile:
+    with open("/mntData2/nyc_taxi/nyc_taxi_processed_ch.csv") as infile:
         for line in infile:
-            line_split = line.strip().split(",")
+            
+            line_split = line.strip().split(",")[1:]
 
-            line_split[0] = "".join(line_split[0][1:-1].split("-"))
-            line_split[1] = "".join(line_split[1][1:-1].split("-"))
+            # line_split[0] = "".join(line_split[0][1:-1].split("-"))
+            # line_split[1] = "".join(line_split[1][1:-1].split("-"))
 
 
-            line_split[2] = "{:.1f}".format(abs(float(line_split[2])))
-            line_split[3] = "{:.1f}".format(abs(float(line_split[3])))
-            line_split[4] = "{:.1f}".format(abs(float(line_split[4])))
-            line_split[5] = "{:.1f}".format(abs(float(line_split[5])))
+            # line_split[2] = "{:.1f}".format(abs(float(line_split[2])))
+            # line_split[3] = "{:.1f}".format(abs(float(line_split[3])))
+            # line_split[4] = "{:.1f}".format(abs(float(line_split[4])))
+            # line_split[5] = "{:.1f}".format(abs(float(line_split[5])))
 
-            if float(line_split[2]) >= 90 or float(line_split[3]) >= 90 or float(line_split[4]) >= 90 or float(line_split[5]) >= 90:
-                continue
+            # if float(line_split[2]) >= 90 or float(line_split[3]) >= 90 or float(line_split[4]) >= 90 or float(line_split[5]) >= 90:
+            #     continue
 
-            line_split[7] = "{:.1f}".format(abs(float(line_split[7])))
-            line_split[8] = "{:.1f}".format(abs(float(line_split[8])))
-            line_split[9] = "{:.1f}".format(abs(float(line_split[9])))
-            line_split[10] = "{:.1f}".format(abs(float(line_split[10])))
-            line_split[11] = "{:.1f}".format(abs(float(line_split[11])))
-            line_split[12] = "{:.1f}".format(abs(float(line_split[12])))
-            line_split[13] = "{:.1f}".format(abs(float(line_split[13])))
-            line_split[14] = "{:.1f}".format(abs(float(line_split[14])))
-            line_split[15] = "{:.1f}".format(abs(float(line_split[15])))
+            line_split[7] = str(int(abs(float(line_split[7]))))
+            line_split[8] = str(int(abs(float(line_split[8]))))
+            line_split[9] = str(int(abs(float(line_split[9]))))
+            line_split[10] = str(int(abs(float(line_split[10]))))
+            line_split[11] = str(int(abs(float(line_split[11]))))
+            line_split[12] = str(int(abs(float(line_split[12]))))
+            line_split[13] = str(int(abs(float(line_split[13]))))
+            line_split[14] = str(int(abs(float(line_split[14]))))
+            # line_split[15] = str(int(abs(float(line_split[15]))))
 
             line_split = [str(processed_lines)] + line_split
             outfile.write(",".join(line_split) + '\n')
@@ -38,3 +39,6 @@ with open("/mntData2/nyc_taxi/nyc_taxi_processed.csv", 'a') as outfile:
                 print(processed_lines)
             
             processed_lines += 1
+
+            if processed_lines == 675200000:
+                break

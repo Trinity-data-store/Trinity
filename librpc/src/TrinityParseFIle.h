@@ -268,7 +268,7 @@ std::vector<int32_t> parse_line_nyc(std::string line) {
     auto start = 0U;
     auto end = line.find(delim);
     int real_index = -1;
-    // pickup_date, dropoff_date, pickup_longitude, pickup_latitude, dropoff_longitude, dropoff_latitude, passenger_count, trip_distance, fare_amount, extra, mta_tax, tip_amount, tolls_amount, ehail_fee, improvement_surcharge, total_amount
+    // pickup_date, dropoff_date, pickup_longitude, pickup_latitude, dropoff_longitude, dropoff_latitude, passenger_count, trip_distance, fare_amount, extra, mta_tax, tip_amount, tolls_amount, improvement_surcharge, total_amount
     while (end != std::string::npos)
     {
         std::string substr = line.substr(start, end - start); 
@@ -282,10 +282,14 @@ std::vector<int32_t> parse_line_nyc(std::string line) {
 
         real_index ++;
 
-        if (real_index >= 2 && real_index != 6){
+        if (real_index >= 2 && real_index <= 5){
             float num_float = std::stof(substr);
             point[real_index] = static_cast<int32_t>(num_float * 10);
         }
+        // else if (real_index >= 7){
+        //     float num_float = std::stof(substr);
+        //     point[real_index] = static_cast<int32_t>(num_float * 10);
+        // }
         else {
             point[real_index] = static_cast<int32_t>(std::stoul(substr));
         }

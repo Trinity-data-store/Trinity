@@ -1,0 +1,1000 @@
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 35 and 52 AND pickup_latitude BETWEEN 59 AND 77;, found points: 372306
+select count(*) from nyc_taxi where pickup_date <= 20110531 and passenger_count = 6;, found points: 915389
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 14 and 51 AND pickup_latitude BETWEEN 20 AND 77;, found points: 373283
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 29 and 54 AND pickup_latitude BETWEEN 32 AND 84;, found points: 373007
+select count(*) from nyc_taxi where trip_distance >= 25 and trip_distance <= 248 and fare_amount <= 211 and tip_amount <= 29;, found points: 404462
+select count(*) from nyc_taxi where pickup_date <= 20110521 and passenger_count = 6;, found points: 895860
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 38 and 67 AND pickup_latitude BETWEEN 22 AND 76;, found points: 375105
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 13 and 71 AND pickup_latitude BETWEEN 48 AND 82;, found points: 372916
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 18 and 57 AND pickup_latitude BETWEEN 73 AND 83;, found points: 372287
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 21 and 56 AND pickup_latitude BETWEEN 19 AND 77;, found points: 373342
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 34 and 62 AND pickup_latitude BETWEEN 74 AND 81;, found points: 339506
+select count(*) from nyc_taxi where trip_distance >= 24 and trip_distance <= 237 and fare_amount <= 233 and tip_amount <= 247;, found points: 520531
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 32 and 71 AND pickup_latitude BETWEEN 73 AND 80;, found points: 372284
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 20 and 67 AND pickup_latitude BETWEEN 71 AND 81;, found points: 372288
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 5 and 42 AND pickup_latitude BETWEEN 71 AND 81;, found points: 372282
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 36 and 52 AND pickup_latitude BETWEEN 72 AND 77;, found points: 372283
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 25 and 43 AND pickup_latitude BETWEEN 50 AND 81;, found points: 372309
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 25 and 79 AND pickup_latitude BETWEEN 70 AND 77;, found points: 372358
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 33 and 49 AND pickup_latitude BETWEEN 45 AND 89;, found points: 372349
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 37 and 57 AND pickup_latitude BETWEEN 71 AND 88;, found points: 372290
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 12 and 46 AND pickup_latitude BETWEEN 71 AND 76;, found points: 372280
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 19 and 47 AND pickup_latitude BETWEEN 51 AND 78;, found points: 372320
+select count(*) from nyc_taxi where trip_distance <= 217 and fare_amount between 87 AND 6894;, found points: 387411
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 28 and 62 AND pickup_latitude BETWEEN 48 AND 85;, found points: 372552
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 34 and 81 AND pickup_latitude BETWEEN 63 AND 89;, found points: 372575
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 36 and 57 AND pickup_latitude BETWEEN 17 AND 86;, found points: 373118
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 40 and 51 AND pickup_latitude BETWEEN 57 AND 86;, found points: 372307
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 23 and 52 AND pickup_latitude BETWEEN 69 AND 85;, found points: 372299
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 40 and 69 AND pickup_latitude BETWEEN 28 AND 78;, found points: 376057
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 26 and 60 AND pickup_latitude BETWEEN 70 AND 75;, found points: 372282
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 40 and 83 AND pickup_latitude BETWEEN 61 AND 75;, found points: 372460
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 30 and 84 AND pickup_latitude BETWEEN 60 AND 89;, found points: 372641
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 38 and 74 AND pickup_latitude BETWEEN 72 AND 77;, found points: 372333
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 27 and 53 AND pickup_latitude BETWEEN 60 AND 84;, found points: 372307
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 5 and 46 AND pickup_latitude BETWEEN 17 AND 86;, found points: 391144
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 3 and 73 AND pickup_latitude BETWEEN 28 AND 74;, found points: 413177
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 4 and 58 AND pickup_latitude BETWEEN 71 AND 83;, found points: 372291
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 31 and 45 AND pickup_latitude BETWEEN 52 AND 86;, found points: 372314
+select count(*) from nyc_taxi where trip_distance >= 25 and trip_distance <= 255 and fare_amount <= 154 and tip_amount <= 227;, found points: 405665
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 28 and 44 AND pickup_latitude BETWEEN 60 AND 74;, found points: 372226
+select count(*) from nyc_taxi where trip_distance >= 22 and trip_distance <= 153 and fare_amount <= 274 and tip_amount <= 242;, found points: 983819
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 30 and 69 AND pickup_latitude BETWEEN 57 AND 89;, found points: 372391
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 27 and 87 AND pickup_latitude BETWEEN 52 AND 83;, found points: 373058
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 10 and 65 AND pickup_latitude BETWEEN 46 AND 75;, found points: 372773
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 33 and 80 AND pickup_latitude BETWEEN 42 AND 87;, found points: 385922
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 32 and 46 AND pickup_latitude BETWEEN 69 AND 75;, found points: 372286
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 36 and 49 AND pickup_latitude BETWEEN 44 AND 88;, found points: 372346
+select count(*) from nyc_taxi where pickup_date >= 20160611 and pickup_date <= 20160616 and dropoff_date >= 20151125 and dropoff_date <= 20160628, found points: 884556
+select count(*) from nyc_taxi where pickup_date <= 20110205 and passenger_count = 6;, found points: 793235
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 11 and 50 AND pickup_latitude BETWEEN 52 AND 76;, found points: 372332
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 24 and 76 AND pickup_latitude BETWEEN 70 AND 80;, found points: 372376
+select count(*) from nyc_taxi where pickup_date >= 20160528 and pickup_date <= 20160612 and dropoff_date >= 20120604 and dropoff_date <= 20160529, found points: 460777
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 31 and 50 AND pickup_latitude BETWEEN 63 AND 81;, found points: 372301
+select count(*) from nyc_taxi where trip_distance >= 24 and trip_distance <= 127 and fare_amount <= 240 and tip_amount <= 278;, found points: 519623
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 0 and 76 AND pickup_latitude BETWEEN 55 AND 90;, found points: 374317
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 38 and 48 AND pickup_latitude BETWEEN 8 AND 89;, found points: 372630
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 12 and 42 AND pickup_latitude BETWEEN 30 AND 88;, found points: 373036
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 19 and 41 AND pickup_latitude BETWEEN 47 AND 85;, found points: 372298
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 33 and 59 AND pickup_latitude BETWEEN 8 AND 90;, found points: 373404
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 30 and 82 AND pickup_latitude BETWEEN 73 AND 83;, found points: 372413
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 14 and 69 AND pickup_latitude BETWEEN 38 AND 87;, found points: 375879
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 23 and 86 AND pickup_latitude BETWEEN 59 AND 85;, found points: 372641
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 8 and 54 AND pickup_latitude BETWEEN 66 AND 76;, found points: 372294
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 4 and 70 AND pickup_latitude BETWEEN 34 AND 87;, found points: 397206
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 2 and 83 AND pickup_latitude BETWEEN 62 AND 81;, found points: 372503
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 24 and 63 AND pickup_latitude BETWEEN 10 AND 79;, found points: 374249
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 40 and 44 AND pickup_latitude BETWEEN 63 AND 75;, found points: 372284
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 15 and 90 AND pickup_latitude BETWEEN 65 AND 76;, found points: 372409
+select count(*) from nyc_taxi where pickup_date <= 20110801 and passenger_count = 0;, found points: 636141
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 15 and 85 AND pickup_latitude BETWEEN 74 AND 76;, found points: 339523
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 39 and 81 AND pickup_latitude BETWEEN 49 AND 81;, found points: 373579
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 26 and 41 AND pickup_latitude BETWEEN 67 AND 77;, found points: 372273
+select count(*) from nyc_taxi where trip_distance >= 22 and trip_distance <= 98 and fare_amount <= 103 and tip_amount <= 195;, found points: 887053
+select count(*) from nyc_taxi where trip_distance >= 22 and trip_distance <= 126 and fare_amount <= 86 and tip_amount <= 377;, found points: 825079
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 11 and 46 AND pickup_latitude BETWEEN 28 AND 76;, found points: 373147
+select count(*) from nyc_taxi where trip_distance >= 25 and trip_distance <= 297 and fare_amount <= 110 and tip_amount <= 397;, found points: 356008
+select count(*) from nyc_taxi where trip_distance >= 22 and trip_distance <= 44 and fare_amount <= 199 and tip_amount <= 399;, found points: 948581
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 33 and 85 AND pickup_latitude BETWEEN 61 AND 89;, found points: 372624
+select count(*) from nyc_taxi where trip_distance >= 22 and trip_distance <= 154 and fare_amount <= 260 and tip_amount <= 332;, found points: 983468
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 2 and 43 AND pickup_latitude BETWEEN 56 AND 80;, found points: 372310
+select count(*) from nyc_taxi where trip_distance >= 23 and trip_distance <= 58 and fare_amount <= 279 and tip_amount <= 66;, found points: 656609
+select count(*) from nyc_taxi where trip_distance >= 23 and trip_distance <= 61 and fare_amount <= 244 and tip_amount <= 204;, found points: 658876
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 24 and 53 AND pickup_latitude BETWEEN 57 AND 74;, found points: 372250
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 0 and 64 AND pickup_latitude BETWEEN 23 AND 90;, found points: 458902
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 39 and 72 AND pickup_latitude BETWEEN 48 AND 82;, found points: 372947
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 26 and 81 AND pickup_latitude BETWEEN 71 AND 88;, found points: 372474
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 32 and 76 AND pickup_latitude BETWEEN 44 AND 87;, found points: 378034
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 10 and 53 AND pickup_latitude BETWEEN 29 AND 89;, found points: 373492
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 33 and 67 AND pickup_latitude BETWEEN 20 AND 88;, found points: 375244
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 27 and 90 AND pickup_latitude BETWEEN 74 AND 87;, found points: 339662
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 9 and 43 AND pickup_latitude BETWEEN 50 AND 83;, found points: 372322
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 27 and 70 AND pickup_latitude BETWEEN 33 AND 88;, found points: 377232
+select count(*) from nyc_taxi where trip_distance >= 23 and trip_distance <= 161 and fare_amount <= 192 and tip_amount <= 122;, found points: 660576
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 34 and 70 AND pickup_latitude BETWEEN 55 AND 86;, found points: 372435
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 17 and 73 AND pickup_latitude BETWEEN 72 AND 89;, found points: 372306
+select count(*) from nyc_taxi where pickup_date >= 20140824 and pickup_date <= 20160304 and dropoff_date >= 20160302 and dropoff_date <= 20160810, found points: 859681
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 23 and 82 AND pickup_latitude BETWEEN 65 AND 77;, found points: 372414
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 26 and 55 AND pickup_latitude BETWEEN 4 AND 74;, found points: 373137
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 0 and 81 AND pickup_latitude BETWEEN 48 AND 80;, found points: 375558
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 0 and 42 AND pickup_latitude BETWEEN 5 AND 89;, found points: 457289
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 6 and 63 AND pickup_latitude BETWEEN 66 AND 81;, found points: 372305
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 18 and 54 AND pickup_latitude BETWEEN 34 AND 87;, found points: 373292
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 39 and 50 AND pickup_latitude BETWEEN 73 AND 85;, found points: 372280
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 33 and 41 AND pickup_latitude BETWEEN 65 AND 84;, found points: 372276
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 40 and 52 AND pickup_latitude BETWEEN 69 AND 85;, found points: 372292
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 39 and 76 AND pickup_latitude BETWEEN 68 AND 81;, found points: 372406
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 3 and 58 AND pickup_latitude BETWEEN 62 AND 87;, found points: 372321
+select count(*) from nyc_taxi where pickup_date >= 20131006 and pickup_date <= 20131008 and dropoff_date >= 20121105 and dropoff_date <= 20141103, found points: 588271
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 29 and 51 AND pickup_latitude BETWEEN 74 AND 83;, found points: 339507
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 15 and 73 AND pickup_latitude BETWEEN 72 AND 81;, found points: 372285
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 29 and 51 AND pickup_latitude BETWEEN 42 AND 88;, found points: 372385
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 30 and 88 AND pickup_latitude BETWEEN 42 AND 77;, found points: 386725
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 34 and 51 AND pickup_latitude BETWEEN 52 AND 90;, found points: 372328
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 25 and 60 AND pickup_latitude BETWEEN 0 AND 88;, found points: 373717
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 24 and 82 AND pickup_latitude BETWEEN 68 AND 84;, found points: 372483
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 16 and 57 AND pickup_latitude BETWEEN 62 AND 89;, found points: 372317
+select count(*) from nyc_taxi where pickup_date <= 20110727 and passenger_count = 6;, found points: 1000640
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 33 and 69 AND pickup_latitude BETWEEN 54 AND 77;, found points: 372455
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 0 and 49 AND pickup_latitude BETWEEN 5 AND 81;, found points: 457506
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 23 and 67 AND pickup_latitude BETWEEN 72 AND 84;, found points: 372287
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 34 and 54 AND pickup_latitude BETWEEN 41 AND 81;, found points: 372423
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 13 and 45 AND pickup_latitude BETWEEN 11 AND 89;, found points: 373113
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 27 and 57 AND pickup_latitude BETWEEN 53 AND 75;, found points: 372345
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 16 and 89 AND pickup_latitude BETWEEN 62 AND 80;, found points: 372494
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 35 and 63 AND pickup_latitude BETWEEN 71 AND 74;, found points: 372219
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 20 and 54 AND pickup_latitude BETWEEN 34 AND 82;, found points: 373178
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 16 and 56 AND pickup_latitude BETWEEN 15 AND 88;, found points: 373518
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 28 and 83 AND pickup_latitude BETWEEN 66 AND 88;, found points: 372544
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 35 and 43 AND pickup_latitude BETWEEN 63 AND 78;, found points: 372289
+select count(*) from nyc_taxi where trip_distance >= 22 and trip_distance <= 201 and fare_amount <= 160 and tip_amount <= 140;, found points: 965168
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 39 and 55 AND pickup_latitude BETWEEN 51 AND 78;, found points: 372335
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 37 and 53 AND pickup_latitude BETWEEN 51 AND 81;, found points: 372337
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 40 and 65 AND pickup_latitude BETWEEN 53 AND 81;, found points: 372433
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 7 and 73 AND pickup_latitude BETWEEN 50 AND 89;, found points: 372777
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 9 and 64 AND pickup_latitude BETWEEN 61 AND 89;, found points: 372340
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 3 and 72 AND pickup_latitude BETWEEN 64 AND 80;, found points: 372317
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 10 and 59 AND pickup_latitude BETWEEN 24 AND 80;, found points: 373926
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 14 and 56 AND pickup_latitude BETWEEN 46 AND 80;, found points: 372405
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 5 and 55 AND pickup_latitude BETWEEN 9 AND 76;, found points: 391537
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 35 and 80 AND pickup_latitude BETWEEN 58 AND 79;, found points: 372554
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 21 and 71 AND pickup_latitude BETWEEN 4 AND 84;, found points: 380819
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 22 and 53 AND pickup_latitude BETWEEN 31 AND 88;, found points: 373106
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 23 and 72 AND pickup_latitude BETWEEN 12 AND 77;, found points: 385131
+select count(*) from nyc_taxi where pickup_date >= 20121128 and pickup_date <= 20150222 and dropoff_date >= 20120216 and dropoff_date <= 20121129, found points: 808133
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 0 and 43 AND pickup_latitude BETWEEN 40 AND 79;, found points: 457041
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 34 and 72 AND pickup_latitude BETWEEN 38 AND 89;, found points: 382953
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 38 and 56 AND pickup_latitude BETWEEN 60 AND 76;, found points: 372302
+select count(*) from nyc_taxi where pickup_date <= 20110606 and passenger_count = 6;, found points: 915756
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 2 and 65 AND pickup_latitude BETWEEN 38 AND 89;, found points: 394656
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 18 and 58 AND pickup_latitude BETWEEN 37 AND 75;, found points: 373465
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 17 and 90 AND pickup_latitude BETWEEN 73 AND 74;, found points: 372228
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 24 and 81 AND pickup_latitude BETWEEN 74 AND 88;, found points: 339661
+select count(*) from nyc_taxi where trip_distance >= 1 and trip_distance <= 34 and fare_amount <= 4 and tip_amount <= 250;, found points: 483074
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 17 and 70 AND pickup_latitude BETWEEN 60 AND 79;, found points: 372339
+select count(*) from nyc_taxi where trip_distance >= 25 and trip_distance <= 38 and fare_amount <= 131 and tip_amount <= 328;, found points: 347392
+select count(*) from nyc_taxi where trip_distance >= 25 and trip_distance <= 74 and fare_amount <= 253 and tip_amount <= 260;, found points: 421574
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 26 and 61 AND pickup_latitude BETWEEN 46 AND 89;, found points: 372577
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 25 and 69 AND pickup_latitude BETWEEN 40 AND 85;, found points: 375225
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 1 and 47 AND pickup_latitude BETWEEN 66 AND 82;, found points: 372298
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 28 and 78 AND pickup_latitude BETWEEN 65 AND 79;, found points: 372425
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 40 and 66 AND pickup_latitude BETWEEN 60 AND 80;, found points: 372330
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 4 and 81 AND pickup_latitude BETWEEN 50 AND 87;, found points: 373401
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 33 and 76 AND pickup_latitude BETWEEN 51 AND 83;, found points: 373029
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 28 and 47 AND pickup_latitude BETWEEN 18 AND 90;, found points: 372791
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 29 and 54 AND pickup_latitude BETWEEN 50 AND 83;, found points: 372352
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 13 and 73 AND pickup_latitude BETWEEN 55 AND 80;, found points: 372453
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 17 and 51 AND pickup_latitude BETWEEN 10 AND 80;, found points: 373246
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 30 and 56 AND pickup_latitude BETWEEN 58 AND 77;, found points: 372316
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 19 and 49 AND pickup_latitude BETWEEN 18 AND 78;, found points: 373044
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 33 and 80 AND pickup_latitude BETWEEN 54 AND 90;, found points: 372885
+select count(*) from nyc_taxi where trip_distance >= 24 and trip_distance <= 292 and fare_amount <= 165 and tip_amount <= 368;, found points: 505510
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 19 and 47 AND pickup_latitude BETWEEN 36 AND 74;, found points: 372872
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 26 and 55 AND pickup_latitude BETWEEN 74 AND 87;, found points: 339510
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 19 and 89 AND pickup_latitude BETWEEN 60 AND 89;, found points: 372650
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 16 and 45 AND pickup_latitude BETWEEN 42 AND 84;, found points: 372335
+select count(*) from nyc_taxi where trip_distance >= 23 and trip_distance <= 131 and fare_amount <= 225 and tip_amount <= 299;, found points: 666572
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 27 and 60 AND pickup_latitude BETWEEN 38 AND 85;, found points: 373372
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 38 and 67 AND pickup_latitude BETWEEN 53 AND 81;, found points: 372459
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 39 and 89 AND pickup_latitude BETWEEN 65 AND 80;, found points: 372432
+select count(*) from nyc_taxi where pickup_date <= 20110310 and passenger_count = 6;, found points: 827390
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 29 and 61 AND pickup_latitude BETWEEN 26 AND 78;, found points: 373703
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 27 and 44 AND pickup_latitude BETWEEN 17 AND 78;, found points: 372723
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 16 and 41 AND pickup_latitude BETWEEN 55 AND 90;, found points: 372291
+select count(*) from nyc_taxi where trip_distance >= 26 and trip_distance <= 131 and fare_amount <= 184 and tip_amount <= 255;, found points: 346659
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 8 and 54 AND pickup_latitude BETWEEN 22 AND 89;, found points: 379842
+select count(*) from nyc_taxi where trip_distance >= 26 and trip_distance <= 116 and fare_amount <= 216 and tip_amount <= 325;, found points: 353491
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 14 and 63 AND pickup_latitude BETWEEN 35 AND 80;, found points: 374216
+select count(*) from nyc_taxi where pickup_date >= 20110115 and pickup_date <= 20111121 and dropoff_date >= 20111120 and dropoff_date <= 20151130, found points: 556400
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 23 and 55 AND pickup_latitude BETWEEN 51 AND 78;, found points: 372351
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 22 and 69 AND pickup_latitude BETWEEN 21 AND 74;, found points: 376582
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 23 and 71 AND pickup_latitude BETWEEN 57 AND 78;, found points: 372392
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 28 and 84 AND pickup_latitude BETWEEN 41 AND 76;, found points: 680080
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 10 and 47 AND pickup_latitude BETWEEN 73 AND 89;, found points: 372288
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 29 and 69 AND pickup_latitude BETWEEN 14 AND 83;, found points: 376564
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 2 and 63 AND pickup_latitude BETWEEN 68 AND 76;, found points: 372296
+select count(*) from nyc_taxi where trip_distance >= 26 and trip_distance <= 70 and fare_amount <= 224 and tip_amount <= 353;, found points: 348856
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 9 and 85 AND pickup_latitude BETWEEN 72 AND 83;, found points: 372431
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 37 and 55 AND pickup_latitude BETWEEN 53 AND 77;, found points: 372334
+select count(*) from nyc_taxi where pickup_date >= 20131107 and pickup_date <= 20151116 and dropoff_date >= 20150303 and dropoff_date <= 20150305, found points: 806362
+select count(*) from nyc_taxi where trip_distance >= 25 and trip_distance <= 42 and fare_amount <= 131 and tip_amount <= 274;, found points: 361484
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 6 and 64 AND pickup_latitude BETWEEN 41 AND 83;, found points: 373174
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 19 and 42 AND pickup_latitude BETWEEN 17 AND 76;, found points: 372833
+select count(*) from nyc_taxi where pickup_date <= 20110128 and passenger_count = 6;, found points: 783658
+select count(*) from nyc_taxi where trip_distance >= 20 and trip_distance <= 137 and fare_amount <= 46 and tip_amount <= 234;, found points: 800791
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 7 and 73 AND pickup_latitude BETWEEN 12 AND 79;, found points: 411296
+select count(*) from nyc_taxi where pickup_date <= 20110621 and passenger_count = 0;, found points: 503813
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 21 and 73 AND pickup_latitude BETWEEN 0 AND 80;, found points: 393632
+select count(*) from nyc_taxi where trip_distance >= 23 and trip_distance <= 122 and fare_amount <= 270 and tip_amount <= 313;, found points: 669368
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 21 and 55 AND pickup_latitude BETWEEN 74 AND 88;, found points: 339512
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 36 and 78 AND pickup_latitude BETWEEN 64 AND 79;, found points: 372442
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 31 and 60 AND pickup_latitude BETWEEN 72 AND 88;, found points: 372289
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 0 and 47 AND pickup_latitude BETWEEN 66 AND 77;, found points: 373795
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 34 and 72 AND pickup_latitude BETWEEN 56 AND 86;, found points: 372415
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 9 and 47 AND pickup_latitude BETWEEN 55 AND 89;, found points: 372324
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 31 and 49 AND pickup_latitude BETWEEN 8 AND 83;, found points: 372821
+select count(*) from nyc_taxi where trip_distance >= 22 and trip_distance <= 67 and fare_amount <= 81 and tip_amount <= 142;, found points: 795131
+select count(*) from nyc_taxi where trip_distance >= 24 and trip_distance <= 251 and fare_amount <= 166 and tip_amount <= 283;, found points: 505674
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 37 and 77 AND pickup_latitude BETWEEN 62 AND 77;, found points: 372464
+select count(*) from nyc_taxi where pickup_date >= 20160613 and pickup_date <= 20160615 and dropoff_date >= 20150415 and dropoff_date <= 20160909, found points: 482431
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 12 and 52 AND pickup_latitude BETWEEN 49 AND 89;, found points: 372367
+select count(*) from nyc_taxi where pickup_date <= 20110202 and passenger_count = 6;, found points: 789196
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 20 and 54 AND pickup_latitude BETWEEN 73 AND 85;, found points: 372290
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 3 and 58 AND pickup_latitude BETWEEN 70 AND 84;, found points: 372292
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 38 and 47 AND pickup_latitude BETWEEN 56 AND 90;, found points: 372304
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 0 and 45 AND pickup_latitude BETWEEN 65 AND 86;, found points: 373803
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 37 and 70 AND pickup_latitude BETWEEN 19 AND 86;, found points: 377596
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 27 and 41 AND pickup_latitude BETWEEN 31 AND 76;, found points: 372605
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 4 and 75 AND pickup_latitude BETWEEN 65 AND 83;, found points: 372502
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 14 and 87 AND pickup_latitude BETWEEN 70 AND 78;, found points: 372365
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 15 and 55 AND pickup_latitude BETWEEN 68 AND 88;, found points: 372303
+select count(*) from nyc_taxi where pickup_date <= 20110331 and passenger_count = 6;, found points: 853355
+select count(*) from nyc_taxi where pickup_date <= 20110731 and passenger_count = 0;, found points: 632944
+select count(*) from nyc_taxi where pickup_date >= 20160113 and pickup_date <= 20160615 and dropoff_date >= 20160611 and dropoff_date <= 20160630, found points: 708962
+select count(*) from nyc_taxi where trip_distance >= 25 and trip_distance <= 125 and fare_amount <= 238 and tip_amount <= 250;, found points: 425081
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 13 and 73 AND pickup_latitude BETWEEN 65 AND 83;, found points: 372327
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 0 and 43 AND pickup_latitude BETWEEN 41 AND 82;, found points: 375769
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 35 and 72 AND pickup_latitude BETWEEN 44 AND 79;, found points: 373935
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 27 and 58 AND pickup_latitude BETWEEN 62 AND 85;, found points: 372316
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 27 and 75 AND pickup_latitude BETWEEN 70 AND 89;, found points: 372489
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 40 and 90 AND pickup_latitude BETWEEN 68 AND 75;, found points: 372365
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 32 and 50 AND pickup_latitude BETWEEN 54 AND 76;, found points: 372318
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 21 and 49 AND pickup_latitude BETWEEN 26 AND 77;, found points: 373006
+select count(*) from nyc_taxi where trip_distance >= 22 and trip_distance <= 270 and fare_amount <= 213 and tip_amount <= 204;, found points: 980777
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 35 and 47 AND pickup_latitude BETWEEN 54 AND 75;, found points: 372303
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 24 and 53 AND pickup_latitude BETWEEN 19 AND 77;, found points: 373109
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 35 and 68 AND pickup_latitude BETWEEN 69 AND 79;, found points: 372297
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 11 and 57 AND pickup_latitude BETWEEN 61 AND 87;, found points: 372320
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 27 and 86 AND pickup_latitude BETWEEN 57 AND 80;, found points: 372624
+select count(*) from nyc_taxi where trip_distance >= 25 and trip_distance <= 168 and fare_amount <= 296 and tip_amount <= 123;, found points: 427675
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 12 and 62 AND pickup_latitude BETWEEN 68 AND 86;, found points: 372306
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 4 and 47 AND pickup_latitude BETWEEN 49 AND 77;, found points: 372338
+select count(*) from nyc_taxi where trip_distance >= 24 and trip_distance <= 46 and fare_amount <= 275 and tip_amount <= 247;, found points: 494168
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 25 and 70 AND pickup_latitude BETWEEN 51 AND 77;, found points: 372583
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 26 and 62 AND pickup_latitude BETWEEN 67 AND 79;, found points: 372299
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 17 and 50 AND pickup_latitude BETWEEN 6 AND 79;, found points: 373224
+select count(*) from nyc_taxi where trip_distance >= 20 and trip_distance <= 281 and fare_amount <= 49 and tip_amount <= 193;, found points: 889113
+select count(*) from nyc_taxi where pickup_date >= 20150815 and pickup_date <= 20150822 and dropoff_date >= 20110129 and dropoff_date <= 20160722, found points: 374886
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 37 and 67 AND pickup_latitude BETWEEN 62 AND 87;, found points: 372329
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 40 and 69 AND pickup_latitude BETWEEN 41 AND 77;, found points: 374027
+select count(*) from nyc_taxi where trip_distance >= 20 and trip_distance <= 221 and fare_amount <= 49 and tip_amount <= 269;, found points: 889067
+select count(*) from nyc_taxi where pickup_date <= 20111009 and passenger_count = 0;, found points: 961347
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 30 and 68 AND pickup_latitude BETWEEN 71 AND 89;, found points: 372293
+select count(*) from nyc_taxi where pickup_date <= 20110514 and passenger_count = 6;, found points: 883717
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 13 and 64 AND pickup_latitude BETWEEN 30 AND 84;, found points: 374553
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 40 and 72 AND pickup_latitude BETWEEN 24 AND 84;, found points: 384611
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 1 and 53 AND pickup_latitude BETWEEN 31 AND 75;, found points: 404867
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 37 and 67 AND pickup_latitude BETWEEN 73 AND 75;, found points: 372278
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 4 and 86 AND pickup_latitude BETWEEN 44 AND 78;, found points: 379127
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 33 and 41 AND pickup_latitude BETWEEN 31 AND 82;, found points: 372500
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 28 and 47 AND pickup_latitude BETWEEN 60 AND 81;, found points: 372299
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 17 and 84 AND pickup_latitude BETWEEN 47 AND 83;, found points: 374724
+select count(*) from nyc_taxi where trip_distance >= 22 and trip_distance <= 78 and fare_amount <= 252 and tip_amount <= 83;, found points: 978013
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 23 and 64 AND pickup_latitude BETWEEN 66 AND 83;, found points: 372306
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 16 and 55 AND pickup_latitude BETWEEN 62 AND 89;, found points: 372315
+select count(*) from nyc_taxi where pickup_date <= 20110711 and passenger_count = 6;, found points: 970371
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 0 and 67 AND pickup_latitude BETWEEN 31 AND 77;, found points: 459597
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 30 and 84 AND pickup_latitude BETWEEN 50 AND 75;, found points: 373319
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 7 and 44 AND pickup_latitude BETWEEN 51 AND 74;, found points: 372253
+select count(*) from nyc_taxi where pickup_date >= 20140827 and pickup_date <= 20140830 and dropoff_date >= 20130706 and dropoff_date <= 20150718, found points: 821697
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 10 and 42 AND pickup_latitude BETWEEN 19 AND 86;, found points: 373157
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 5 and 48 AND pickup_latitude BETWEEN 61 AND 76;, found points: 372300
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 34 and 66 AND pickup_latitude BETWEEN 63 AND 83;, found points: 372318
+select count(*) from nyc_taxi where trip_distance >= 25 and trip_distance <= 39 and fare_amount <= 274 and tip_amount <= 356;, found points: 374419
+select count(*) from nyc_taxi where trip_distance >= 22 and trip_distance <= 220 and fare_amount <= 229 and tip_amount <= 272;, found points: 982389
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 38 and 48 AND pickup_latitude BETWEEN 18 AND 83;, found points: 372619
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 39 and 52 AND pickup_latitude BETWEEN 65 AND 89;, found points: 372294
+select count(*) from nyc_taxi where trip_distance >= 24 and trip_distance <= 225 and fare_amount <= 237 and tip_amount <= 20;, found points: 467432
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 13 and 54 AND pickup_latitude BETWEEN 33 AND 77;, found points: 373384
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 40 and 60 AND pickup_latitude BETWEEN 34 AND 86;, found points: 373160
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 32 and 64 AND pickup_latitude BETWEEN 70 AND 83;, found points: 372291
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 28 and 78 AND pickup_latitude BETWEEN 74 AND 84;, found points: 339632
+select count(*) from nyc_taxi where pickup_date <= 20110905 and passenger_count = 0;, found points: 778332
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 24 and 61 AND pickup_latitude BETWEEN 11 AND 79;, found points: 373890
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 18 and 63 AND pickup_latitude BETWEEN 4 AND 77;, found points: 374477
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 12 and 69 AND pickup_latitude BETWEEN 53 AND 78;, found points: 372501
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 34 and 78 AND pickup_latitude BETWEEN 41 AND 78;, found points: 678743
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 16 and 50 AND pickup_latitude BETWEEN 70 AND 90;, found points: 372292
+select count(*) from nyc_taxi where trip_distance >= 23 and trip_distance <= 81 and fare_amount <= 258 and tip_amount <= 387;, found points: 665676
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 37 and 72 AND pickup_latitude BETWEEN 37 AND 88;, found points: 383208
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 35 and 41 AND pickup_latitude BETWEEN 31 AND 76;, found points: 372452
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 25 and 89 AND pickup_latitude BETWEEN 60 AND 86;, found points: 372629
+select count(*) from nyc_taxi where trip_distance >= 24 and trip_distance <= 37 and fare_amount <= 87 and tip_amount <= 170;, found points: 352439
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 24 and 49 AND pickup_latitude BETWEEN 9 AND 76;, found points: 372960
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 36 and 50 AND pickup_latitude BETWEEN 27 AND 75;, found points: 372712
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 23 and 54 AND pickup_latitude BETWEEN 74 AND 76;, found points: 339500
+select count(*) from nyc_taxi where pickup_date >= 20120918 and pickup_date <= 20160510 and dropoff_date >= 20160309 and dropoff_date <= 20160312, found points: 859686
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 16 and 50 AND pickup_latitude BETWEEN 47 AND 74;, found points: 372283
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 7 and 59 AND pickup_latitude BETWEEN 31 AND 81;, found points: 391397
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 4 and 55 AND pickup_latitude BETWEEN 48 AND 85;, found points: 372395
+select count(*) from nyc_taxi where trip_distance <= 121 and fare_amount between 88 AND 2859;, found points: 377707
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 39 and 66 AND pickup_latitude BETWEEN 10 AND 83;, found points: 374776
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 37 and 45 AND pickup_latitude BETWEEN 74 AND 90;, found points: 339505
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 12 and 70 AND pickup_latitude BETWEEN 22 AND 90;, found points: 378155
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 11 and 69 AND pickup_latitude BETWEEN 49 AND 75;, found points: 372684
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 20 and 61 AND pickup_latitude BETWEEN 38 AND 75;, found points: 373663
+select count(*) from nyc_taxi where trip_distance <= 155 and fare_amount between 82 AND 4369;, found points: 456908
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 31 and 55 AND pickup_latitude BETWEEN 71 AND 77;, found points: 372287
+select count(*) from nyc_taxi where trip_distance >= 25 and trip_distance <= 170 and fare_amount <= 271 and tip_amount <= 110;, found points: 427132
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 6 and 83 AND pickup_latitude BETWEEN 72 AND 88;, found points: 372473
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 30 and 42 AND pickup_latitude BETWEEN 68 AND 82;, found points: 372288
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 38 and 68 AND pickup_latitude BETWEEN 58 AND 82;, found points: 372359
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 21 and 42 AND pickup_latitude BETWEEN 65 AND 90;, found points: 372292
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 11 and 50 AND pickup_latitude BETWEEN 12 AND 89;, found points: 373326
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 18 and 80 AND pickup_latitude BETWEEN 63 AND 78;, found points: 372450
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 7 and 54 AND pickup_latitude BETWEEN 52 AND 83;, found points: 372352
+select count(*) from nyc_taxi where trip_distance <= 32 and fare_amount between 68 AND 2698;, found points: 883229
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 32 and 52 AND pickup_latitude BETWEEN 70 AND 78;, found points: 372287
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 33 and 48 AND pickup_latitude BETWEEN 69 AND 85;, found points: 372297
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 15 and 75 AND pickup_latitude BETWEEN 63 AND 79;, found points: 372453
+select count(*) from nyc_taxi where pickup_date >= 20160602 and pickup_date <= 20160605 and dropoff_date >= 20150226 and dropoff_date <= 20160628, found points: 893507
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 24 and 59 AND pickup_latitude BETWEEN 67 AND 90;, found points: 372304
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 29 and 87 AND pickup_latitude BETWEEN 60 AND 84;, found points: 372612
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 31 and 53 AND pickup_latitude BETWEEN 48 AND 77;, found points: 372361
+select count(*) from nyc_taxi where trip_distance >= 23 and trip_distance <= 157 and fare_amount <= 207 and tip_amount <= 107;, found points: 663976
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 35 and 53 AND pickup_latitude BETWEEN 54 AND 89;, found points: 372330
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 15 and 77 AND pickup_latitude BETWEEN 54 AND 86;, found points: 372841
+select count(*) from nyc_taxi where trip_distance >= 23 and trip_distance <= 295 and fare_amount <= 193 and tip_amount <= 39;, found points: 655528
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 39 and 65 AND pickup_latitude BETWEEN 67 AND 89;, found points: 372300
+select count(*) from nyc_taxi where pickup_date >= 20110608 and pickup_date <= 20150601 and dropoff_date >= 20120903 and dropoff_date <= 20120904, found points: 627345
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 36 and 46 AND pickup_latitude BETWEEN 73 AND 76;, found points: 372279
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 21 and 66 AND pickup_latitude BETWEEN 57 AND 80;, found points: 372373
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 31 and 73 AND pickup_latitude BETWEEN 13 AND 83;, found points: 393200
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 2 and 58 AND pickup_latitude BETWEEN 22 AND 82;, found points: 393919
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 22 and 64 AND pickup_latitude BETWEEN 62 AND 74;, found points: 372255
+select count(*) from nyc_taxi where pickup_date >= 20160528 and pickup_date <= 20160529 and dropoff_date >= 20141103 and dropoff_date <= 20160923, found points: 463698
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 36 and 52 AND pickup_latitude BETWEEN 72 AND 79;, found points: 372283
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 13 and 63 AND pickup_latitude BETWEEN 54 AND 85;, found points: 372418
+select count(*) from nyc_taxi where pickup_date <= 20110314 and passenger_count = 6;, found points: 831667
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 17 and 77 AND pickup_latitude BETWEEN 70 AND 80;, found points: 372377
+select count(*) from nyc_taxi where pickup_date >= 20160205 and pickup_date <= 20160222 and dropoff_date >= 20160214 and dropoff_date <= 20160715, found points: 685927
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 6 and 64 AND pickup_latitude BETWEEN 56 AND 78;, found points: 372381
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 1 and 60 AND pickup_latitude BETWEEN 45 AND 90;, found points: 372532
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 1 and 50 AND pickup_latitude BETWEEN 71 AND 80;, found points: 372289
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 24 and 85 AND pickup_latitude BETWEEN 48 AND 89;, found points: 374277
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 33 and 71 AND pickup_latitude BETWEEN 64 AND 75;, found points: 372307
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 28 and 75 AND pickup_latitude BETWEEN 46 AND 81;, found points: 374656
+select count(*) from nyc_taxi where trip_distance >= 24 and trip_distance <= 206 and fare_amount <= 89 and tip_amount <= 317;, found points: 391266
+select count(*) from nyc_taxi where pickup_date <= 20110227 and passenger_count = 6;, found points: 818614
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 17 and 81 AND pickup_latitude BETWEEN 49 AND 82;, found points: 373648
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 6 and 44 AND pickup_latitude BETWEEN 54 AND 86;, found points: 372320
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 35 and 65 AND pickup_latitude BETWEEN 57 AND 84;, found points: 372366
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 2 and 54 AND pickup_latitude BETWEEN 70 AND 83;, found points: 372291
+select count(*) from nyc_taxi where pickup_date >= 20150418 and pickup_date <= 20160315 and dropoff_date >= 20160311 and dropoff_date <= 20160526, found points: 842727
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 37 and 82 AND pickup_latitude BETWEEN 56 AND 90;, found points: 372759
+select count(*) from nyc_taxi where trip_distance >= 22 and trip_distance <= 247 and fare_amount <= 120 and tip_amount <= 398;, found points: 926543
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 3 and 57 AND pickup_latitude BETWEEN 68 AND 76;, found points: 372295
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 9 and 82 AND pickup_latitude BETWEEN 63 AND 77;, found points: 372446
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 8 and 79 AND pickup_latitude BETWEEN 50 AND 90;, found points: 373391
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 40 and 68 AND pickup_latitude BETWEEN 22 AND 89;, found points: 375539
+select count(*) from nyc_taxi where pickup_date <= 20110221 and passenger_count = 6;, found points: 810167
+select count(*) from nyc_taxi where pickup_date >= 20150814 and pickup_date <= 20150818 and dropoff_date >= 20130921 and dropoff_date <= 20151119, found points: 567925
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 7 and 73 AND pickup_latitude BETWEEN 44 AND 83;, found points: 374179
+select count(*) from nyc_taxi where trip_distance >= 23 and trip_distance <= 298 and fare_amount <= 82 and tip_amount <= 272;, found points: 504561
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 6 and 68 AND pickup_latitude BETWEEN 37 AND 90;, found points: 393317
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 16 and 82 AND pickup_latitude BETWEEN 71 AND 87;, found points: 372468
+select count(*) from nyc_taxi where pickup_date >= 20160614 and pickup_date <= 20160618 and dropoff_date >= 20120908 and dropoff_date <= 20160916, found points: 705409
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 2 and 73 AND pickup_latitude BETWEEN 71 AND 79;, found points: 372289
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 17 and 51 AND pickup_latitude BETWEEN 60 AND 74;, found points: 372237
+select count(*) from nyc_taxi where pickup_date >= 20140624 and pickup_date <= 20160523 and dropoff_date >= 20120723 and dropoff_date <= 20140624, found points: 378866
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 20 and 59 AND pickup_latitude BETWEEN 72 AND 90;, found points: 372291
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 15 and 45 AND pickup_latitude BETWEEN 61 AND 82;, found points: 372298
+select count(*) from nyc_taxi where trip_distance <= 60 and fare_amount between 72 AND 5856;, found points: 744305
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 29 and 54 AND pickup_latitude BETWEEN 47 AND 81;, found points: 372371
+select count(*) from nyc_taxi where pickup_date >= 20140406 and pickup_date <= 20140407 and dropoff_date >= 20120725 and dropoff_date <= 20150930, found points: 818043
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 38 and 90 AND pickup_latitude BETWEEN 51 AND 81;, found points: 373177
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 21 and 66 AND pickup_latitude BETWEEN 48 AND 82;, found points: 372703
+select count(*) from nyc_taxi where trip_distance >= 26 and trip_distance <= 298 and fare_amount <= 267 and tip_amount <= 394;, found points: 358796
+select count(*) from nyc_taxi where pickup_date >= 20160613 and pickup_date <= 20160617 and dropoff_date >= 20131026 and dropoff_date <= 20160716, found points: 836436
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 26 and 64 AND pickup_latitude BETWEEN 64 AND 82;, found points: 372310
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 5 and 70 AND pickup_latitude BETWEEN 54 AND 89;, found points: 372480
+select count(*) from nyc_taxi where pickup_date <= 20110426 and passenger_count = 6;, found points: 878807
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 35 and 72 AND pickup_latitude BETWEEN 22 AND 86;, found points: 384789
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 30 and 63 AND pickup_latitude BETWEEN 6 AND 90;, found points: 374150
+select count(*) from nyc_taxi where pickup_date <= 20110116 and passenger_count = 6;, found points: 772521
+select count(*) from nyc_taxi where pickup_date >= 20160605 and pickup_date <= 20160607 and dropoff_date >= 20151030 and dropoff_date <= 20160919, found points: 494739
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 20 and 81 AND pickup_latitude BETWEEN 52 AND 84;, found points: 372994
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 27 and 81 AND pickup_latitude BETWEEN 55 AND 81;, found points: 372706
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 27 and 47 AND pickup_latitude BETWEEN 67 AND 76;, found points: 372289
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 39 and 41 AND pickup_latitude BETWEEN 69 AND 83;, found points: 372269
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 32 and 47 AND pickup_latitude BETWEEN 65 AND 86;, found points: 372296
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 20 and 60 AND pickup_latitude BETWEEN 38 AND 74;, found points: 373445
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 8 and 89 AND pickup_latitude BETWEEN 42 AND 74;, found points: 386701
+select count(*) from nyc_taxi where trip_distance >= 22 and trip_distance <= 269 and fare_amount <= 117 and tip_amount <= 253;, found points: 918070
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 9 and 64 AND pickup_latitude BETWEEN 25 AND 81;, found points: 374981
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 38 and 64 AND pickup_latitude BETWEEN 50 AND 74;, found points: 372415
+select count(*) from nyc_taxi where pickup_date >= 20140322 and pickup_date <= 20140519 and dropoff_date >= 20130114 and dropoff_date <= 20140324, found points: 605031
+select count(*) from nyc_taxi where pickup_date <= 20110707 and passenger_count = 0;, found points: 532390
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 31 and 70 AND pickup_latitude BETWEEN 62 AND 85;, found points: 372333
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 3 and 50 AND pickup_latitude BETWEEN 20 AND 78;, found points: 393278
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 29 and 70 AND pickup_latitude BETWEEN 25 AND 90;, found points: 377693
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 15 and 75 AND pickup_latitude BETWEEN 74 AND 85;, found points: 339638
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 32 and 46 AND pickup_latitude BETWEEN 68 AND 84;, found points: 372295
+select count(*) from nyc_taxi where pickup_date >= 20160411 and pickup_date <= 20160414 and dropoff_date >= 20150107 and dropoff_date <= 20160612, found points: 485523
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 25 and 45 AND pickup_latitude BETWEEN 53 AND 80;, found points: 372312
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 14 and 47 AND pickup_latitude BETWEEN 31 AND 74;, found points: 373047
+select count(*) from nyc_taxi where trip_distance >= 26 and trip_distance <= 102 and fare_amount <= 214 and tip_amount <= 333;, found points: 353139
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 38 and 84 AND pickup_latitude BETWEEN 51 AND 88;, found points: 373224
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 31 and 44 AND pickup_latitude BETWEEN 70 AND 80;, found points: 372284
+select count(*) from nyc_taxi where pickup_date >= 20130216 and pickup_date <= 20140815 and dropoff_date >= 20140807 and dropoff_date <= 20140914, found points: 895759
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 3 and 87 AND pickup_latitude BETWEEN 46 AND 80;, found points: 375486
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 14 and 60 AND pickup_latitude BETWEEN 53 AND 85;, found points: 372397
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 36 and 55 AND pickup_latitude BETWEEN 43 AND 83;, found points: 372404
+select count(*) from nyc_taxi where trip_distance >= 22 and trip_distance <= 165 and fare_amount <= 87 and tip_amount <= 194;, found points: 829135
+select count(*) from nyc_taxi where pickup_date <= 20110816 and passenger_count = 0;, found points: 736191
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 13 and 53 AND pickup_latitude BETWEEN 73 AND 88;, found points: 372290
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 34 and 51 AND pickup_latitude BETWEEN 65 AND 87;, found points: 372298
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 9 and 53 AND pickup_latitude BETWEEN 29 AND 78;, found points: 373653
+select count(*) from nyc_taxi where trip_distance >= 25 and trip_distance <= 299 and fare_amount <= 149 and tip_amount <= 82;, found points: 399352
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 30 and 90 AND pickup_latitude BETWEEN 51 AND 87;, found points: 373285
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 39 and 81 AND pickup_latitude BETWEEN 52 AND 78;, found points: 372883
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 0 and 63 AND pickup_latitude BETWEEN 59 AND 80;, found points: 373858
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 14 and 68 AND pickup_latitude BETWEEN 73 AND 77;, found points: 372284
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 5 and 87 AND pickup_latitude BETWEEN 64 AND 79;, found points: 372449
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 7 and 76 AND pickup_latitude BETWEEN 42 AND 81;, found points: 384574
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 28 and 65 AND pickup_latitude BETWEEN 56 AND 86;, found points: 372385
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 14 and 72 AND pickup_latitude BETWEEN 23 AND 88;, found points: 385263
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 10 and 81 AND pickup_latitude BETWEEN 58 AND 90;, found points: 372705
+select count(*) from nyc_taxi where pickup_date <= 20110604 and passenger_count = 0;, found points: 410907
+select count(*) from nyc_taxi where pickup_date >= 20160513 and pickup_date <= 20160516 and dropoff_date >= 20110919 and dropoff_date <= 20161005, found points: 551096
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 35 and 83 AND pickup_latitude BETWEEN 61 AND 90;, found points: 372637
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 9 and 64 AND pickup_latitude BETWEEN 16 AND 78;, found points: 375055
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 0 and 88 AND pickup_latitude BETWEEN 68 AND 85;, found points: 374007
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 33 and 78 AND pickup_latitude BETWEEN 56 AND 83;, found points: 372694
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 0 and 67 AND pickup_latitude BETWEEN 40 AND 86;, found points: 458820
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 17 and 73 AND pickup_latitude BETWEEN 51 AND 84;, found points: 372665
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 13 and 42 AND pickup_latitude BETWEEN 9 AND 83;, found points: 373039
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 40 and 55 AND pickup_latitude BETWEEN 47 AND 76;, found points: 372358
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 39 and 73 AND pickup_latitude BETWEEN 8 AND 78;, found points: 393132
+select count(*) from nyc_taxi where trip_distance >= 26 and trip_distance <= 144 and fare_amount <= 274 and tip_amount <= 328;, found points: 357593
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 9 and 56 AND pickup_latitude BETWEEN 57 AND 80;, found points: 372328
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 23 and 88 AND pickup_latitude BETWEEN 44 AND 78;, found points: 379202
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 0 and 68 AND pickup_latitude BETWEEN 62 AND 83;, found points: 373850
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 21 and 73 AND pickup_latitude BETWEEN 61 AND 77;, found points: 372341
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 28 and 45 AND pickup_latitude BETWEEN 35 AND 87;, found points: 372710
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 33 and 46 AND pickup_latitude BETWEEN 10 AND 75;, found points: 372661
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 21 and 70 AND pickup_latitude BETWEEN 45 AND 90;, found points: 373329
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 32 and 86 AND pickup_latitude BETWEEN 48 AND 78;, found points: 374244
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 20 and 89 AND pickup_latitude BETWEEN 62 AND 74;, found points: 372378
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 30 and 50 AND pickup_latitude BETWEEN 5 AND 85;, found points: 372886
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 37 and 57 AND pickup_latitude BETWEEN 17 AND 75;, found points: 373082
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 40 and 52 AND pickup_latitude BETWEEN 26 AND 76;, found points: 372673
+select count(*) from nyc_taxi where pickup_date <= 20110318 and passenger_count = 6;, found points: 837862
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 17 and 78 AND pickup_latitude BETWEEN 72 AND 90;, found points: 372482
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 0 and 65 AND pickup_latitude BETWEEN 62 AND 74;, found points: 373759
+select count(*) from nyc_taxi where trip_distance >= 20 and trip_distance <= 38 and fare_amount <= 48 and tip_amount <= 295;, found points: 834175
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 13 and 87 AND pickup_latitude BETWEEN 71 AND 90;, found points: 372504
+select count(*) from nyc_taxi where pickup_date >= 20130609 and pickup_date <= 20140905 and dropoff_date >= 20140828 and dropoff_date <= 20160124, found points: 785977
+select count(*) from nyc_taxi where trip_distance >= 24 and trip_distance <= 32 and fare_amount <= 229 and tip_amount <= 217;, found points: 395458
+select count(*) from nyc_taxi where pickup_date <= 20110704 and passenger_count = 0;, found points: 520579
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 21 and 66 AND pickup_latitude BETWEEN 43 AND 75;, found points: 373138
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 31 and 85 AND pickup_latitude BETWEEN 71 AND 78;, found points: 372352
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 27 and 58 AND pickup_latitude BETWEEN 42 AND 79;, found points: 372508
+select count(*) from nyc_taxi where pickup_date <= 20110916 and passenger_count = 0;, found points: 857568
+select count(*) from nyc_taxi where trip_distance >= 25 and trip_distance <= 135 and fare_amount <= 200 and tip_amount <= 396;, found points: 421098
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 4 and 44 AND pickup_latitude BETWEEN 4 AND 84;, found points: 392817
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 37 and 77 AND pickup_latitude BETWEEN 59 AND 88;, found points: 372631
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 6 and 50 AND pickup_latitude BETWEEN 74 AND 79;, found points: 339504
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 38 and 85 AND pickup_latitude BETWEEN 72 AND 80;, found points: 372353
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 16 and 44 AND pickup_latitude BETWEEN 4 AND 82;, found points: 373040
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 24 and 49 AND pickup_latitude BETWEEN 48 AND 82;, found points: 372342
+select count(*) from nyc_taxi where trip_distance >= 23 and trip_distance <= 268 and fare_amount <= 268 and tip_amount <= 387;, found points: 670775
+select count(*) from nyc_taxi where pickup_date >= 20160303 and pickup_date <= 20160305 and dropoff_date >= 20151029 and dropoff_date <= 20161102, found points: 895644
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 27 and 59 AND pickup_latitude BETWEEN 25 AND 85;, found points: 373435
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 24 and 60 AND pickup_latitude BETWEEN 0 AND 74;, found points: 373668
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 31 and 58 AND pickup_latitude BETWEEN 58 AND 77;, found points: 372322
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 7 and 42 AND pickup_latitude BETWEEN 66 AND 90;, found points: 372294
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 26 and 50 AND pickup_latitude BETWEEN 59 AND 76;, found points: 372304
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 22 and 57 AND pickup_latitude BETWEEN 70 AND 87;, found points: 372293
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 27 and 72 AND pickup_latitude BETWEEN 74 AND 81;, found points: 339506
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 2 and 66 AND pickup_latitude BETWEEN 69 AND 76;, found points: 372295
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 24 and 54 AND pickup_latitude BETWEEN 31 AND 87;, found points: 373105
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 30 and 50 AND pickup_latitude BETWEEN 38 AND 75;, found points: 372792
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 33 and 41 AND pickup_latitude BETWEEN 67 AND 78;, found points: 372273
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 39 and 70 AND pickup_latitude BETWEEN 34 AND 87;, found points: 376888
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 24 and 51 AND pickup_latitude BETWEEN 35 AND 79;, found points: 372973
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 36 and 61 AND pickup_latitude BETWEEN 1 AND 88;, found points: 373682
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 24 and 45 AND pickup_latitude BETWEEN 59 AND 82;, found points: 372300
+select count(*) from nyc_taxi where pickup_date >= 20160412 and pickup_date <= 20160430 and dropoff_date >= 20130127 and dropoff_date <= 20160416, found points: 807647
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 40 and 74 AND pickup_latitude BETWEEN 65 AND 84;, found points: 372502
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 31 and 50 AND pickup_latitude BETWEEN 41 AND 84;, found points: 372378
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 6 and 58 AND pickup_latitude BETWEEN 10 AND 89;, found points: 391589
+select count(*) from nyc_taxi where pickup_date <= 20111015 and passenger_count = 0;, found points: 984639
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 26 and 65 AND pickup_latitude BETWEEN 32 AND 77;, found points: 374394
+select count(*) from nyc_taxi where pickup_date <= 20110227 and passenger_count = 6;, found points: 818614
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 28 and 77 AND pickup_latitude BETWEEN 44 AND 80;, found points: 378104
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 16 and 90 AND pickup_latitude BETWEEN 57 AND 75;, found points: 372596
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 25 and 57 AND pickup_latitude BETWEEN 16 AND 77;, found points: 373338
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 3 and 59 AND pickup_latitude BETWEEN 65 AND 88;, found points: 372311
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 31 and 86 AND pickup_latitude BETWEEN 47 AND 82;, found points: 374851
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 19 and 59 AND pickup_latitude BETWEEN 25 AND 81;, found points: 373593
+select count(*) from nyc_taxi where trip_distance >= 25 and trip_distance <= 97 and fare_amount <= 182 and tip_amount <= 77;, found points: 413891
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 20 and 64 AND pickup_latitude BETWEEN 74 AND 78;, found points: 339505
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 26 and 45 AND pickup_latitude BETWEEN 27 AND 77;, found points: 372753
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 15 and 69 AND pickup_latitude BETWEEN 43 AND 78;, found points: 373581
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 38 and 65 AND pickup_latitude BETWEEN 67 AND 82;, found points: 372301
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 40 and 47 AND pickup_latitude BETWEEN 52 AND 79;, found points: 372301
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 19 and 61 AND pickup_latitude BETWEEN 14 AND 87;, found points: 373990
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 33 and 51 AND pickup_latitude BETWEEN 42 AND 78;, found points: 372378
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 29 and 59 AND pickup_latitude BETWEEN 50 AND 83;, found points: 372406
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 30 and 78 AND pickup_latitude BETWEEN 67 AND 78;, found points: 372400
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 16 and 44 AND pickup_latitude BETWEEN 70 AND 87;, found points: 372289
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 22 and 90 AND pickup_latitude BETWEEN 56 AND 85;, found points: 372765
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 39 and 45 AND pickup_latitude BETWEEN 74 AND 76;, found points: 339499
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 39 and 58 AND pickup_latitude BETWEEN 63 AND 90;, found points: 372304
+select count(*) from nyc_taxi where trip_distance <= 241 and fare_amount between 82 AND 3285;, found points: 456955
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 0 and 70 AND pickup_latitude BETWEEN 53 AND 84;, found points: 374031
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 30 and 59 AND pickup_latitude BETWEEN 74 AND 77;, found points: 339505
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 30 and 56 AND pickup_latitude BETWEEN 25 AND 89;, found points: 373119
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 4 and 56 AND pickup_latitude BETWEEN 26 AND 89;, found points: 393238
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 14 and 68 AND pickup_latitude BETWEEN 63 AND 90;, found points: 372326
+select count(*) from nyc_taxi where trip_distance <= 61 and fare_amount between 68 AND 5281;, found points: 960274
+select count(*) from nyc_taxi where trip_distance >= 25 and trip_distance <= 99 and fare_amount <= 299 and tip_amount <= 154;, found points: 426872
+select count(*) from nyc_taxi where trip_distance >= 26 and trip_distance <= 196 and fare_amount <= 275 and tip_amount <= 340;, found points: 358704
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 32 and 41 AND pickup_latitude BETWEEN 70 AND 80;, found points: 372272
+select count(*) from nyc_taxi where pickup_date >= 20140414 and pickup_date <= 20140416 and dropoff_date >= 20130206 and dropoff_date <= 20160917, found points: 720736
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 18 and 70 AND pickup_latitude BETWEEN 67 AND 78;, found points: 372302
+select count(*) from nyc_taxi where trip_distance <= 203 and fare_amount between 70 AND 1255;, found points: 866054
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 25 and 48 AND pickup_latitude BETWEEN 49 AND 76;, found points: 372330
+select count(*) from nyc_taxi where pickup_date <= 20110717 and passenger_count = 6;, found points: 991393
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 6 and 75 AND pickup_latitude BETWEEN 51 AND 77;, found points: 372930
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 26 and 52 AND pickup_latitude BETWEEN 34 AND 83;, found points: 372960
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 34 and 88 AND pickup_latitude BETWEEN 71 AND 86;, found points: 372468
+select count(*) from nyc_taxi where trip_distance >= 25 and trip_distance <= 228 and fare_amount <= 179 and tip_amount <= 100;, found points: 415247
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 25 and 60 AND pickup_latitude BETWEEN 61 AND 83;, found points: 372323
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 19 and 48 AND pickup_latitude BETWEEN 35 AND 90;, found points: 372982
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 6 and 64 AND pickup_latitude BETWEEN 58 AND 88;, found points: 372369
+select count(*) from nyc_taxi where trip_distance >= 26 and trip_distance <= 128 and fare_amount <= 168 and tip_amount <= 337;, found points: 341087
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 38 and 82 AND pickup_latitude BETWEEN 62 AND 74;, found points: 372370
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 22 and 42 AND pickup_latitude BETWEEN 2 AND 78;, found points: 372806
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 30 and 67 AND pickup_latitude BETWEEN 7 AND 80;, found points: 375369
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 4 and 45 AND pickup_latitude BETWEEN 66 AND 90;, found points: 372299
+select count(*) from nyc_taxi where trip_distance >= 26 and trip_distance <= 89 and fare_amount <= 244 and tip_amount <= 137;, found points: 353930
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 20 and 66 AND pickup_latitude BETWEEN 14 AND 87;, found points: 375187
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 12 and 48 AND pickup_latitude BETWEEN 23 AND 75;, found points: 373211
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 3 and 59 AND pickup_latitude BETWEEN 42 AND 74;, found points: 372511
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 9 and 80 AND pickup_latitude BETWEEN 69 AND 88;, found points: 372502
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 15 and 56 AND pickup_latitude BETWEEN 63 AND 90;, found points: 372313
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 10 and 69 AND pickup_latitude BETWEEN 56 AND 76;, found points: 372403
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 30 and 66 AND pickup_latitude BETWEEN 61 AND 84;, found points: 372337
+select count(*) from nyc_taxi where trip_distance <= 31 and fare_amount between 80 AND 1377;, found points: 437885
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 18 and 67 AND pickup_latitude BETWEEN 72 AND 80;, found points: 372284
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 40 and 57 AND pickup_latitude BETWEEN 37 AND 81;, found points: 372869
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 17 and 58 AND pickup_latitude BETWEEN 10 AND 84;, found points: 373673
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 12 and 66 AND pickup_latitude BETWEEN 68 AND 84;, found points: 372303
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 16 and 71 AND pickup_latitude BETWEEN 59 AND 81;, found points: 372357
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 19 and 70 AND pickup_latitude BETWEEN 74 AND 79;, found points: 339505
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 24 and 54 AND pickup_latitude BETWEEN 51 AND 87;, found points: 372350
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 35 and 45 AND pickup_latitude BETWEEN 53 AND 84;, found points: 372308
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 22 and 55 AND pickup_latitude BETWEEN 72 AND 78;, found points: 372284
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 37 and 50 AND pickup_latitude BETWEEN 36 AND 87;, found points: 372679
+select count(*) from nyc_taxi where trip_distance <= 250 and fare_amount between 72 AND 4598;, found points: 747874
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 38 and 70 AND pickup_latitude BETWEEN 39 AND 89;, found points: 375901
+select count(*) from nyc_taxi where pickup_date >= 20150308 and pickup_date <= 20150311 and dropoff_date >= 20110820 and dropoff_date <= 20160123, found points: 642931
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 12 and 62 AND pickup_latitude BETWEEN 11 AND 75;, found points: 374376
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 33 and 44 AND pickup_latitude BETWEEN 5 AND 76;, found points: 372621
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 32 and 77 AND pickup_latitude BETWEEN 59 AND 78;, found points: 372515
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 23 and 85 AND pickup_latitude BETWEEN 73 AND 86;, found points: 372446
+select count(*) from nyc_taxi where pickup_date >= 20140406 and pickup_date <= 20160612 and dropoff_date >= 20150815 and dropoff_date <= 20150827, found points: 599069
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 9 and 78 AND pickup_latitude BETWEEN 57 AND 80;, found points: 372606
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 9 and 69 AND pickup_latitude BETWEEN 61 AND 87;, found points: 372344
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 34 and 64 AND pickup_latitude BETWEEN 9 AND 82;, found points: 374309
+select count(*) from nyc_taxi where pickup_date >= 20160606 and pickup_date <= 20160612 and dropoff_date >= 20110926 and dropoff_date <= 20161006, found points: 822085
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 10 and 85 AND pickup_latitude BETWEEN 69 AND 80;, found points: 372392
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 38 and 77 AND pickup_latitude BETWEEN 67 AND 77;, found points: 372393
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 32 and 72 AND pickup_latitude BETWEEN 21 AND 89;, found points: 384858
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 2 and 69 AND pickup_latitude BETWEEN 67 AND 86;, found points: 372311
+select count(*) from nyc_taxi where trip_distance >= 24 and trip_distance <= 172 and fare_amount <= 154 and tip_amount <= 312;, found points: 498864
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 22 and 42 AND pickup_latitude BETWEEN 43 AND 80;, found points: 372313
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 39 and 73 AND pickup_latitude BETWEEN 59 AND 87;, found points: 372369
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 24 and 72 AND pickup_latitude BETWEEN 70 AND 81;, found points: 372291
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 36 and 86 AND pickup_latitude BETWEEN 50 AND 89;, found points: 373511
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 16 and 70 AND pickup_latitude BETWEEN 63 AND 82;, found points: 372319
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 28 and 70 AND pickup_latitude BETWEEN 61 AND 89;, found points: 372340
+select count(*) from nyc_taxi where trip_distance >= 22 and trip_distance <= 252 and fare_amount <= 118 and tip_amount <= 215;, found points: 919406
+select count(*) from nyc_taxi where trip_distance >= 26 and trip_distance <= 111 and fare_amount <= 274 and tip_amount <= 319;, found points: 357384
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 27 and 83 AND pickup_latitude BETWEEN 70 AND 86;, found points: 372480
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 22 and 87 AND pickup_latitude BETWEEN 71 AND 89;, found points: 372487
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 24 and 54 AND pickup_latitude BETWEEN 40 AND 89;, found points: 373037
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 15 and 50 AND pickup_latitude BETWEEN 18 AND 83;, found points: 373231
+select count(*) from nyc_taxi where trip_distance >= 24 and trip_distance <= 282 and fare_amount <= 262 and tip_amount <= 53;, found points: 519686
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 32 and 67 AND pickup_latitude BETWEEN 73 AND 81;, found points: 372285
+select count(*) from nyc_taxi where trip_distance >= 25 and trip_distance <= 235 and fare_amount <= 169 and tip_amount <= 250;, found points: 412137
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 24 and 61 AND pickup_latitude BETWEEN 32 AND 81;, found points: 373707
+select count(*) from nyc_taxi where pickup_date >= 20141124 and pickup_date <= 20141125 and dropoff_date >= 20130518 and dropoff_date <= 20160424, found points: 712792
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 18 and 44 AND pickup_latitude BETWEEN 53 AND 75;, found points: 372303
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 3 and 84 AND pickup_latitude BETWEEN 65 AND 87;, found points: 372548
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 16 and 49 AND pickup_latitude BETWEEN 56 AND 78;, found points: 372320
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 16 and 58 AND pickup_latitude BETWEEN 43 AND 75;, found points: 372488
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 1 and 89 AND pickup_latitude BETWEEN 61 AND 80;, found points: 372516
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 23 and 44 AND pickup_latitude BETWEEN 33 AND 83;, found points: 372793
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 31 and 66 AND pickup_latitude BETWEEN 56 AND 87;, found points: 372389
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 0 and 49 AND pickup_latitude BETWEEN 24 AND 87;, found points: 457419
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 25 and 58 AND pickup_latitude BETWEEN 74 AND 85;, found points: 339510
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 31 and 53 AND pickup_latitude BETWEEN 40 AND 86;, found points: 372860
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 34 and 65 AND pickup_latitude BETWEEN 60 AND 77;, found points: 372334
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 3 and 51 AND pickup_latitude BETWEEN 25 AND 87;, found points: 393315
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 3 and 51 AND pickup_latitude BETWEEN 36 AND 76;, found points: 393262
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 13 and 77 AND pickup_latitude BETWEEN 53 AND 74;, found points: 372692
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 14 and 83 AND pickup_latitude BETWEEN 52 AND 82;, found points: 373014
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 35 and 62 AND pickup_latitude BETWEEN 61 AND 84;, found points: 372325
+select count(*) from nyc_taxi where pickup_date >= 20110728 and pickup_date <= 20140125 and dropoff_date >= 20140120 and dropoff_date <= 20160108, found points: 421654
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 4 and 56 AND pickup_latitude BETWEEN 15 AND 76;, found points: 393278
+select count(*) from nyc_taxi where trip_distance >= 25 and trip_distance <= 194 and fare_amount <= 181 and tip_amount <= 227;, found points: 416533
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 1 and 67 AND pickup_latitude BETWEEN 43 AND 78;, found points: 373274
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 40 and 64 AND pickup_latitude BETWEEN 59 AND 75;, found points: 372332
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 20 and 50 AND pickup_latitude BETWEEN 48 AND 83;, found points: 372347
+select count(*) from nyc_taxi where trip_distance >= 23 and trip_distance <= 279 and fare_amount <= 214 and tip_amount <= 139;, found points: 666528
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 3 and 58 AND pickup_latitude BETWEEN 27 AND 83;, found points: 393682
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 6 and 72 AND pickup_latitude BETWEEN 17 AND 78;, found points: 403191
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 9 and 77 AND pickup_latitude BETWEEN 42 AND 82;, found points: 384999
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 29 and 85 AND pickup_latitude BETWEEN 65 AND 83;, found points: 372513
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 18 and 57 AND pickup_latitude BETWEEN 30 AND 84;, found points: 373473
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 35 and 55 AND pickup_latitude BETWEEN 65 AND 78;, found points: 372297
+select count(*) from nyc_taxi where trip_distance >= 23 and trip_distance <= 262 and fare_amount <= 295 and tip_amount <= 0;, found points: 365484
+select count(*) from nyc_taxi where trip_distance >= 23 and trip_distance <= 170 and fare_amount <= 222 and tip_amount <= 125;, found points: 666467
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 31 and 41 AND pickup_latitude BETWEEN 55 AND 89;, found points: 372286
+select count(*) from nyc_taxi where pickup_date >= 20150410 and pickup_date <= 20150415 and dropoff_date >= 20120928 and dropoff_date <= 20160827, found points: 795305
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 29 and 86 AND pickup_latitude BETWEEN 60 AND 76;, found points: 372493
+select count(*) from nyc_taxi where trip_distance >= 8 and trip_distance <= 122 and fare_amount <= 20 and tip_amount <= 175;, found points: 606423
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 13 and 51 AND pickup_latitude BETWEEN 67 AND 78;, found points: 372295
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 20 and 41 AND pickup_latitude BETWEEN 63 AND 86;, found points: 372279
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 32 and 81 AND pickup_latitude BETWEEN 61 AND 80;, found points: 372500
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 20 and 49 AND pickup_latitude BETWEEN 19 AND 77;, found points: 373025
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 6 and 85 AND pickup_latitude BETWEEN 74 AND 90;, found points: 339691
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 10 and 83 AND pickup_latitude BETWEEN 50 AND 78;, found points: 373315
+select count(*) from nyc_taxi where trip_distance >= 23 and trip_distance <= 174 and fare_amount <= 217 and tip_amount <= 60;, found points: 664295
+select count(*) from nyc_taxi where trip_distance >= 22 and trip_distance <= 279 and fare_amount <= 247 and tip_amount <= 198;, found points: 983688
+select count(*) from nyc_taxi where pickup_date <= 20110527 and passenger_count = 0;, found points: 395442
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 28 and 44 AND pickup_latitude BETWEEN 49 AND 88;, found points: 372312
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 39 and 48 AND pickup_latitude BETWEEN 63 AND 77;, found points: 372293
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 10 and 54 AND pickup_latitude BETWEEN 29 AND 77;, found points: 373534
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 24 and 67 AND pickup_latitude BETWEEN 15 AND 81;, found points: 375458
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 23 and 58 AND pickup_latitude BETWEEN 30 AND 80;, found points: 373377
+select count(*) from nyc_taxi where trip_distance >= 25 and trip_distance <= 44 and fare_amount <= 233 and tip_amount <= 287;, found points: 394424
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 16 and 70 AND pickup_latitude BETWEEN 41 AND 82;, found points: 374556
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 39 and 75 AND pickup_latitude BETWEEN 67 AND 77;, found points: 372387
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 33 and 43 AND pickup_latitude BETWEEN 56 AND 83;, found points: 372303
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 36 and 59 AND pickup_latitude BETWEEN 61 AND 89;, found points: 372321
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 1 and 84 AND pickup_latitude BETWEEN 72 AND 75;, found points: 372316
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 18 and 63 AND pickup_latitude BETWEEN 28 AND 80;, found points: 374275
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 32 and 45 AND pickup_latitude BETWEEN 73 AND 90;, found points: 372286
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 39 and 43 AND pickup_latitude BETWEEN 41 AND 78;, found points: 372299
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 29 and 68 AND pickup_latitude BETWEEN 62 AND 90;, found points: 372334
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 14 and 64 AND pickup_latitude BETWEEN 60 AND 88;, found points: 372342
+select count(*) from nyc_taxi where trip_distance >= 22 and trip_distance <= 225 and fare_amount <= 59 and tip_amount <= 342;, found points: 548906
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 36 and 66 AND pickup_latitude BETWEEN 45 AND 74;, found points: 372847
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 31 and 64 AND pickup_latitude BETWEEN 47 AND 86;, found points: 372671
+select count(*) from nyc_taxi where pickup_date >= 20160131 and pickup_date <= 20160201 and dropoff_date >= 20160105 and dropoff_date <= 20160719, found points: 479077
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 19 and 54 AND pickup_latitude BETWEEN 51 AND 82;, found points: 372347
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 36 and 66 AND pickup_latitude BETWEEN 72 AND 88;, found points: 372289
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 4 and 76 AND pickup_latitude BETWEEN 46 AND 81;, found points: 374772
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 12 and 53 AND pickup_latitude BETWEEN 31 AND 86;, found points: 373372
+select count(*) from nyc_taxi where trip_distance >= 22 and trip_distance <= 227 and fare_amount <= 79 and tip_amount <= 246;, found points: 788338
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 29 and 58 AND pickup_latitude BETWEEN 8 AND 74;, found points: 373301
+select count(*) from nyc_taxi where pickup_date <= 20110727 and passenger_count = 6;, found points: 1000640
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 6 and 59 AND pickup_latitude BETWEEN 31 AND 77;, found points: 391563
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 38 and 53 AND pickup_latitude BETWEEN 0 AND 77;, found points: 372864
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 29 and 45 AND pickup_latitude BETWEEN 49 AND 85;, found points: 372316
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 29 and 76 AND pickup_latitude BETWEEN 48 AND 85;, found points: 373927
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 1 and 50 AND pickup_latitude BETWEEN 40 AND 83;, found points: 404630
+select count(*) from nyc_taxi where trip_distance >= 26 and trip_distance <= 269 and fare_amount <= 257 and tip_amount <= 126;, found points: 358200
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 33 and 70 AND pickup_latitude BETWEEN 61 AND 79;, found points: 372333
+select count(*) from nyc_taxi where pickup_date >= 20150614 and pickup_date <= 20150618 and dropoff_date >= 20140427 and dropoff_date <= 20160325, found points: 599265
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 11 and 50 AND pickup_latitude BETWEEN 37 AND 82;, found points: 373258
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 39 and 45 AND pickup_latitude BETWEEN 12 AND 83;, found points: 372487
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 4 and 83 AND pickup_latitude BETWEEN 48 AND 86;, found points: 374197
+select count(*) from nyc_taxi where pickup_date >= 20131023 and pickup_date <= 20131028 and dropoff_date >= 20120324 and dropoff_date <= 20140919, found points: 802972
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 4 and 55 AND pickup_latitude BETWEEN 25 AND 75;, found points: 393173
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 39 and 52 AND pickup_latitude BETWEEN 22 AND 77;, found points: 372721
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 33 and 46 AND pickup_latitude BETWEEN 33 AND 88;, found points: 372649
+select count(*) from nyc_taxi where trip_distance >= 24 and trip_distance <= 231 and fare_amount <= 282 and tip_amount <= 365;, found points: 523040
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 23 and 50 AND pickup_latitude BETWEEN 73 AND 90;, found points: 372286
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 27 and 59 AND pickup_latitude BETWEEN 40 AND 89;, found points: 373233
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 27 and 54 AND pickup_latitude BETWEEN 32 AND 88;, found points: 373044
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 31 and 54 AND pickup_latitude BETWEEN 43 AND 89;, found points: 372407
+select count(*) from nyc_taxi where pickup_date >= 20160127 and pickup_date <= 20160128 and dropoff_date >= 20121210 and dropoff_date <= 20160902, found points: 589504
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 4 and 61 AND pickup_latitude BETWEEN 59 AND 86;, found points: 372343
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 10 and 89 AND pickup_latitude BETWEEN 57 AND 84;, found points: 372725
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 39 and 87 AND pickup_latitude BETWEEN 62 AND 80;, found points: 372485
+select count(*) from nyc_taxi where trip_distance >= 25 and trip_distance <= 131 and fare_amount <= 247 and tip_amount <= 265;, found points: 425718
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 26 and 60 AND pickup_latitude BETWEEN 64 AND 90;, found points: 372312
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 37 and 60 AND pickup_latitude BETWEEN 67 AND 87;, found points: 372301
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 21 and 73 AND pickup_latitude BETWEEN 41 AND 89;, found points: 382778
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 0 and 61 AND pickup_latitude BETWEEN 46 AND 87;, found points: 374118
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 3 and 64 AND pickup_latitude BETWEEN 27 AND 75;, found points: 394642
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 10 and 57 AND pickup_latitude BETWEEN 34 AND 82;, found points: 373682
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 40 and 87 AND pickup_latitude BETWEEN 74 AND 84;, found points: 339635
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 28 and 62 AND pickup_latitude BETWEEN 55 AND 80;, found points: 372375
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 0 and 57 AND pickup_latitude BETWEEN 72 AND 87;, found points: 373791
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 19 and 47 AND pickup_latitude BETWEEN 48 AND 90;, found points: 372333
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 33 and 61 AND pickup_latitude BETWEEN 42 AND 85;, found points: 372703
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 30 and 64 AND pickup_latitude BETWEEN 27 AND 85;, found points: 374226
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 11 and 88 AND pickup_latitude BETWEEN 57 AND 79;, found points: 372627
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 40 and 72 AND pickup_latitude BETWEEN 23 AND 89;, found points: 384628
+select count(*) from nyc_taxi where trip_distance >= 23 and trip_distance <= 191 and fare_amount <= 119 and tip_amount <= 343;, found points: 607732
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 9 and 87 AND pickup_latitude BETWEEN 45 AND 84;, found points: 378205
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 38 and 41 AND pickup_latitude BETWEEN 41 AND 79;, found points: 372278
+select count(*) from nyc_taxi where pickup_date >= 20160615 and pickup_date <= 20160617 and dropoff_date >= 20121218 and dropoff_date <= 20160625, found points: 524718
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 18 and 46 AND pickup_latitude BETWEEN 5 AND 80;, found points: 373055
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 21 and 65 AND pickup_latitude BETWEEN 61 AND 88;, found points: 372341
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 6 and 86 AND pickup_latitude BETWEEN 57 AND 75;, found points: 372592
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 40 and 66 AND pickup_latitude BETWEEN 69 AND 79;, found points: 372293
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 15 and 51 AND pickup_latitude BETWEEN 19 AND 77;, found points: 373263
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 19 and 67 AND pickup_latitude BETWEEN 62 AND 82;, found points: 372329
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 31 and 53 AND pickup_latitude BETWEEN 71 AND 78;, found points: 372286
+select count(*) from nyc_taxi where pickup_date <= 20110726 and passenger_count = 0;, found points: 628580
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 13 and 90 AND pickup_latitude BETWEEN 50 AND 75;, found points: 373400
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 29 and 51 AND pickup_latitude BETWEEN 26 AND 87;, found points: 372910
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 31 and 78 AND pickup_latitude BETWEEN 63 AND 89;, found points: 372575
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 17 and 48 AND pickup_latitude BETWEEN 59 AND 79;, found points: 372305
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 24 and 57 AND pickup_latitude BETWEEN 68 AND 87;, found points: 372302
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 33 and 51 AND pickup_latitude BETWEEN 16 AND 77;, found points: 372850
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 10 and 53 AND pickup_latitude BETWEEN 21 AND 87;, found points: 373530
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 24 and 64 AND pickup_latitude BETWEEN 66 AND 85;, found points: 372308
+select count(*) from nyc_taxi where pickup_date >= 20151023 and pickup_date <= 20160305 and dropoff_date >= 20151105 and dropoff_date <= 20151108, found points: 686135
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 26 and 53 AND pickup_latitude BETWEEN 51 AND 79;, found points: 372343
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 8 and 69 AND pickup_latitude BETWEEN 0 AND 87;, found points: 383494
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 35 and 63 AND pickup_latitude BETWEEN 46 AND 82;, found points: 372652
+select count(*) from nyc_taxi where trip_distance >= 23 and trip_distance <= 149 and fare_amount <= 114 and tip_amount <= 99;, found points: 598827
+select count(*) from nyc_taxi where trip_distance >= 25 and trip_distance <= 173 and fare_amount <= 275 and tip_amount <= 137;, found points: 427533
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 19 and 55 AND pickup_latitude BETWEEN 14 AND 90;, found points: 373330
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 11 and 68 AND pickup_latitude BETWEEN 58 AND 87;, found points: 372378
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 12 and 69 AND pickup_latitude BETWEEN 52 AND 77;, found points: 372531
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 0 and 49 AND pickup_latitude BETWEEN 45 AND 79;, found points: 373886
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 19 and 47 AND pickup_latitude BETWEEN 30 AND 76;, found points: 372944
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 28 and 63 AND pickup_latitude BETWEEN 73 AND 82;, found points: 372285
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 7 and 44 AND pickup_latitude BETWEEN 66 AND 90;, found points: 372298
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 31 and 70 AND pickup_latitude BETWEEN 11 AND 88;, found points: 377776
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 35 and 58 AND pickup_latitude BETWEEN 31 AND 88;, found points: 373134
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 35 and 62 AND pickup_latitude BETWEEN 73 AND 76;, found points: 372280
+select count(*) from nyc_taxi where pickup_date >= 20140802 and pickup_date <= 20160116 and dropoff_date >= 20130629 and dropoff_date <= 20140812, found points: 625534
+select count(*) from nyc_taxi where trip_distance >= 22 and trip_distance <= 103 and fare_amount <= 247 and tip_amount <= 386;, found points: 982109
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 39 and 45 AND pickup_latitude BETWEEN 73 AND 85;, found points: 372280
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 20 and 90 AND pickup_latitude BETWEEN 72 AND 88;, found points: 372473
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 14 and 72 AND pickup_latitude BETWEEN 72 AND 86;, found points: 372291
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 18 and 45 AND pickup_latitude BETWEEN 57 AND 78;, found points: 372304
+select count(*) from nyc_taxi where pickup_date <= 20111018 and passenger_count = 0;, found points: 1000940
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 21 and 59 AND pickup_latitude BETWEEN 72 AND 76;, found points: 372280
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 8 and 80 AND pickup_latitude BETWEEN 64 AND 87;, found points: 372555
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 19 and 72 AND pickup_latitude BETWEEN 70 AND 83;, found points: 372293
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 2 and 59 AND pickup_latitude BETWEEN 36 AND 78;, found points: 393882
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 7 and 84 AND pickup_latitude BETWEEN 42 AND 74;, found points: 386267
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 17 and 50 AND pickup_latitude BETWEEN 42 AND 79;, found points: 372373
+select count(*) from nyc_taxi where pickup_date <= 20110528 and passenger_count = 6;, found points: 912561
+select count(*) from nyc_taxi where pickup_date >= 20130413 and pickup_date <= 20151124 and dropoff_date >= 20111014 and dropoff_date <= 20130416, found points: 900115
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 10 and 71 AND pickup_latitude BETWEEN 46 AND 82;, found points: 373236
+select count(*) from nyc_taxi where pickup_date <= 20110530 and passenger_count = 6;, found points: 914961
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 23 and 59 AND pickup_latitude BETWEEN 59 AND 79;, found points: 372326
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 4 and 63 AND pickup_latitude BETWEEN 12 AND 87;, found points: 394255
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 37 and 42 AND pickup_latitude BETWEEN 62 AND 83;, found points: 372288
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 35 and 41 AND pickup_latitude BETWEEN 3 AND 87;, found points: 372486
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 13 and 70 AND pickup_latitude BETWEEN 71 AND 85;, found points: 372294
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 9 and 47 AND pickup_latitude BETWEEN 74 AND 80;, found points: 339504
+select count(*) from nyc_taxi where trip_distance >= 10 and trip_distance <= 235 and fare_amount <= 24 and tip_amount <= 274;, found points: 453251
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 4 and 77 AND pickup_latitude BETWEEN 72 AND 87;, found points: 372456
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 11 and 45 AND pickup_latitude BETWEEN 62 AND 81;, found points: 372299
+select count(*) from nyc_taxi where trip_distance >= 25 and trip_distance <= 252 and fare_amount <= 298 and tip_amount <= 25;, found points: 398501
+select count(*) from nyc_taxi where pickup_date >= 20160418 and pickup_date <= 20160510 and dropoff_date >= 20120520 and dropoff_date <= 20160419, found points: 341782
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 38 and 47 AND pickup_latitude BETWEEN 71 AND 81;, found points: 372285
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 30 and 44 AND pickup_latitude BETWEEN 24 AND 74;, found points: 372584
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 39 and 43 AND pickup_latitude BETWEEN 42 AND 78;, found points: 372295
+select count(*) from nyc_taxi where trip_distance >= 22 and trip_distance <= 287 and fare_amount <= 53 and tip_amount <= 234;, found points: 483179
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 17 and 66 AND pickup_latitude BETWEEN 59 AND 88;, found points: 372357
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 22 and 79 AND pickup_latitude BETWEEN 48 AND 75;, found points: 373937
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 37 and 47 AND pickup_latitude BETWEEN 22 AND 88;, found points: 372598
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 10 and 49 AND pickup_latitude BETWEEN 73 AND 74;, found points: 372216
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 40 and 49 AND pickup_latitude BETWEEN 65 AND 90;, found points: 372292
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 31 and 45 AND pickup_latitude BETWEEN 65 AND 88;, found points: 372295
+select count(*) from nyc_taxi where pickup_date <= 20110602 and passenger_count = 6;, found points: 915724
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 24 and 82 AND pickup_latitude BETWEEN 71 AND 84;, found points: 372446
+select count(*) from nyc_taxi where pickup_date <= 20110910 and passenger_count = 0;, found points: 820137
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 29 and 57 AND pickup_latitude BETWEEN 71 AND 90;, found points: 372292
+select count(*) from nyc_taxi where trip_distance >= 24 and trip_distance <= 230 and fare_amount <= 93 and tip_amount <= 247;, found points: 405414
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 18 and 65 AND pickup_latitude BETWEEN 42 AND 87;, found points: 373112
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 37 and 87 AND pickup_latitude BETWEEN 55 AND 83;, found points: 372800
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 36 and 65 AND pickup_latitude BETWEEN 59 AND 89;, found points: 372350
+select count(*) from nyc_taxi where trip_distance >= 24 and trip_distance <= 297 and fare_amount <= 88 and tip_amount <= 184;, found points: 388367
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 10 and 65 AND pickup_latitude BETWEEN 52 AND 86;, found points: 372485
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 3 and 66 AND pickup_latitude BETWEEN 68 AND 89;, found points: 372309
+select count(*) from nyc_taxi where trip_distance <= 10 and fare_amount between 61 AND 1918;, found points: 359024
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 22 and 52 AND pickup_latitude BETWEEN 46 AND 77;, found points: 372371
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 5 and 78 AND pickup_latitude BETWEEN 64 AND 74;, found points: 372338
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 40 and 76 AND pickup_latitude BETWEEN 69 AND 88;, found points: 372492
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 32 and 52 AND pickup_latitude BETWEEN 71 AND 77;, found points: 372286
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 26 and 57 AND pickup_latitude BETWEEN 46 AND 82;, found points: 372414
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 7 and 61 AND pickup_latitude BETWEEN 10 AND 78;, found points: 391852
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 40 and 87 AND pickup_latitude BETWEEN 51 AND 83;, found points: 373216
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 25 and 55 AND pickup_latitude BETWEEN 33 AND 84;, found points: 373122
+select count(*) from nyc_taxi where trip_distance >= 16 and trip_distance <= 270 and fare_amount <= 40 and tip_amount <= 19;, found points: 451426
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 9 and 57 AND pickup_latitude BETWEEN 17 AND 89;, found points: 373958
+select count(*) from nyc_taxi where trip_distance >= 15 and trip_distance <= 290 and fare_amount <= 37 and tip_amount <= 330;, found points: 548736
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 16 and 63 AND pickup_latitude BETWEEN 29 AND 80;, found points: 374280
+select count(*) from nyc_taxi where trip_distance >= 26 and trip_distance <= 221 and fare_amount <= 243 and tip_amount <= 316;, found points: 357246
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 7 and 69 AND pickup_latitude BETWEEN 53 AND 74;, found points: 372434
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 34 and 89 AND pickup_latitude BETWEEN 72 AND 83;, found points: 372431
+select count(*) from nyc_taxi where trip_distance >= 23 and trip_distance <= 278 and fare_amount <= 115 and tip_amount <= 328;, found points: 602856
+select count(*) from nyc_taxi where trip_distance >= 24 and trip_distance <= 289 and fare_amount <= 115 and tip_amount <= 223;, found points: 456669
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 20 and 50 AND pickup_latitude BETWEEN 71 AND 83;, found points: 372289
+select count(*) from nyc_taxi where trip_distance >= 24 and trip_distance <= 43 and fare_amount <= 249 and tip_amount <= 129;, found points: 485708
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 3 and 68 AND pickup_latitude BETWEEN 25 AND 86;, found points: 396162
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 26 and 86 AND pickup_latitude BETWEEN 66 AND 83;, found points: 372506
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 30 and 54 AND pickup_latitude BETWEEN 51 AND 75;, found points: 372337
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 38 and 79 AND pickup_latitude BETWEEN 71 AND 76;, found points: 372336
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 19 and 79 AND pickup_latitude BETWEEN 70 AND 81;, found points: 372387
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 29 and 63 AND pickup_latitude BETWEEN 60 AND 87;, found points: 372333
+select count(*) from nyc_taxi where pickup_date <= 20110125 and passenger_count = 6;, found points: 780891
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 14 and 42 AND pickup_latitude BETWEEN 63 AND 75;, found points: 372285
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 25 and 66 AND pickup_latitude BETWEEN 56 AND 86;, found points: 372390
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 3 and 49 AND pickup_latitude BETWEEN 50 AND 84;, found points: 372348
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 25 and 72 AND pickup_latitude BETWEEN 53 AND 79;, found points: 372521
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 6 and 66 AND pickup_latitude BETWEEN 55 AND 89;, found points: 372425
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 32 and 70 AND pickup_latitude BETWEEN 73 AND 74;, found points: 372216
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 28 and 60 AND pickup_latitude BETWEEN 12 AND 90;, found points: 373590
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 11 and 71 AND pickup_latitude BETWEEN 2 AND 79;, found points: 381078
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 14 and 61 AND pickup_latitude BETWEEN 50 AND 74;, found points: 372369
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 38 and 70 AND pickup_latitude BETWEEN 68 AND 89;, found points: 372302
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 18 and 87 AND pickup_latitude BETWEEN 61 AND 85;, found points: 372601
+select count(*) from nyc_taxi where pickup_date >= 20150412 and pickup_date <= 20150421 and dropoff_date >= 20131019 and dropoff_date <= 20160522, found points: 365798
+select count(*) from nyc_taxi where trip_distance >= 24 and trip_distance <= 124 and fare_amount <= 146 and tip_amount <= 162;, found points: 491374
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 24 and 90 AND pickup_latitude BETWEEN 74 AND 78;, found points: 339539
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 18 and 46 AND pickup_latitude BETWEEN 44 AND 76;, found points: 372327
+select count(*) from nyc_taxi where pickup_date <= 20110707 and passenger_count = 0;, found points: 532390
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 26 and 48 AND pickup_latitude BETWEEN 64 AND 83;, found points: 372299
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 38 and 51 AND pickup_latitude BETWEEN 26 AND 88;, found points: 372714
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 2 and 45 AND pickup_latitude BETWEEN 2 AND 84;, found points: 393368
+select count(*) from nyc_taxi where trip_distance >= 26 and trip_distance <= 79 and fare_amount <= 229 and tip_amount <= 146;, found points: 351061
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 21 and 78 AND pickup_latitude BETWEEN 67 AND 76;, found points: 372384
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 5 and 79 AND pickup_latitude BETWEEN 54 AND 75;, found points: 372726
+select count(*) from nyc_taxi where trip_distance <= 254 and fare_amount between 79 AND 9012;, found points: 538805
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 28 and 76 AND pickup_latitude BETWEEN 73 AND 74;, found points: 372228
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 34 and 55 AND pickup_latitude BETWEEN 73 AND 84;, found points: 372287
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 13 and 77 AND pickup_latitude BETWEEN 69 AND 86;, found points: 372488
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 9 and 81 AND pickup_latitude BETWEEN 61 AND 75;, found points: 372464
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 38 and 43 AND pickup_latitude BETWEEN 58 AND 75;, found points: 372284
+select count(*) from nyc_taxi where pickup_date <= 20110513 and passenger_count = 6;, found points: 883717
+select count(*) from nyc_taxi where trip_distance >= 23 and trip_distance <= 173 and fare_amount <= 190 and tip_amount <= 328;, found points: 660813
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 17 and 80 AND pickup_latitude BETWEEN 73 AND 80;, found points: 372343
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 29 and 49 AND pickup_latitude BETWEEN 71 AND 90;, found points: 372289
+select count(*) from nyc_taxi where pickup_date <= 20110717 and passenger_count = 0;, found points: 606562
+select count(*) from nyc_taxi where pickup_date >= 20160205 and pickup_date <= 20160514 and dropoff_date >= 20150801 and dropoff_date <= 20160208, found points: 536417
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 24 and 73 AND pickup_latitude BETWEEN 31 AND 88;, found points: 392735
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 18 and 47 AND pickup_latitude BETWEEN 30 AND 81;, found points: 373043
+select count(*) from nyc_taxi where pickup_date >= 20160201 and pickup_date <= 20160408 and dropoff_date >= 20160311 and dropoff_date <= 20160313, found points: 498750
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 11 and 59 AND pickup_latitude BETWEEN 5 AND 86;, found points: 373921
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 14 and 62 AND pickup_latitude BETWEEN 58 AND 74;, found points: 372276
+select count(*) from nyc_taxi where trip_distance >= 22 and trip_distance <= 77 and fare_amount <= 168 and tip_amount <= 297;, found points: 962917
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 35 and 83 AND pickup_latitude BETWEEN 70 AND 90;, found points: 372514
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 39 and 63 AND pickup_latitude BETWEEN 66 AND 85;, found points: 372300
+select count(*) from nyc_taxi where pickup_date >= 20160411 and pickup_date <= 20160529 and dropoff_date >= 20150505 and dropoff_date <= 20160415, found points: 679041
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 24 and 55 AND pickup_latitude BETWEEN 1 AND 87;, found points: 373262
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 14 and 79 AND pickup_latitude BETWEEN 55 AND 74;, found points: 372573
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 20 and 46 AND pickup_latitude BETWEEN 35 AND 77;, found points: 372899
+select count(*) from nyc_taxi where trip_distance >= 23 and trip_distance <= 29 and fare_amount <= 226 and tip_amount <= 122;, found points: 476397
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 39 and 72 AND pickup_latitude BETWEEN 35 AND 84;, found points: 383733
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 2 and 50 AND pickup_latitude BETWEEN 16 AND 85;, found points: 393499
+select count(*) from nyc_taxi where trip_distance >= 25 and trip_distance <= 246 and fare_amount <= 114 and tip_amount <= 103;, found points: 362231
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 32 and 53 AND pickup_latitude BETWEEN 65 AND 79;, found points: 372296
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 25 and 69 AND pickup_latitude BETWEEN 74 AND 76;, found points: 339501
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 14 and 66 AND pickup_latitude BETWEEN 53 AND 79;, found points: 372464
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 40 and 52 AND pickup_latitude BETWEEN 66 AND 90;, found points: 372294
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 0 and 58 AND pickup_latitude BETWEEN 58 AND 80;, found points: 373846
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 28 and 43 AND pickup_latitude BETWEEN 11 AND 84;, found points: 372683
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 34 and 49 AND pickup_latitude BETWEEN 65 AND 82;, found points: 372296
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 29 and 47 AND pickup_latitude BETWEEN 71 AND 77;, found points: 372284
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 7 and 42 AND pickup_latitude BETWEEN 51 AND 87;, found points: 372318
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 39 and 72 AND pickup_latitude BETWEEN 11 AND 76;, found points: 384777
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 6 and 65 AND pickup_latitude BETWEEN 27 AND 86;, found points: 392763
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 6 and 70 AND pickup_latitude BETWEEN 64 AND 85;, found points: 372321
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 19 and 43 AND pickup_latitude BETWEEN 29 AND 81;, found points: 372847
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 13 and 45 AND pickup_latitude BETWEEN 54 AND 79;, found points: 372316
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 17 and 56 AND pickup_latitude BETWEEN 4 AND 83;, found points: 373536
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 20 and 73 AND pickup_latitude BETWEEN 9 AND 89;, found points: 393580
+select count(*) from nyc_taxi where trip_distance >= 22 and trip_distance <= 46 and fare_amount <= 85 and tip_amount <= 119;, found points: 805585
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 8 and 41 AND pickup_latitude BETWEEN 31 AND 75;, found points: 379350
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 9 and 56 AND pickup_latitude BETWEEN 10 AND 83;, found points: 373888
+select count(*) from nyc_taxi where trip_distance <= 242 and fare_amount between 78 AND 6654;, found points: 557257
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 36 and 79 AND pickup_latitude BETWEEN 65 AND 75;, found points: 372393
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 32 and 43 AND pickup_latitude BETWEEN 23 AND 84;, found points: 372597
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 4 and 58 AND pickup_latitude BETWEEN 50 AND 83;, found points: 372400
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 40 and 73 AND pickup_latitude BETWEEN 32 AND 82;, found points: 392290
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 29 and 67 AND pickup_latitude BETWEEN 69 AND 88;, found points: 372304
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 24 and 60 AND pickup_latitude BETWEEN 8 AND 89;, found points: 373690
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 17 and 61 AND pickup_latitude BETWEEN 47 AND 83;, found points: 372555
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 37 and 61 AND pickup_latitude BETWEEN 57 AND 77;, found points: 372338
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 3 and 58 AND pickup_latitude BETWEEN 66 AND 76;, found points: 372298
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 39 and 54 AND pickup_latitude BETWEEN 46 AND 76;, found points: 372360
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 40 and 45 AND pickup_latitude BETWEEN 49 AND 84;, found points: 372297
+select count(*) from nyc_taxi where trip_distance <= 52 and fare_amount between 83 AND 4944;, found points: 438132
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 7 and 90 AND pickup_latitude BETWEEN 73 AND 89;, found points: 372469
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 34 and 45 AND pickup_latitude BETWEEN 60 AND 83;, found points: 372297
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 35 and 55 AND pickup_latitude BETWEEN 65 AND 76;, found points: 372293
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 4 and 54 AND pickup_latitude BETWEEN 54 AND 84;, found points: 372344
+select count(*) from nyc_taxi where trip_distance >= 24 and trip_distance <= 54 and fare_amount <= 241 and tip_amount <= 30;, found points: 488396
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 40 and 70 AND pickup_latitude BETWEEN 71 AND 77;, found points: 372283
+select count(*) from nyc_taxi where trip_distance >= 25 and trip_distance <= 172 and fare_amount <= 228 and tip_amount <= 228;, found points: 424908
+select count(*) from nyc_taxi where pickup_date <= 20110322 and passenger_count = 6;, found points: 844951
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 38 and 69 AND pickup_latitude BETWEEN 44 AND 87;, found points: 373353
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 39 and 55 AND pickup_latitude BETWEEN 53 AND 89;, found points: 372329
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 20 and 49 AND pickup_latitude BETWEEN 60 AND 90;, found points: 372307
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 22 and 43 AND pickup_latitude BETWEEN 8 AND 80;, found points: 372825
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 4 and 52 AND pickup_latitude BETWEEN 70 AND 82;, found points: 372289
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 5 and 61 AND pickup_latitude BETWEEN 14 AND 88;, found points: 392188
+select count(*) from nyc_taxi where pickup_date >= 20110421 and pickup_date <= 20140312 and dropoff_date >= 20140311 and dropoff_date <= 20150725, found points: 777410
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 3 and 41 AND pickup_latitude BETWEEN 67 AND 86;, found points: 372280
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 29 and 44 AND pickup_latitude BETWEEN 55 AND 81;, found points: 372305
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 28 and 80 AND pickup_latitude BETWEEN 56 AND 87;, found points: 372735
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 0 and 73 AND pickup_latitude BETWEEN 72 AND 74;, found points: 373697
+select count(*) from nyc_taxi where trip_distance >= 2 and trip_distance <= 260 and fare_amount <= 6 and tip_amount <= 154;, found points: 444311
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 36 and 58 AND pickup_latitude BETWEEN 27 AND 83;, found points: 373136
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 32 and 61 AND pickup_latitude BETWEEN 61 AND 79;, found points: 372323
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 14 and 83 AND pickup_latitude BETWEEN 67 AND 76;, found points: 372386
+select count(*) from nyc_taxi where trip_distance >= 25 and trip_distance <= 96 and fare_amount <= 213 and tip_amount <= 300;, found points: 421887
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 19 and 42 AND pickup_latitude BETWEEN 61 AND 83;, found points: 372292
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 1 and 60 AND pickup_latitude BETWEEN 71 AND 86;, found points: 372297
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 26 and 66 AND pickup_latitude BETWEEN 69 AND 90;, found points: 372304
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 26 and 49 AND pickup_latitude BETWEEN 3 AND 86;, found points: 372932
+select count(*) from nyc_taxi where trip_distance >= 22 and trip_distance <= 153 and fare_amount <= 299 and tip_amount <= 79;, found points: 983169
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 26 and 49 AND pickup_latitude BETWEEN 24 AND 84;, found points: 372890
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 2 and 84 AND pickup_latitude BETWEEN 62 AND 90;, found points: 372632
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 14 and 45 AND pickup_latitude BETWEEN 54 AND 89;, found points: 372321
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 13 and 62 AND pickup_latitude BETWEEN 32 AND 79;, found points: 374129
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 30 and 89 AND pickup_latitude BETWEEN 48 AND 88;, found points: 374426
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 28 and 74 AND pickup_latitude BETWEEN 73 AND 78;, found points: 372329
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 16 and 58 AND pickup_latitude BETWEEN 58 AND 84;, found points: 372328
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 25 and 88 AND pickup_latitude BETWEEN 52 AND 85;, found points: 373080
+select count(*) from nyc_taxi where pickup_date <= 20110902 and passenger_count = 0;, found points: 762922
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 6 and 52 AND pickup_latitude BETWEEN 33 AND 79;, found points: 391129
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 21 and 42 AND pickup_latitude BETWEEN 21 AND 85;, found points: 372806
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 8 and 48 AND pickup_latitude BETWEEN 45 AND 76;, found points: 372356
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 22 and 73 AND pickup_latitude BETWEEN 23 AND 87;, found points: 393281
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 28 and 78 AND pickup_latitude BETWEEN 59 AND 79;, found points: 372523
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 37 and 43 AND pickup_latitude BETWEEN 74 AND 86;, found points: 339504
+select count(*) from nyc_taxi where pickup_date >= 20160116 and pickup_date <= 20160119 and dropoff_date >= 20150703 and dropoff_date <= 20161012, found points: 952229
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 33 and 61 AND pickup_latitude BETWEEN 67 AND 86;, found points: 372304
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 35 and 81 AND pickup_latitude BETWEEN 62 AND 78;, found points: 372473
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 21 and 63 AND pickup_latitude BETWEEN 58 AND 75;, found points: 372344
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 1 and 84 AND pickup_latitude BETWEEN 67 AND 83;, found points: 372497
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 32 and 46 AND pickup_latitude BETWEEN 70 AND 80;, found points: 372285
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 12 and 86 AND pickup_latitude BETWEEN 52 AND 83;, found points: 373059
+select count(*) from nyc_taxi where trip_distance >= 24 and trip_distance <= 230 and fare_amount <= 214 and tip_amount <= 262;, found points: 518564
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 8 and 71 AND pickup_latitude BETWEEN 46 AND 81;, found points: 373238
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 27 and 76 AND pickup_latitude BETWEEN 54 AND 74;, found points: 372616
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 10 and 63 AND pickup_latitude BETWEEN 64 AND 84;, found points: 372312
+select count(*) from nyc_taxi where pickup_date <= 20110824 and passenger_count = 0;, found points: 745950
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 5 and 88 AND pickup_latitude BETWEEN 43 AND 76;, found points: 380797
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 30 and 67 AND pickup_latitude BETWEEN 1 AND 74;, found points: 375327
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 32 and 66 AND pickup_latitude BETWEEN 73 AND 77;, found points: 372284
+select count(*) from nyc_taxi where pickup_date <= 20110728 and passenger_count = 0;, found points: 628580
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 7 and 57 AND pickup_latitude BETWEEN 20 AND 86;, found points: 391305
+select count(*) from nyc_taxi where trip_distance >= 22 and trip_distance <= 43 and fare_amount <= 66 and tip_amount <= 197;, found points: 640294
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 3 and 48 AND pickup_latitude BETWEEN 66 AND 81;, found points: 372298
+select count(*) from nyc_taxi where trip_distance >= 22 and trip_distance <= 249 and fare_amount <= 147 and tip_amount <= 365;, found points: 954980
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 30 and 41 AND pickup_latitude BETWEEN 16 AND 88;, found points: 372564
+select count(*) from nyc_taxi where pickup_date >= 20160605 and pickup_date <= 20160608 and dropoff_date >= 20151005 and dropoff_date <= 20160625, found points: 580784
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 30 and 57 AND pickup_latitude BETWEEN 54 AND 79;, found points: 372344
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 9 and 54 AND pickup_latitude BETWEEN 72 AND 74;, found points: 372216
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 38 and 68 AND pickup_latitude BETWEEN 73 AND 81;, found points: 372285
+select count(*) from nyc_taxi where trip_distance >= 24 and trip_distance <= 126 and fare_amount <= 208 and tip_amount <= 97;, found points: 515595
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 38 and 75 AND pickup_latitude BETWEEN 48 AND 86;, found points: 373870
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 9 and 84 AND pickup_latitude BETWEEN 72 AND 84;, found points: 372442
+select count(*) from nyc_taxi where trip_distance <= 104 and fare_amount between 73 AND 3971;, found points: 711321
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 33 and 87 AND pickup_latitude BETWEEN 74 AND 80;, found points: 339552
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 5 and 74 AND pickup_latitude BETWEEN 43 AND 80;, found points: 376773
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 12 and 51 AND pickup_latitude BETWEEN 18 AND 80;, found points: 373334
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 20 and 64 AND pickup_latitude BETWEEN 55 AND 86;, found points: 372403
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 37 and 79 AND pickup_latitude BETWEEN 69 AND 77;, found points: 372372
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 27 and 57 AND pickup_latitude BETWEEN 55 AND 86;, found points: 372343
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 18 and 51 AND pickup_latitude BETWEEN 65 AND 77;, found points: 372296
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 14 and 43 AND pickup_latitude BETWEEN 55 AND 82;, found points: 372308
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 39 and 63 AND pickup_latitude BETWEEN 46 AND 75;, found points: 372638
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 11 and 70 AND pickup_latitude BETWEEN 70 AND 77;, found points: 372289
+select count(*) from nyc_taxi where pickup_date <= 20110926 and passenger_count = 0;, found points: 866582
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 7 and 45 AND pickup_latitude BETWEEN 25 AND 89;, found points: 390765
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 6 and 58 AND pickup_latitude BETWEEN 2 AND 82;, found points: 391619
+select count(*) from nyc_taxi where trip_distance >= 24 and trip_distance <= 229 and fare_amount <= 148 and tip_amount <= 241;, found points: 493588
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 4 and 67 AND pickup_latitude BETWEEN 30 AND 76;, found points: 395146
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 17 and 79 AND pickup_latitude BETWEEN 74 AND 80;, found points: 339552
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 26 and 50 AND pickup_latitude BETWEEN 53 AND 78;, found points: 372325
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 14 and 41 AND pickup_latitude BETWEEN 40 AND 90;, found points: 372933
+select count(*) from nyc_taxi where pickup_longitude BETWEEN 39 and 81 AND pickup_latitude BETWEEN 59 AND 79;, found points: 372518

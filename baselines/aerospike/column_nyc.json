@@ -1,0 +1,60 @@
+{
+    "version" : "1.0",
+    "dsv_config": { "delimiter": "," , "n_columns_datafile": 16, "header_exist": false},
+  
+    "mappings": [
+        {
+            "key": {"column_position": 1, "type": "integer"},
+  
+            "set": "nyc_taxi_macro",
+  
+            "bin_list": [
+              {"name": "pickup_date",
+                "value": { "column_position": 2, "type" : "integer"}
+               },
+               {"name": "dropoff_date",
+                "value": { "column_position": 3, "type" : "integer"}
+               },
+               {"name": "pickup_lon",
+                "value": { "column_position": 4, "type" : "float"}
+               },
+               {"name": "pickup_lat",
+                "value": { "column_position": 5, "type" : "float"}
+               },
+               {"name": "dropoff_lon",
+                "value": { "column_position": 6, "type" : "float"}
+               },
+               {"name": "dropoff_lat",
+                "value": { "column_position": 7, "type" : "float"}
+               },
+               {"name": "passenger_cnt",
+                "value": { "column_position": 8, "type" : "integer"}
+               },
+               {"name": "trip_dist",
+                "value": { "column_position": 9, "type" : "integer"}
+               },
+               {"name": "fare_amt",
+                "value": { "column_position": 10, "type" : "integer"}
+               },
+               {"name": "extra",
+                "value": { "column_position": 11, "type" : "integer"}
+               },
+               {"name": "mta_tax",
+                "value": { "column_position": 12, "type" : "integer"}
+               },
+               {"name": "tip_amt",
+                "value": { "column_position": 13, "type" : "integer"}
+               },
+               {"name": "tolls_amt",
+                "value": { "column_position": 14, "type" : "integer"}
+               },
+               {"name": "impt_sur",
+                "value": { "column_position": 15, "type" : "integer"}
+               },
+               {"name": "total_amt",
+                "value": { "column_position": 16, "type" : "integer"}
+               }
+            ]
+        }
+    ]
+  }

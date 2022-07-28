@@ -36,7 +36,7 @@ int main(int argc, char *argv[]){
 
     std::vector<std::string> server_ips = {"10.10.1.12", "10.10.1.13", "10.10.1.14", "10.10.1.15", "10.10.1.16"};
 
-    total_points_count = 1298919650;
+    total_points_count = 675200000;
     auto client = MDTrieClient(server_ips, shard_num);
 
     if (!client.ping(3)){
