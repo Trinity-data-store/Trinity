@@ -8,7 +8,7 @@
 
 
 # Total: 675200000
-# sudo split -l 16880000 /mntData2/nyc_taxi/nyc_taxi_processed_675.csv --numeric-suffixes
+sudo split -l 16880000 /mntData2/nyc_taxi/nyc_taxi_processed_675.csv --numeric-suffixes
 
 cd /mntData/nyc_split_10/
 sudo rm ./*

@@ -47,6 +47,7 @@ def insert_each_worker(total_num_workers, worker_idx):
                 import sys
                 print(key, rec)
                 print("error: {0}".format(e), file=sys.stderr)
+                exit(-1)
         del key 
         del rec
         if line_count % 500000 == 0:

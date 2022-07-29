@@ -11,7 +11,7 @@ import re
 CONNECTION = "dbname=defaultdb host=localhost user=postgres password=adifficultpassword sslmode=disable"
 
 COLS = ["pickup_date", "dropoff_date", "pickup_lon", "pickup_lat", "dropoff_lon", "dropoff_lat", "passenger_cnt", "trip_dist", "fare_amt", "extra", "mta_tax", "tip_amt", "tolls_amt", "impt_sur", "total_amt"]
-filename = "/proj/trinity-PG0/Trinity/results/nyc_clickhouse"
+filename = "/proj/trinity-PG0/Trinity/results/nyc_clickhouse_new"
 outfile_addr = "/proj/trinity-PG0/Trinity/results/nyc_timescale"
 
 
@@ -27,11 +27,31 @@ with open(filename) as file:
 CONN = psycopg2.connect(CONNECTION)
 cursor = CONN.cursor()
 
+def clean_query(query):
+
+    # ["pickup_date", "dropoff_date", "pickup_lon", "pickup_lat", "dropoff_lon", "dropoff_lat", "passenger_cnt", "trip_dist", "fare_amt", "extra", "mta_tax", "tip_amt", "tolls_amt", "impt_sur", "total_amt"]
+
+    cleaned_pair = [
+        ("trip_distance", "trip_dist"),
+        ("fare_amount", "fare_amt"),
+        ("tip_amount", "tip_amt"),
+        ("passenger_count", "passenger_cnt"),
+        ("pickup_longitude", "pickup_lon"),
+        ("pickup_latitude", "pickup_lat")
+    ]
+
+    for pair in cleaned_pair:
+        before = pair[0]
+        after = pair[1]
+        query = query.replace(before, after)
+
+    return query
+
 finished_line = 0
 for line in lines:
 
     query = line.split(";,")[0] + ";"
-    query_select = query.replace("COUNT(*)", "*")
+    query_select = clean_query(query.replace("count(*)", "*"))
     # print(query_select)
 
     StringRegex = re.compile(r'\d\d\d\d\d\d\d\d')

@@ -14,7 +14,7 @@ COLS = ['id', 'quantity', 'extendedprice', 'discount', 'tax', 'shipdate', 'commi
 processes = []
 total_vect = []
 num_data_nodes = 5
-total_points = int(100000000 / 100)
+total_points = int(10000000) # 10 M
 
 def insert_each_worker(worker_idx, total_workers):
 
