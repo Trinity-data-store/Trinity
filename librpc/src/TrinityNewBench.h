@@ -42,9 +42,6 @@ std::vector<std::vector<int32_t>> load_dataset_vector_github(std::string file_ad
     for (uint32_t i = 0; i < total_points; i++){
         std::getline(file, line);
         points_vect.push_back(parse_line_github(line));
-        // for (auto j : points_vect[i]) 
-        //     std::cout << j << " ";
-        // exit(0);
     }
     return points_vect;
 }
@@ -75,6 +72,7 @@ uint32_t insert_each_client(std::vector<std::vector<int32_t>> *total_points_stor
         if (!finished_warmup && point_idx > warmup_points){
             start = GetTimestamp();
             finished_warmup = true;
+            inserted_points_count = 0;
         }
         vector <int32_t> data_point = (*total_points_stored)[point_idx];
         client.insert(data_point, point_idx);
@@ -103,21 +101,20 @@ uint32_t total_client_insert(int shard_number, int client_number, std::vector<st
         points_to_insert = 82805630;
         if (which_part == 9)
             points_to_insert = 82805625;
+        points_to_insert = 30000000; // See Aerospike
     }
 
     if (current_dataset_idx == 3) {
         points_to_insert = 675200000 / 10;
+        points_to_insert = 30000000; // See Aerospike
     }
         
-
-    // points_to_insert /= 10;
     std::vector<std::vector<int32_t>> total_points_stored;
     if (current_dataset_idx == 1)
         total_points_stored = load_dataset_vector_tpch(file_address, points_to_insert);
     if (current_dataset_idx == 2)
         total_points_stored = load_dataset_vector_github(file_address, points_to_insert);
     if (current_dataset_idx == 3) {
-        // points_to_insert /= 10;
         total_points_stored = load_dataset_vector_nyc(file_address, points_to_insert);
     }
 
@@ -133,6 +130,73 @@ uint32_t total_client_insert(int shard_number, int client_number, std::vector<st
     } 
     return total_throughput;  
 }
+
+uint32_t lookup_each_client(int shard_number, int client_number, int client_index, std::vector<std::string> server_ips, uint32_t points_to_lookup)
+{
+    auto client = MDTrieClient(server_ips, shard_number);
+    uint32_t warmup_points = points_to_lookup / WARMUP_FACTOR;
+
+    TimeStamp start, diff = 0; 
+    bool finished_warmup = false;
+    uint32_t lookup_points_count = 0;
+
+    for (uint32_t point_idx = client_index; point_idx < points_to_lookup; point_idx += client_number){
+
+        if (!finished_warmup && point_idx > warmup_points){
+            start = GetTimestamp();
+            finished_warmup = true;
+            lookup_points_count = 0;
+
+        }
+        client.primary_key_lookup_send(lookup_points_count);
+        std::vector<int32_t> rec_vect;
+        client.primary_key_lookup_rec(rec_vect, lookup_points_count);
+        lookup_points_count ++;
+    }
+    diff = GetTimestamp() - start;
+    return ((float) lookup_points_count / diff) * 1000000;
+}
+
+uint32_t total_client_lookup(int shard_number, int client_number, std::vector<std::string> server_ips, int which_part = 0){
+
+    std::string file_address;
+    if (current_dataset_idx == 1)
+        file_address = "/mntData/tpch_split_10/x" + std::to_string(which_part);
+    if (current_dataset_idx == 2)
+        file_address = "/mntData/github_split_10/x" + std::to_string(which_part);
+    if (current_dataset_idx == 3)
+        file_address = "/mntData/nyc_split_10/x" + std::to_string(which_part);
+
+    uint32_t points_to_lookup;
+
+    if (current_dataset_idx == 1)
+        points_to_lookup = 100000000;
+        
+    if (current_dataset_idx == 2) {
+        points_to_lookup = 82805630;
+        if (which_part == 9)
+            points_to_lookup = 82805625;
+        points_to_lookup = 30000000; // See Aerospike
+    }
+
+    if (current_dataset_idx == 3) {
+        points_to_lookup = 675200000 / 10;
+        points_to_lookup = 30000000; // See Aerospike
+    }
+        
+    std::vector<std::future<uint32_t>> threads; 
+    threads.reserve(client_number);
+    for (int i = 0; i < client_number; i++){
+
+        threads.push_back(std::async(lookup_each_client, shard_number, client_number, i, server_ips, points_to_lookup));
+    }
+    uint32_t total_throughput = 0;
+    for (int i = 0; i < client_number; i++){
+        total_throughput += threads[i].get();
+    } 
+    return total_throughput;  
+}
+
 
 uint32_t insert_lookup_each_client(std::vector<std::vector<int32_t>> *total_points_stored, int shard_number, int client_number, int client_index, std::vector<std::string> server_ips, uint32_t points_to_insert)
 {

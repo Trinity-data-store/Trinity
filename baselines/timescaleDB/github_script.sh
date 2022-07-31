@@ -33,7 +33,7 @@ CREATE TABLE github_events (
     downloads     INT             NOT NULL,
     start_date   TIMESTAMP NOT NULL,
     end_date TIMESTAMP NOT NULL,
-    PRIMARY KEY (start_date, pkey)
+    CONSTRAINT id_pk_g PRIMARY KEY (pkey)
 );
 
 SELECT add_data_node('dn1', host => '10.10.1.12');

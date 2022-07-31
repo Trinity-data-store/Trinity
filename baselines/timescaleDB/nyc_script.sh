@@ -1,8 +1,8 @@
 sudo -u postgres psql postgres
 alter user postgres with password 'adifficultpassword';
 
+sudo -u postgres psql postgres
 \c defaultdb
-DROP TABLE nyc_taxi;
 CREATE TABLE nyc_taxi (
     pkey           BIGINT             NOT NULL,
     pickup_date     TIMESTAMP NOT NULL,
@@ -22,6 +22,7 @@ CREATE TABLE nyc_taxi (
     total_amt     INT             NOT NULL,
     PRIMARY KEY (pickup_date, pkey)
 );
+DROP TABLE nyc_taxi;
 
 
 SELECT add_data_node('dn1', host => '10.10.1.12');
