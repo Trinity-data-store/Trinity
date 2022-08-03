@@ -31,7 +31,7 @@ using namespace apache::thrift::server;
 level_t max_depth = 32;
 level_t trie_depth = 6;
 const preorder_t max_tree_node = 512;
-const dimension_t DIMENSION = 15;
+const dimension_t DIMENSION = 9;
 const int shard_num = 20;
 
 class MDTrieHandler : public MDTrieShardIf {
@@ -121,15 +121,21 @@ public:
 
       // queried: trip_distance, fare_amount, tip_amount, pickup_date, dropoff_date, passenger_count. pickup_longitude, pickup_latitude
 
-      use_hybrid_ = true;
+      use_hybrid_ = false;
 
       std::vector<level_t> bit_widths = {18, 20, 10, 10, 10 + 10, 10 + 10, 8, 13, 10, 10 + 10, 11 + 9, 10, 10 + 10, 8, 10 + 10}; // 15 Dimensions;
       std::vector<level_t> start_bits = {0, 0, 0, 0, 0 + 10, 0 + 10, 0, 0, 0, 0 + 10, 0 + 9, 0, 0 + 10, 0, 0 + 10}; // 15 Dimensions; 24.54 GB, int
 
+      if (!use_hybrid_) {
+          bit_widths = {18, 20, 10, 10, 10 + 21, 10 + 21, 8, 28, 25, 10 + 21, 11 + 20, 22, 25 + 7, 8 + 23, 25 + 6}; // 15 Dimensions;
+          start_bits = {0, 0, 0, 0, 0 + 21, 0 + 21, 0, 0, 0, 0 + 21, 0 + 20, 0, 0 + 7, 0 + 23, 0 + 6}; // 15 Dimensions; 24.54 GB, int
+      }
       max_values_ = {20160630 - 20090000, 20221220 - 19700000, 899, 898, 899, 898, 255, 5000, 1000, 1000, 1312, 1000, 1000, 138, 1000};
 
       trie_depth = 6;
       max_depth = 20;
+      max_depth = 28;
+
       no_dynamic_sizing = true;
       total_points_count = 675200000 / (shard_num * 5) + 1; 
 
@@ -173,7 +179,7 @@ public:
     for (uint8_t i = 7; i < DIMENSION; i++) {
 
       leaf_point.set_coordinate(i, point[i]);
-
+      
       if (use_hybrid_ && point[i] > max_values_[i])
       {
         std::vector<int32_t> new_point = point;
@@ -238,7 +244,48 @@ public:
   void primary_key_lookup(std::vector<int32_t> & _return, const int32_t primary_key){
 
 
-    _return.reserve(DIMENSION);
+    // _return.reserve(DIMENSION);
+
+    /*
+    int32_t primary_key = primary_key;
+    if (primary_key > (int32_t) inserted_points_)
+      primary_key = (int32_t) inserted_points_ - 1;
+
+    */
+    
+    if (use_hybrid_) {
+      unsigned int backup_points_size = backup_points_.size();
+      for (unsigned int i = 0; i < backup_points_size; i ++ ){
+        if (backup_points_[i][DIMENSION] == primary_key) {
+          for (uint8_t j = 0; i < DIMENSION; i++) {
+            _return[j] = backup_points_[i][j];
+          }
+          return;
+        }
+      }
+    }
+
+    std::vector<morton_t> node_path_from_primary(max_depth + 1);
+    tree_block<DIMENSION> *t_ptr = (tree_block<DIMENSION> *) (p_key_to_treeblock_compact_->At(primary_key));
+
+    morton_t parent_symbol_from_primary = t_ptr->get_node_path_primary_key(primary_key, node_path_from_primary);
+    node_path_from_primary[max_depth - 1] = parent_symbol_from_primary;
+
+    /*
+    auto returned_coordinates = t_ptr->node_path_to_coordinates(node_path_from_primary, DIMENSION);  
+    
+    for (uint8_t i = 0; i < DIMENSION; i++){
+      _return.emplace_back(returned_coordinates->get_coordinate(i));
+    } 
+    */
+
+    _return =   t_ptr->node_path_to_coordinates_vect(node_path_from_primary, DIMENSION);  
+
+
+  }
+
+  void primary_key_lookup_path(std::vector<int32_t> & _return, const int32_t primary_key){
+
 
     if (use_hybrid_) {
       unsigned int backup_points_size = backup_points_.size();
@@ -258,11 +305,44 @@ public:
     morton_t parent_symbol_from_primary = t_ptr->get_node_path_primary_key(primary_key, node_path_from_primary);
     node_path_from_primary[max_depth - 1] = parent_symbol_from_primary;
 
-    auto returned_coordinates = t_ptr->node_path_to_coordinates(node_path_from_primary, DIMENSION);  
-    
+     _return.reserve(max_depth);
+
+    for (uint8_t i = 0; i < max_depth; i++){
+      _return.emplace_back(node_path_from_primary[i]);
+    } 
+  }
+
+  void primary_key_lookup_binary(std::string & _return, const int32_t primary_key){
+
+
+    if (use_hybrid_) {
+      unsigned int backup_points_size = backup_points_.size();
+      for (unsigned int i = 0; i < backup_points_size; i ++ ){
+        if (backup_points_[i][DIMENSION] == primary_key) {
+          for (uint8_t j = 0; i < DIMENSION; i++) {
+            _return[j] = backup_points_[i][j];
+          }
+          return;
+        }
+      }
+    }
+
+    std::vector<morton_t> node_path_from_primary(max_depth + 1);
+    tree_block<DIMENSION> *t_ptr = (tree_block<DIMENSION> *) (p_key_to_treeblock_compact_->At(primary_key));
+
+    morton_t parent_symbol_from_primary = t_ptr->get_node_path_primary_key(primary_key, node_path_from_primary);
+    node_path_from_primary[max_depth - 1] = parent_symbol_from_primary;
+
+    std::vector<int32_t> return_vect;
+    return_vect =   t_ptr->node_path_to_coordinates_vect(node_path_from_primary, DIMENSION);  
+
+    std::stringstream ss;
+
+
     for (uint8_t i = 0; i < DIMENSION; i++){
-      _return.emplace_back(returned_coordinates->get_coordinate(i));
-    }      
+      ss << return_vect[i] << ",";
+    } 
+    _return = ss.str();
   }
 
   int32_t get_size(){

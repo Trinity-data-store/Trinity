@@ -94,19 +94,21 @@ uint32_t total_client_insert(int shard_number, int client_number, std::vector<st
 
     uint32_t points_to_insert;
 
-    if (current_dataset_idx == 1)
+    if (current_dataset_idx == 1) {
         points_to_insert = 100000000;
+        points_to_insert = 30000000 / 2; // See Aerospike
+    }
         
     if (current_dataset_idx == 2) {
         points_to_insert = 82805630;
         if (which_part == 9)
             points_to_insert = 82805625;
-        points_to_insert = 30000000; // See Aerospike
+        points_to_insert = 30000000 / 2; // See Aerospike
     }
 
     if (current_dataset_idx == 3) {
         points_to_insert = 675200000 / 10;
-        points_to_insert = 30000000; // See Aerospike
+        points_to_insert = 30000000 / 2; // See Aerospike
     }
         
     std::vector<std::vector<int32_t>> total_points_stored;
@@ -133,14 +135,18 @@ uint32_t total_client_insert(int shard_number, int client_number, std::vector<st
 
 uint32_t lookup_each_client(int shard_number, int client_number, int client_index, std::vector<std::string> server_ips, uint32_t points_to_lookup)
 {
+    // std::cout << "lookup_each_client: " << shard_number << ", " << client_number << ", " << client_index << std::endl;
     auto client = MDTrieClient(server_ips, shard_number);
     uint32_t warmup_points = points_to_lookup / WARMUP_FACTOR;
 
     TimeStamp start, diff = 0; 
     bool finished_warmup = false;
     uint32_t lookup_points_count = 0;
-
+    uint32_t lookup_idx = 0;
     for (uint32_t point_idx = client_index; point_idx < points_to_lookup; point_idx += client_number){
+        
+        // if (lookup_points_count % 10 == 0)
+        //     std::cout << "lookup_points_count: " << lookup_points_count << std::endl;
 
         if (!finished_warmup && point_idx > warmup_points){
             start = GetTimestamp();
@@ -148,14 +154,69 @@ uint32_t lookup_each_client(int shard_number, int client_number, int client_inde
             lookup_points_count = 0;
 
         }
-        client.primary_key_lookup_send(lookup_points_count);
         std::vector<int32_t> rec_vect;
-        client.primary_key_lookup_rec(rec_vect, lookup_points_count);
+        // std::string return_str;
+
+        // client.primary_key_lookup_send(lookup_idx);
+        // client.primary_key_lookup_rec(rec_vect, lookup_idx);
+
+
+        client.primary_key_lookup_send(point_idx);
+        client.primary_key_lookup_rec(rec_vect, point_idx);
+
+        // client.primary_key_lookup_binary_send(lookup_idx);
+        // client.primary_key_lookup_binary_rec(return_str, lookup_idx);
         lookup_points_count ++;
+        lookup_idx ++;
     }
     diff = GetTimestamp() - start;
     return ((float) lookup_points_count / diff) * 1000000;
 }
+
+
+uint32_t lookup_each_client_async(int shard_number, int client_number, int client_index, std::vector<std::string> server_ips, uint32_t points_to_lookup){
+
+    auto client = MDTrieClient(server_ips, shard_number);
+
+    uint32_t warmup_points = points_to_lookup / WARMUP_FACTOR;
+
+
+    int sent_count = 0;
+    TimeStamp start, diff = 0; 
+    bool finished_warmup = false;
+    uint32_t lookup_points_count = 0;
+    uint32_t lookup_idx = 0;
+    uint32_t point_idx;
+    for (point_idx = client_index; point_idx < points_to_lookup; point_idx += client_number){
+
+        if (!finished_warmup && point_idx > warmup_points){
+            start = GetTimestamp();
+            finished_warmup = true;
+            lookup_points_count = 0;
+        }
+
+        if (sent_count != 0 && sent_count % 5 == 0){
+            for (uint32_t j = point_idx - sent_count * client_number; j < point_idx; j += client_number){
+                std::vector<int32_t> rec_vect;
+                client.primary_key_lookup_rec(rec_vect, j);
+            }
+            sent_count = 0;
+        }
+
+        client.primary_key_lookup_send(point_idx);
+        sent_count ++;
+        lookup_points_count ++;
+        lookup_idx ++;
+    }
+
+    for (uint32_t j = point_idx - sent_count * client_number; j < point_idx; j += client_number){
+        std::vector<int32_t> rec_vect;
+        client.primary_key_lookup_rec(rec_vect, j);
+    }
+    diff = GetTimestamp() - start;
+    return ((float) lookup_points_count / diff) * 1000000;
+}
+
 
 uint32_t total_client_lookup(int shard_number, int client_number, std::vector<std::string> server_ips, int which_part = 0){
 
@@ -169,26 +230,28 @@ uint32_t total_client_lookup(int shard_number, int client_number, std::vector<st
 
     uint32_t points_to_lookup;
 
-    if (current_dataset_idx == 1)
+    if (current_dataset_idx == 1) {
         points_to_lookup = 100000000;
+        points_to_lookup = 30000000 / 10; // See Aerospike
+    }
         
     if (current_dataset_idx == 2) {
         points_to_lookup = 82805630;
         if (which_part == 9)
             points_to_lookup = 82805625;
-        points_to_lookup = 30000000; // See Aerospike
+        points_to_lookup = 30000000 / 10; // See Aerospike
     }
 
     if (current_dataset_idx == 3) {
         points_to_lookup = 675200000 / 10;
-        points_to_lookup = 30000000; // See Aerospike
+        points_to_lookup = 30000000 / 10; // See Aerospike
     }
         
     std::vector<std::future<uint32_t>> threads; 
     threads.reserve(client_number);
     for (int i = 0; i < client_number; i++){
 
-        threads.push_back(std::async(lookup_each_client, shard_number, client_number, i, server_ips, points_to_lookup));
+        threads.push_back(std::async(lookup_each_client_async, shard_number, client_number, i, server_ips, points_to_lookup));
     }
     uint32_t total_throughput = 0;
     for (int i = 0; i < client_number; i++){

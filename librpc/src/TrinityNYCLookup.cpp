@@ -26,7 +26,7 @@ using namespace apache::thrift::protocol;
 using namespace apache::thrift::transport;
 const int DIMENSION = 9;
 const int shard_num = 20;
-const int client_num = 60;
+const int client_num = 20;
 
 int main(int argc, char *argv[]){
 
@@ -48,5 +48,5 @@ int main(int argc, char *argv[]){
 
     uint32_t throughput;
     throughput = total_client_lookup(shard_num, client_num, server_ips, which_part);
-    cout << "Insertion Throughput (pt / seconds): " << throughput << endl;
+    cout << "Lookup Throughput (pt / seconds): " << throughput << endl;
 }

@@ -13,7 +13,7 @@ master = ("10.10.1.2", "9000")
 
 total_num_points = 675200000
 query_selecitivity = [0.05 / 100, 0.15 / 100] # Scale query selectivity
-num_workers = 5
+num_workers = 4
 total_num_queries = 1000
 
 ''' Query templates
@@ -61,14 +61,16 @@ def generate_queries(template_id):
         fare_amount_end = randrange(fare_amount_start, fare_amount_range[1] + 1)
         query = "select count(*) from nyc_taxi where trip_distance <= {} and fare_amount between {} AND {};".format(trip_distance_end, fare_amount_start, fare_amount_end)
 
+    '''
     if template_id == 2:
         trip_distance_start = randrange(trip_distance_range[0], trip_distance_range[1] + 1)
         trip_distance_end = randrange(trip_distance_start, trip_distance_range[1] + 1)
         fare_amount_end = randrange(fare_amount_range[0], trip_distance_range[1] + 1)
         tip_amount_end = randrange(tip_amount_range[0], tip_amount_range[1] + 1)
         query = "select count(*) from nyc_taxi where trip_distance >= {} and trip_distance <= {} and fare_amount <= {} and tip_amount <= {};".format(trip_distance_start, trip_distance_end, fare_amount_end, tip_amount_end)
+    '''
 
-    if template_id == 3:
+    if template_id == 2:
 
         pickup_date_start = generate_date_int(pickup_date_range[0], pickup_date_range[1])
         pickup_date_end = generate_date_int(pickup_date_start, pickup_date_range[1])
@@ -78,14 +80,14 @@ def generate_queries(template_id):
 
         query = "select count(*) from nyc_taxi where pickup_date >= {} and pickup_date <= {} and dropoff_date >= {} and dropoff_date <= {}".format(pickup_date_start, pickup_date_end, dropoff_date_start, dropoff_date_end)
 
-
-    if template_id == 4:
+    if template_id == 3:
 
         pickup_date_end = generate_date_int(pickup_date_range[0], pickup_date_range[1])
         passenger_count = randrange(passenger_count_range[0], passenger_count_range[1] + 1)
         query = "select count(*) from nyc_taxi where pickup_date <= {} and passenger_count = {};".format(pickup_date_end, passenger_count)
 
-    if template_id == 5:
+    
+    if template_id == 4:
 
         pickup_longitude_start = randrange(pickup_longitude_range[0], pickup_longitude_range[1] + 1)
         pickup_longitude_end = randrange(pickup_longitude_start, pickup_longitude_range[1] + 1)
@@ -93,20 +95,22 @@ def generate_queries(template_id):
         pickup_latitude_end = randrange(pickup_latitude_start, pickup_latitude_range[1] + 1)
 
         query = "select count(*) from nyc_taxi where pickup_longitude BETWEEN {} and {} AND pickup_latitude BETWEEN {} AND {};".format(pickup_longitude_start, pickup_longitude_end, pickup_latitude_start, pickup_latitude_end)
-
+    
     return query
 
 
-def find_queries_per_process(num_queries):
+def find_queries_per_process(worker_idx):
+
+    num_queries = 250
 
     finished_queries = 0
     client = Client(master[0], port=master[1])
-
+    query_template = worker_idx + 1
     while finished_queries < num_queries:
 
-        query_template = randrange(1, 4 + 1)
-        while query_template == 2:
-            query_template = randrange(1, 4 + 1)
+        # query_template = randrange(1, 4)
+        # while query_template == 2:
+        #     query_template = randrange(1, 4 + 1)
         # query_template = 1
         # query_template = randrange(3, 4 + 1)
         query = generate_queries(query_template)
@@ -119,8 +123,8 @@ def find_queries_per_process(num_queries):
 if __name__ == "__main__":
 
     processes = []
-    for _ in range(num_workers):
-        p = Process(target=find_queries_per_process, args=(total_num_queries/num_workers, ))
+    for i in range(num_workers):
+        p = Process(target=find_queries_per_process, args=(i, ))
         p.start()
         processes.append(p)
 

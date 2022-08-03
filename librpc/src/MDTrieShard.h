@@ -27,6 +27,8 @@ class MDTrieShardIf {
   virtual bool check(const std::vector<int32_t> & point) = 0;
   virtual void range_search(std::vector<int32_t> & _return, const std::vector<int32_t> & start_range, const std::vector<int32_t> & end_range) = 0;
   virtual void primary_key_lookup(std::vector<int32_t> & _return, const int32_t primary_key) = 0;
+  virtual void primary_key_lookup_path(std::vector<int32_t> & _return, const int32_t primary_key) = 0;
+  virtual void primary_key_lookup_binary(std::string& _return, const int32_t primary_key) = 0;
   virtual int32_t get_size() = 0;
   virtual void clear_trie() = 0;
 };
@@ -74,6 +76,12 @@ class MDTrieShardNull : virtual public MDTrieShardIf {
     return;
   }
   void primary_key_lookup(std::vector<int32_t> & /* _return */, const int32_t /* primary_key */) override {
+    return;
+  }
+  void primary_key_lookup_path(std::vector<int32_t> & /* _return */, const int32_t /* primary_key */) override {
+    return;
+  }
+  void primary_key_lookup_binary(std::string& /* _return */, const int32_t /* primary_key */) override {
     return;
   }
   int32_t get_size() override {
@@ -647,6 +655,229 @@ class MDTrieShard_primary_key_lookup_presult {
 
 };
 
+typedef struct _MDTrieShard_primary_key_lookup_path_args__isset {
+  _MDTrieShard_primary_key_lookup_path_args__isset() : primary_key(false) {}
+  bool primary_key :1;
+} _MDTrieShard_primary_key_lookup_path_args__isset;
+
+class MDTrieShard_primary_key_lookup_path_args {
+ public:
+
+  MDTrieShard_primary_key_lookup_path_args(const MDTrieShard_primary_key_lookup_path_args&) noexcept;
+  MDTrieShard_primary_key_lookup_path_args& operator=(const MDTrieShard_primary_key_lookup_path_args&) noexcept;
+  MDTrieShard_primary_key_lookup_path_args() noexcept
+                                           : primary_key(0) {
+  }
+
+  virtual ~MDTrieShard_primary_key_lookup_path_args() noexcept;
+  int32_t primary_key;
+
+  _MDTrieShard_primary_key_lookup_path_args__isset __isset;
+
+  void __set_primary_key(const int32_t val);
+
+  bool operator == (const MDTrieShard_primary_key_lookup_path_args & rhs) const
+  {
+    if (!(primary_key == rhs.primary_key))
+      return false;
+    return true;
+  }
+  bool operator != (const MDTrieShard_primary_key_lookup_path_args &rhs) const {
+    return !(*this == rhs);
+  }
+
+  bool operator < (const MDTrieShard_primary_key_lookup_path_args & ) const;
+
+  template <class Protocol_>
+  uint32_t read(Protocol_* iprot);
+  template <class Protocol_>
+  uint32_t write(Protocol_* oprot) const;
+
+};
+
+
+class MDTrieShard_primary_key_lookup_path_pargs {
+ public:
+
+
+  virtual ~MDTrieShard_primary_key_lookup_path_pargs() noexcept;
+  const int32_t* primary_key;
+
+  template <class Protocol_>
+  uint32_t write(Protocol_* oprot) const;
+
+};
+
+typedef struct _MDTrieShard_primary_key_lookup_path_result__isset {
+  _MDTrieShard_primary_key_lookup_path_result__isset() : success(false) {}
+  bool success :1;
+} _MDTrieShard_primary_key_lookup_path_result__isset;
+
+class MDTrieShard_primary_key_lookup_path_result {
+ public:
+
+  MDTrieShard_primary_key_lookup_path_result(const MDTrieShard_primary_key_lookup_path_result&);
+  MDTrieShard_primary_key_lookup_path_result& operator=(const MDTrieShard_primary_key_lookup_path_result&);
+  MDTrieShard_primary_key_lookup_path_result() noexcept {
+  }
+
+  virtual ~MDTrieShard_primary_key_lookup_path_result() noexcept;
+  std::vector<int32_t>  success;
+
+  _MDTrieShard_primary_key_lookup_path_result__isset __isset;
+
+  void __set_success(const std::vector<int32_t> & val);
+
+  bool operator == (const MDTrieShard_primary_key_lookup_path_result & rhs) const
+  {
+    if (!(success == rhs.success))
+      return false;
+    return true;
+  }
+  bool operator != (const MDTrieShard_primary_key_lookup_path_result &rhs) const {
+    return !(*this == rhs);
+  }
+
+  bool operator < (const MDTrieShard_primary_key_lookup_path_result & ) const;
+
+  template <class Protocol_>
+  uint32_t read(Protocol_* iprot);
+  template <class Protocol_>
+  uint32_t write(Protocol_* oprot) const;
+
+};
+
+typedef struct _MDTrieShard_primary_key_lookup_path_presult__isset {
+  _MDTrieShard_primary_key_lookup_path_presult__isset() : success(false) {}
+  bool success :1;
+} _MDTrieShard_primary_key_lookup_path_presult__isset;
+
+class MDTrieShard_primary_key_lookup_path_presult {
+ public:
+
+
+  virtual ~MDTrieShard_primary_key_lookup_path_presult() noexcept;
+  std::vector<int32_t> * success;
+
+  _MDTrieShard_primary_key_lookup_path_presult__isset __isset;
+
+  template <class Protocol_>
+  uint32_t read(Protocol_* iprot);
+
+};
+
+typedef struct _MDTrieShard_primary_key_lookup_binary_args__isset {
+  _MDTrieShard_primary_key_lookup_binary_args__isset() : primary_key(false) {}
+  bool primary_key :1;
+} _MDTrieShard_primary_key_lookup_binary_args__isset;
+
+class MDTrieShard_primary_key_lookup_binary_args {
+ public:
+
+  MDTrieShard_primary_key_lookup_binary_args(const MDTrieShard_primary_key_lookup_binary_args&) noexcept;
+  MDTrieShard_primary_key_lookup_binary_args& operator=(const MDTrieShard_primary_key_lookup_binary_args&) noexcept;
+  MDTrieShard_primary_key_lookup_binary_args() noexcept
+                                             : primary_key(0) {
+  }
+
+  virtual ~MDTrieShard_primary_key_lookup_binary_args() noexcept;
+  int32_t primary_key;
+
+  _MDTrieShard_primary_key_lookup_binary_args__isset __isset;
+
+  void __set_primary_key(const int32_t val);
+
+  bool operator == (const MDTrieShard_primary_key_lookup_binary_args & rhs) const
+  {
+    if (!(primary_key == rhs.primary_key))
+      return false;
+    return true;
+  }
+  bool operator != (const MDTrieShard_primary_key_lookup_binary_args &rhs) const {
+    return !(*this == rhs);
+  }
+
+  bool operator < (const MDTrieShard_primary_key_lookup_binary_args & ) const;
+
+  template <class Protocol_>
+  uint32_t read(Protocol_* iprot);
+  template <class Protocol_>
+  uint32_t write(Protocol_* oprot) const;
+
+};
+
+
+class MDTrieShard_primary_key_lookup_binary_pargs {
+ public:
+
+
+  virtual ~MDTrieShard_primary_key_lookup_binary_pargs() noexcept;
+  const int32_t* primary_key;
+
+  template <class Protocol_>
+  uint32_t write(Protocol_* oprot) const;
+
+};
+
+typedef struct _MDTrieShard_primary_key_lookup_binary_result__isset {
+  _MDTrieShard_primary_key_lookup_binary_result__isset() : success(false) {}
+  bool success :1;
+} _MDTrieShard_primary_key_lookup_binary_result__isset;
+
+class MDTrieShard_primary_key_lookup_binary_result {
+ public:
+
+  MDTrieShard_primary_key_lookup_binary_result(const MDTrieShard_primary_key_lookup_binary_result&);
+  MDTrieShard_primary_key_lookup_binary_result& operator=(const MDTrieShard_primary_key_lookup_binary_result&);
+  MDTrieShard_primary_key_lookup_binary_result() noexcept
+                                               : success() {
+  }
+
+  virtual ~MDTrieShard_primary_key_lookup_binary_result() noexcept;
+  std::string success;
+
+  _MDTrieShard_primary_key_lookup_binary_result__isset __isset;
+
+  void __set_success(const std::string& val);
+
+  bool operator == (const MDTrieShard_primary_key_lookup_binary_result & rhs) const
+  {
+    if (!(success == rhs.success))
+      return false;
+    return true;
+  }
+  bool operator != (const MDTrieShard_primary_key_lookup_binary_result &rhs) const {
+    return !(*this == rhs);
+  }
+
+  bool operator < (const MDTrieShard_primary_key_lookup_binary_result & ) const;
+
+  template <class Protocol_>
+  uint32_t read(Protocol_* iprot);
+  template <class Protocol_>
+  uint32_t write(Protocol_* oprot) const;
+
+};
+
+typedef struct _MDTrieShard_primary_key_lookup_binary_presult__isset {
+  _MDTrieShard_primary_key_lookup_binary_presult__isset() : success(false) {}
+  bool success :1;
+} _MDTrieShard_primary_key_lookup_binary_presult__isset;
+
+class MDTrieShard_primary_key_lookup_binary_presult {
+ public:
+
+
+  virtual ~MDTrieShard_primary_key_lookup_binary_presult() noexcept;
+  std::string* success;
+
+  _MDTrieShard_primary_key_lookup_binary_presult__isset __isset;
+
+  template <class Protocol_>
+  uint32_t read(Protocol_* iprot);
+
+};
+
 
 class MDTrieShard_get_size_args {
  public:
@@ -867,6 +1098,12 @@ class MDTrieShardClientT : virtual public MDTrieShardIf {
   void primary_key_lookup(std::vector<int32_t> & _return, const int32_t primary_key) override;
   void send_primary_key_lookup(const int32_t primary_key);
   void recv_primary_key_lookup(std::vector<int32_t> & _return);
+  void primary_key_lookup_path(std::vector<int32_t> & _return, const int32_t primary_key) override;
+  void send_primary_key_lookup_path(const int32_t primary_key);
+  void recv_primary_key_lookup_path(std::vector<int32_t> & _return);
+  void primary_key_lookup_binary(std::string& _return, const int32_t primary_key) override;
+  void send_primary_key_lookup_binary(const int32_t primary_key);
+  void recv_primary_key_lookup_binary(std::string& _return);
   int32_t get_size() override;
   void send_get_size();
   int32_t recv_get_size();
@@ -911,6 +1148,10 @@ class MDTrieShardProcessorT : public ::apache::thrift::TDispatchProcessorT<Proto
   void process_range_search(int32_t seqid, Protocol_* iprot, Protocol_* oprot, void* callContext);
   void process_primary_key_lookup(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
   void process_primary_key_lookup(int32_t seqid, Protocol_* iprot, Protocol_* oprot, void* callContext);
+  void process_primary_key_lookup_path(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
+  void process_primary_key_lookup_path(int32_t seqid, Protocol_* iprot, Protocol_* oprot, void* callContext);
+  void process_primary_key_lookup_binary(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
+  void process_primary_key_lookup_binary(int32_t seqid, Protocol_* iprot, Protocol_* oprot, void* callContext);
   void process_get_size(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
   void process_get_size(int32_t seqid, Protocol_* iprot, Protocol_* oprot, void* callContext);
   void process_clear_trie(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
@@ -933,6 +1174,12 @@ class MDTrieShardProcessorT : public ::apache::thrift::TDispatchProcessorT<Proto
     processMap_["primary_key_lookup"] = ProcessFunctions(
       &MDTrieShardProcessorT::process_primary_key_lookup,
       &MDTrieShardProcessorT::process_primary_key_lookup);
+    processMap_["primary_key_lookup_path"] = ProcessFunctions(
+      &MDTrieShardProcessorT::process_primary_key_lookup_path,
+      &MDTrieShardProcessorT::process_primary_key_lookup_path);
+    processMap_["primary_key_lookup_binary"] = ProcessFunctions(
+      &MDTrieShardProcessorT::process_primary_key_lookup_binary,
+      &MDTrieShardProcessorT::process_primary_key_lookup_binary);
     processMap_["get_size"] = ProcessFunctions(
       &MDTrieShardProcessorT::process_get_size,
       &MDTrieShardProcessorT::process_get_size);
@@ -1019,6 +1266,26 @@ class MDTrieShardMultiface : virtual public MDTrieShardIf {
     return;
   }
 
+  void primary_key_lookup_path(std::vector<int32_t> & _return, const int32_t primary_key) override {
+    size_t sz = ifaces_.size();
+    size_t i = 0;
+    for (; i < (sz - 1); ++i) {
+      ifaces_[i]->primary_key_lookup_path(_return, primary_key);
+    }
+    ifaces_[i]->primary_key_lookup_path(_return, primary_key);
+    return;
+  }
+
+  void primary_key_lookup_binary(std::string& _return, const int32_t primary_key) override {
+    size_t sz = ifaces_.size();
+    size_t i = 0;
+    for (; i < (sz - 1); ++i) {
+      ifaces_[i]->primary_key_lookup_binary(_return, primary_key);
+    }
+    ifaces_[i]->primary_key_lookup_binary(_return, primary_key);
+    return;
+  }
+
   int32_t get_size() override {
     size_t sz = ifaces_.size();
     size_t i = 0;
@@ -1085,6 +1352,12 @@ class MDTrieShardConcurrentClientT : virtual public MDTrieShardIf {
   void primary_key_lookup(std::vector<int32_t> & _return, const int32_t primary_key) override;
   int32_t send_primary_key_lookup(const int32_t primary_key);
   void recv_primary_key_lookup(std::vector<int32_t> & _return, const int32_t seqid);
+  void primary_key_lookup_path(std::vector<int32_t> & _return, const int32_t primary_key) override;
+  int32_t send_primary_key_lookup_path(const int32_t primary_key);
+  void recv_primary_key_lookup_path(std::vector<int32_t> & _return, const int32_t seqid);
+  void primary_key_lookup_binary(std::string& _return, const int32_t primary_key) override;
+  int32_t send_primary_key_lookup_binary(const int32_t primary_key);
+  void recv_primary_key_lookup_binary(std::string& _return, const int32_t seqid);
   int32_t get_size() override;
   int32_t send_get_size();
   int32_t recv_get_size(const int32_t seqid);

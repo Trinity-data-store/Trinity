@@ -26,7 +26,7 @@ using namespace apache::thrift::protocol;
 using namespace apache::thrift::transport;
 const int DIMENSION = 9;
 const int shard_num = 20;
-const int client_num = 20;
+const int client_num = 30;
 
 int main(int argc, char *argv[]){
 
@@ -36,16 +36,16 @@ int main(int argc, char *argv[]){
     }
     int which_part = stoi(argv[1]);
 
-    std::vector<std::string> server_ips = {"10.10.1.3", "10.10.1.4", "10.10.1.5", "10.10.1.6", "10.10.1.7"};
+    std::vector<std::string> server_ips = {"10.10.1.12", "10.10.1.13", "10.10.1.14", "10.10.1.15", "10.10.1.16"};
 
     total_points_count = 828056295;
     auto client = MDTrieClient(server_ips, shard_num);
+    current_dataset_idx = 2;
 
     /** 
         Insert all points
     */
 
-    TimeStamp start, diff;
     uint32_t throughput;
 
     
@@ -53,10 +53,7 @@ int main(int argc, char *argv[]){
         Measure lookup throughput
     */
 
-    start = GetTimestamp();
     throughput = total_client_lookup(shard_num, client_num, server_ips, which_part);
-    diff = GetTimestamp() - start;
 
-    cout << "Insertion Throughput (pt / seconds): " << throughput << endl;
-    cout << "End-to-end Latency (s): " << diff / 1000000 << endl;
+    cout << "Lookup Throughput (pt / seconds): " << throughput << endl;
 }

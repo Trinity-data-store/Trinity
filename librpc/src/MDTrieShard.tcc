@@ -1090,6 +1090,392 @@ uint32_t MDTrieShard_primary_key_lookup_presult::read(Protocol_* iprot) {
 
 
 template <class Protocol_>
+uint32_t MDTrieShard_primary_key_lookup_path_args::read(Protocol_* iprot) {
+
+  ::apache::thrift::protocol::TInputRecursionTracker tracker(*iprot);
+  uint32_t xfer = 0;
+  std::string fname;
+  ::apache::thrift::protocol::TType ftype;
+  int16_t fid;
+
+  xfer += iprot->readStructBegin(fname);
+
+  using ::apache::thrift::protocol::TProtocolException;
+
+
+  while (true)
+  {
+    xfer += iprot->readFieldBegin(fname, ftype, fid);
+    if (ftype == ::apache::thrift::protocol::T_STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 1:
+        if (ftype == ::apache::thrift::protocol::T_I32) {
+          xfer += iprot->readI32(this->primary_key);
+          this->__isset.primary_key = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      default:
+        xfer += iprot->skip(ftype);
+        break;
+    }
+    xfer += iprot->readFieldEnd();
+  }
+
+  xfer += iprot->readStructEnd();
+
+  return xfer;
+}
+
+template <class Protocol_>
+uint32_t MDTrieShard_primary_key_lookup_path_args::write(Protocol_* oprot) const {
+  uint32_t xfer = 0;
+  ::apache::thrift::protocol::TOutputRecursionTracker tracker(*oprot);
+  xfer += oprot->writeStructBegin("MDTrieShard_primary_key_lookup_path_args");
+
+  xfer += oprot->writeFieldBegin("primary_key", ::apache::thrift::protocol::T_I32, 1);
+  xfer += oprot->writeI32(this->primary_key);
+  xfer += oprot->writeFieldEnd();
+
+  xfer += oprot->writeFieldStop();
+  xfer += oprot->writeStructEnd();
+  return xfer;
+}
+
+
+template <class Protocol_>
+uint32_t MDTrieShard_primary_key_lookup_path_pargs::write(Protocol_* oprot) const {
+  uint32_t xfer = 0;
+  ::apache::thrift::protocol::TOutputRecursionTracker tracker(*oprot);
+  xfer += oprot->writeStructBegin("MDTrieShard_primary_key_lookup_path_pargs");
+
+  xfer += oprot->writeFieldBegin("primary_key", ::apache::thrift::protocol::T_I32, 1);
+  xfer += oprot->writeI32((*(this->primary_key)));
+  xfer += oprot->writeFieldEnd();
+
+  xfer += oprot->writeFieldStop();
+  xfer += oprot->writeStructEnd();
+  return xfer;
+}
+
+
+template <class Protocol_>
+uint32_t MDTrieShard_primary_key_lookup_path_result::read(Protocol_* iprot) {
+
+  ::apache::thrift::protocol::TInputRecursionTracker tracker(*iprot);
+  uint32_t xfer = 0;
+  std::string fname;
+  ::apache::thrift::protocol::TType ftype;
+  int16_t fid;
+
+  xfer += iprot->readStructBegin(fname);
+
+  using ::apache::thrift::protocol::TProtocolException;
+
+
+  while (true)
+  {
+    xfer += iprot->readFieldBegin(fname, ftype, fid);
+    if (ftype == ::apache::thrift::protocol::T_STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 0:
+        if (ftype == ::apache::thrift::protocol::T_LIST) {
+          {
+            this->success.clear();
+            uint32_t _size50;
+            ::apache::thrift::protocol::TType _etype53;
+            xfer += iprot->readListBegin(_etype53, _size50);
+            this->success.resize(_size50);
+            uint32_t _i54;
+            for (_i54 = 0; _i54 < _size50; ++_i54)
+            {
+              xfer += iprot->readI32(this->success[_i54]);
+            }
+            xfer += iprot->readListEnd();
+          }
+          this->__isset.success = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      default:
+        xfer += iprot->skip(ftype);
+        break;
+    }
+    xfer += iprot->readFieldEnd();
+  }
+
+  xfer += iprot->readStructEnd();
+
+  return xfer;
+}
+
+template <class Protocol_>
+uint32_t MDTrieShard_primary_key_lookup_path_result::write(Protocol_* oprot) const {
+
+  uint32_t xfer = 0;
+
+  xfer += oprot->writeStructBegin("MDTrieShard_primary_key_lookup_path_result");
+
+  if (this->__isset.success) {
+    xfer += oprot->writeFieldBegin("success", ::apache::thrift::protocol::T_LIST, 0);
+    {
+      xfer += oprot->writeListBegin(::apache::thrift::protocol::T_I32, static_cast<uint32_t>(this->success.size()));
+      std::vector<int32_t> ::const_iterator _iter55;
+      for (_iter55 = this->success.begin(); _iter55 != this->success.end(); ++_iter55)
+      {
+        xfer += oprot->writeI32((*_iter55));
+      }
+      xfer += oprot->writeListEnd();
+    }
+    xfer += oprot->writeFieldEnd();
+  }
+  xfer += oprot->writeFieldStop();
+  xfer += oprot->writeStructEnd();
+  return xfer;
+}
+
+
+template <class Protocol_>
+uint32_t MDTrieShard_primary_key_lookup_path_presult::read(Protocol_* iprot) {
+
+  ::apache::thrift::protocol::TInputRecursionTracker tracker(*iprot);
+  uint32_t xfer = 0;
+  std::string fname;
+  ::apache::thrift::protocol::TType ftype;
+  int16_t fid;
+
+  xfer += iprot->readStructBegin(fname);
+
+  using ::apache::thrift::protocol::TProtocolException;
+
+
+  while (true)
+  {
+    xfer += iprot->readFieldBegin(fname, ftype, fid);
+    if (ftype == ::apache::thrift::protocol::T_STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 0:
+        if (ftype == ::apache::thrift::protocol::T_LIST) {
+          {
+            (*(this->success)).clear();
+            uint32_t _size56;
+            ::apache::thrift::protocol::TType _etype59;
+            xfer += iprot->readListBegin(_etype59, _size56);
+            (*(this->success)).resize(_size56);
+            uint32_t _i60;
+            for (_i60 = 0; _i60 < _size56; ++_i60)
+            {
+              xfer += iprot->readI32((*(this->success))[_i60]);
+            }
+            xfer += iprot->readListEnd();
+          }
+          this->__isset.success = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      default:
+        xfer += iprot->skip(ftype);
+        break;
+    }
+    xfer += iprot->readFieldEnd();
+  }
+
+  xfer += iprot->readStructEnd();
+
+  return xfer;
+}
+
+
+template <class Protocol_>
+uint32_t MDTrieShard_primary_key_lookup_binary_args::read(Protocol_* iprot) {
+
+  ::apache::thrift::protocol::TInputRecursionTracker tracker(*iprot);
+  uint32_t xfer = 0;
+  std::string fname;
+  ::apache::thrift::protocol::TType ftype;
+  int16_t fid;
+
+  xfer += iprot->readStructBegin(fname);
+
+  using ::apache::thrift::protocol::TProtocolException;
+
+
+  while (true)
+  {
+    xfer += iprot->readFieldBegin(fname, ftype, fid);
+    if (ftype == ::apache::thrift::protocol::T_STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 1:
+        if (ftype == ::apache::thrift::protocol::T_I32) {
+          xfer += iprot->readI32(this->primary_key);
+          this->__isset.primary_key = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      default:
+        xfer += iprot->skip(ftype);
+        break;
+    }
+    xfer += iprot->readFieldEnd();
+  }
+
+  xfer += iprot->readStructEnd();
+
+  return xfer;
+}
+
+template <class Protocol_>
+uint32_t MDTrieShard_primary_key_lookup_binary_args::write(Protocol_* oprot) const {
+  uint32_t xfer = 0;
+  ::apache::thrift::protocol::TOutputRecursionTracker tracker(*oprot);
+  xfer += oprot->writeStructBegin("MDTrieShard_primary_key_lookup_binary_args");
+
+  xfer += oprot->writeFieldBegin("primary_key", ::apache::thrift::protocol::T_I32, 1);
+  xfer += oprot->writeI32(this->primary_key);
+  xfer += oprot->writeFieldEnd();
+
+  xfer += oprot->writeFieldStop();
+  xfer += oprot->writeStructEnd();
+  return xfer;
+}
+
+
+template <class Protocol_>
+uint32_t MDTrieShard_primary_key_lookup_binary_pargs::write(Protocol_* oprot) const {
+  uint32_t xfer = 0;
+  ::apache::thrift::protocol::TOutputRecursionTracker tracker(*oprot);
+  xfer += oprot->writeStructBegin("MDTrieShard_primary_key_lookup_binary_pargs");
+
+  xfer += oprot->writeFieldBegin("primary_key", ::apache::thrift::protocol::T_I32, 1);
+  xfer += oprot->writeI32((*(this->primary_key)));
+  xfer += oprot->writeFieldEnd();
+
+  xfer += oprot->writeFieldStop();
+  xfer += oprot->writeStructEnd();
+  return xfer;
+}
+
+
+template <class Protocol_>
+uint32_t MDTrieShard_primary_key_lookup_binary_result::read(Protocol_* iprot) {
+
+  ::apache::thrift::protocol::TInputRecursionTracker tracker(*iprot);
+  uint32_t xfer = 0;
+  std::string fname;
+  ::apache::thrift::protocol::TType ftype;
+  int16_t fid;
+
+  xfer += iprot->readStructBegin(fname);
+
+  using ::apache::thrift::protocol::TProtocolException;
+
+
+  while (true)
+  {
+    xfer += iprot->readFieldBegin(fname, ftype, fid);
+    if (ftype == ::apache::thrift::protocol::T_STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 0:
+        if (ftype == ::apache::thrift::protocol::T_STRING) {
+          xfer += iprot->readBinary(this->success);
+          this->__isset.success = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      default:
+        xfer += iprot->skip(ftype);
+        break;
+    }
+    xfer += iprot->readFieldEnd();
+  }
+
+  xfer += iprot->readStructEnd();
+
+  return xfer;
+}
+
+template <class Protocol_>
+uint32_t MDTrieShard_primary_key_lookup_binary_result::write(Protocol_* oprot) const {
+
+  uint32_t xfer = 0;
+
+  xfer += oprot->writeStructBegin("MDTrieShard_primary_key_lookup_binary_result");
+
+  if (this->__isset.success) {
+    xfer += oprot->writeFieldBegin("success", ::apache::thrift::protocol::T_STRING, 0);
+    xfer += oprot->writeBinary(this->success);
+    xfer += oprot->writeFieldEnd();
+  }
+  xfer += oprot->writeFieldStop();
+  xfer += oprot->writeStructEnd();
+  return xfer;
+}
+
+
+template <class Protocol_>
+uint32_t MDTrieShard_primary_key_lookup_binary_presult::read(Protocol_* iprot) {
+
+  ::apache::thrift::protocol::TInputRecursionTracker tracker(*iprot);
+  uint32_t xfer = 0;
+  std::string fname;
+  ::apache::thrift::protocol::TType ftype;
+  int16_t fid;
+
+  xfer += iprot->readStructBegin(fname);
+
+  using ::apache::thrift::protocol::TProtocolException;
+
+
+  while (true)
+  {
+    xfer += iprot->readFieldBegin(fname, ftype, fid);
+    if (ftype == ::apache::thrift::protocol::T_STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 0:
+        if (ftype == ::apache::thrift::protocol::T_STRING) {
+          xfer += iprot->readBinary((*(this->success)));
+          this->__isset.success = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      default:
+        xfer += iprot->skip(ftype);
+        break;
+    }
+    xfer += iprot->readFieldEnd();
+  }
+
+  xfer += iprot->readStructEnd();
+
+  return xfer;
+}
+
+
+template <class Protocol_>
 uint32_t MDTrieShard_get_size_args::read(Protocol_* iprot) {
 
   ::apache::thrift::protocol::TInputRecursionTracker tracker(*iprot);
@@ -1673,6 +2059,128 @@ void MDTrieShardClientT<Protocol_>::recv_primary_key_lookup(std::vector<int32_t>
     return;
   }
   throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "primary_key_lookup failed: unknown result");
+}
+
+template <class Protocol_>
+void MDTrieShardClientT<Protocol_>::primary_key_lookup_path(std::vector<int32_t> & _return, const int32_t primary_key)
+{
+  send_primary_key_lookup_path(primary_key);
+  recv_primary_key_lookup_path(_return);
+}
+
+template <class Protocol_>
+void MDTrieShardClientT<Protocol_>::send_primary_key_lookup_path(const int32_t primary_key)
+{
+  int32_t cseqid = 0;
+  this->oprot_->writeMessageBegin("primary_key_lookup_path", ::apache::thrift::protocol::T_CALL, cseqid);
+
+  MDTrieShard_primary_key_lookup_path_pargs args;
+  args.primary_key = &primary_key;
+  args.write(this->oprot_);
+
+  this->oprot_->writeMessageEnd();
+  this->oprot_->getTransport()->writeEnd();
+  this->oprot_->getTransport()->flush();
+}
+
+template <class Protocol_>
+void MDTrieShardClientT<Protocol_>::recv_primary_key_lookup_path(std::vector<int32_t> & _return)
+{
+
+  int32_t rseqid = 0;
+  std::string fname;
+  ::apache::thrift::protocol::TMessageType mtype;
+
+  this->iprot_->readMessageBegin(fname, mtype, rseqid);
+  if (mtype == ::apache::thrift::protocol::T_EXCEPTION) {
+    ::apache::thrift::TApplicationException x;
+    x.read(this->iprot_);
+    this->iprot_->readMessageEnd();
+    this->iprot_->getTransport()->readEnd();
+    throw x;
+  }
+  if (mtype != ::apache::thrift::protocol::T_REPLY) {
+    this->iprot_->skip(::apache::thrift::protocol::T_STRUCT);
+    this->iprot_->readMessageEnd();
+    this->iprot_->getTransport()->readEnd();
+  }
+  if (fname.compare("primary_key_lookup_path") != 0) {
+    this->iprot_->skip(::apache::thrift::protocol::T_STRUCT);
+    this->iprot_->readMessageEnd();
+    this->iprot_->getTransport()->readEnd();
+  }
+  MDTrieShard_primary_key_lookup_path_presult result;
+  result.success = &_return;
+  result.read(this->iprot_);
+  this->iprot_->readMessageEnd();
+  this->iprot_->getTransport()->readEnd();
+
+  if (result.__isset.success) {
+    // _return pointer has now been filled
+    return;
+  }
+  throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "primary_key_lookup_path failed: unknown result");
+}
+
+template <class Protocol_>
+void MDTrieShardClientT<Protocol_>::primary_key_lookup_binary(std::string& _return, const int32_t primary_key)
+{
+  send_primary_key_lookup_binary(primary_key);
+  recv_primary_key_lookup_binary(_return);
+}
+
+template <class Protocol_>
+void MDTrieShardClientT<Protocol_>::send_primary_key_lookup_binary(const int32_t primary_key)
+{
+  int32_t cseqid = 0;
+  this->oprot_->writeMessageBegin("primary_key_lookup_binary", ::apache::thrift::protocol::T_CALL, cseqid);
+
+  MDTrieShard_primary_key_lookup_binary_pargs args;
+  args.primary_key = &primary_key;
+  args.write(this->oprot_);
+
+  this->oprot_->writeMessageEnd();
+  this->oprot_->getTransport()->writeEnd();
+  this->oprot_->getTransport()->flush();
+}
+
+template <class Protocol_>
+void MDTrieShardClientT<Protocol_>::recv_primary_key_lookup_binary(std::string& _return)
+{
+
+  int32_t rseqid = 0;
+  std::string fname;
+  ::apache::thrift::protocol::TMessageType mtype;
+
+  this->iprot_->readMessageBegin(fname, mtype, rseqid);
+  if (mtype == ::apache::thrift::protocol::T_EXCEPTION) {
+    ::apache::thrift::TApplicationException x;
+    x.read(this->iprot_);
+    this->iprot_->readMessageEnd();
+    this->iprot_->getTransport()->readEnd();
+    throw x;
+  }
+  if (mtype != ::apache::thrift::protocol::T_REPLY) {
+    this->iprot_->skip(::apache::thrift::protocol::T_STRUCT);
+    this->iprot_->readMessageEnd();
+    this->iprot_->getTransport()->readEnd();
+  }
+  if (fname.compare("primary_key_lookup_binary") != 0) {
+    this->iprot_->skip(::apache::thrift::protocol::T_STRUCT);
+    this->iprot_->readMessageEnd();
+    this->iprot_->getTransport()->readEnd();
+  }
+  MDTrieShard_primary_key_lookup_binary_presult result;
+  result.success = &_return;
+  result.read(this->iprot_);
+  this->iprot_->readMessageEnd();
+  this->iprot_->getTransport()->readEnd();
+
+  if (result.__isset.success) {
+    // _return pointer has now been filled
+    return;
+  }
+  throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "primary_key_lookup_binary failed: unknown result");
 }
 
 template <class Protocol_>
@@ -2381,6 +2889,226 @@ void MDTrieShardProcessorT<Protocol_>::process_primary_key_lookup(int32_t seqid,
 }
 
 template <class Protocol_>
+void MDTrieShardProcessorT<Protocol_>::process_primary_key_lookup_path(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext)
+{
+  void* ctx = nullptr;
+  if (this->eventHandler_.get() != nullptr) {
+    ctx = this->eventHandler_->getContext("MDTrieShard.primary_key_lookup_path", callContext);
+  }
+  ::apache::thrift::TProcessorContextFreer freer(this->eventHandler_.get(), ctx, "MDTrieShard.primary_key_lookup_path");
+
+  if (this->eventHandler_.get() != nullptr) {
+    this->eventHandler_->preRead(ctx, "MDTrieShard.primary_key_lookup_path");
+  }
+
+  MDTrieShard_primary_key_lookup_path_args args;
+  args.read(iprot);
+  iprot->readMessageEnd();
+  uint32_t bytes = iprot->getTransport()->readEnd();
+
+  if (this->eventHandler_.get() != nullptr) {
+    this->eventHandler_->postRead(ctx, "MDTrieShard.primary_key_lookup_path", bytes);
+  }
+
+  MDTrieShard_primary_key_lookup_path_result result;
+  try {
+    iface_->primary_key_lookup_path(result.success, args.primary_key);
+    result.__isset.success = true;
+  } catch (const std::exception& e) {
+    if (this->eventHandler_.get() != nullptr) {
+      this->eventHandler_->handlerError(ctx, "MDTrieShard.primary_key_lookup_path");
+    }
+
+    ::apache::thrift::TApplicationException x(e.what());
+    oprot->writeMessageBegin("primary_key_lookup_path", ::apache::thrift::protocol::T_EXCEPTION, seqid);
+    x.write(oprot);
+    oprot->writeMessageEnd();
+    oprot->getTransport()->writeEnd();
+    oprot->getTransport()->flush();
+    return;
+  }
+
+  if (this->eventHandler_.get() != nullptr) {
+    this->eventHandler_->preWrite(ctx, "MDTrieShard.primary_key_lookup_path");
+  }
+
+  oprot->writeMessageBegin("primary_key_lookup_path", ::apache::thrift::protocol::T_REPLY, seqid);
+  result.write(oprot);
+  oprot->writeMessageEnd();
+  bytes = oprot->getTransport()->writeEnd();
+  oprot->getTransport()->flush();
+
+  if (this->eventHandler_.get() != nullptr) {
+    this->eventHandler_->postWrite(ctx, "MDTrieShard.primary_key_lookup_path", bytes);
+  }
+}
+
+template <class Protocol_>
+void MDTrieShardProcessorT<Protocol_>::process_primary_key_lookup_path(int32_t seqid, Protocol_* iprot, Protocol_* oprot, void* callContext)
+{
+  void* ctx = nullptr;
+  if (this->eventHandler_.get() != nullptr) {
+    ctx = this->eventHandler_->getContext("MDTrieShard.primary_key_lookup_path", callContext);
+  }
+  ::apache::thrift::TProcessorContextFreer freer(this->eventHandler_.get(), ctx, "MDTrieShard.primary_key_lookup_path");
+
+  if (this->eventHandler_.get() != nullptr) {
+    this->eventHandler_->preRead(ctx, "MDTrieShard.primary_key_lookup_path");
+  }
+
+  MDTrieShard_primary_key_lookup_path_args args;
+  args.read(iprot);
+  iprot->readMessageEnd();
+  uint32_t bytes = iprot->getTransport()->readEnd();
+
+  if (this->eventHandler_.get() != nullptr) {
+    this->eventHandler_->postRead(ctx, "MDTrieShard.primary_key_lookup_path", bytes);
+  }
+
+  MDTrieShard_primary_key_lookup_path_result result;
+  try {
+    iface_->primary_key_lookup_path(result.success, args.primary_key);
+    result.__isset.success = true;
+  } catch (const std::exception& e) {
+    if (this->eventHandler_.get() != nullptr) {
+      this->eventHandler_->handlerError(ctx, "MDTrieShard.primary_key_lookup_path");
+    }
+
+    ::apache::thrift::TApplicationException x(e.what());
+    oprot->writeMessageBegin("primary_key_lookup_path", ::apache::thrift::protocol::T_EXCEPTION, seqid);
+    x.write(oprot);
+    oprot->writeMessageEnd();
+    oprot->getTransport()->writeEnd();
+    oprot->getTransport()->flush();
+    return;
+  }
+
+  if (this->eventHandler_.get() != nullptr) {
+    this->eventHandler_->preWrite(ctx, "MDTrieShard.primary_key_lookup_path");
+  }
+
+  oprot->writeMessageBegin("primary_key_lookup_path", ::apache::thrift::protocol::T_REPLY, seqid);
+  result.write(oprot);
+  oprot->writeMessageEnd();
+  bytes = oprot->getTransport()->writeEnd();
+  oprot->getTransport()->flush();
+
+  if (this->eventHandler_.get() != nullptr) {
+    this->eventHandler_->postWrite(ctx, "MDTrieShard.primary_key_lookup_path", bytes);
+  }
+}
+
+template <class Protocol_>
+void MDTrieShardProcessorT<Protocol_>::process_primary_key_lookup_binary(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext)
+{
+  void* ctx = nullptr;
+  if (this->eventHandler_.get() != nullptr) {
+    ctx = this->eventHandler_->getContext("MDTrieShard.primary_key_lookup_binary", callContext);
+  }
+  ::apache::thrift::TProcessorContextFreer freer(this->eventHandler_.get(), ctx, "MDTrieShard.primary_key_lookup_binary");
+
+  if (this->eventHandler_.get() != nullptr) {
+    this->eventHandler_->preRead(ctx, "MDTrieShard.primary_key_lookup_binary");
+  }
+
+  MDTrieShard_primary_key_lookup_binary_args args;
+  args.read(iprot);
+  iprot->readMessageEnd();
+  uint32_t bytes = iprot->getTransport()->readEnd();
+
+  if (this->eventHandler_.get() != nullptr) {
+    this->eventHandler_->postRead(ctx, "MDTrieShard.primary_key_lookup_binary", bytes);
+  }
+
+  MDTrieShard_primary_key_lookup_binary_result result;
+  try {
+    iface_->primary_key_lookup_binary(result.success, args.primary_key);
+    result.__isset.success = true;
+  } catch (const std::exception& e) {
+    if (this->eventHandler_.get() != nullptr) {
+      this->eventHandler_->handlerError(ctx, "MDTrieShard.primary_key_lookup_binary");
+    }
+
+    ::apache::thrift::TApplicationException x(e.what());
+    oprot->writeMessageBegin("primary_key_lookup_binary", ::apache::thrift::protocol::T_EXCEPTION, seqid);
+    x.write(oprot);
+    oprot->writeMessageEnd();
+    oprot->getTransport()->writeEnd();
+    oprot->getTransport()->flush();
+    return;
+  }
+
+  if (this->eventHandler_.get() != nullptr) {
+    this->eventHandler_->preWrite(ctx, "MDTrieShard.primary_key_lookup_binary");
+  }
+
+  oprot->writeMessageBegin("primary_key_lookup_binary", ::apache::thrift::protocol::T_REPLY, seqid);
+  result.write(oprot);
+  oprot->writeMessageEnd();
+  bytes = oprot->getTransport()->writeEnd();
+  oprot->getTransport()->flush();
+
+  if (this->eventHandler_.get() != nullptr) {
+    this->eventHandler_->postWrite(ctx, "MDTrieShard.primary_key_lookup_binary", bytes);
+  }
+}
+
+template <class Protocol_>
+void MDTrieShardProcessorT<Protocol_>::process_primary_key_lookup_binary(int32_t seqid, Protocol_* iprot, Protocol_* oprot, void* callContext)
+{
+  void* ctx = nullptr;
+  if (this->eventHandler_.get() != nullptr) {
+    ctx = this->eventHandler_->getContext("MDTrieShard.primary_key_lookup_binary", callContext);
+  }
+  ::apache::thrift::TProcessorContextFreer freer(this->eventHandler_.get(), ctx, "MDTrieShard.primary_key_lookup_binary");
+
+  if (this->eventHandler_.get() != nullptr) {
+    this->eventHandler_->preRead(ctx, "MDTrieShard.primary_key_lookup_binary");
+  }
+
+  MDTrieShard_primary_key_lookup_binary_args args;
+  args.read(iprot);
+  iprot->readMessageEnd();
+  uint32_t bytes = iprot->getTransport()->readEnd();
+
+  if (this->eventHandler_.get() != nullptr) {
+    this->eventHandler_->postRead(ctx, "MDTrieShard.primary_key_lookup_binary", bytes);
+  }
+
+  MDTrieShard_primary_key_lookup_binary_result result;
+  try {
+    iface_->primary_key_lookup_binary(result.success, args.primary_key);
+    result.__isset.success = true;
+  } catch (const std::exception& e) {
+    if (this->eventHandler_.get() != nullptr) {
+      this->eventHandler_->handlerError(ctx, "MDTrieShard.primary_key_lookup_binary");
+    }
+
+    ::apache::thrift::TApplicationException x(e.what());
+    oprot->writeMessageBegin("primary_key_lookup_binary", ::apache::thrift::protocol::T_EXCEPTION, seqid);
+    x.write(oprot);
+    oprot->writeMessageEnd();
+    oprot->getTransport()->writeEnd();
+    oprot->getTransport()->flush();
+    return;
+  }
+
+  if (this->eventHandler_.get() != nullptr) {
+    this->eventHandler_->preWrite(ctx, "MDTrieShard.primary_key_lookup_binary");
+  }
+
+  oprot->writeMessageBegin("primary_key_lookup_binary", ::apache::thrift::protocol::T_REPLY, seqid);
+  result.write(oprot);
+  oprot->writeMessageEnd();
+  bytes = oprot->getTransport()->writeEnd();
+  oprot->getTransport()->flush();
+
+  if (this->eventHandler_.get() != nullptr) {
+    this->eventHandler_->postWrite(ctx, "MDTrieShard.primary_key_lookup_binary", bytes);
+  }
+}
+
+template <class Protocol_>
 void MDTrieShardProcessorT<Protocol_>::process_get_size(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext)
 {
   void* ctx = nullptr;
@@ -3033,6 +3761,180 @@ void MDTrieShardConcurrentClientT<Protocol_>::recv_primary_key_lookup(std::vecto
       }
       // in a bad state, don't commit
       throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "primary_key_lookup failed: unknown result");
+    }
+    // seqid != rseqid
+    this->sync_->updatePending(fname, mtype, rseqid);
+
+    // this will temporarily unlock the readMutex, and let other clients get work done
+    this->sync_->waitForWork(seqid);
+  } // end while(true)
+}
+
+template <class Protocol_>
+void MDTrieShardConcurrentClientT<Protocol_>::primary_key_lookup_path(std::vector<int32_t> & _return, const int32_t primary_key)
+{
+  int32_t seqid = send_primary_key_lookup_path(primary_key);
+  recv_primary_key_lookup_path(_return, seqid);
+}
+
+template <class Protocol_>
+int32_t MDTrieShardConcurrentClientT<Protocol_>::send_primary_key_lookup_path(const int32_t primary_key)
+{
+  int32_t cseqid = this->sync_->generateSeqId();
+  ::apache::thrift::async::TConcurrentSendSentry sentry(this->sync_.get());
+  this->oprot_->writeMessageBegin("primary_key_lookup_path", ::apache::thrift::protocol::T_CALL, cseqid);
+
+  MDTrieShard_primary_key_lookup_path_pargs args;
+  args.primary_key = &primary_key;
+  args.write(this->oprot_);
+
+  this->oprot_->writeMessageEnd();
+  this->oprot_->getTransport()->writeEnd();
+  this->oprot_->getTransport()->flush();
+
+  sentry.commit();
+  return cseqid;
+}
+
+template <class Protocol_>
+void MDTrieShardConcurrentClientT<Protocol_>::recv_primary_key_lookup_path(std::vector<int32_t> & _return, const int32_t seqid)
+{
+
+  int32_t rseqid = 0;
+  std::string fname;
+  ::apache::thrift::protocol::TMessageType mtype;
+
+  // the read mutex gets dropped and reacquired as part of waitForWork()
+  // The destructor of this sentry wakes up other clients
+  ::apache::thrift::async::TConcurrentRecvSentry sentry(this->sync_.get(), seqid);
+
+  while(true) {
+    if(!this->sync_->getPending(fname, mtype, rseqid)) {
+      this->iprot_->readMessageBegin(fname, mtype, rseqid);
+    }
+    if(seqid == rseqid) {
+      if (mtype == ::apache::thrift::protocol::T_EXCEPTION) {
+        ::apache::thrift::TApplicationException x;
+        x.read(this->iprot_);
+        this->iprot_->readMessageEnd();
+        this->iprot_->getTransport()->readEnd();
+        sentry.commit();
+        throw x;
+      }
+      if (mtype != ::apache::thrift::protocol::T_REPLY) {
+        this->iprot_->skip(::apache::thrift::protocol::T_STRUCT);
+        this->iprot_->readMessageEnd();
+        this->iprot_->getTransport()->readEnd();
+      }
+      if (fname.compare("primary_key_lookup_path") != 0) {
+        this->iprot_->skip(::apache::thrift::protocol::T_STRUCT);
+        this->iprot_->readMessageEnd();
+        this->iprot_->getTransport()->readEnd();
+
+        // in a bad state, don't commit
+        using ::apache::thrift::protocol::TProtocolException;
+        throw TProtocolException(TProtocolException::INVALID_DATA);
+      }
+      MDTrieShard_primary_key_lookup_path_presult result;
+      result.success = &_return;
+      result.read(this->iprot_);
+      this->iprot_->readMessageEnd();
+      this->iprot_->getTransport()->readEnd();
+
+      if (result.__isset.success) {
+        // _return pointer has now been filled
+        sentry.commit();
+        return;
+      }
+      // in a bad state, don't commit
+      throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "primary_key_lookup_path failed: unknown result");
+    }
+    // seqid != rseqid
+    this->sync_->updatePending(fname, mtype, rseqid);
+
+    // this will temporarily unlock the readMutex, and let other clients get work done
+    this->sync_->waitForWork(seqid);
+  } // end while(true)
+}
+
+template <class Protocol_>
+void MDTrieShardConcurrentClientT<Protocol_>::primary_key_lookup_binary(std::string& _return, const int32_t primary_key)
+{
+  int32_t seqid = send_primary_key_lookup_binary(primary_key);
+  recv_primary_key_lookup_binary(_return, seqid);
+}
+
+template <class Protocol_>
+int32_t MDTrieShardConcurrentClientT<Protocol_>::send_primary_key_lookup_binary(const int32_t primary_key)
+{
+  int32_t cseqid = this->sync_->generateSeqId();
+  ::apache::thrift::async::TConcurrentSendSentry sentry(this->sync_.get());
+  this->oprot_->writeMessageBegin("primary_key_lookup_binary", ::apache::thrift::protocol::T_CALL, cseqid);
+
+  MDTrieShard_primary_key_lookup_binary_pargs args;
+  args.primary_key = &primary_key;
+  args.write(this->oprot_);
+
+  this->oprot_->writeMessageEnd();
+  this->oprot_->getTransport()->writeEnd();
+  this->oprot_->getTransport()->flush();
+
+  sentry.commit();
+  return cseqid;
+}
+
+template <class Protocol_>
+void MDTrieShardConcurrentClientT<Protocol_>::recv_primary_key_lookup_binary(std::string& _return, const int32_t seqid)
+{
+
+  int32_t rseqid = 0;
+  std::string fname;
+  ::apache::thrift::protocol::TMessageType mtype;
+
+  // the read mutex gets dropped and reacquired as part of waitForWork()
+  // The destructor of this sentry wakes up other clients
+  ::apache::thrift::async::TConcurrentRecvSentry sentry(this->sync_.get(), seqid);
+
+  while(true) {
+    if(!this->sync_->getPending(fname, mtype, rseqid)) {
+      this->iprot_->readMessageBegin(fname, mtype, rseqid);
+    }
+    if(seqid == rseqid) {
+      if (mtype == ::apache::thrift::protocol::T_EXCEPTION) {
+        ::apache::thrift::TApplicationException x;
+        x.read(this->iprot_);
+        this->iprot_->readMessageEnd();
+        this->iprot_->getTransport()->readEnd();
+        sentry.commit();
+        throw x;
+      }
+      if (mtype != ::apache::thrift::protocol::T_REPLY) {
+        this->iprot_->skip(::apache::thrift::protocol::T_STRUCT);
+        this->iprot_->readMessageEnd();
+        this->iprot_->getTransport()->readEnd();
+      }
+      if (fname.compare("primary_key_lookup_binary") != 0) {
+        this->iprot_->skip(::apache::thrift::protocol::T_STRUCT);
+        this->iprot_->readMessageEnd();
+        this->iprot_->getTransport()->readEnd();
+
+        // in a bad state, don't commit
+        using ::apache::thrift::protocol::TProtocolException;
+        throw TProtocolException(TProtocolException::INVALID_DATA);
+      }
+      MDTrieShard_primary_key_lookup_binary_presult result;
+      result.success = &_return;
+      result.read(this->iprot_);
+      this->iprot_->readMessageEnd();
+      this->iprot_->getTransport()->readEnd();
+
+      if (result.__isset.success) {
+        // _return pointer has now been filled
+        sentry.commit();
+        return;
+      }
+      // in a bad state, don't commit
+      throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "primary_key_lookup_binary failed: unknown result");
     }
     // seqid != rseqid
     this->sync_->updatePending(fname, mtype, rseqid);

@@ -13,6 +13,32 @@ using namespace apache::thrift;
 using namespace apache::thrift::protocol;
 using namespace apache::thrift::transport;
 
+/*
+std::vector<int32_t> *node_path_to_coordinates(std::vector<int32_t> &node_path, dimension_t dimension) const{
+    
+    // Will be free-ed in the benchmark code
+
+    for (level_t i = 0; i < max_depth_; i++){
+        morton_t current_symbol = node_path[i];
+        morton_t current_symbol_pos = level_to_num_children[i] - 1;
+
+        for (dimension_t j = 0; j < dimension; j++){
+
+            if (dimension_to_num_bits[j] <= i || i < start_dimension_bits[j])
+                continue;         
+
+            level_t current_bit = GETBIT(current_symbol, current_symbol_pos);
+            current_symbol_pos --;
+
+            point_t coordinate = coordinates->get_coordinate(j);
+            coordinate = (coordinate << 1) + current_bit;
+            coordinates->set_coordinate(j, coordinate);
+        }
+    }
+    return coordinates;
+}
+*/
+
 class MDTrieClient {
 
 public:
@@ -20,10 +46,11 @@ public:
   MDTrieClient(std::vector<std::string> server_ips, int shard_count){
 
     shard_vector_.reserve(server_ips.size() * shard_count);
-
+    shard_queried_cnt_.reserve(server_ips.size() * shard_count);
     for (unsigned int i = 0; i < server_ips.size(); ++i) {
       for (int j = 0; j < shard_count; j++){
         shard_vector_.push_back(launch_port(9090 + j, server_ips[i]));
+        shard_queried_cnt_.push_back(0);
       }
     }
   }
@@ -104,7 +131,9 @@ public:
   void primary_key_lookup(std::vector<int32_t> & return_vect, const int32_t p_key){
 
     int shard_index = p_key % shard_vector_.size();
-    shard_vector_[shard_index].send_primary_key_lookup(p_key / shard_vector_.size());
+    // shard_vector_[shard_index].send_primary_key_lookup(p_key / shard_vector_.size());
+    shard_vector_[shard_index].send_primary_key_lookup(shard_queried_cnt_[shard_index] / 10);
+    shard_queried_cnt_[shard_index] ++;
     shard_vector_[shard_index].recv_primary_key_lookup(return_vect);
 
   }
@@ -112,7 +141,9 @@ public:
   void primary_key_lookup_send(const int32_t p_key){
 
     int shard_index = p_key % shard_vector_.size();
-    shard_vector_[shard_index].send_primary_key_lookup(p_key / shard_vector_.size());
+    // shard_vector_[shard_index].send_primary_key_lookup(p_key / shard_vector_.size());
+    shard_vector_[shard_index].send_primary_key_lookup(shard_queried_cnt_[shard_index] / 10);
+    shard_queried_cnt_[shard_index] ++;
   }
 
 
@@ -121,6 +152,54 @@ public:
     int shard_index = p_key % shard_vector_.size();
     shard_vector_[shard_index].recv_primary_key_lookup(return_vect);
   }
+
+  void primary_key_lookup_path(std::vector<int32_t> & return_vect, const int32_t p_key){
+
+    int shard_index = p_key % shard_vector_.size();
+    // shard_vector_[shard_index].send_primary_key_lookup(p_key / shard_vector_.size());
+    shard_vector_[shard_index].send_primary_key_lookup_path(shard_queried_cnt_[shard_index] / 10);
+    shard_queried_cnt_[shard_index] ++;
+    shard_vector_[shard_index].recv_primary_key_lookup_path(return_vect);
+
+  }
+
+  void primary_key_lookup_path_send(const int32_t p_key){
+
+    int shard_index = p_key % shard_vector_.size();
+    // shard_vector_[shard_index].send_primary_key_lookup(p_key / shard_vector_.size());
+    shard_vector_[shard_index].send_primary_key_lookup_path(shard_queried_cnt_[shard_index] / 10);
+    shard_queried_cnt_[shard_index] ++;
+  }
+
+
+  void primary_key_lookup_path_rec(std::vector<int32_t> & return_vect, const int32_t p_key){
+
+    int shard_index = p_key % shard_vector_.size();
+    shard_vector_[shard_index].recv_primary_key_lookup_path(return_vect);
+  }
+
+
+  void primary_key_lookup_binary(std::string & return_str, const int32_t p_key){
+
+    int shard_index = p_key % shard_vector_.size();
+    shard_vector_[shard_index].send_primary_key_lookup_binary(p_key / shard_vector_.size());
+    shard_vector_[shard_index].recv_primary_key_lookup_binary(return_str);
+
+  }
+
+  void primary_key_lookup_binary_send(const int32_t p_key){
+
+    int shard_index = p_key % shard_vector_.size();
+    shard_vector_[shard_index].send_primary_key_lookup_binary(p_key / shard_vector_.size());
+  }
+
+
+  void primary_key_lookup_binary_rec(std::string & return_str, const int32_t p_key){
+
+    int shard_index = p_key % shard_vector_.size();
+    shard_vector_[shard_index].recv_primary_key_lookup_binary(return_str);
+  }
+
 
   void range_search_trie(std::vector<int32_t> & return_vect, const std::vector<int32_t> & start_range, const std::vector<int32_t> & end_range){
 
@@ -169,4 +248,5 @@ public:
   }
 private:
   std::vector<MDTrieShardClient> shard_vector_; 
+  std::vector<int32_t> shard_queried_cnt_;
 };
