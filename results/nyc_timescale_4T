@@ -1,0 +1,1000 @@
+select * from nyc_taxi where pickup_lon BETWEEN 7 and 86 AND pickup_lat BETWEEN 66 AND 76;;, elapsed: 2.5582354068756104s, found points: 372401
+select * from nyc_taxi where pickup_date >= '2016-01-09' and pickup_date <= '2016-01-14' and dropoff_date >= '2015-06-16' and dropoff_date <= '2016-06-17';, elapsed: 3.5035712718963623s, found points: 690474
+select * from nyc_taxi where pickup_lon BETWEEN 10 and 79 AND pickup_lat BETWEEN 74 AND 78;;, elapsed: 1.9242079257965088s, found points: 339539
+select * from nyc_taxi where pickup_lon BETWEEN 32 and 68 AND pickup_lat BETWEEN 72 AND 74;;, elapsed: 2.1389474868774414s, found points: 372216
+select * from nyc_taxi where pickup_lon BETWEEN 5 and 62 AND pickup_lat BETWEEN 70 AND 89;;, elapsed: 2.1138341426849365s, found points: 372296
+select * from nyc_taxi where pickup_lon BETWEEN 12 and 63 AND pickup_lat BETWEEN 14 AND 76;;, elapsed: 2.1266844272613525s, found points: 374549
+select * from nyc_taxi where pickup_date >= '2012-06-05' and pickup_date <= '2015-05-31' and dropoff_date >= '2015-03-20' and dropoff_date <= '2015-03-21';, elapsed: 3.626980781555176s, found points: 651673
+select * from nyc_taxi where pickup_lon BETWEEN 21 and 75 AND pickup_lat BETWEEN 73 AND 87;;, elapsed: 2.1477015018463135s, found points: 372444
+select * from nyc_taxi where pickup_lon BETWEEN 13 and 82 AND pickup_lat BETWEEN 47 AND 90;;, elapsed: 2.1175901889801025s, found points: 374677
+select * from nyc_taxi where pickup_lon BETWEEN 32 and 73 AND pickup_lat BETWEEN 73 AND 84;;, elapsed: 2.225306272506714s, found points: 372301
+select * from nyc_taxi where pickup_lon BETWEEN 18 and 62 AND pickup_lat BETWEEN 65 AND 75;;, elapsed: 2.1665923595428467s, found points: 372297
+select * from nyc_taxi where pickup_lon BETWEEN 37 and 80 AND pickup_lat BETWEEN 72 AND 79;;, elapsed: 2.2560536861419678s, found points: 372345
+select * from nyc_taxi where pickup_lon BETWEEN 3 and 60 AND pickup_lat BETWEEN 47 AND 79;;, elapsed: 2.2015578746795654s, found points: 372480
+select * from nyc_taxi where pickup_date <= '2011-09-24' and passenger_cnt = 0;;, elapsed: 4.666958332061768s, found points: 862956
+select * from nyc_taxi where pickup_lon BETWEEN 40 and 77 AND pickup_lat BETWEEN 55 AND 86;;, elapsed: 2.1069512367248535s, found points: 372749
+select * from nyc_taxi where pickup_lon BETWEEN 29 and 65 AND pickup_lat BETWEEN 60 AND 90;;, elapsed: 2.1078155040740967s, found points: 372342
+select * from nyc_taxi where pickup_lon BETWEEN 6 and 45 AND pickup_lat BETWEEN 59 AND 79;;, elapsed: 2.0584335327148438s, found points: 372304
+select * from nyc_taxi where pickup_lon BETWEEN 35 and 52 AND pickup_lat BETWEEN 41 AND 79;;, elapsed: 2.102786064147949s, found points: 372391
+select * from nyc_taxi where pickup_lon BETWEEN 2 and 56 AND pickup_lat BETWEEN 18 AND 75;;, elapsed: 2.162804365158081s, found points: 393775
+select * from nyc_taxi where pickup_lon BETWEEN 20 and 42 AND pickup_lat BETWEEN 74 AND 80;;, elapsed: 1.9095327854156494s, found points: 339500
+select * from nyc_taxi where pickup_lon BETWEEN 10 and 57 AND pickup_lat BETWEEN 70 AND 77;;, elapsed: 2.085559129714966s, found points: 372288
+select * from nyc_taxi where pickup_lon BETWEEN 8 and 74 AND pickup_lat BETWEEN 53 AND 90;;, elapsed: 2.0532171726226807s, found points: 372905
+select * from nyc_taxi where pickup_lon BETWEEN 36 and 56 AND pickup_lat BETWEEN 19 AND 78;;, elapsed: 2.0891945362091064s, found points: 373025
+select * from nyc_taxi where pickup_lon BETWEEN 2 and 82 AND pickup_lat BETWEEN 57 AND 88;;, elapsed: 2.087847948074341s, found points: 372728
+select * from nyc_taxi where pickup_lon BETWEEN 38 and 71 AND pickup_lat BETWEEN 67 AND 89;;, elapsed: 2.0892889499664307s, found points: 372306
+select * from nyc_taxi where pickup_lon BETWEEN 39 and 62 AND pickup_lat BETWEEN 46 AND 82;;, elapsed: 2.1140120029449463s, found points: 372602
+select * from nyc_taxi where pickup_lon BETWEEN 36 and 44 AND pickup_lat BETWEEN 69 AND 90;;, elapsed: 2.0845789909362793s, found points: 372292
+select * from nyc_taxi where pickup_lon BETWEEN 29 and 84 AND pickup_lat BETWEEN 45 AND 88;;, elapsed: 2.1180169582366943s, found points: 377990
+select * from nyc_taxi where pickup_lon BETWEEN 35 and 69 AND pickup_lat BETWEEN 54 AND 79;;, elapsed: 2.093263864517212s, found points: 372452
+select * from nyc_taxi where pickup_lon BETWEEN 21 and 56 AND pickup_lat BETWEEN 29 AND 76;;, elapsed: 2.0999791622161865s, found points: 373280
+select * from nyc_taxi where pickup_lon BETWEEN 36 and 86 AND pickup_lat BETWEEN 56 AND 74;;, elapsed: 2.073143482208252s, found points: 372538
+select * from nyc_taxi where pickup_lon BETWEEN 33 and 49 AND pickup_lat BETWEEN 60 AND 79;;, elapsed: 2.06931209564209s, found points: 372301
+select * from nyc_taxi where pickup_lon BETWEEN 17 and 79 AND pickup_lat BETWEEN 62 AND 88;;, elapsed: 2.073608160018921s, found points: 372597
+select * from nyc_taxi where pickup_date >= '2013-11-11' and pickup_date <= '2016-05-05' and dropoff_date >= '2016-04-09' and dropoff_date <= '2016-04-15';, elapsed: 4.630626916885376s, found points: 908578
+select * from nyc_taxi where pickup_lon BETWEEN 2 and 77 AND pickup_lat BETWEEN 62 AND 88;;, elapsed: 2.072420358657837s, found points: 372598
+select * from nyc_taxi where pickup_lon BETWEEN 24 and 47 AND pickup_lat BETWEEN 64 AND 76;;, elapsed: 2.0642716884613037s, found points: 372290
+select * from nyc_taxi where pickup_lon BETWEEN 20 and 45 AND pickup_lat BETWEEN 53 AND 87;;, elapsed: 2.060472249984741s, found points: 372318
+select * from nyc_taxi where pickup_lon BETWEEN 5 and 52 AND pickup_lat BETWEEN 68 AND 88;;, elapsed: 2.0741381645202637s, found points: 372303
+select * from nyc_taxi where pickup_lon BETWEEN 37 and 63 AND pickup_lat BETWEEN 37 AND 80;;, elapsed: 2.1308629512786865s, found points: 373610
+select * from nyc_taxi where pickup_lon BETWEEN 22 and 55 AND pickup_lat BETWEEN 64 AND 90;;, elapsed: 2.0754568576812744s, found points: 372306
+select * from nyc_taxi where pickup_lon BETWEEN 23 and 83 AND pickup_lat BETWEEN 74 AND 87;;, elapsed: 1.9401681423187256s, found points: 339661
+select * from nyc_taxi where pickup_lon BETWEEN 28 and 64 AND pickup_lat BETWEEN 68 AND 74;;, elapsed: 2.143184185028076s, found points: 372230
+select * from nyc_taxi where pickup_date >= '2013-02-09' and pickup_date <= '2015-09-29' and dropoff_date >= '2013-09-10' and dropoff_date <= '2013-09-11';, elapsed: 1.9567556381225586s, found points: 373047
+select * from nyc_taxi where pickup_lon BETWEEN 24 and 68 AND pickup_lat BETWEEN 31 AND 77;;, elapsed: 2.0718116760253906s, found points: 375597
+select * from nyc_taxi where pickup_lon BETWEEN 15 and 56 AND pickup_lat BETWEEN 48 AND 74;;, elapsed: 2.0693163871765137s, found points: 372315
+select * from nyc_taxi where pickup_lon BETWEEN 22 and 57 AND pickup_lat BETWEEN 66 AND 75;;, elapsed: 2.117464542388916s, found points: 372293
+select * from nyc_taxi where pickup_lon BETWEEN 37 and 63 AND pickup_lat BETWEEN 26 AND 90;;, elapsed: 2.0653839111328125s, found points: 373878
+select * from nyc_taxi where pickup_date <= '2011-03-28' and passenger_cnt = 6;;, elapsed: 5.085710048675537s, found points: 851999
+select * from nyc_taxi where pickup_lon BETWEEN 2 and 90 AND pickup_lat BETWEEN 71 AND 77;;, elapsed: 2.120969533920288s, found points: 372347
+select * from nyc_taxi where pickup_lon BETWEEN 17 and 51 AND pickup_lat BETWEEN 31 AND 81;;, elapsed: 2.0893752574920654s, found points: 373195
+select * from nyc_taxi where pickup_date >= '2012-05-01' and pickup_date <= '2015-01-01' and dropoff_date >= '2015-01-01' and dropoff_date <= '2015-12-11';, elapsed: 1.9067084789276123s, found points: 358115
+select * from nyc_taxi where pickup_lon BETWEEN 36 and 83 AND pickup_lat BETWEEN 52 AND 84;;, elapsed: 2.0783534049987793s, found points: 373022
+select * from nyc_taxi where pickup_lon BETWEEN 38 and 85 AND pickup_lat BETWEEN 63 AND 86;;, elapsed: 2.1117589473724365s, found points: 372564
+select * from nyc_taxi where pickup_date >= '2016-06-04' and pickup_date <= '2016-06-06' and dropoff_date >= '2016-03-02' and dropoff_date <= '2016-08-19';, elapsed: 2.7935404777526855s, found points: 549185
+select * from nyc_taxi where pickup_lon BETWEEN 20 and 85 AND pickup_lat BETWEEN 62 AND 81;;, elapsed: 2.0871522426605225s, found points: 372500
+select * from nyc_taxi where pickup_lon BETWEEN 18 and 45 AND pickup_lat BETWEEN 67 AND 84;;, elapsed: 2.1136302947998047s, found points: 372295
+select * from nyc_taxi where pickup_lon BETWEEN 40 and 84 AND pickup_lat BETWEEN 65 AND 78;;, elapsed: 2.0845651626586914s, found points: 372417
+select * from nyc_taxi where pickup_lon BETWEEN 2 and 43 AND pickup_lat BETWEEN 12 AND 81;;, elapsed: 2.2108609676361084s, found points: 393276
+select * from nyc_taxi where trip_dist <= 202 and fare_amt between 89 AND 6129;;, elapsed: 3.247675657272339s, found points: 366693
+select * from nyc_taxi where pickup_lon BETWEEN 21 and 75 AND pickup_lat BETWEEN 59 AND 89;;, elapsed: 2.0993309020996094s, found points: 372641
+select * from nyc_taxi where pickup_lon BETWEEN 4 and 88 AND pickup_lat BETWEEN 72 AND 75;;, elapsed: 2.0502657890319824s, found points: 372315
+select * from nyc_taxi where pickup_lon BETWEEN 19 and 72 AND pickup_lat BETWEEN 74 AND 82;;, elapsed: 1.8899462223052979s, found points: 339506
+select * from nyc_taxi where pickup_lon BETWEEN 21 and 83 AND pickup_lat BETWEEN 71 AND 74;;, elapsed: 2.090677499771118s, found points: 372250
+select * from nyc_taxi where pickup_lon BETWEEN 27 and 54 AND pickup_lat BETWEEN 66 AND 74;;, elapsed: 2.0823652744293213s, found points: 372229
+select * from nyc_taxi where pickup_date <= '2011-08-16' and passenger_cnt = 0;;, elapsed: 3.8057875633239746s, found points: 736191
+select * from nyc_taxi where pickup_lon BETWEEN 12 and 72 AND pickup_lat BETWEEN 15 AND 74;;, elapsed: 2.1973888874053955s, found points: 385336
+select * from nyc_taxi where pickup_lon BETWEEN 39 and 42 AND pickup_lat BETWEEN 43 AND 85;;, elapsed: 2.0821239948272705s, found points: 372290
+select * from nyc_taxi where pickup_lon BETWEEN 27 and 65 AND pickup_lat BETWEEN 25 AND 74;;, elapsed: 2.0875585079193115s, found points: 374547
+select * from nyc_taxi where pickup_lon BETWEEN 11 and 84 AND pickup_lat BETWEEN 55 AND 81;;, elapsed: 2.097170829772949s, found points: 372732
+select * from nyc_taxi where pickup_date >= '2014-02-18' and pickup_date <= '2015-12-21' and dropoff_date >= '2012-03-30' and dropoff_date <= '2014-02-19';, elapsed: 2.804896831512451s, found points: 553493
+select * from nyc_taxi where pickup_lon BETWEEN 34 and 41 AND pickup_lat BETWEEN 51 AND 84;;, elapsed: 2.0498807430267334s, found points: 372285
+select * from nyc_taxi where pickup_lon BETWEEN 1 and 69 AND pickup_lat BETWEEN 68 AND 78;;, elapsed: 2.0565035343170166s, found points: 372302
+select * from nyc_taxi where pickup_lon BETWEEN 7 and 52 AND pickup_lat BETWEEN 73 AND 84;;, elapsed: 2.0478932857513428s, found points: 372287
+select * from nyc_taxi where pickup_date >= '2014-01-21' and pickup_date <= '2016-06-14' and dropoff_date >= '2012-04-03' and dropoff_date <= '2014-01-26';, elapsed: 3.2026350498199463s, found points: 622593
+select * from nyc_taxi where pickup_lon BETWEEN 27 and 55 AND pickup_lat BETWEEN 66 AND 75;;, elapsed: 2.105539560317993s, found points: 372292
+select * from nyc_taxi where pickup_lon BETWEEN 18 and 41 AND pickup_lat BETWEEN 55 AND 78;;, elapsed: 2.0960402488708496s, found points: 372285
+select * from nyc_taxi where pickup_lon BETWEEN 40 and 88 AND pickup_lat BETWEEN 64 AND 84;;, elapsed: 2.070957899093628s, found points: 372537
+select * from nyc_taxi where pickup_date <= '2011-09-10' and passenger_cnt = 0;;, elapsed: 4.231999635696411s, found points: 820137
+select * from nyc_taxi where pickup_lon BETWEEN 7 and 59 AND pickup_lat BETWEEN 50 AND 89;;, elapsed: 2.0904154777526855s, found points: 372423
+select * from nyc_taxi where pickup_lon BETWEEN 6 and 62 AND pickup_lat BETWEEN 17 AND 78;;, elapsed: 2.1786491870880127s, found points: 392163
+select * from nyc_taxi where pickup_lon BETWEEN 29 and 72 AND pickup_lat BETWEEN 17 AND 90;;, elapsed: 2.1765189170837402s, found points: 384972
+select * from nyc_taxi where pickup_lon BETWEEN 28 and 90 AND pickup_lat BETWEEN 43 AND 81;;, elapsed: 2.0989534854888916s, found points: 380900
+select * from nyc_taxi where pickup_date <= '2011-06-07' and passenger_cnt = 6;;, elapsed: 4.8133156299591064s, found points: 916697
+select * from nyc_taxi where pickup_lon BETWEEN 16 and 65 AND pickup_lat BETWEEN 17 AND 76;;, elapsed: 2.0931882858276367s, found points: 374973
+select * from nyc_taxi where pickup_lon BETWEEN 17 and 41 AND pickup_lat BETWEEN 72 AND 84;;, elapsed: 2.0985937118530273s, found points: 372274
+select * from nyc_taxi where pickup_date <= '2011-05-13' and passenger_cnt = 6;;, elapsed: 4.535338878631592s, found points: 883707
+select * from nyc_taxi where pickup_date >= '2011-05-07' and pickup_date <= '2015-09-21' and dropoff_date >= '2015-09-15' and dropoff_date <= '2016-09-03';, elapsed: 3.2447831630706787s, found points: 620739
+select * from nyc_taxi where pickup_date <= '2011-07-09' and passenger_cnt = 0;;, elapsed: 2.8566527366638184s, found points: 545260
+select * from nyc_taxi where pickup_lon BETWEEN 34 and 52 AND pickup_lat BETWEEN 6 AND 77;;, elapsed: 2.066894292831421s, found points: 372897
+select * from nyc_taxi where pickup_lon BETWEEN 14 and 45 AND pickup_lat BETWEEN 54 AND 76;;, elapsed: 2.109123468399048s, found points: 372312
+select * from nyc_taxi where pickup_lon BETWEEN 16 and 64 AND pickup_lat BETWEEN 62 AND 87;;, elapsed: 2.117903709411621s, found points: 372331
+select * from nyc_taxi where pickup_date <= '2011-01-15' and passenger_cnt = 6;;, elapsed: 3.973053216934204s, found points: 771453
+select * from nyc_taxi where pickup_lon BETWEEN 11 and 86 AND pickup_lat BETWEEN 47 AND 76;;, elapsed: 2.139930248260498s, found points: 374769
+select * from nyc_taxi where pickup_date <= '2011-09-27' and passenger_cnt = 0;;, elapsed: 4.510124921798706s, found points: 870201
+select * from nyc_taxi where pickup_lon BETWEEN 9 and 56 AND pickup_lat BETWEEN 16 AND 84;;, elapsed: 2.081880807876587s, found points: 373875
+select * from nyc_taxi where pickup_lon BETWEEN 0 and 57 AND pickup_lat BETWEEN 53 AND 84;;, elapsed: 2.077263832092285s, found points: 373882
+select * from nyc_taxi where pickup_date >= '2013-04-15' and pickup_date <= '2013-04-17' and dropoff_date >= '2012-09-15' and dropoff_date <= '2014-10-21';, elapsed: 2.7125492095947266s, found points: 521299
+select * from nyc_taxi where pickup_lon BETWEEN 12 and 57 AND pickup_lat BETWEEN 57 AND 90;;, elapsed: 2.0624637603759766s, found points: 372336
+select * from nyc_taxi where pickup_lon BETWEEN 32 and 89 AND pickup_lat BETWEEN 65 AND 74;;, elapsed: 2.0711050033569336s, found points: 372322
+select * from nyc_taxi where pickup_lon BETWEEN 15 and 84 AND pickup_lat BETWEEN 69 AND 90;;, elapsed: 2.1541318893432617s, found points: 372531
+select * from nyc_taxi where pickup_lon BETWEEN 0 and 63 AND pickup_lat BETWEEN 48 AND 80;;, elapsed: 2.0747172832489014s, found points: 374106
+select * from nyc_taxi where pickup_lon BETWEEN 3 and 65 AND pickup_lat BETWEEN 58 AND 86;;, elapsed: 2.101902961730957s, found points: 372373
+select * from nyc_taxi where pickup_lon BETWEEN 20 and 89 AND pickup_lat BETWEEN 50 AND 87;;, elapsed: 2.092703104019165s, found points: 373535
+select * from nyc_taxi where pickup_lon BETWEEN 31 and 73 AND pickup_lat BETWEEN 46 AND 89;;, elapsed: 2.1140148639678955s, found points: 373468
+select * from nyc_taxi where pickup_lon BETWEEN 21 and 42 AND pickup_lat BETWEEN 72 AND 81;;, elapsed: 2.113604784011841s, found points: 372280
+select * from nyc_taxi where pickup_lon BETWEEN 38 and 75 AND pickup_lat BETWEEN 60 AND 89;;, elapsed: 2.1018013954162598s, found points: 372615
+select * from nyc_taxi where pickup_lon BETWEEN 25 and 65 AND pickup_lat BETWEEN 23 AND 79;;, elapsed: 2.1019845008850098s, found points: 374680
+select * from nyc_taxi where pickup_lon BETWEEN 34 and 65 AND pickup_lat BETWEEN 63 AND 80;;, elapsed: 2.116044521331787s, found points: 372314
+select * from nyc_taxi where pickup_lon BETWEEN 8 and 48 AND pickup_lat BETWEEN 61 AND 84;;, elapsed: 2.127066135406494s, found points: 372307
+select * from nyc_taxi where pickup_lon BETWEEN 26 and 90 AND pickup_lat BETWEEN 61 AND 75;;, elapsed: 2.0612027645111084s, found points: 372470
+select * from nyc_taxi where pickup_lon BETWEEN 3 and 61 AND pickup_lat BETWEEN 55 AND 86;;, elapsed: 2.0949606895446777s, found points: 372385
+select * from nyc_taxi where pickup_lon BETWEEN 14 and 44 AND pickup_lat BETWEEN 57 AND 78;;, elapsed: 2.051096200942993s, found points: 372303
+select * from nyc_taxi where pickup_lon BETWEEN 36 and 46 AND pickup_lat BETWEEN 43 AND 83;;, elapsed: 2.123573064804077s, found points: 372319
+select * from nyc_taxi where pickup_lon BETWEEN 12 and 55 AND pickup_lat BETWEEN 73 AND 86;;, elapsed: 2.131307363510132s, found points: 372291
+select * from nyc_taxi where pickup_lon BETWEEN 34 and 66 AND pickup_lat BETWEEN 69 AND 88;;, elapsed: 2.080556631088257s, found points: 372303
+select * from nyc_taxi where pickup_lon BETWEEN 33 and 49 AND pickup_lat BETWEEN 25 AND 88;;, elapsed: 2.1410152912139893s, found points: 372762
+select * from nyc_taxi where pickup_lon BETWEEN 33 and 83 AND pickup_lat BETWEEN 51 AND 77;;, elapsed: 2.095970630645752s, found points: 373057
+select * from nyc_taxi where pickup_lon BETWEEN 40 and 60 AND pickup_lat BETWEEN 67 AND 75;;, elapsed: 2.0883560180664062s, found points: 372292
+select * from nyc_taxi where pickup_lon BETWEEN 32 and 49 AND pickup_lat BETWEEN 60 AND 77;;, elapsed: 2.0682578086853027s, found points: 372302
+select * from nyc_taxi where pickup_lon BETWEEN 6 and 46 AND pickup_lat BETWEEN 33 AND 84;;, elapsed: 2.136718511581421s, found points: 390941
+select * from nyc_taxi where pickup_date >= '2014-11-28' and pickup_date <= '2014-12-09' and dropoff_date >= '2012-07-03' and dropoff_date <= '2016-04-10';, elapsed: 4.449080467224121s, found points: 885565
+select * from nyc_taxi where pickup_lon BETWEEN 8 and 43 AND pickup_lat BETWEEN 57 AND 87;;, elapsed: 2.0988552570343018s, found points: 372310
+select * from nyc_taxi where pickup_lon BETWEEN 28 and 64 AND pickup_lat BETWEEN 10 AND 77;;, elapsed: 2.073357343673706s, found points: 374406
+select * from nyc_taxi where pickup_lon BETWEEN 13 and 64 AND pickup_lat BETWEEN 59 AND 85;;, elapsed: 2.0743887424468994s, found points: 372353
+select * from nyc_taxi where pickup_lon BETWEEN 15 and 60 AND pickup_lat BETWEEN 74 AND 90;;, elapsed: 1.9246954917907715s, found points: 339512
+select * from nyc_taxi where pickup_lon BETWEEN 2 and 51 AND pickup_lat BETWEEN 52 AND 76;;, elapsed: 2.0894246101379395s, found points: 372337
+select * from nyc_taxi where pickup_lon BETWEEN 14 and 46 AND pickup_lat BETWEEN 23 AND 84;;, elapsed: 2.0929715633392334s, found points: 373101
+select * from nyc_taxi where pickup_date >= '2014-06-16' and pickup_date <= '2014-07-06' and dropoff_date >= '2013-12-17' and dropoff_date <= '2014-06-22';, elapsed: 2.8067467212677s, found points: 532197
+select * from nyc_taxi where pickup_lon BETWEEN 4 and 63 AND pickup_lat BETWEEN 41 AND 88;;, elapsed: 2.0713510513305664s, found points: 373047
+select * from nyc_taxi where pickup_date >= '2013-11-11' and pickup_date <= '2014-06-26' and dropoff_date >= '2014-06-26' and dropoff_date <= '2015-03-09';, elapsed: 2.2145278453826904s, found points: 429131
+select * from nyc_taxi where pickup_date <= '2011-02-08' and passenger_cnt = 6;;, elapsed: 4.076399564743042s, found points: 795367
+select * from nyc_taxi where pickup_lon BETWEEN 18 and 64 AND pickup_lat BETWEEN 69 AND 89;;, elapsed: 2.0793211460113525s, found points: 372305
+select * from nyc_taxi where pickup_lon BETWEEN 21 and 69 AND pickup_lat BETWEEN 18 AND 85;;, elapsed: 2.0806591510772705s, found points: 376710
+select * from nyc_taxi where pickup_lon BETWEEN 26 and 56 AND pickup_lat BETWEEN 57 AND 89;;, elapsed: 2.069518804550171s, found points: 372327
+select * from nyc_taxi where pickup_date >= '2014-05-06' and pickup_date <= '2014-12-26' and dropoff_date >= '2011-06-22' and dropoff_date <= '2014-05-07';, elapsed: 2.7189645767211914s, found points: 529520
+select * from nyc_taxi where pickup_lon BETWEEN 28 and 83 AND pickup_lat BETWEEN 46 AND 77;;, elapsed: 2.0977416038513184s, found points: 375168
+select * from nyc_taxi where pickup_lon BETWEEN 34 and 51 AND pickup_lat BETWEEN 32 AND 83;;, elapsed: 2.0886216163635254s, found points: 372796
+select * from nyc_taxi where pickup_lon BETWEEN 20 and 63 AND pickup_lat BETWEEN 14 AND 83;;, elapsed: 2.0755844116210938s, found points: 374329
+select * from nyc_taxi where pickup_date >= '2013-07-12' and pickup_date <= '2013-07-17' and dropoff_date >= '2012-01-28' and dropoff_date <= '2014-03-14';, elapsed: 1.9719910621643066s, found points: 387369
+select * from nyc_taxi where trip_dist <= 192 and fare_amt between 82 AND 1881;;, elapsed: 3.5195209980010986s, found points: 456849
+select * from nyc_taxi where pickup_lon BETWEEN 17 and 66 AND pickup_lat BETWEEN 59 AND 81;;, elapsed: 2.071805477142334s, found points: 372350
+select * from nyc_taxi where pickup_date >= '2011-01-22' and pickup_date <= '2014-11-05' and dropoff_date >= '2014-11-02' and dropoff_date <= '2016-02-09';, elapsed: 2.4376702308654785s, found points: 457783
+select * from nyc_taxi where pickup_lon BETWEEN 27 and 75 AND pickup_lat BETWEEN 51 AND 80;;, elapsed: 2.055939197540283s, found points: 372936
+select * from nyc_taxi where pickup_date >= '2013-04-06' and pickup_date <= '2015-04-26' and dropoff_date >= '2011-11-12' and dropoff_date <= '2013-04-08';, elapsed: 4.3826398849487305s, found points: 859030
+select * from nyc_taxi where pickup_lon BETWEEN 32 and 53 AND pickup_lat BETWEEN 63 AND 78;;, elapsed: 2.103224754333496s, found points: 372301
+select * from nyc_taxi where pickup_lon BETWEEN 16 and 49 AND pickup_lat BETWEEN 2 AND 84;;, elapsed: 2.0882201194763184s, found points: 373214
+select * from nyc_taxi where pickup_date <= '2011-07-03' and passenger_cnt = 0;;, elapsed: 2.844449281692505s, found points: 518755
+select * from nyc_taxi where pickup_lon BETWEEN 34 and 62 AND pickup_lat BETWEEN 30 AND 75;;, elapsed: 2.0824859142303467s, found points: 373672
+select * from nyc_taxi where pickup_date >= '2016-06-13' and pickup_date <= '2016-06-18' and dropoff_date >= '2016-06-03' and dropoff_date <= '2016-09-16';, elapsed: 4.2970194816589355s, found points: 856667
+select * from nyc_taxi where pickup_lon BETWEEN 37 and 44 AND pickup_lat BETWEEN 49 AND 87;;, elapsed: 2.127107858657837s, found points: 372302
+select * from nyc_taxi where pickup_lon BETWEEN 17 and 72 AND pickup_lat BETWEEN 43 AND 82;;, elapsed: 2.1203293800354004s, found points: 374476
+select * from nyc_taxi where pickup_lon BETWEEN 4 and 85 AND pickup_lat BETWEEN 71 AND 88;;, elapsed: 2.111112356185913s, found points: 372485
+select * from nyc_taxi where pickup_lon BETWEEN 11 and 55 AND pickup_lat BETWEEN 44 AND 81;;, elapsed: 2.095560073852539s, found points: 372413
+select * from nyc_taxi where pickup_lon BETWEEN 13 and 67 AND pickup_lat BETWEEN 56 AND 76;;, elapsed: 2.090261220932007s, found points: 372388
+select * from nyc_taxi where pickup_lon BETWEEN 18 and 66 AND pickup_lat BETWEEN 41 AND 74;;, elapsed: 2.107994794845581s, found points: 373294
+select * from nyc_taxi where pickup_date >= '2015-04-24' and pickup_date <= '2015-09-09' and dropoff_date >= '2014-11-29' and dropoff_date <= '2015-04-29';, elapsed: 3.054507255554199s, found points: 600486
+select * from nyc_taxi where pickup_lon BETWEEN 38 and 87 AND pickup_lat BETWEEN 74 AND 77;;, elapsed: 1.9174025058746338s, found points: 339533
+select * from nyc_taxi where pickup_date >= '2016-03-25' and pickup_date <= '2016-03-26' and dropoff_date >= '2013-02-05' and dropoff_date <= '2016-06-13';, elapsed: 3.702308416366577s, found points: 718194
+select * from nyc_taxi where pickup_lon BETWEEN 40 and 50 AND pickup_lat BETWEEN 20 AND 82;;, elapsed: 2.0770184993743896s, found points: 372613
+select * from nyc_taxi where pickup_lon BETWEEN 13 and 80 AND pickup_lat BETWEEN 64 AND 81;;, elapsed: 2.082624912261963s, found points: 372461
+select * from nyc_taxi where pickup_lon BETWEEN 5 and 62 AND pickup_lat BETWEEN 0 AND 74;;, elapsed: 2.175525426864624s, found points: 392424
+select * from nyc_taxi where pickup_lon BETWEEN 20 and 81 AND pickup_lat BETWEEN 69 AND 84;;, elapsed: 2.073195457458496s, found points: 372473
+select * from nyc_taxi where pickup_date <= '2011-01-07' and passenger_cnt = 6;;, elapsed: 3.877850294113159s, found points: 758195
+select * from nyc_taxi where pickup_date >= '2012-07-22' and pickup_date <= '2015-02-10' and dropoff_date >= '2015-02-07' and dropoff_date <= '2016-01-01';, elapsed: 5.04188871383667s, found points: 981766
+select * from nyc_taxi where pickup_lon BETWEEN 17 and 55 AND pickup_lat BETWEEN 65 AND 75;;, elapsed: 2.0698139667510986s, found points: 372292
+select * from nyc_taxi where pickup_lon BETWEEN 29 and 42 AND pickup_lat BETWEEN 56 AND 86;;, elapsed: 2.0889456272125244s, found points: 372301
+select * from nyc_taxi where pickup_lon BETWEEN 37 and 89 AND pickup_lat BETWEEN 69 AND 88;;, elapsed: 2.0822107791900635s, found points: 372508
+select * from nyc_taxi where pickup_lon BETWEEN 5 and 62 AND pickup_lat BETWEEN 63 AND 86;;, elapsed: 2.088625192642212s, found points: 372323
+select * from nyc_taxi where pickup_lon BETWEEN 33 and 68 AND pickup_lat BETWEEN 64 AND 85;;, elapsed: 2.067125082015991s, found points: 372317
+select * from nyc_taxi where pickup_lon BETWEEN 38 and 51 AND pickup_lat BETWEEN 38 AND 78;;, elapsed: 2.0721914768218994s, found points: 372671
+select * from nyc_taxi where pickup_lon BETWEEN 34 and 78 AND pickup_lat BETWEEN 48 AND 78;;, elapsed: 2.1508517265319824s, found points: 373920
+select * from nyc_taxi where pickup_lon BETWEEN 12 and 77 AND pickup_lat BETWEEN 70 AND 79;;, elapsed: 2.090848207473755s, found points: 372369
+select * from nyc_taxi where pickup_date <= '2011-03-05' and passenger_cnt = 6;;, elapsed: 4.2319114208221436s, found points: 823866
+select * from nyc_taxi where pickup_lon BETWEEN 20 and 49 AND pickup_lat BETWEEN 9 AND 88;;, elapsed: 2.1030728816986084s, found points: 373058
+select * from nyc_taxi where pickup_lon BETWEEN 39 and 57 AND pickup_lat BETWEEN 73 AND 86;;, elapsed: 2.0760037899017334s, found points: 372283
+select * from nyc_taxi where pickup_date >= '2013-07-02' and pickup_date <= '2015-01-02' and dropoff_date >= '2014-07-07' and dropoff_date <= '2014-07-16';, elapsed: 2.910846471786499s, found points: 565726
+select * from nyc_taxi where pickup_lon BETWEEN 1 and 45 AND pickup_lat BETWEEN 41 AND 87;;, elapsed: 2.073483943939209s, found points: 372581
+select * from nyc_taxi where pickup_lon BETWEEN 7 and 68 AND pickup_lat BETWEEN 61 AND 89;;, elapsed: 2.069956064224243s, found points: 372346
+select * from nyc_taxi where pickup_lon BETWEEN 29 and 69 AND pickup_lat BETWEEN 47 AND 74;;, elapsed: 2.0968101024627686s, found points: 372840
+select * from nyc_taxi where pickup_lon BETWEEN 15 and 75 AND pickup_lat BETWEEN 60 AND 89;;, elapsed: 2.0956075191497803s, found points: 372623
+select * from nyc_taxi where pickup_lon BETWEEN 9 and 70 AND pickup_lat BETWEEN 73 AND 77;;, elapsed: 2.0541515350341797s, found points: 372284
+select * from nyc_taxi where pickup_lon BETWEEN 29 and 71 AND pickup_lat BETWEEN 74 AND 78;;, elapsed: 1.9123780727386475s, found points: 339505
+select * from nyc_taxi where pickup_lon BETWEEN 38 and 64 AND pickup_lat BETWEEN 62 AND 75;;, elapsed: 2.067570924758911s, found points: 372314
+select * from nyc_taxi where pickup_lon BETWEEN 3 and 47 AND pickup_lat BETWEEN 74 AND 78;;, elapsed: 2.0010299682617188s, found points: 339504
+select * from nyc_taxi where pickup_lon BETWEEN 25 and 74 AND pickup_lat BETWEEN 68 AND 82;;, elapsed: 2.087421417236328s, found points: 372458
+select * from nyc_taxi where pickup_lon BETWEEN 36 and 41 AND pickup_lat BETWEEN 63 AND 81;;, elapsed: 2.066715717315674s, found points: 372273
+select * from nyc_taxi where pickup_lon BETWEEN 36 and 49 AND pickup_lat BETWEEN 37 AND 74;;, elapsed: 2.1106014251708984s, found points: 372596
+select * from nyc_taxi where pickup_lon BETWEEN 22 and 83 AND pickup_lat BETWEEN 58 AND 86;;, elapsed: 2.0953919887542725s, found points: 372675
+select * from nyc_taxi where pickup_lon BETWEEN 15 and 71 AND pickup_lat BETWEEN 50 AND 85;;, elapsed: 2.089113473892212s, found points: 372688
+select * from nyc_taxi where pickup_date >= '2012-07-22' and pickup_date <= '2015-05-11' and dropoff_date >= '2015-05-11' and dropoff_date <= '2016-07-28';, elapsed: 2.3516788482666016s, found points: 445302
+select * from nyc_taxi where pickup_lon BETWEEN 38 and 70 AND pickup_lat BETWEEN 36 AND 85;;, elapsed: 2.0958073139190674s, found points: 376601
+select * from nyc_taxi where pickup_lon BETWEEN 1 and 67 AND pickup_lat BETWEEN 59 AND 81;;, elapsed: 2.0642361640930176s, found points: 372363
+select * from nyc_taxi where pickup_lon BETWEEN 33 and 65 AND pickup_lat BETWEEN 60 AND 74;;, elapsed: 2.082003593444824s, found points: 372267
+select * from nyc_taxi where pickup_lon BETWEEN 16 and 61 AND pickup_lat BETWEEN 27 AND 88;;, elapsed: 2.0918211936950684s, found points: 374018
+select * from nyc_taxi where pickup_lon BETWEEN 29 and 47 AND pickup_lat BETWEEN 17 AND 74;;, elapsed: 2.0652177333831787s, found points: 372708
+select * from nyc_taxi where pickup_lon BETWEEN 20 and 66 AND pickup_lat BETWEEN 50 AND 82;;, elapsed: 2.114377498626709s, found points: 372549
+select * from nyc_taxi where pickup_lon BETWEEN 34 and 85 AND pickup_lat BETWEEN 72 AND 83;;, elapsed: 2.080193519592285s, found points: 372431
+select * from nyc_taxi where pickup_lon BETWEEN 10 and 82 AND pickup_lat BETWEEN 55 AND 75;;, elapsed: 2.10880970954895s, found points: 372672
+select * from nyc_taxi where pickup_date >= '2015-09-12' and pickup_date <= '2016-05-12' and dropoff_date >= '2016-04-03' and dropoff_date <= '2016-04-06';, elapsed: 5.0215864181518555s, found points: 982456
+select * from nyc_taxi where pickup_date >= '2015-12-28' and pickup_date <= '2015-12-31' and dropoff_date >= '2015-06-02' and dropoff_date <= '2016-02-16';, elapsed: 4.4746057987213135s, found points: 882496
+select * from nyc_taxi where pickup_lon BETWEEN 28 and 63 AND pickup_lat BETWEEN 64 AND 82;;, elapsed: 2.0913338661193848s, found points: 372309
+select * from nyc_taxi where pickup_lon BETWEEN 23 and 82 AND pickup_lat BETWEEN 48 AND 85;;, elapsed: 2.0869064331054688s, found points: 374137
+select * from nyc_taxi where pickup_lon BETWEEN 4 and 64 AND pickup_lat BETWEEN 31 AND 77;;, elapsed: 2.2010974884033203s, found points: 394242
+select * from nyc_taxi where pickup_lon BETWEEN 7 and 80 AND pickup_lat BETWEEN 52 AND 80;;, elapsed: 2.092445135116577s, found points: 372908
+select * from nyc_taxi where pickup_lon BETWEEN 18 and 66 AND pickup_lat BETWEEN 37 AND 89;;, elapsed: 2.0971670150756836s, found points: 374706
+select * from nyc_taxi where pickup_lon BETWEEN 8 and 46 AND pickup_lat BETWEEN 19 AND 87;;, elapsed: 2.1466336250305176s, found points: 379523
+select * from nyc_taxi where pickup_date >= '2014-11-17' and pickup_date <= '2016-04-08' and dropoff_date >= '2012-11-19' and dropoff_date <= '2014-11-18';, elapsed: 4.097572565078735s, found points: 800917
+select * from nyc_taxi where pickup_lon BETWEEN 10 and 58 AND pickup_lat BETWEEN 64 AND 80;;, elapsed: 2.0878963470458984s, found points: 372305
+select * from nyc_taxi where pickup_date >= '2014-06-03' and pickup_date <= '2015-03-08' and dropoff_date >= '2012-11-30' and dropoff_date <= '2014-06-03';, elapsed: 2.5920088291168213s, found points: 497948
+select * from nyc_taxi where pickup_lon BETWEEN 9 and 53 AND pickup_lat BETWEEN 44 AND 78;;, elapsed: 2.0753610134124756s, found points: 372400
+select * from nyc_taxi where pickup_lon BETWEEN 40 and 70 AND pickup_lat BETWEEN 46 AND 87;;, elapsed: 2.091383695602417s, found points: 373102
+select * from nyc_taxi where pickup_date >= '2016-03-08' and pickup_date <= '2016-03-17' and dropoff_date >= '2015-11-13' and dropoff_date <= '2016-03-11';, elapsed: 4.526643991470337s, found points: 904075
+select * from nyc_taxi where pickup_lon BETWEEN 34 and 48 AND pickup_lat BETWEEN 63 AND 79;;, elapsed: 2.0865843296051025s, found points: 372297
+select * from nyc_taxi where pickup_lon BETWEEN 27 and 65 AND pickup_lat BETWEEN 68 AND 77;;, elapsed: 2.0813121795654297s, found points: 372299
+select * from nyc_taxi where pickup_lon BETWEEN 14 and 75 AND pickup_lat BETWEEN 74 AND 81;;, elapsed: 1.919222354888916s, found points: 339561
+select * from nyc_taxi where pickup_lon BETWEEN 29 and 71 AND pickup_lat BETWEEN 69 AND 77;;, elapsed: 2.1197357177734375s, found points: 372298
+select * from nyc_taxi where pickup_lon BETWEEN 10 and 89 AND pickup_lat BETWEEN 47 AND 80;;, elapsed: 2.0909242630004883s, found points: 374870
+select * from nyc_taxi where pickup_lon BETWEEN 36 and 49 AND pickup_lat BETWEEN 40 AND 78;;, elapsed: 2.0932300090789795s, found points: 372643
+select * from nyc_taxi where trip_dist <= 129 and fare_amt between 90 AND 8513;;, elapsed: 2.9944570064544678s, found points: 358855
+select * from nyc_taxi where pickup_lon BETWEEN 34 and 71 AND pickup_lat BETWEEN 25 AND 77;;, elapsed: 2.102179527282715s, found points: 380220
+select * from nyc_taxi where pickup_lon BETWEEN 10 and 65 AND pickup_lat BETWEEN 72 AND 82;;, elapsed: 2.0636043548583984s, found points: 372285
+select * from nyc_taxi where pickup_lon BETWEEN 18 and 56 AND pickup_lat BETWEEN 16 AND 76;;, elapsed: 2.0759847164154053s, found points: 373470
+select * from nyc_taxi where pickup_lon BETWEEN 18 and 52 AND pickup_lat BETWEEN 32 AND 90;;, elapsed: 2.0817863941192627s, found points: 373210
+select * from nyc_taxi where pickup_date >= '2016-01-06' and pickup_date <= '2016-04-21' and dropoff_date >= '2016-04-20' and dropoff_date <= '2016-07-03';, elapsed: 2.7518742084503174s, found points: 529431
+select * from nyc_taxi where pickup_lon BETWEEN 30 and 76 AND pickup_lat BETWEEN 65 AND 77;;, elapsed: 2.0655481815338135s, found points: 372413
+select * from nyc_taxi where pickup_lon BETWEEN 16 and 76 AND pickup_lat BETWEEN 52 AND 90;;, elapsed: 2.0743510723114014s, found points: 372979
+select * from nyc_taxi where pickup_date <= '2011-01-19' and passenger_cnt = 6;;, elapsed: 3.953439712524414s, found points: 774410
+select * from nyc_taxi where pickup_lon BETWEEN 8 and 53 AND pickup_lat BETWEEN 46 AND 79;;, elapsed: 2.1394286155700684s, found points: 372391
+select * from nyc_taxi where pickup_lon BETWEEN 29 and 65 AND pickup_lat BETWEEN 69 AND 89;;, elapsed: 2.1157031059265137s, found points: 372304
+select * from nyc_taxi where pickup_lon BETWEEN 21 and 50 AND pickup_lat BETWEEN 61 AND 88;;, elapsed: 2.1178174018859863s, found points: 372308
+select * from nyc_taxi where pickup_lon BETWEEN 10 and 51 AND pickup_lat BETWEEN 63 AND 74;;, elapsed: 2.0910589694976807s, found points: 372236
+select * from nyc_taxi where pickup_lon BETWEEN 27 and 42 AND pickup_lat BETWEEN 49 AND 88;;, elapsed: 2.093529224395752s, found points: 372305
+select * from nyc_taxi where pickup_lon BETWEEN 20 and 42 AND pickup_lat BETWEEN 5 AND 81;;, elapsed: 2.117210626602173s, found points: 372838
+select * from nyc_taxi where pickup_date >= '2015-10-12' and pickup_date <= '2016-02-06' and dropoff_date >= '2016-02-04' and dropoff_date <= '2016-09-22';, elapsed: 2.829111099243164s, found points: 552248
+select * from nyc_taxi where pickup_lon BETWEEN 35 and 55 AND pickup_lat BETWEEN 12 AND 86;;, elapsed: 2.0860140323638916s, found points: 373011
+select * from nyc_taxi where pickup_lon BETWEEN 9 and 49 AND pickup_lat BETWEEN 62 AND 77;;, elapsed: 2.1220755577087402s, found points: 372304
+select * from nyc_taxi where pickup_lon BETWEEN 17 and 59 AND pickup_lat BETWEEN 31 AND 75;;, elapsed: 2.0813355445861816s, found points: 373646
+select * from nyc_taxi where pickup_date <= '2011-01-09' and passenger_cnt = 6;;, elapsed: 3.946780204772949s, found points: 761808
+select * from nyc_taxi where pickup_lon BETWEEN 17 and 58 AND pickup_lat BETWEEN 51 AND 90;;, elapsed: 2.1393840312957764s, found points: 372385
+select * from nyc_taxi where pickup_lon BETWEEN 12 and 59 AND pickup_lat BETWEEN 72 AND 84;;, elapsed: 2.0957913398742676s, found points: 372287
+select * from nyc_taxi where pickup_lon BETWEEN 30 and 74 AND pickup_lat BETWEEN 59 AND 78;;, elapsed: 2.058730363845825s, found points: 372511
+select * from nyc_taxi where pickup_lon BETWEEN 30 and 58 AND pickup_lat BETWEEN 64 AND 78;;, elapsed: 2.0714175701141357s, found points: 372304
+select * from nyc_taxi where pickup_date >= '2015-02-28' and pickup_date <= '2015-07-01' and dropoff_date >= '2015-04-28' and dropoff_date <= '2015-04-29';, elapsed: 3.053206205368042s, found points: 600486
+select * from nyc_taxi where trip_dist <= 259 and fare_amt between 80 AND 1261;;, elapsed: 3.8153319358825684s, found points: 522863
+select * from nyc_taxi where pickup_lon BETWEEN 38 and 44 AND pickup_lat BETWEEN 0 AND 76;;, elapsed: 2.0747523307800293s, found points: 372505
+select * from nyc_taxi where pickup_lon BETWEEN 27 and 89 AND pickup_lat BETWEEN 74 AND 77;;, elapsed: 1.9483599662780762s, found points: 339533
+select * from nyc_taxi where pickup_date >= '2015-08-28' and pickup_date <= '2015-08-30' and dropoff_date >= '2014-03-10' and dropoff_date <= '2016-07-08';, elapsed: 3.333397388458252s, found points: 567515
+select * from nyc_taxi where pickup_lon BETWEEN 35 and 62 AND pickup_lat BETWEEN 39 AND 84;;, elapsed: 2.15718674659729s, found points: 373439
+select * from nyc_taxi where pickup_lon BETWEEN 3 and 43 AND pickup_lat BETWEEN 33 AND 90;;, elapsed: 2.2847957611083984s, found points: 393048
+select * from nyc_taxi where pickup_lon BETWEEN 9 and 41 AND pickup_lat BETWEEN 73 AND 88;;, elapsed: 2.102158308029175s, found points: 372276
+select * from nyc_taxi where pickup_lon BETWEEN 38 and 62 AND pickup_lat BETWEEN 50 AND 78;;, elapsed: 2.0888476371765137s, found points: 372441
+select * from nyc_taxi where pickup_lon BETWEEN 5 and 56 AND pickup_lat BETWEEN 47 AND 82;;, elapsed: 2.082165479660034s, found points: 372403
+select * from nyc_taxi where pickup_lon BETWEEN 21 and 57 AND pickup_lat BETWEEN 61 AND 87;;, elapsed: 2.325401782989502s, found points: 372317
+select * from nyc_taxi where pickup_date <= '2011-06-14' and passenger_cnt = 6;;, elapsed: 4.800822973251343s, found points: 930441
+select * from nyc_taxi where pickup_lon BETWEEN 5 and 86 AND pickup_lat BETWEEN 43 AND 85;;, elapsed: 2.152188777923584s, found points: 380818
+select * from nyc_taxi where pickup_lon BETWEEN 2 and 42 AND pickup_lat BETWEEN 69 AND 77;;, elapsed: 2.077019453048706s, found points: 372288
+select * from nyc_taxi where pickup_lon BETWEEN 32 and 81 AND pickup_lat BETWEEN 52 AND 79;;, elapsed: 2.093759775161743s, found points: 372902
+select * from nyc_taxi where pickup_lon BETWEEN 35 and 41 AND pickup_lat BETWEEN 72 AND 80;;, elapsed: 2.0835049152374268s, found points: 372271
+select * from nyc_taxi where pickup_lon BETWEEN 31 and 79 AND pickup_lat BETWEEN 53 AND 90;;, elapsed: 2.0713400840759277s, found points: 372945
+select * from nyc_taxi where pickup_lon BETWEEN 33 and 90 AND pickup_lat BETWEEN 70 AND 81;;, elapsed: 2.113294839859009s, found points: 372388
+select * from nyc_taxi where pickup_lon BETWEEN 37 and 76 AND pickup_lat BETWEEN 59 AND 77;;, elapsed: 2.1637959480285645s, found points: 372505
+select * from nyc_taxi where pickup_lon BETWEEN 9 and 85 AND pickup_lat BETWEEN 65 AND 81;;, elapsed: 2.063494920730591s, found points: 372446
+select * from nyc_taxi where pickup_lon BETWEEN 1 and 78 AND pickup_lat BETWEEN 53 AND 80;;, elapsed: 2.1058554649353027s, found points: 372832
+select * from nyc_taxi where pickup_lon BETWEEN 29 and 59 AND pickup_lat BETWEEN 45 AND 75;;, elapsed: 2.0687928199768066s, found points: 372467
+select * from nyc_taxi where pickup_lon BETWEEN 10 and 57 AND pickup_lat BETWEEN 58 AND 74;;, elapsed: 2.0927233695983887s, found points: 372256
+select * from nyc_taxi where pickup_lon BETWEEN 16 and 66 AND pickup_lat BETWEEN 45 AND 79;;, elapsed: 2.097985029220581s, found points: 372931
+select * from nyc_taxi where pickup_lon BETWEEN 39 and 58 AND pickup_lat BETWEEN 2 AND 83;;, elapsed: 2.0876762866973877s, found points: 373140
+select * from nyc_taxi where pickup_date <= '2011-06-30' and passenger_cnt = 0;;, elapsed: 2.7080864906311035s, found points: 517607
+select * from nyc_taxi where pickup_lon BETWEEN 16 and 84 AND pickup_lat BETWEEN 71 AND 88;;, elapsed: 2.114368438720703s, found points: 372484
+select * from nyc_taxi where pickup_lon BETWEEN 21 and 43 AND pickup_lat BETWEEN 48 AND 83;;, elapsed: 2.1035850048065186s, found points: 372316
+select * from nyc_taxi where pickup_lon BETWEEN 8 and 76 AND pickup_lat BETWEEN 69 AND 88;;, elapsed: 2.133535385131836s, found points: 372502
+select * from nyc_taxi where pickup_lon BETWEEN 29 and 68 AND pickup_lat BETWEEN 14 AND 81;;, elapsed: 2.1410439014434814s, found points: 375860
+select * from nyc_taxi where pickup_lon BETWEEN 4 and 88 AND pickup_lat BETWEEN 59 AND 76;;, elapsed: 2.097910165786743s, found points: 372527
+select * from nyc_taxi where pickup_lon BETWEEN 22 and 72 AND pickup_lat BETWEEN 61 AND 74;;, elapsed: 2.130228281021118s, found points: 372270
+select * from nyc_taxi where pickup_lon BETWEEN 8 and 76 AND pickup_lat BETWEEN 49 AND 86;;, elapsed: 2.114612102508545s, found points: 373556
+select * from nyc_taxi where pickup_lon BETWEEN 20 and 59 AND pickup_lat BETWEEN 1 AND 85;;, elapsed: 2.0962493419647217s, found points: 373694
+select * from nyc_taxi where pickup_lon BETWEEN 6 and 69 AND pickup_lat BETWEEN 66 AND 74;;, elapsed: 2.1443140506744385s, found points: 372240
+select * from nyc_taxi where pickup_date <= '2011-08-22' and passenger_cnt = 0;;, elapsed: 3.890669584274292s, found points: 745950
+select * from nyc_taxi where pickup_lon BETWEEN 37 and 63 AND pickup_lat BETWEEN 12 AND 90;;, elapsed: 2.1353087425231934s, found points: 373977
+select * from nyc_taxi where pickup_lon BETWEEN 33 and 61 AND pickup_lat BETWEEN 44 AND 74;;, elapsed: 2.2022809982299805s, found points: 372550
+select * from nyc_taxi where pickup_lon BETWEEN 36 and 84 AND pickup_lat BETWEEN 64 AND 84;;, elapsed: 2.166846990585327s, found points: 372540
+select * from nyc_taxi where pickup_lon BETWEEN 40 and 53 AND pickup_lat BETWEEN 44 AND 88;;, elapsed: 2.1878011226654053s, found points: 372368
+select * from nyc_taxi where pickup_lon BETWEEN 4 and 63 AND pickup_lat BETWEEN 61 AND 84;;, elapsed: 2.1566989421844482s, found points: 372333
+select * from nyc_taxi where pickup_lon BETWEEN 38 and 59 AND pickup_lat BETWEEN 74 AND 81;;, elapsed: 1.991081714630127s, found points: 339506
+select * from nyc_taxi where pickup_lon BETWEEN 38 and 75 AND pickup_lat BETWEEN 48 AND 85;;, elapsed: 2.2787976264953613s, found points: 373861
+select * from nyc_taxi where pickup_date >= '2011-12-12' and pickup_date <= '2013-02-04' and dropoff_date >= '2011-12-17' and dropoff_date <= '2011-12-17';, elapsed: 1.814028024673462s, found points: 338955
+select * from nyc_taxi where pickup_lon BETWEEN 36 and 80 AND pickup_lat BETWEEN 69 AND 77;;, elapsed: 2.1750545501708984s, found points: 372372
+select * from nyc_taxi where pickup_lon BETWEEN 39 and 57 AND pickup_lat BETWEEN 64 AND 90;;, elapsed: 2.1638638973236084s, found points: 372301
+select * from nyc_taxi where pickup_lon BETWEEN 12 and 57 AND pickup_lat BETWEEN 64 AND 85;;, elapsed: 2.1796376705169678s, found points: 372311
+select * from nyc_taxi where pickup_lon BETWEEN 2 and 44 AND pickup_lat BETWEEN 1 AND 75;;, elapsed: 2.2393035888671875s, found points: 393347
+select * from nyc_taxi where pickup_lon BETWEEN 19 and 55 AND pickup_lat BETWEEN 4 AND 86;;, elapsed: 2.154069662094116s, found points: 373362
+select * from nyc_taxi where pickup_date <= '2011-06-01' and passenger_cnt = 0;;, elapsed: 2.205883264541626s, found points: 410907
+select * from nyc_taxi where pickup_lon BETWEEN 9 and 44 AND pickup_lat BETWEEN 20 AND 81;;, elapsed: 2.1680893898010254s, found points: 373370
+select * from nyc_taxi where pickup_date <= '2011-09-24' and passenger_cnt = 0;;, elapsed: 4.596615791320801s, found points: 862956
+select * from nyc_taxi where pickup_lon BETWEEN 18 and 64 AND pickup_lat BETWEEN 49 AND 78;;, elapsed: 2.1707520484924316s, found points: 372526
+select * from nyc_taxi where pickup_lon BETWEEN 39 and 62 AND pickup_lat BETWEEN 51 AND 87;;, elapsed: 2.14383602142334s, found points: 372420
+select * from nyc_taxi where pickup_lon BETWEEN 37 and 54 AND pickup_lat BETWEEN 5 AND 90;;, elapsed: 2.2378268241882324s, found points: 372924
+select * from nyc_taxi where pickup_lon BETWEEN 35 and 51 AND pickup_lat BETWEEN 43 AND 85;;, elapsed: 2.2673451900482178s, found points: 372371
+select * from nyc_taxi where pickup_lon BETWEEN 25 and 68 AND pickup_lat BETWEEN 67 AND 76;;, elapsed: 2.1640725135803223s, found points: 372298
+select * from nyc_taxi where pickup_lon BETWEEN 25 and 58 AND pickup_lat BETWEEN 5 AND 79;;, elapsed: 2.19897723197937s, found points: 373449
+select * from nyc_taxi where pickup_lon BETWEEN 20 and 75 AND pickup_lat BETWEEN 60 AND 88;;, elapsed: 2.12544322013855s, found points: 372617
+select * from nyc_taxi where pickup_lon BETWEEN 13 and 42 AND pickup_lat BETWEEN 56 AND 75;;, elapsed: 2.160944700241089s, found points: 372298
+select * from nyc_taxi where pickup_lon BETWEEN 27 and 48 AND pickup_lat BETWEEN 62 AND 77;;, elapsed: 2.139251470565796s, found points: 372300
+select * from nyc_taxi where pickup_lon BETWEEN 21 and 79 AND pickup_lat BETWEEN 60 AND 78;;, elapsed: 2.167041301727295s, found points: 372499
+select * from nyc_taxi where pickup_date <= '2011-10-03' and passenger_cnt = 0;;, elapsed: 4.730333089828491s, found points: 909433
+select * from nyc_taxi where pickup_lon BETWEEN 37 and 59 AND pickup_lat BETWEEN 57 AND 82;;, elapsed: 2.173417806625366s, found points: 372332
+select * from nyc_taxi where pickup_lon BETWEEN 27 and 41 AND pickup_lat BETWEEN 18 AND 90;;, elapsed: 2.1141529083251953s, found points: 372625
+select * from nyc_taxi where pickup_lon BETWEEN 8 and 63 AND pickup_lat BETWEEN 21 AND 82;;, elapsed: 2.1342732906341553s, found points: 380876
+select * from nyc_taxi where pickup_date <= '2011-03-17' and passenger_cnt = 6;;, elapsed: 4.3020339012146s, found points: 836023
+select * from nyc_taxi where pickup_date <= '2011-07-03' and passenger_cnt = 0;;, elapsed: 2.905679702758789s, found points: 518755
+select * from nyc_taxi where pickup_date >= '2015-03-02' and pickup_date <= '2015-10-19' and dropoff_date >= '2015-09-18' and dropoff_date <= '2015-09-29';, elapsed: 3.876384973526001s, found points: 749531
+select * from nyc_taxi where pickup_date >= '2015-11-21' and pickup_date <= '2015-11-27' and dropoff_date >= '2013-06-16' and dropoff_date <= '2015-11-21';, elapsed: 2.0801515579223633s, found points: 399756
+select * from nyc_taxi where pickup_date <= '2011-03-16' and passenger_cnt = 6;;, elapsed: 4.376796007156372s, found points: 834207
+select * from nyc_taxi where pickup_date >= '2016-05-17' and pickup_date <= '2016-05-20' and dropoff_date >= '2014-12-31' and dropoff_date <= '2016-08-18';, elapsed: 4.691327095031738s, found points: 908245
+select * from nyc_taxi where pickup_date >= '2014-12-05' and pickup_date <= '2014-12-11' and dropoff_date >= '2014-02-18' and dropoff_date <= '2016-01-03';, elapsed: 4.695918560028076s, found points: 915050
+select * from nyc_taxi where pickup_date >= '2014-12-03' and pickup_date <= '2016-02-17' and dropoff_date >= '2012-06-08' and dropoff_date <= '2014-12-11';, elapsed: 4.704868793487549s, found points: 909376
+select * from nyc_taxi where pickup_date <= '2011-05-03' and passenger_cnt = 6;;, elapsed: 4.6281418800354s, found points: 883707
+select * from nyc_taxi where trip_dist <= 163 and fare_amt between 83 AND 6932;;, elapsed: 3.4378716945648193s, found points: 445239
+select * from nyc_taxi where pickup_date >= '2015-07-18' and pickup_date <= '2015-10-23' and dropoff_date >= '2015-10-22' and dropoff_date <= '2015-11-27';, elapsed: 3.361719846725464s, found points: 647150
+select * from nyc_taxi where pickup_date >= '2016-03-01' and pickup_date <= '2016-03-02' and dropoff_date >= '2015-03-25' and dropoff_date <= '2016-06-25';, elapsed: 2.739760637283325s, found points: 524457
+select * from nyc_taxi where pickup_date >= '2015-07-14' and pickup_date <= '2015-10-27' and dropoff_date >= '2015-02-08' and dropoff_date <= '2015-07-18';, elapsed: 3.6306838989257812s, found points: 693276
+select * from nyc_taxi where pickup_date <= '2011-07-07' and passenger_cnt = 6;;, elapsed: 4.982203722000122s, found points: 959441
+select * from nyc_taxi where pickup_date >= '2015-05-28' and pickup_date <= '2015-05-30' and dropoff_date >= '2011-06-25' and dropoff_date <= '2015-09-03';, elapsed: 3.2399630546569824s, found points: 604435
+select * from nyc_taxi where pickup_date <= '2011-07-22' and passenger_cnt = 6;;, elapsed: 5.160405874252319s, found points: 999359
+select * from nyc_taxi where pickup_date >= '2016-06-16' and pickup_date <= '2016-06-17' and dropoff_date >= '2012-07-15' and dropoff_date <= '2016-07-07';, elapsed: 1.9052822589874268s, found points: 354005
+select * from nyc_taxi where pickup_date <= '2011-03-17' and passenger_cnt = 6;;, elapsed: 4.358793258666992s, found points: 836023
+select * from nyc_taxi where pickup_date >= '2015-11-01' and pickup_date <= '2016-02-13' and dropoff_date >= '2012-08-09' and dropoff_date <= '2015-11-03';, elapsed: 4.172014236450195s, found points: 790015
+select * from nyc_taxi where pickup_date >= '2013-05-18' and pickup_date <= '2014-02-07' and dropoff_date >= '2013-06-04' and dropoff_date <= '2013-06-07';, elapsed: 4.212909698486328s, found points: 812005
+select * from nyc_taxi where trip_dist <= 94 and fare_amt between 72 AND 7014;;, elapsed: 5.00716495513916s, found points: 747472
+select * from nyc_taxi where pickup_date >= '2013-07-22' and pickup_date <= '2016-01-14' and dropoff_date >= '2015-11-10' and dropoff_date <= '2015-11-14';, elapsed: 4.855108261108398s, found points: 917555
+select * from nyc_taxi where pickup_date <= '2011-08-02' and passenger_cnt = 6;;, elapsed: 5.180870532989502s, found points: 1006221
+select * from nyc_taxi where pickup_date >= '2011-07-21' and pickup_date <= '2016-05-15' and dropoff_date >= '2016-05-13' and dropoff_date <= '2016-09-26';, elapsed: 2.1413028240203857s, found points: 384356
+select * from nyc_taxi where pickup_date >= '2013-12-31' and pickup_date <= '2014-12-15' and dropoff_date >= '2014-12-15' and dropoff_date <= '2015-04-19';, elapsed: 2.3963332176208496s, found points: 456987
+select * from nyc_taxi where pickup_date >= '2013-05-26' and pickup_date <= '2014-03-29' and dropoff_date >= '2014-03-26' and dropoff_date <= '2014-11-04';, elapsed: 3.9894673824310303s, found points: 773046
+select * from nyc_taxi where pickup_date >= '2014-02-05' and pickup_date <= '2015-12-13' and dropoff_date >= '2015-12-12' and dropoff_date <= '2016-10-15';, elapsed: 2.0235514640808105s, found points: 379389
+select * from nyc_taxi where pickup_date <= '2011-07-10' and passenger_cnt = 6;;, elapsed: 5.088274002075195s, found points: 967626
+select * from nyc_taxi where pickup_date >= '2014-03-01' and pickup_date <= '2014-11-11' and dropoff_date >= '2012-02-11' and dropoff_date <= '2014-03-03';, elapsed: 3.3780603408813477s, found points: 640936
+select * from nyc_taxi where pickup_date >= '2015-03-26' and pickup_date <= '2016-03-06' and dropoff_date >= '2015-06-18' and dropoff_date <= '2015-06-26';, elapsed: 2.271315336227417s, found points: 427495
+select * from nyc_taxi where pickup_date <= '2011-08-04' and passenger_cnt = 0;;, elapsed: 3.4674651622772217s, found points: 654440
+select * from nyc_taxi where pickup_date >= '2012-03-14' and pickup_date <= '2014-05-27' and dropoff_date >= '2014-05-16' and dropoff_date <= '2016-03-20';, elapsed: 2.2781035900115967s, found points: 428856
+select * from nyc_taxi where pickup_date >= '2012-12-31' and pickup_date <= '2015-12-25' and dropoff_date >= '2012-11-30' and dropoff_date <= '2013-01-01';, elapsed: 4.527361869812012s, found points: 864764
+select * from nyc_taxi where pickup_date >= '2011-08-11' and pickup_date <= '2012-03-03' and dropoff_date >= '2012-02-23' and dropoff_date <= '2014-05-19';, elapsed: 4.22367000579834s, found points: 831329
+select * from nyc_taxi where pickup_date >= '2012-08-07' and pickup_date <= '2015-12-19' and dropoff_date >= '2011-01-31' and dropoff_date <= '2012-08-08';, elapsed: 3.0993337631225586s, found points: 572522
+select * from nyc_taxi where pickup_date >= '2013-06-17' and pickup_date <= '2013-06-19' and dropoff_date >= '2011-03-08' and dropoff_date <= '2015-08-17';, elapsed: 4.936415433883667s, found points: 966962
+select * from nyc_taxi where pickup_date >= '2016-01-04' and pickup_date <= '2016-01-12' and dropoff_date >= '2015-11-26' and dropoff_date <= '2016-02-12';, elapsed: 5.051995515823364s, found points: 986947
+select * from nyc_taxi where pickup_date <= '2011-06-07' and passenger_cnt = 0;;, elapsed: 2.2144365310668945s, found points: 413667
+select * from nyc_taxi where trip_dist <= 15 and fare_amt between 68 AND 9279;;, elapsed: 8.058625221252441s, found points: 371867
+select * from nyc_taxi where pickup_date >= '2011-11-30' and pickup_date <= '2012-07-03' and dropoff_date >= '2012-07-01' and dropoff_date <= '2014-09-21';, elapsed: 3.6144869327545166s, found points: 691025
+select * from nyc_taxi where pickup_date <= '2011-06-05' and passenger_cnt = 6;;, elapsed: 4.78535008430481s, found points: 915714
+select * from nyc_taxi where pickup_date <= '2011-06-10' and passenger_cnt = 0;;, elapsed: 2.3434267044067383s, found points: 426819
+select * from nyc_taxi where pickup_date >= '2016-01-08' and pickup_date <= '2016-01-15' and dropoff_date >= '2011-03-08' and dropoff_date <= '2016-08-07';, elapsed: 4.903172969818115s, found points: 961080
+select * from nyc_taxi where pickup_date <= '2011-08-13' and passenger_cnt = 0;;, elapsed: 3.776747941970825s, found points: 722827
+select * from nyc_taxi where pickup_date >= '2011-10-19' and pickup_date <= '2013-02-26' and dropoff_date >= '2012-10-24' and dropoff_date <= '2012-11-02';, elapsed: 2.838581085205078s, found points: 538720
+select * from nyc_taxi where pickup_date <= '2011-07-27' and passenger_cnt = 6;;, elapsed: 5.168104410171509s, found points: 1000630
+select * from nyc_taxi where pickup_date <= '2011-07-16' and passenger_cnt = 6;;, elapsed: 5.131136417388916s, found points: 988263
+select * from nyc_taxi where pickup_date >= '2012-07-07' and pickup_date <= '2013-06-11' and dropoff_date >= '2013-06-07' and dropoff_date <= '2013-09-01';, elapsed: 2.5518364906311035s, found points: 481148
+select * from nyc_taxi where pickup_date >= '2016-05-15' and pickup_date <= '2016-05-19' and dropoff_date >= '2014-08-06' and dropoff_date <= '2016-09-07';, elapsed: 5.015771865844727s, found points: 980858
+select * from nyc_taxi where pickup_date <= '2011-10-12' and passenger_cnt = 0;;, elapsed: 5.045329809188843s, found points: 975779
+select * from nyc_taxi where pickup_date >= '2015-11-29' and pickup_date <= '2015-11-30' and dropoff_date >= '2014-01-08' and dropoff_date <= '2016-03-03';, elapsed: 2.4582481384277344s, found points: 462039
+select * from nyc_taxi where pickup_date >= '2015-12-01' and pickup_date <= '2016-03-08' and dropoff_date >= '2016-03-06' and dropoff_date <= '2016-05-27';, elapsed: 4.5331127643585205s, found points: 887130
+select * from nyc_taxi where pickup_date >= '2016-06-12' and pickup_date <= '2016-06-16' and dropoff_date >= '2015-12-17' and dropoff_date <= '2016-09-10';, elapsed: 4.090242624282837s, found points: 795283
+select * from nyc_taxi where pickup_date >= '2015-11-21' and pickup_date <= '2016-04-15' and dropoff_date >= '2016-04-09' and dropoff_date <= '2016-04-14';, elapsed: 3.6600728034973145s, found points: 712586
+select * from nyc_taxi where pickup_date >= '2016-03-09' and pickup_date <= '2016-03-11' and dropoff_date >= '2011-12-15' and dropoff_date <= '2016-04-29';, elapsed: 3.353395462036133s, found points: 656983
+select * from nyc_taxi where pickup_date <= '2011-06-23' and passenger_cnt = 6;;, elapsed: 4.886651992797852s, found points: 951498
+select * from nyc_taxi where pickup_date >= '2016-06-03' and pickup_date <= '2016-06-04' and dropoff_date >= '2013-08-20' and dropoff_date <= '2016-10-14';, elapsed: 2.459970474243164s, found points: 467640
+select * from nyc_taxi where pickup_date <= '2011-06-22' and passenger_cnt = 0;;, elapsed: 2.7589399814605713s, found points: 508952
+select * from nyc_taxi where pickup_date >= '2014-06-26' and pickup_date <= '2015-05-29' and dropoff_date >= '2015-05-24' and dropoff_date <= '2015-11-26';, elapsed: 2.6350200176239014s, found points: 490668
+select * from nyc_taxi where pickup_date <= '2011-10-17' and passenger_cnt = 0;;, elapsed: 5.12884259223938s, found points: 993856
+select * from nyc_taxi where pickup_date <= '2011-08-01' and passenger_cnt = 0;;, elapsed: 3.3988099098205566s, found points: 636141
+select * from nyc_taxi where pickup_date <= '2011-01-04' and passenger_cnt = 6;;, elapsed: 3.984523057937622s, found points: 753699
+select * from nyc_taxi where pickup_date >= '2016-06-09' and pickup_date <= '2016-06-15' and dropoff_date >= '2015-06-02' and dropoff_date <= '2016-10-23';, elapsed: 4.6004555225372314s, found points: 885733
+select * from nyc_taxi where pickup_date <= '2011-10-07' and passenger_cnt = 0;;, elapsed: 5.020158767700195s, found points: 946910
+select * from nyc_taxi where pickup_date <= '2011-04-30' and passenger_cnt = 6;;, elapsed: 4.607330083847046s, found points: 881531
+select * from nyc_taxi where pickup_date <= '2011-05-30' and passenger_cnt = 6;;, elapsed: 4.750514984130859s, found points: 914951
+select * from nyc_taxi where pickup_date <= '2011-03-14' and passenger_cnt = 6;;, elapsed: 4.389114856719971s, found points: 831657
+select * from nyc_taxi where trip_dist <= 186 and fare_amt between 75 AND 3640;;, elapsed: 4.528969049453735s, found points: 654714
+select * from nyc_taxi where pickup_date >= '2016-05-11' and pickup_date <= '2016-05-15' and dropoff_date >= '2013-09-24' and dropoff_date <= '2016-09-29';, elapsed: 2.898514747619629s, found points: 558479
+select * from nyc_taxi where pickup_date <= '2011-02-25' and passenger_cnt = 6;;, elapsed: 4.278472661972046s, found points: 815904
+select * from nyc_taxi where pickup_date >= '2016-03-27' and pickup_date <= '2016-03-29' and dropoff_date >= '2015-03-15' and dropoff_date <= '2016-10-31';, elapsed: 5.13910984992981s, found points: 966503
+select * from nyc_taxi where pickup_date <= '2011-05-24' and passenger_cnt = 0;;, elapsed: 2.055964469909668s, found points: 371723
+select * from nyc_taxi where pickup_date >= '2016-03-03' and pickup_date <= '2016-04-22' and dropoff_date >= '2016-04-19' and dropoff_date <= '2016-10-07';, elapsed: 4.540344476699829s, found points: 893080
+select * from nyc_taxi where pickup_date <= '2011-08-01' and passenger_cnt = 6;;, elapsed: 5.1894848346710205s, found points: 1004220
+select * from nyc_taxi where pickup_date >= '2015-12-12' and pickup_date <= '2016-05-23' and dropoff_date >= '2011-07-07' and dropoff_date <= '2015-12-13';, elapsed: 1.9828276634216309s, found points: 374718
+select * from nyc_taxi where pickup_date >= '2016-03-14' and pickup_date <= '2016-03-17' and dropoff_date >= '2014-11-12' and dropoff_date <= '2016-10-29';, elapsed: 3.5708422660827637s, found points: 701206
+select * from nyc_taxi where pickup_date <= '2011-05-24' and passenger_cnt = 6;;, elapsed: 4.783982992172241s, found points: 902624
+select * from nyc_taxi where pickup_date >= '2013-11-26' and pickup_date <= '2015-06-23' and dropoff_date >= '2012-06-15' and dropoff_date <= '2013-12-01';, elapsed: 2.7144505977630615s, found points: 513405
+select * from nyc_taxi where pickup_date <= '2011-09-11' and passenger_cnt = 0;;, elapsed: 4.338156223297119s, found points: 827367
+select * from nyc_taxi where pickup_date <= '2011-07-30' and passenger_cnt = 0;;, elapsed: 3.412872791290283s, found points: 630346
+select * from nyc_taxi where trip_dist <= 68 and fare_amt between 82 AND 7418;;, elapsed: 3.510999917984009s, found points: 455159
+select * from nyc_taxi where trip_dist <= 196 and fare_amt between 73 AND 915;;, elapsed: 4.92632794380188s, found points: 711388
+select * from nyc_taxi where pickup_date >= '2013-02-16' and pickup_date <= '2015-07-30' and dropoff_date >= '2015-07-27' and dropoff_date <= '2015-09-25';, elapsed: 4.633395195007324s, found points: 894238
+select * from nyc_taxi where trip_dist <= 294 and fare_amt between 78 AND 3359;;, elapsed: 4.0427000522613525s, found points: 557254
+select * from nyc_taxi where pickup_date >= '2016-02-15' and pickup_date <= '2016-02-21' and dropoff_date >= '2014-10-16' and dropoff_date <= '2016-09-25';, elapsed: 1.7814879417419434s, found points: 343617
+select * from nyc_taxi where pickup_date >= '2013-08-31' and pickup_date <= '2015-02-15' and dropoff_date >= '2015-02-13' and dropoff_date <= '2016-03-29';, elapsed: 2.1933393478393555s, found points: 417424
+select * from nyc_taxi where pickup_date <= '2011-10-10' and passenger_cnt = 0;;, elapsed: 4.9247658252716064s, found points: 965781
+select * from nyc_taxi where pickup_date >= '2016-03-03' and pickup_date <= '2016-03-04' and dropoff_date >= '2011-09-05' and dropoff_date <= '2016-03-08';, elapsed: 3.0864181518554688s, found points: 584188
+select * from nyc_taxi where pickup_date <= '2011-07-25' and passenger_cnt = 6;;, elapsed: 5.115791082382202s, found points: 1000630
+select * from nyc_taxi where pickup_date >= '2013-07-11' and pickup_date <= '2014-04-19' and dropoff_date >= '2013-02-08' and dropoff_date <= '2013-07-24';, elapsed: 3.0938358306884766s, found points: 585763
+select * from nyc_taxi where pickup_date >= '2012-04-12' and pickup_date <= '2012-05-17' and dropoff_date >= '2012-05-13' and dropoff_date <= '2016-07-19';, elapsed: 2.2093093395233154s, found points: 426280
+select * from nyc_taxi where pickup_date >= '2015-10-29' and pickup_date <= '2015-10-30' and dropoff_date >= '2015-04-18' and dropoff_date <= '2016-06-13';, elapsed: 2.949606418609619s, found points: 567185
+select * from nyc_taxi where pickup_date >= '2011-06-27' and pickup_date <= '2011-07-07' and dropoff_date >= '2011-03-29' and dropoff_date <= '2015-04-28';, elapsed: 4.754307985305786s, found points: 933760
+select * from nyc_taxi where pickup_date <= '2011-07-06' and passenger_cnt = 6;;, elapsed: 5.033409833908081s, found points: 957247
+select * from nyc_taxi where pickup_date >= '2016-06-15' and pickup_date <= '2016-06-17' and dropoff_date >= '2013-08-27' and dropoff_date <= '2016-07-14';, elapsed: 2.758687973022461s, found points: 524718
+select * from nyc_taxi where pickup_date <= '2011-08-04' and passenger_cnt = 0;;, elapsed: 3.4450502395629883s, found points: 654440
+select * from nyc_taxi where pickup_date >= '2012-12-20' and pickup_date <= '2012-12-23' and dropoff_date >= '2012-07-30' and dropoff_date <= '2016-05-08';, elapsed: 4.498018980026245s, found points: 872717
+select * from nyc_taxi where pickup_date >= '2014-11-24' and pickup_date <= '2015-09-23' and dropoff_date >= '2015-04-12' and dropoff_date <= '2015-04-22';, elapsed: 1.9718730449676514s, found points: 369156
+select * from nyc_taxi where pickup_date >= '2014-06-08' and pickup_date <= '2015-10-11' and dropoff_date >= '2015-10-10' and dropoff_date <= '2016-06-21';, elapsed: 4.7484166622161865s, found points: 922007
+select * from nyc_taxi where pickup_date >= '2016-05-11' and pickup_date <= '2016-06-07' and dropoff_date >= '2016-06-05' and dropoff_date <= '2016-09-30';, elapsed: 2.670245409011841s, found points: 498014
+select * from nyc_taxi where pickup_date <= '2011-03-28' and passenger_cnt = 6;;, elapsed: 4.534301280975342s, found points: 851999
+select * from nyc_taxi where pickup_date >= '2015-01-07' and pickup_date <= '2016-03-09' and dropoff_date >= '2016-03-08' and dropoff_date <= '2016-04-22';, elapsed: 2.7231180667877197s, found points: 509646
+select * from nyc_taxi where pickup_date >= '2012-06-20' and pickup_date <= '2013-10-25' and dropoff_date >= '2013-10-23' and dropoff_date <= '2016-05-25';, elapsed: 3.1496729850769043s, found points: 595160
+select * from nyc_taxi where pickup_date <= '2011-01-11' and passenger_cnt = 6;;, elapsed: 4.01780891418457s, found points: 765254
+select * from nyc_taxi where pickup_date <= '2011-08-20' and passenger_cnt = 0;;, elapsed: 3.984792947769165s, found points: 744606
+select * from nyc_taxi where pickup_date >= '2013-11-17' and pickup_date <= '2014-02-24' and dropoff_date >= '2014-02-24' and dropoff_date <= '2014-12-19';, elapsed: 2.048828601837158s, found points: 379817
+select * from nyc_taxi where pickup_date <= '2011-08-02' and passenger_cnt = 0;;, elapsed: 3.3461356163024902s, found points: 640686
+select * from nyc_taxi where pickup_date >= '2014-11-29' and pickup_date <= '2016-02-28' and dropoff_date >= '2016-02-26' and dropoff_date <= '2016-03-12';, elapsed: 4.965030670166016s, found points: 963004
+select * from nyc_taxi where pickup_date <= '2011-08-01' and passenger_cnt = 0;;, elapsed: 3.3265340328216553s, found points: 636141
+select * from nyc_taxi where pickup_date >= '2016-03-05' and pickup_date <= '2016-03-06' and dropoff_date >= '2013-11-15' and dropoff_date <= '2016-03-11';, elapsed: 3.3831145763397217s, found points: 646113
+select * from nyc_taxi where pickup_date >= '2016-06-16' and pickup_date <= '2016-06-18' and dropoff_date >= '2013-08-22' and dropoff_date <= '2016-09-29';, elapsed: 1.9567334651947021s, found points: 374236
+select * from nyc_taxi where pickup_date >= '2015-02-06' and pickup_date <= '2015-11-23' and dropoff_date >= '2015-04-11' and dropoff_date <= '2015-04-14';, elapsed: 3.095083475112915s, found points: 586995
+select * from nyc_taxi where pickup_date >= '2014-12-09' and pickup_date <= '2015-12-12' and dropoff_date >= '2015-12-09' and dropoff_date <= '2016-08-26';, elapsed: 3.8665530681610107s, found points: 738002
+select * from nyc_taxi where pickup_date >= '2016-06-04' and pickup_date <= '2016-06-06' and dropoff_date >= '2015-12-12' and dropoff_date <= '2016-09-30';, elapsed: 2.9379568099975586s, found points: 549185
+select * from nyc_taxi where pickup_date >= '2016-05-31' and pickup_date <= '2016-06-03' and dropoff_date >= '2015-12-25' and dropoff_date <= '2016-08-10';, elapsed: 5.175623178482056s, found points: 1012192
+select * from nyc_taxi where pickup_date >= '2013-10-01' and pickup_date <= '2015-09-13' and dropoff_date >= '2013-08-02' and dropoff_date <= '2013-10-02';, elapsed: 4.873736619949341s, found points: 930298
+select * from nyc_taxi where pickup_date <= '2011-04-20' and passenger_cnt = 6;;, elapsed: 4.446678161621094s, found points: 874143
+select * from nyc_taxi where trip_dist <= 119 and fare_amt between 68 AND 7786;;, elapsed: 10.688094854354858s, found points: 963436
+select * from nyc_taxi where pickup_date >= '2015-05-29' and pickup_date <= '2015-05-31' and dropoff_date >= '2011-06-19' and dropoff_date <= '2016-05-15';, elapsed: 3.7108154296875s, found points: 722462
+select * from nyc_taxi where pickup_date >= '2014-10-10' and pickup_date <= '2014-12-31' and dropoff_date >= '2014-12-26' and dropoff_date <= '2016-07-04';, elapsed: 4.83613395690918s, found points: 957802
+select * from nyc_taxi where pickup_date >= '2014-02-28' and pickup_date <= '2014-03-02' and dropoff_date >= '2013-12-02' and dropoff_date <= '2014-04-17';, elapsed: 3.2420766353607178s, found points: 632379
+select * from nyc_taxi where pickup_date <= '2011-10-02' and passenger_cnt = 0;;, elapsed: 4.63708758354187s, found points: 901071
+select * from nyc_taxi where pickup_date >= '2014-01-27' and pickup_date <= '2015-02-05' and dropoff_date >= '2015-02-04' and dropoff_date <= '2016-02-10';, elapsed: 3.0955283641815186s, found points: 589227
+select * from nyc_taxi where pickup_date >= '2013-04-20' and pickup_date <= '2013-04-21' and dropoff_date >= '2013-04-01' and dropoff_date <= '2016-06-06';, elapsed: 2.23044753074646s, found points: 421482
+select * from nyc_taxi where pickup_date <= '2011-04-06' and passenger_cnt = 6;;, elapsed: 4.492689609527588s, found points: 855192
+select * from nyc_taxi where pickup_date >= '2015-09-12' and pickup_date <= '2015-12-14' and dropoff_date >= '2015-12-11' and dropoff_date <= '2016-04-07';, elapsed: 3.8288252353668213s, found points: 740856
+select * from nyc_taxi where pickup_date >= '2016-05-19' and pickup_date <= '2016-06-04' and dropoff_date >= '2016-06-01' and dropoff_date <= '2016-09-29';, elapsed: 4.966259479522705s, found points: 980670
+select * from nyc_taxi where pickup_date <= '2011-05-10' and passenger_cnt = 6;;, elapsed: 4.617446660995483s, found points: 883707
+select * from nyc_taxi where pickup_date <= '2011-07-10' and passenger_cnt = 6;;, elapsed: 5.050202131271362s, found points: 967626
+select * from nyc_taxi where pickup_date >= '2013-03-05' and pickup_date <= '2014-07-05' and dropoff_date >= '2014-07-04' and dropoff_date <= '2016-04-02';, elapsed: 2.318025588989258s, found points: 427146
+select * from nyc_taxi where pickup_date <= '2011-09-06' and passenger_cnt = 0;;, elapsed: 4.129875659942627s, found points: 785102
+select * from nyc_taxi where pickup_date <= '2011-10-05' and passenger_cnt = 0;;, elapsed: 4.877614259719849s, found points: 927831
+select * from nyc_taxi where pickup_date >= '2015-10-16' and pickup_date <= '2015-10-20' and dropoff_date >= '2015-01-19' and dropoff_date <= '2016-06-14';, elapsed: 4.084418296813965s, found points: 792107
+select * from nyc_taxi where pickup_date >= '2014-09-19' and pickup_date <= '2015-12-22' and dropoff_date >= '2013-04-06' and dropoff_date <= '2014-09-19';, elapsed: 2.803778648376465s, found points: 533087
+select * from nyc_taxi where pickup_date >= '2014-11-02' and pickup_date <= '2015-07-17' and dropoff_date >= '2014-04-15' and dropoff_date <= '2014-11-11';, elapsed: 2.7267496585845947s, found points: 526803
+select * from nyc_taxi where pickup_date >= '2015-05-16' and pickup_date <= '2016-04-12' and dropoff_date >= '2015-07-27' and dropoff_date <= '2015-07-29';, elapsed: 2.8383209705352783s, found points: 538568
+select * from nyc_taxi where pickup_date >= '2015-11-16' and pickup_date <= '2016-02-09' and dropoff_date >= '2014-09-06' and dropoff_date <= '2015-11-17';, elapsed: 2.576277732849121s, found points: 488097
+select * from nyc_taxi where pickup_date >= '2016-04-02' and pickup_date <= '2016-05-22' and dropoff_date >= '2015-08-19' and dropoff_date <= '2016-04-04';, elapsed: 4.231888771057129s, found points: 827062
+select * from nyc_taxi where pickup_date >= '2016-05-07' and pickup_date <= '2016-05-11' and dropoff_date >= '2015-12-26' and dropoff_date <= '2016-06-15';, elapsed: 3.404637098312378s, found points: 655736
+select * from nyc_taxi where pickup_date <= '2011-05-27' and passenger_cnt = 6;;, elapsed: 4.721824645996094s, found points: 910137
+select * from nyc_taxi where pickup_date >= '2014-08-02' and pickup_date <= '2015-08-12' and dropoff_date >= '2014-06-30' and dropoff_date <= '2014-08-10';, elapsed: 2.5205278396606445s, found points: 467031
+select * from nyc_taxi where pickup_date >= '2014-07-04' and pickup_date <= '2015-03-08' and dropoff_date >= '2015-03-06' and dropoff_date <= '2016-06-29';, elapsed: 4.380921840667725s, found points: 855291
+select * from nyc_taxi where pickup_date >= '2016-06-11' and pickup_date <= '2016-06-13' and dropoff_date >= '2016-06-06' and dropoff_date <= '2016-08-02';, elapsed: 1.9988245964050293s, found points: 376238
+select * from nyc_taxi where pickup_date <= '2011-06-03' and passenger_cnt = 0;;, elapsed: 2.186229705810547s, found points: 410907
+select * from nyc_taxi where pickup_date <= '2011-07-08' and passenger_cnt = 0;;, elapsed: 2.862370491027832s, found points: 539263
+select * from nyc_taxi where pickup_date >= '2016-04-06' and pickup_date <= '2016-06-18' and dropoff_date >= '2016-06-16' and dropoff_date <= '2016-06-26';, elapsed: 1.9980340003967285s, found points: 376373
+select * from nyc_taxi where pickup_date >= '2014-05-04' and pickup_date <= '2014-05-05' and dropoff_date >= '2011-11-23' and dropoff_date <= '2015-10-25';, elapsed: 3.1454429626464844s, found points: 613802
+select * from nyc_taxi where pickup_date <= '2011-01-15' and passenger_cnt = 6;;, elapsed: 3.9719274044036865s, found points: 771453
+select * from nyc_taxi where pickup_date <= '2011-06-29' and passenger_cnt = 6;;, elapsed: 5.009942531585693s, found points: 953454
+select * from nyc_taxi where pickup_date >= '2016-06-13' and pickup_date <= '2016-06-17' and dropoff_date >= '2014-09-08' and dropoff_date <= '2016-10-11';, elapsed: 4.338282823562622s, found points: 836436
+select * from nyc_taxi where pickup_date >= '2016-02-20' and pickup_date <= '2016-02-23' and dropoff_date >= '2013-03-26' and dropoff_date <= '2016-07-17';, elapsed: 2.2588703632354736s, found points: 428736
+select * from nyc_taxi where pickup_date >= '2013-05-07' and pickup_date <= '2015-10-26' and dropoff_date >= '2014-10-20' and dropoff_date <= '2014-10-21';, elapsed: 3.4789185523986816s, found points: 655443
+select * from nyc_taxi where pickup_date >= '2014-02-24' and pickup_date <= '2014-02-25' and dropoff_date >= '2013-01-14' and dropoff_date <= '2015-03-28';, elapsed: 3.5117921829223633s, found points: 685880
+select * from nyc_taxi where pickup_date >= '2013-06-29' and pickup_date <= '2015-01-27' and dropoff_date >= '2014-11-29' and dropoff_date <= '2014-12-07';, elapsed: 1.908756971359253s, found points: 357781
+select * from nyc_taxi where pickup_date <= '2011-04-18' and passenger_cnt = 6;;, elapsed: 4.515791893005371s, found points: 871737
+select * from nyc_taxi where pickup_date >= '2015-09-15' and pickup_date <= '2016-04-13' and dropoff_date >= '2013-12-14' and dropoff_date <= '2015-09-21';, elapsed: 3.2464852333068848s, found points: 618626
+select * from nyc_taxi where pickup_date <= '2011-10-08' and passenger_cnt = 0;;, elapsed: 4.920666694641113s, found points: 955738
+select * from nyc_taxi where pickup_date >= '2016-05-09' and pickup_date <= '2016-05-16' and dropoff_date >= '2016-04-07' and dropoff_date <= '2016-06-24';, elapsed: 4.583224058151245s, found points: 887478
+select * from nyc_taxi where pickup_date >= '2016-02-14' and pickup_date <= '2016-02-22' and dropoff_date >= '2014-04-04' and dropoff_date <= '2016-08-30';, elapsed: 3.510774850845337s, found points: 683092
+select * from nyc_taxi where pickup_date <= '2011-05-09' and passenger_cnt = 6;;, elapsed: 4.559211254119873s, found points: 883707
+select * from nyc_taxi where pickup_date <= '2011-06-10' and passenger_cnt = 0;;, elapsed: 2.317762613296509s, found points: 426819
+select * from nyc_taxi where pickup_date <= '2011-02-26' and passenger_cnt = 6;;, elapsed: 4.28580904006958s, found points: 817390
+select * from nyc_taxi where pickup_date <= '2011-03-10' and passenger_cnt = 6;;, elapsed: 4.437144041061401s, found points: 827380
+select * from nyc_taxi where pickup_date <= '2011-06-02' and passenger_cnt = 6;;, elapsed: 4.827376127243042s, found points: 915714
+select * from nyc_taxi where pickup_date <= '2011-09-19' and passenger_cnt = 0;;, elapsed: 4.557588338851929s, found points: 862534
+select * from nyc_taxi where pickup_date >= '2013-09-10' and pickup_date <= '2016-03-22' and dropoff_date >= '2012-09-06' and dropoff_date <= '2013-09-12';, elapsed: 2.5530853271484375s, found points: 472168
+select * from nyc_taxi where pickup_date <= '2011-02-28' and passenger_cnt = 6;;, elapsed: 4.272714853286743s, found points: 819684
+select * from nyc_taxi where pickup_date >= '2016-06-15' and pickup_date <= '2016-06-16' and dropoff_date >= '2013-08-03' and dropoff_date <= '2016-09-29';, elapsed: 1.824488639831543s, found points: 347858
+select * from nyc_taxi where pickup_date >= '2013-01-30' and pickup_date <= '2015-11-29' and dropoff_date >= '2011-05-16' and dropoff_date <= '2013-01-30';, elapsed: 2.550896406173706s, found points: 478851
+select * from nyc_taxi where pickup_date >= '2012-12-01' and pickup_date <= '2016-01-28' and dropoff_date >= '2015-12-25' and dropoff_date <= '2015-12-28';, elapsed: 4.477538824081421s, found points: 862156
+select * from nyc_taxi where pickup_date >= '2012-04-11' and pickup_date <= '2014-03-07' and dropoff_date >= '2013-09-03' and dropoff_date <= '2013-09-03';, elapsed: 2.257153272628784s, found points: 422429
+select * from nyc_taxi where pickup_date <= '2011-06-25' and passenger_cnt = 0;;, elapsed: 2.7464890480041504s, found points: 515721
+select * from nyc_taxi where pickup_date <= '2011-02-16' and passenger_cnt = 6;;, elapsed: 4.188967227935791s, found points: 802691
+select * from nyc_taxi where pickup_date <= '2011-01-15' and passenger_cnt = 6;;, elapsed: 4.014454126358032s, found points: 771453
+select * from nyc_taxi where pickup_date >= '2014-11-28' and pickup_date <= '2016-03-23' and dropoff_date >= '2016-03-20' and dropoff_date <= '2016-07-13';, elapsed: 4.475578546524048s, found points: 867640
+select * from nyc_taxi where pickup_date <= '2011-04-12' and passenger_cnt = 6;;, elapsed: 4.501353740692139s, found points: 862711
+select * from nyc_taxi where pickup_date <= '2011-06-05' and passenger_cnt = 0;;, elapsed: 2.260502576828003s, found points: 410907
+select * from nyc_taxi where pickup_date <= '2011-07-29' and passenger_cnt = 0;;, elapsed: 3.3149068355560303s, found points: 628580
+select * from nyc_taxi where pickup_date <= '2011-02-12' and passenger_cnt = 6;;, elapsed: 4.158045053482056s, found points: 799014
+select * from nyc_taxi where pickup_date >= '2013-03-01' and pickup_date <= '2013-03-06' and dropoff_date >= '2011-10-26' and dropoff_date <= '2014-02-04';, elapsed: 3.7117152214050293s, found points: 722545
+select * from nyc_taxi where pickup_date <= '2011-04-26' and passenger_cnt = 6;;, elapsed: 4.534291505813599s, found points: 878797
+select * from nyc_taxi where pickup_date <= '2011-03-29' and passenger_cnt = 6;;, elapsed: 4.449219226837158s, found points: 852506
+select * from nyc_taxi where pickup_date <= '2011-08-01' and passenger_cnt = 6;;, elapsed: 5.227917432785034s, found points: 1004220
+select * from nyc_taxi where pickup_date >= '2016-05-13' and pickup_date <= '2016-05-16' and dropoff_date >= '2015-12-27' and dropoff_date <= '2016-05-28';, elapsed: 2.8557307720184326s, found points: 551096
+select * from nyc_taxi where pickup_date <= '2011-02-05' and passenger_cnt = 6;;, elapsed: 4.141513347625732s, found points: 793225
+select * from nyc_taxi where pickup_date >= '2014-07-03' and pickup_date <= '2014-10-29' and dropoff_date >= '2013-06-26' and dropoff_date <= '2014-07-05';, elapsed: 4.308159112930298s, found points: 838507
+select * from nyc_taxi where pickup_date >= '2015-04-23' and pickup_date <= '2015-07-22' and dropoff_date >= '2015-07-16' and dropoff_date <= '2016-03-25';, elapsed: 1.8169286251068115s, found points: 339759
+select * from nyc_taxi where pickup_date <= '2011-04-20' and passenger_cnt = 6;;, elapsed: 4.483948707580566s, found points: 874143
+select * from nyc_taxi where pickup_date >= '2016-04-14' and pickup_date <= '2016-04-17' and dropoff_date >= '2014-01-19' and dropoff_date <= '2016-08-29';, elapsed: 3.908637523651123s, found points: 770345
+select * from nyc_taxi where pickup_date <= '2011-04-05' and passenger_cnt = 6;;, elapsed: 4.417405843734741s, found points: 854344
+select * from nyc_taxi where pickup_date >= '2012-11-30' and pickup_date <= '2015-02-10' and dropoff_date >= '2014-05-16' and dropoff_date <= '2014-05-17';, elapsed: 2.2881979942321777s, found points: 428856
+select * from nyc_taxi where pickup_date <= '2011-03-30' and passenger_cnt = 6;;, elapsed: 4.406925201416016s, found points: 852894
+select * from nyc_taxi where pickup_date <= '2011-04-29' and passenger_cnt = 6;;, elapsed: 4.5932793617248535s, found points: 880587
+select * from nyc_taxi where pickup_date >= '2015-08-13' and pickup_date <= '2016-05-16' and dropoff_date >= '2012-07-04' and dropoff_date <= '2015-08-17';, elapsed: 3.826061725616455s, found points: 741405
+select * from nyc_taxi where pickup_date <= '2011-04-05' and passenger_cnt = 6;;, elapsed: 4.402283191680908s, found points: 854344
+select * from nyc_taxi where pickup_date >= '2011-02-21' and pickup_date <= '2012-07-26' and dropoff_date >= '2012-07-22' and dropoff_date <= '2013-01-16';, elapsed: 4.8855133056640625s, found points: 958107
+select * from nyc_taxi where pickup_date >= '2015-09-16' and pickup_date <= '2015-09-26' and dropoff_date >= '2014-07-26' and dropoff_date <= '2016-06-28';, elapsed: 2.3697476387023926s, found points: 456165
+select * from nyc_taxi where pickup_date <= '2011-04-27' and passenger_cnt = 6;;, elapsed: 4.6852288246154785s, found points: 879187
+select * from nyc_taxi where pickup_date >= '2014-06-28' and pickup_date <= '2015-05-25' and dropoff_date >= '2013-12-22' and dropoff_date <= '2014-06-28';, elapsed: 2.768829584121704s, found points: 521181
+select * from nyc_taxi where pickup_date >= '2011-12-10' and pickup_date <= '2015-08-27' and dropoff_date >= '2015-08-16' and dropoff_date <= '2016-07-25';, elapsed: 2.73199725151062s, found points: 511140
+select * from nyc_taxi where pickup_date <= '2011-07-31' and passenger_cnt = 6;;, elapsed: 5.165553331375122s, found points: 1002911
+select * from nyc_taxi where pickup_date <= '2011-08-08' and passenger_cnt = 0;;, elapsed: 3.6286087036132812s, found points: 682645
+select * from nyc_taxi where pickup_date <= '2011-06-25' and passenger_cnt = 6;;, elapsed: 5.035446643829346s, found points: 952795
+select * from nyc_taxi where pickup_date <= '2011-08-12' and passenger_cnt = 0;;, elapsed: 3.8604514598846436s, found points: 716781
+select * from nyc_taxi where pickup_date <= '2011-07-07' and passenger_cnt = 6;;, elapsed: 5.088705778121948s, found points: 959441
+select * from nyc_taxi where pickup_date >= '2016-06-06' and pickup_date <= '2016-06-09' and dropoff_date >= '2015-02-23' and dropoff_date <= '2016-07-15';, elapsed: 2.704073429107666s, found points: 506609
+select * from nyc_taxi where pickup_date >= '2016-05-02' and pickup_date <= '2016-06-02' and dropoff_date >= '2016-06-01' and dropoff_date <= '2016-06-06';, elapsed: 2.7504475116729736s, found points: 513030
+select * from nyc_taxi where pickup_date >= '2015-08-11' and pickup_date <= '2015-08-15' and dropoff_date >= '2011-07-18' and dropoff_date <= '2015-08-13';, elapsed: 4.029902935028076s, found points: 777030
+select * from nyc_taxi where pickup_date <= '2011-05-06' and passenger_cnt = 6;;, elapsed: 4.566215753555298s, found points: 883707
+select * from nyc_taxi where pickup_date >= '2013-06-07' and pickup_date <= '2013-06-12' and dropoff_date >= '2011-07-15' and dropoff_date <= '2015-11-24';, elapsed: 3.294372320175171s, found points: 641741
+select * from nyc_taxi where pickup_date <= '2011-07-11' and passenger_cnt = 0;;, elapsed: 2.9631028175354004s, found points: 557840
+select * from nyc_taxi where pickup_date <= '2011-04-19' and passenger_cnt = 6;;, elapsed: 4.571150541305542s, found points: 872884
+select * from nyc_taxi where pickup_date <= '2011-03-04' and passenger_cnt = 6;;, elapsed: 4.352781057357788s, found points: 823360
+select * from nyc_taxi where pickup_date <= '2011-05-29' and passenger_cnt = 6;;, elapsed: 4.8241286277771s, found points: 914579
+select * from nyc_taxi where trip_dist <= 248 and fare_amt between 78 AND 1783;;, elapsed: 4.063383102416992s, found points: 557155
+select * from nyc_taxi where pickup_date >= '2013-04-04' and pickup_date <= '2013-04-05' and dropoff_date >= '2011-12-11' and dropoff_date <= '2016-08-06';, elapsed: 3.3679935932159424s, found points: 651700
+select * from nyc_taxi where pickup_date >= '2012-08-05' and pickup_date <= '2014-05-31' and dropoff_date >= '2013-05-01' and dropoff_date <= '2013-05-02';, elapsed: 3.7530689239501953s, found points: 723952
+select * from nyc_taxi where pickup_date <= '2011-01-18' and passenger_cnt = 6;;, elapsed: 4.072056770324707s, found points: 773987
+select * from nyc_taxi where pickup_date <= '2011-07-03' and passenger_cnt = 6;;, elapsed: 4.9315831661224365s, found points: 953993
+select * from nyc_taxi where pickup_date >= '2013-11-26' and pickup_date <= '2013-12-02' and dropoff_date >= '2011-10-18' and dropoff_date <= '2015-07-20';, elapsed: 3.8804478645324707s, found points: 741381
+select * from nyc_taxi where pickup_date >= '2016-06-01' and pickup_date <= '2016-06-02' and dropoff_date >= '2014-01-01' and dropoff_date <= '2016-06-09';, elapsed: 2.6532607078552246s, found points: 510981
+select * from nyc_taxi where pickup_date >= '2016-06-10' and pickup_date <= '2016-06-17' and dropoff_date >= '2016-06-14' and dropoff_date <= '2016-08-12';, elapsed: 3.545348882675171s, found points: 686786
+select * from nyc_taxi where pickup_date >= '2013-10-27' and pickup_date <= '2013-11-05' and dropoff_date >= '2013-10-04' and dropoff_date <= '2015-09-09';, elapsed: 4.155272960662842s, found points: 798102
+select * from nyc_taxi where pickup_date >= '2016-01-08' and pickup_date <= '2016-01-15' and dropoff_date >= '2011-09-21' and dropoff_date <= '2016-09-06';, elapsed: 4.956061840057373s, found points: 961080
+select * from nyc_taxi where pickup_date >= '2013-05-20' and pickup_date <= '2014-09-14' and dropoff_date >= '2014-09-14' and dropoff_date <= '2016-09-15';, elapsed: 2.579885721206665s, found points: 481909
+select * from nyc_taxi where pickup_date <= '2011-01-28' and passenger_cnt = 6;;, elapsed: 4.0963966846466064s, found points: 783648
+select * from nyc_taxi where pickup_date >= '2012-11-25' and pickup_date <= '2015-06-05' and dropoff_date >= '2015-06-04' and dropoff_date <= '2016-04-06';, elapsed: 4.97135591506958s, found points: 947886
+select * from nyc_taxi where pickup_date <= '2011-08-19' and passenger_cnt = 0;;, elapsed: 3.9517149925231934s, found points: 743226
+select * from nyc_taxi where pickup_date <= '2011-07-12' and passenger_cnt = 0;;, elapsed: 3.0641419887542725s, found points: 566162
+select * from nyc_taxi where pickup_date <= '2011-05-22' and passenger_cnt = 6;;, elapsed: 4.789910554885864s, found points: 898408
+select * from nyc_taxi where pickup_date <= '2011-08-12' and passenger_cnt = 0;;, elapsed: 3.8357791900634766s, found points: 716781
+select * from nyc_taxi where pickup_date <= '2011-04-02' and passenger_cnt = 6;;, elapsed: 4.544565439224243s, found points: 853345
+select * from nyc_taxi where pickup_date >= '2016-06-13' and pickup_date <= '2016-06-16' and dropoff_date >= '2016-01-16' and dropoff_date <= '2016-10-06';, elapsed: 3.445472240447998s, found points: 659576
+select * from nyc_taxi where pickup_date >= '2011-10-23' and pickup_date <= '2013-09-10' and dropoff_date >= '2011-06-15' and dropoff_date <= '2011-10-25';, elapsed: 4.497657299041748s, found points: 865199
+select * from nyc_taxi where pickup_date >= '2011-01-26' and pickup_date <= '2016-06-08' and dropoff_date >= '2016-03-17' and dropoff_date <= '2016-03-20';, elapsed: 4.007580041885376s, found points: 759701
+select * from nyc_taxi where trip_dist <= 1 and fare_amt between 54 AND 3209;;, elapsed: 9.442630052566528s, found points: 434500
+select * from nyc_taxi where pickup_date >= '2016-06-12' and pickup_date <= '2016-06-18' and dropoff_date >= '2016-04-05' and dropoff_date <= '2016-07-31';, elapsed: 5.034698486328125s, found points: 992374
+select * from nyc_taxi where pickup_date <= '2011-05-15' and passenger_cnt = 6;;, elapsed: 4.594801425933838s, found points: 883707
+select * from nyc_taxi where trip_dist <= 269 and fare_amt between 80 AND 2667;;, elapsed: 3.913501024246216s, found points: 522932
+select * from nyc_taxi where pickup_date <= '2011-07-26' and passenger_cnt = 0;;, elapsed: 3.3228025436401367s, found points: 628580
+select * from nyc_taxi where pickup_date >= '2016-05-04' and pickup_date <= '2016-05-06' and dropoff_date >= '2013-04-12' and dropoff_date <= '2016-06-08';, elapsed: 3.985947847366333s, found points: 768316
+select * from nyc_taxi where pickup_date >= '2014-02-15' and pickup_date <= '2015-05-06' and dropoff_date >= '2013-12-30' and dropoff_date <= '2014-02-15';, elapsed: 2.251117467880249s, found points: 423214
+select * from nyc_taxi where trip_dist <= 74 and fare_amt between 70 AND 107;;, elapsed: 4.651724815368652s, found points: 667911
+select * from nyc_taxi where pickup_date <= '2011-01-28' and passenger_cnt = 6;;, elapsed: 4.111445188522339s, found points: 783648
+select * from nyc_taxi where pickup_date >= '2014-06-26' and pickup_date <= '2014-08-29' and dropoff_date >= '2011-10-30' and dropoff_date <= '2014-06-27';, elapsed: 4.722048282623291s, found points: 921638
+select * from nyc_taxi where pickup_date <= '2011-05-08' and passenger_cnt = 6;;, elapsed: 4.62266206741333s, found points: 883707
+select * from nyc_taxi where pickup_date >= '2015-04-24' and pickup_date <= '2016-03-24' and dropoff_date >= '2013-06-07' and dropoff_date <= '2015-04-29';, elapsed: 3.261847972869873s, found points: 600486
+select * from nyc_taxi where trip_dist <= 173 and fare_amt between 70 AND 6356;;, elapsed: 10.256896495819092s, found points: 866147
+select * from nyc_taxi where pickup_date <= '2011-05-30' and passenger_cnt = 6;;, elapsed: 4.827533960342407s, found points: 914951
+select * from nyc_taxi where pickup_date <= '2011-02-02' and passenger_cnt = 6;;, elapsed: 4.208777189254761s, found points: 789186
+select * from nyc_taxi where pickup_date <= '2011-06-23' and passenger_cnt = 6;;, elapsed: 4.97668194770813s, found points: 951498
+select * from nyc_taxi where pickup_date <= '2011-05-02' and passenger_cnt = 6;;, elapsed: 4.654793739318848s, found points: 883182
+select * from nyc_taxi where pickup_date >= '2016-03-28' and pickup_date <= '2016-03-29' and dropoff_date >= '2016-02-03' and dropoff_date <= '2016-08-10';, elapsed: 3.390207529067993s, found points: 647295
+select * from nyc_taxi where pickup_date <= '2011-07-27' and passenger_cnt = 0;;, elapsed: 3.4314024448394775s, found points: 628580
+select * from nyc_taxi where pickup_date <= '2011-04-30' and passenger_cnt = 6;;, elapsed: 4.579598426818848s, found points: 881531
+select * from nyc_taxi where pickup_date <= '2011-02-07' and passenger_cnt = 6;;, elapsed: 4.165434837341309s, found points: 794548
+select * from nyc_taxi where pickup_date >= '2013-03-08' and pickup_date <= '2013-11-15' and dropoff_date >= '2012-04-27' and dropoff_date <= '2013-03-13';, elapsed: 3.030001163482666s, found points: 569055
+select * from nyc_taxi where pickup_date <= '2011-01-25' and passenger_cnt = 6;;, elapsed: 5.330408334732056s, found points: 780881
+select * from nyc_taxi where pickup_date >= '2016-06-13' and pickup_date <= '2016-06-17' and dropoff_date >= '2016-03-24' and dropoff_date <= '2016-07-13';, elapsed: 4.401935338973999s, found points: 836436
+select * from nyc_taxi where pickup_date >= '2012-02-08' and pickup_date <= '2014-11-29' and dropoff_date >= '2014-11-27' and dropoff_date <= '2016-06-24';, elapsed: 2.7002573013305664s, found points: 482236
+select * from nyc_taxi where pickup_date >= '2012-07-08' and pickup_date <= '2014-09-17' and dropoff_date >= '2014-09-17' and dropoff_date <= '2014-10-29';, elapsed: 2.632901191711426s, found points: 494208
+select * from nyc_taxi where trip_dist <= 125 and fare_amt between 84 AND 1552;;, elapsed: 3.8704285621643066s, found points: 433971
+select * from nyc_taxi where pickup_date >= '2012-10-27' and pickup_date <= '2013-06-13' and dropoff_date >= '2013-06-09' and dropoff_date <= '2013-08-09';, elapsed: 3.382758855819702s, found points: 647126
+select * from nyc_taxi where pickup_date >= '2016-05-07' and pickup_date <= '2016-05-09' and dropoff_date >= '2015-03-05' and dropoff_date <= '2016-10-20';, elapsed: 2.5072097778320312s, found points: 486839
+select * from nyc_taxi where pickup_date <= '2011-07-20' and passenger_cnt = 6;;, elapsed: 5.032872200012207s, found points: 997571
+select * from nyc_taxi where pickup_date <= '2011-09-21' and passenger_cnt = 0;;, elapsed: 4.556804180145264s, found points: 862956
+select * from nyc_taxi where pickup_date <= '2011-03-30' and passenger_cnt = 6;;, elapsed: 4.376673936843872s, found points: 852894
+select * from nyc_taxi where pickup_date <= '2011-09-12' and passenger_cnt = 0;;, elapsed: 4.308246850967407s, found points: 835824
+select * from nyc_taxi where pickup_date <= '2011-02-06' and passenger_cnt = 6;;, elapsed: 4.106357574462891s, found points: 794135
+select * from nyc_taxi where pickup_date >= '2013-12-14' and pickup_date <= '2015-04-23' and dropoff_date >= '2015-04-07' and dropoff_date <= '2015-04-12';, elapsed: 5.0565314292907715s, found points: 1007968
+select * from nyc_taxi where pickup_date >= '2011-03-17' and pickup_date <= '2014-04-11' and dropoff_date >= '2011-07-21' and dropoff_date <= '2011-07-31';, elapsed: 3.6187307834625244s, found points: 707896
+select * from nyc_taxi where pickup_date >= '2013-07-16' and pickup_date <= '2015-11-05' and dropoff_date >= '2014-04-23' and dropoff_date <= '2014-04-25';, elapsed: 3.8698959350585938s, found points: 762881
+select * from nyc_taxi where pickup_date >= '2014-11-04' and pickup_date <= '2015-03-06' and dropoff_date >= '2015-03-05' and dropoff_date <= '2015-11-13';, elapsed: 2.6797168254852295s, found points: 526127
+select * from nyc_taxi where pickup_date >= '2016-04-23' and pickup_date <= '2016-05-24' and dropoff_date >= '2013-12-10' and dropoff_date <= '2016-04-25';, elapsed: 4.744075298309326s, found points: 957239
+select * from nyc_taxi where trip_dist <= 201 and fare_amt between 74 AND 4987;;, elapsed: 4.860156536102295s, found points: 680806
+select * from nyc_taxi where pickup_date >= '2016-06-15' and pickup_date <= '2016-06-18' and dropoff_date >= '2015-07-01' and dropoff_date <= '2016-09-05';, elapsed: 2.776524782180786s, found points: 544949
+select * from nyc_taxi where pickup_date >= '2016-04-23' and pickup_date <= '2016-04-25' and dropoff_date >= '2013-12-06' and dropoff_date <= '2016-06-13';, elapsed: 4.855977535247803s, found points: 959767
+select * from nyc_taxi where pickup_date >= '2016-02-14' and pickup_date <= '2016-02-17' and dropoff_date >= '2015-10-13' and dropoff_date <= '2016-10-17';, elapsed: 2.230740785598755s, found points: 432472
+select * from nyc_taxi where pickup_date >= '2015-04-12' and pickup_date <= '2015-04-20' and dropoff_date >= '2012-02-21' and dropoff_date <= '2015-08-12';, elapsed: 1.8661575317382812s, found points: 365798
+select * from nyc_taxi where pickup_date >= '2015-03-14' and pickup_date <= '2015-11-22' and dropoff_date >= '2015-11-08' and dropoff_date <= '2015-11-12';, elapsed: 4.317782402038574s, found points: 855158
+select * from nyc_taxi where pickup_date >= '2015-02-21' and pickup_date <= '2016-02-21' and dropoff_date >= '2016-02-14' and dropoff_date <= '2016-08-29';, elapsed: 2.6858885288238525s, found points: 530792
+select * from nyc_taxi where pickup_date <= '2011-02-09' and passenger_cnt = 6;;, elapsed: 4.030740022659302s, found points: 796212
+select * from nyc_taxi where pickup_date <= '2011-01-09' and passenger_cnt = 6;;, elapsed: 3.9438986778259277s, found points: 761808
+select * from nyc_taxi where pickup_date >= '2016-06-08' and pickup_date <= '2016-06-11' and dropoff_date >= '2012-04-02' and dropoff_date <= '2016-09-13';, elapsed: 1.8833613395690918s, found points: 353640
+select * from nyc_taxi where pickup_date >= '2012-04-21' and pickup_date <= '2014-12-16' and dropoff_date >= '2014-12-15' and dropoff_date <= '2015-11-28';, elapsed: 4.745246648788452s, found points: 944560
+select * from nyc_taxi where pickup_date <= '2011-07-27' and passenger_cnt = 0;;, elapsed: 3.284939765930176s, found points: 628580
+select * from nyc_taxi where pickup_date >= '2016-05-27' and pickup_date <= '2016-05-30' and dropoff_date >= '2016-01-15' and dropoff_date <= '2016-10-16';, elapsed: 4.835603952407837s, found points: 976789
+select * from nyc_taxi where trip_dist <= 75 and fare_amt between 87 AND 2876;;, elapsed: 3.1631200313568115s, found points: 386233
+select * from nyc_taxi where pickup_date >= '2013-09-17' and pickup_date <= '2016-04-10' and dropoff_date >= '2015-01-28' and dropoff_date <= '2015-01-29';, elapsed: 3.1498332023620605s, found points: 610246
+select * from nyc_taxi where pickup_date >= '2012-10-04' and pickup_date <= '2015-08-23' and dropoff_date >= '2013-06-16' and dropoff_date <= '2013-06-18';, elapsed: 4.082183837890625s, found points: 803995
+select * from nyc_taxi where pickup_date >= '2015-09-11' and pickup_date <= '2015-09-12' and dropoff_date >= '2014-10-25' and dropoff_date <= '2016-11-01';, elapsed: 4.281282424926758s, found points: 850521
+select * from nyc_taxi where pickup_date <= '2011-01-14' and passenger_cnt = 6;;, elapsed: 3.8695106506347656s, found points: 770289
+select * from nyc_taxi where pickup_date >= '2015-04-11' and pickup_date <= '2015-04-23' and dropoff_date >= '2012-08-20' and dropoff_date <= '2016-09-08';, elapsed: 3.005491256713867s, found points: 584080
+select * from nyc_taxi where pickup_date >= '2013-05-24' and pickup_date <= '2016-03-20' and dropoff_date >= '2016-03-18' and dropoff_date <= '2016-09-12';, elapsed: 3.02854585647583s, found points: 581961
+select * from nyc_taxi where pickup_date <= '2011-05-21' and passenger_cnt = 0;;, elapsed: 1.8871161937713623s, found points: 350208
+select * from nyc_taxi where pickup_date <= '2011-07-10' and passenger_cnt = 6;;, elapsed: 4.9948015213012695s, found points: 967626
+select * from nyc_taxi where pickup_date <= '2011-09-03' and passenger_cnt = 0;;, elapsed: 4.037796974182129s, found points: 768667
+select * from nyc_taxi where pickup_date <= '2011-10-10' and passenger_cnt = 0;;, elapsed: 5.0074217319488525s, found points: 965781
+select * from nyc_taxi where pickup_date <= '2011-09-27' and passenger_cnt = 0;;, elapsed: 4.499296188354492s, found points: 870201
+select * from nyc_taxi where pickup_date <= '2011-06-23' and passenger_cnt = 6;;, elapsed: 4.827998161315918s, found points: 951498
+select * from nyc_taxi where pickup_date <= '2011-09-09' and passenger_cnt = 0;;, elapsed: 4.219074964523315s, found points: 811541
+select * from nyc_taxi where pickup_date >= '2014-05-11' and pickup_date <= '2014-05-15' and dropoff_date >= '2014-03-09' and dropoff_date <= '2014-07-29';, elapsed: 3.876037836074829s, found points: 762129
+select * from nyc_taxi where pickup_date >= '2012-10-06' and pickup_date <= '2012-10-08' and dropoff_date >= '2011-09-11' and dropoff_date <= '2015-12-21';, elapsed: 2.366255521774292s, found points: 472551
+select * from nyc_taxi where pickup_date >= '2012-03-28' and pickup_date <= '2012-04-21' and dropoff_date >= '2012-04-14' and dropoff_date <= '2016-01-22';, elapsed: 2.047666549682617s, found points: 399551
+select * from nyc_taxi where trip_dist <= 282 and fare_amt between 89 AND 1263;;, elapsed: 3.010807752609253s, found points: 366610
+select * from nyc_taxi where pickup_date <= '2011-05-14' and passenger_cnt = 6;;, elapsed: 4.505547761917114s, found points: 883707
+select * from nyc_taxi where pickup_date >= '2016-06-13' and pickup_date <= '2016-06-17' and dropoff_date >= '2014-09-25' and dropoff_date <= '2016-08-28';, elapsed: 4.151517391204834s, found points: 836436
+select * from nyc_taxi where pickup_date <= '2011-07-01' and passenger_cnt = 6;;, elapsed: 4.839010715484619s, found points: 953454
+select * from nyc_taxi where pickup_date <= '2011-08-29' and passenger_cnt = 0;;, elapsed: 4.502873420715332s, found points: 746570
+select * from nyc_taxi where pickup_date >= '2016-04-25' and pickup_date <= '2016-04-26' and dropoff_date >= '2013-11-09' and dropoff_date <= '2016-08-12';, elapsed: 3.121471405029297s, found points: 627289
+select * from nyc_taxi where pickup_date >= '2014-09-22' and pickup_date <= '2016-04-14' and dropoff_date >= '2013-01-27' and dropoff_date <= '2014-09-26';, elapsed: 3.6782779693603516s, found points: 726727
+select * from nyc_taxi where pickup_date >= '2014-05-04' and pickup_date <= '2016-04-10' and dropoff_date >= '2015-08-28' and dropoff_date <= '2015-08-30';, elapsed: 2.8240838050842285s, found points: 567338
+select * from nyc_taxi where trip_dist <= 68 and fare_amt between 78 AND 1599;;, elapsed: 3.927002429962158s, found points: 555301
+select * from nyc_taxi where pickup_date <= '2011-06-27' and passenger_cnt = 0;;, elapsed: 2.6378157138824463s, found points: 517607
+select * from nyc_taxi where pickup_date >= '2014-03-19' and pickup_date <= '2016-02-25' and dropoff_date >= '2016-02-05' and dropoff_date <= '2016-02-06';, elapsed: 1.9286484718322754s, found points: 374429
+select * from nyc_taxi where pickup_date >= '2011-12-06' and pickup_date <= '2015-10-16' and dropoff_date >= '2014-05-01' and dropoff_date <= '2014-05-02';, elapsed: 4.106832265853882s, found points: 813696
+select * from nyc_taxi where pickup_date >= '2014-12-14' and pickup_date <= '2014-12-15' and dropoff_date >= '2014-11-25' and dropoff_date <= '2015-02-16';, elapsed: 4.331522226333618s, found points: 871316
+select * from nyc_taxi where pickup_date <= '2011-06-06' and passenger_cnt = 6;;, elapsed: 4.606692314147949s, found points: 915746
+select * from nyc_taxi where trip_dist <= 175 and fare_amt between 82 AND 342;;, elapsed: 3.4401073455810547s, found points: 452007
+select * from nyc_taxi where pickup_date >= '2011-11-14' and pickup_date <= '2015-03-21' and dropoff_date >= '2015-03-19' and dropoff_date <= '2015-05-15';, elapsed: 4.747614622116089s, found points: 943113
+select * from nyc_taxi where pickup_date >= '2015-12-02' and pickup_date <= '2016-05-02' and dropoff_date >= '2014-10-25' and dropoff_date <= '2015-12-06';, elapsed: 4.306704521179199s, found points: 856774
+select * from nyc_taxi where trip_dist <= 57 and fare_amt between 85 AND 9630;;, elapsed: 3.2960610389709473s, found points: 420440
+select * from nyc_taxi where pickup_date >= '2016-06-03' and pickup_date <= '2016-06-05' and dropoff_date >= '2015-03-09' and dropoff_date <= '2016-08-14';, elapsed: 3.1056504249572754s, found points: 629641
+select * from nyc_taxi where pickup_date <= '2011-07-14' and passenger_cnt = 0;;, elapsed: 2.9598212242126465s, found points: 583272
+select * from nyc_taxi where pickup_date >= '2014-12-09' and pickup_date <= '2015-05-08' and dropoff_date >= '2012-07-12' and dropoff_date <= '2014-12-11';, elapsed: 3.755516529083252s, found points: 751739
+select * from nyc_taxi where pickup_date >= '2013-03-30' and pickup_date <= '2013-04-17' and dropoff_date >= '2013-04-16' and dropoff_date <= '2016-05-02';, elapsed: 1.9703845977783203s, found points: 394529
+select * from nyc_taxi where pickup_date >= '2016-06-15' and pickup_date <= '2016-06-18' and dropoff_date >= '2015-06-19' and dropoff_date <= '2016-09-25';, elapsed: 2.6592161655426025s, found points: 544949
+select * from nyc_taxi where pickup_date >= '2012-08-05' and pickup_date <= '2015-09-14' and dropoff_date >= '2011-11-20' and dropoff_date <= '2012-08-06';, elapsed: 2.6603589057922363s, found points: 522265
+select * from nyc_taxi where pickup_date >= '2015-07-06' and pickup_date <= '2015-08-10' and dropoff_date >= '2013-12-25' and dropoff_date <= '2015-07-07';, elapsed: 3.7788760662078857s, found points: 760187
+select * from nyc_taxi where pickup_date >= '2015-10-02' and pickup_date <= '2016-06-08' and dropoff_date >= '2016-01-06' and dropoff_date <= '2016-01-11';, elapsed: 2.497997760772705s, found points: 497947
+select * from nyc_taxi where pickup_date >= '2012-05-13' and pickup_date <= '2012-05-18' and dropoff_date >= '2011-09-29' and dropoff_date <= '2015-10-07';, elapsed: 3.2957520484924316s, found points: 670221
+select * from nyc_taxi where pickup_date <= '2011-04-27' and passenger_cnt = 6;;, elapsed: 4.421343088150024s, found points: 879187
+select * from nyc_taxi where pickup_date <= '2011-08-17' and passenger_cnt = 0;;, elapsed: 3.801238775253296s, found points: 739726
+select * from nyc_taxi where pickup_date <= '2011-07-11' and passenger_cnt = 6;;, elapsed: 4.914229154586792s, found points: 970361
+select * from nyc_taxi where pickup_date >= '2016-02-17' and pickup_date <= '2016-02-24' and dropoff_date >= '2014-01-28' and dropoff_date <= '2016-07-12';, elapsed: 3.066416025161743s, found points: 608547
+select * from nyc_taxi where pickup_date >= '2016-06-14' and pickup_date <= '2016-06-17' and dropoff_date >= '2013-06-26' and dropoff_date <= '2016-10-03';, elapsed: 3.3721203804016113s, found points: 685178
+select * from nyc_taxi where pickup_date <= '2011-09-01' and passenger_cnt = 0;;, elapsed: 3.806875228881836s, found points: 756704
+select * from nyc_taxi where pickup_date >= '2016-06-01' and pickup_date <= '2016-06-03' and dropoff_date >= '2016-02-24' and dropoff_date <= '2016-07-05';, elapsed: 3.9449055194854736s, found points: 783823
+select * from nyc_taxi where pickup_date <= '2011-02-19' and passenger_cnt = 6;;, elapsed: 4.059252977371216s, found points: 807177
+select * from nyc_taxi where pickup_date >= '2013-04-22' and pickup_date <= '2016-03-26' and dropoff_date >= '2016-02-15' and dropoff_date <= '2016-02-24';, elapsed: 4.3315465450286865s, found points: 857076
+select * from nyc_taxi where trip_dist <= 168 and fare_amt between 75 AND 3760;;, elapsed: 4.429582834243774s, found points: 654698
+select * from nyc_taxi where pickup_date >= '2013-09-04' and pickup_date <= '2014-01-25' and dropoff_date >= '2014-01-22' and dropoff_date <= '2015-10-10';, elapsed: 2.114865303039551s, found points: 421654
+select * from nyc_taxi where pickup_date >= '2015-04-28' and pickup_date <= '2016-05-19' and dropoff_date >= '2015-11-08' and dropoff_date <= '2015-11-12';, elapsed: 4.252779245376587s, found points: 855158
+select * from nyc_taxi where pickup_date <= '2011-01-12' and passenger_cnt = 6;;, elapsed: 3.850302219390869s, found points: 766735
+select * from nyc_taxi where pickup_date >= '2011-10-10' and pickup_date <= '2015-01-08' and dropoff_date >= '2015-01-06' and dropoff_date <= '2016-04-08';, elapsed: 4.2652013301849365s, found points: 843002
+select * from nyc_taxi where pickup_date >= '2016-04-07' and pickup_date <= '2016-04-12' and dropoff_date >= '2016-04-08' and dropoff_date <= '2016-04-29';, elapsed: 3.410292625427246s, found points: 692490
+select * from nyc_taxi where pickup_date >= '2015-11-13' and pickup_date <= '2015-11-16' and dropoff_date >= '2015-08-05' and dropoff_date <= '2016-05-20';, elapsed: 4.222034931182861s, found points: 858052
+select * from nyc_taxi where pickup_date <= '2011-01-23' and passenger_cnt = 6;;, elapsed: 3.920302391052246s, found points: 778500
+select * from nyc_taxi where trip_dist <= 272 and fare_amt between 79 AND 4649;;, elapsed: 3.895263671875s, found points: 538777
+select * from nyc_taxi where pickup_date >= '2013-09-07' and pickup_date <= '2015-02-17' and dropoff_date >= '2015-02-14' and dropoff_date <= '2015-11-22';, elapsed: 3.334750175476074s, found points: 664215
+select * from nyc_taxi where pickup_date <= '2011-05-28' and passenger_cnt = 0;;, elapsed: 2.064176559448242s, found points: 401953
+select * from nyc_taxi where pickup_date >= '2016-06-11' and pickup_date <= '2016-06-14' and dropoff_date >= '2016-02-19' and dropoff_date <= '2016-08-15';, elapsed: 2.66621994972229s, found points: 536698
+select * from nyc_taxi where pickup_date <= '2011-07-05' and passenger_cnt = 0;;, elapsed: 2.6437294483184814s, found points: 523400
+select * from nyc_taxi where pickup_date <= '2011-08-01' and passenger_cnt = 6;;, elapsed: 4.9980432987213135s, found points: 1004220
+select * from nyc_taxi where pickup_date <= '2011-07-15' and passenger_cnt = 6;;, elapsed: 4.978103399276733s, found points: 984688
+select * from nyc_taxi where pickup_date <= '2011-05-08' and passenger_cnt = 6;;, elapsed: 4.470043420791626s, found points: 883707
+select * from nyc_taxi where pickup_date >= '2011-11-15' and pickup_date <= '2015-11-18' and dropoff_date >= '2013-10-26' and dropoff_date <= '2013-11-04';, elapsed: 3.4509565830230713s, found points: 677829
+select * from nyc_taxi where pickup_date <= '2011-09-05' and passenger_cnt = 0;;, elapsed: 3.9251296520233154s, found points: 778332
+select * from nyc_taxi where pickup_date <= '2011-06-06' and passenger_cnt = 6;;, elapsed: 4.608232736587524s, found points: 915746
+select * from nyc_taxi where pickup_date <= '2011-02-06' and passenger_cnt = 6;;, elapsed: 4.015288829803467s, found points: 794135
+select * from nyc_taxi where pickup_date >= '2016-06-11' and pickup_date <= '2016-06-14' and dropoff_date >= '2016-06-02' and dropoff_date <= '2016-08-10';, elapsed: 2.68937349319458s, found points: 536698
+select * from nyc_taxi where pickup_date >= '2013-07-09' and pickup_date <= '2013-07-12' and dropoff_date >= '2013-03-19' and dropoff_date <= '2014-05-27';, elapsed: 3.890453815460205s, found points: 774617
+select * from nyc_taxi where pickup_date <= '2011-04-17' and passenger_cnt = 6;;, elapsed: 4.3787901401519775s, found points: 870580
+select * from nyc_taxi where pickup_date <= '2011-03-22' and passenger_cnt = 6;;, elapsed: 4.235163688659668s, found points: 844941
+select * from nyc_taxi where pickup_date >= '2014-04-22' and pickup_date <= '2014-04-24' and dropoff_date >= '2012-10-21' and dropoff_date <= '2014-06-16';, elapsed: 3.1797945499420166s, found points: 633697
+select * from nyc_taxi where pickup_date >= '2015-06-27' and pickup_date <= '2015-06-29' and dropoff_date >= '2015-01-14' and dropoff_date <= '2015-08-06';, elapsed: 3.6831400394439697s, found points: 744000
+select * from nyc_taxi where pickup_date >= '2016-06-05' and pickup_date <= '2016-06-06' and dropoff_date >= '2015-09-16' and dropoff_date <= '2016-07-14';, elapsed: 1.76688814163208s, found points: 354387
+select * from nyc_taxi where pickup_date >= '2015-12-14' and pickup_date <= '2016-03-14' and dropoff_date >= '2016-03-11' and dropoff_date <= '2016-05-11';, elapsed: 3.3394205570220947s, found points: 672080
+select * from nyc_taxi where pickup_date <= '2011-09-06' and passenger_cnt = 0;;, elapsed: 3.951960563659668s, found points: 785102
+select * from nyc_taxi where pickup_date >= '2015-01-04' and pickup_date <= '2015-12-10' and dropoff_date >= '2014-05-07' and dropoff_date <= '2015-01-07';, elapsed: 5.0364251136779785s, found points: 1006378
+select * from nyc_taxi where pickup_date >= '2016-05-25' and pickup_date <= '2016-05-25' and dropoff_date >= '2016-03-12' and dropoff_date <= '2016-06-19';, elapsed: 1.739217758178711s, found points: 344487
+select * from nyc_taxi where pickup_date >= '2014-05-12' and pickup_date <= '2015-06-09' and dropoff_date >= '2015-01-02' and dropoff_date <= '2015-01-04';, elapsed: 3.733973264694214s, found points: 745378
+select * from nyc_taxi where pickup_date >= '2016-06-11' and pickup_date <= '2016-06-15' and dropoff_date >= '2014-01-05' and dropoff_date <= '2016-09-04';, elapsed: 3.523263454437256s, found points: 707411
+select * from nyc_taxi where pickup_date <= '2011-10-10' and passenger_cnt = 0;;, elapsed: 4.793510913848877s, found points: 965781
+select * from nyc_taxi where pickup_date >= '2014-11-24' and pickup_date <= '2015-04-29' and dropoff_date >= '2015-04-21' and dropoff_date <= '2016-09-22';, elapsed: 3.044710874557495s, found points: 605579
+select * from nyc_taxi where pickup_date >= '2015-09-14' and pickup_date <= '2015-09-17' and dropoff_date >= '2011-12-11' and dropoff_date <= '2016-01-24';, elapsed: 3.266819953918457s, found points: 656280
+select * from nyc_taxi where pickup_date >= '2015-02-26' and pickup_date <= '2015-02-27' and dropoff_date >= '2014-03-01' and dropoff_date <= '2016-02-25';, elapsed: 4.327920913696289s, found points: 866223
+select * from nyc_taxi where pickup_date <= '2011-06-16' and passenger_cnt = 0;;, elapsed: 2.4113731384277344s, found points: 469252
+select * from nyc_taxi where pickup_date >= '2013-03-01' and pickup_date <= '2013-03-05' and dropoff_date >= '2011-11-10' and dropoff_date <= '2014-05-18';, elapsed: 3.589691638946533s, found points: 722545
+select * from nyc_taxi where trip_dist <= 258 and fare_amt between 69 AND 6150;;, elapsed: 10.382103443145752s, found points: 910086
+select * from nyc_taxi where pickup_date <= '2011-08-27' and passenger_cnt = 0;;, elapsed: 3.752751111984253s, found points: 745950
+select * from nyc_taxi where pickup_date <= '2011-08-10' and passenger_cnt = 0;;, elapsed: 3.5353336334228516s, found points: 699125
+select * from nyc_taxi where pickup_date <= '2011-09-28' and passenger_cnt = 0;;, elapsed: 4.4010443687438965s, found points: 873761
+select * from nyc_taxi where pickup_date >= '2015-07-15' and pickup_date <= '2015-07-27' and dropoff_date >= '2014-08-02' and dropoff_date <= '2016-01-01';, elapsed: 4.017148733139038s, found points: 805455
+select * from nyc_taxi where pickup_date <= '2011-09-17' and passenger_cnt = 0;;, elapsed: 4.309173345565796s, found points: 859430
+select * from nyc_taxi where pickup_date >= '2014-04-30' and pickup_date <= '2014-04-30' and dropoff_date >= '2011-09-16' and dropoff_date <= '2016-04-08';, elapsed: 2.1784508228302s, found points: 436236
+select * from nyc_taxi where pickup_date >= '2016-01-16' and pickup_date <= '2016-06-01' and dropoff_date >= '2014-10-26' and dropoff_date <= '2016-01-18';, elapsed: 3.4290292263031006s, found points: 693311
+select * from nyc_taxi where pickup_date <= '2011-07-06' and passenger_cnt = 6;;, elapsed: 4.799993991851807s, found points: 957247
+select * from nyc_taxi where pickup_date >= '2015-02-11' and pickup_date <= '2016-06-14' and dropoff_date >= '2011-11-17' and dropoff_date <= '2015-02-13';, elapsed: 2.2803237438201904s, found points: 445051
+select * from nyc_taxi where pickup_date >= '2016-05-07' and pickup_date <= '2016-05-11' and dropoff_date >= '2013-11-13' and dropoff_date <= '2016-06-30';, elapsed: 3.2665598392486572s, found points: 655736
+select * from nyc_taxi where pickup_date <= '2011-07-17' and passenger_cnt = 6;;, elapsed: 4.938806772232056s, found points: 991383
+select * from nyc_taxi where pickup_date <= '2011-07-23' and passenger_cnt = 0;;, elapsed: 3.227525234222412s, found points: 627520
+select * from nyc_taxi where pickup_date <= '2011-07-06' and passenger_cnt = 0;;, elapsed: 2.71195125579834s, found points: 526648
+select * from nyc_taxi where pickup_date >= '2013-04-08' and pickup_date <= '2013-10-18' and dropoff_date >= '2013-10-10' and dropoff_date <= '2015-10-01';, elapsed: 2.3912246227264404s, found points: 475510
+select * from nyc_taxi where pickup_date >= '2011-03-30' and pickup_date <= '2013-04-11' and dropoff_date >= '2013-04-10' and dropoff_date <= '2015-01-10';, elapsed: 3.708050012588501s, found points: 742777
+select * from nyc_taxi where pickup_date <= '2011-08-31' and passenger_cnt = 0;;, elapsed: 3.7784159183502197s, found points: 753346
+select * from nyc_taxi where pickup_date >= '2016-06-12' and pickup_date <= '2016-06-15' and dropoff_date >= '2011-01-26' and dropoff_date <= '2016-10-11';, elapsed: 3.062098503112793s, found points: 618138
+select * from nyc_taxi where pickup_date <= '2011-06-14' and passenger_cnt = 0;;, elapsed: 2.3227272033691406s, found points: 452587
+select * from nyc_taxi where pickup_date <= '2011-07-15' and passenger_cnt = 0;;, elapsed: 3.0076706409454346s, found points: 592162
+select * from nyc_taxi where pickup_date <= '2011-05-21' and passenger_cnt = 0;;, elapsed: 1.8309242725372314s, found points: 350208
+select * from nyc_taxi where pickup_date >= '2013-01-25' and pickup_date <= '2013-10-26' and dropoff_date >= '2013-10-24' and dropoff_date <= '2014-02-12';, elapsed: 2.0434670448303223s, found points: 403980
+select * from nyc_taxi where pickup_date >= '2012-09-11' and pickup_date <= '2012-10-14' and dropoff_date >= '2012-10-11' and dropoff_date <= '2016-06-14';, elapsed: 3.743468999862671s, found points: 764406
+select * from nyc_taxi where trip_dist <= 143 and fare_amt between 77 AND 6112;;, elapsed: 4.053059101104736s, found points: 575102
+select * from nyc_taxi where pickup_date >= '2013-07-09' and pickup_date <= '2013-07-27' and dropoff_date >= '2012-11-29' and dropoff_date <= '2015-08-19';, elapsed: 4.733728885650635s, found points: 959296
+select * from nyc_taxi where trip_dist <= 57 and fare_amt between 80 AND 2722;;, elapsed: 3.7986223697662354s, found points: 518686
+select * from nyc_taxi where pickup_date <= '2011-07-23' and passenger_cnt = 6;;, elapsed: 5.009149074554443s, found points: 1000130
+select * from nyc_taxi where pickup_date <= '2011-07-18' and passenger_cnt = 6;;, elapsed: 4.980716943740845s, found points: 993374
+select * from nyc_taxi where pickup_date <= '2011-03-25' and passenger_cnt = 6;;, elapsed: 4.284025192260742s, found points: 848597
+select * from nyc_taxi where pickup_date <= '2011-05-30' and passenger_cnt = 6;;, elapsed: 4.591801881790161s, found points: 914951
+select * from nyc_taxi where trip_dist <= 166 and fare_amt between 73 AND 433;;, elapsed: 4.739764213562012s, found points: 709370
+select * from nyc_taxi where pickup_date <= '2011-04-25' and passenger_cnt = 6;;, elapsed: 4.404031276702881s, found points: 878391
+select * from nyc_taxi where pickup_date <= '2011-05-22' and passenger_cnt = 0;;, elapsed: 1.887908935546875s, found points: 356451
+select * from nyc_taxi where pickup_date <= '2011-06-12' and passenger_cnt = 0;;, elapsed: 2.271620750427246s, found points: 438098
+select * from nyc_taxi where pickup_date <= '2011-06-11' and passenger_cnt = 0;;, elapsed: 2.251080274581909s, found points: 433140
+select * from nyc_taxi where pickup_date <= '2011-04-15' and passenger_cnt = 6;;, elapsed: 4.382333040237427s, found points: 867681
+select * from nyc_taxi where pickup_date <= '2011-01-26' and passenger_cnt = 6;;, elapsed: 3.969858169555664s, found points: 781827
+select * from nyc_taxi where pickup_date <= '2011-08-23' and passenger_cnt = 0;;, elapsed: 3.8082454204559326s, found points: 745950
+select * from nyc_taxi where pickup_date <= '2011-09-05' and passenger_cnt = 0;;, elapsed: 3.9579861164093018s, found points: 778332
+select * from nyc_taxi where pickup_date <= '2011-05-10' and passenger_cnt = 6;;, elapsed: 4.486854076385498s, found points: 883707
+select * from nyc_taxi where pickup_date <= '2011-07-19' and passenger_cnt = 0;;, elapsed: 3.18296217918396s, found points: 617024
+select * from nyc_taxi where pickup_date <= '2011-09-29' and passenger_cnt = 0;;, elapsed: 4.537614583969116s, found points: 880534
+select * from nyc_taxi where trip_dist <= 106 and fare_amt between 74 AND 8255;;, elapsed: 4.613125562667847s, found points: 680625
+select * from nyc_taxi where pickup_date <= '2011-09-20' and passenger_cnt = 0;;, elapsed: 4.382795810699463s, found points: 862956
+select * from nyc_taxi where pickup_date <= '2011-07-25' and passenger_cnt = 6;;, elapsed: 5.125000953674316s, found points: 1000630
+select * from nyc_taxi where pickup_date <= '2011-08-28' and passenger_cnt = 0;;, elapsed: 3.866804599761963s, found points: 745950
+select * from nyc_taxi where pickup_date <= '2011-02-09' and passenger_cnt = 6;;, elapsed: 4.100291013717651s, found points: 796212
+select * from nyc_taxi where pickup_date <= '2011-02-27' and passenger_cnt = 6;;, elapsed: 4.2064526081085205s, found points: 818604
+select * from nyc_taxi where pickup_date <= '2011-08-31' and passenger_cnt = 0;;, elapsed: 3.911618709564209s, found points: 753346
+select * from nyc_taxi where pickup_date <= '2011-04-11' and passenger_cnt = 6;;, elapsed: 4.427277326583862s, found points: 861024
+select * from nyc_taxi where pickup_date <= '2011-02-05' and passenger_cnt = 6;;, elapsed: 4.081352949142456s, found points: 793225
+select * from nyc_taxi where pickup_date <= '2011-04-03' and passenger_cnt = 6;;, elapsed: 4.380509614944458s, found points: 853345
+select * from nyc_taxi where pickup_date <= '2011-07-15' and passenger_cnt = 0;;, elapsed: 3.0762670040130615s, found points: 592162
+select * from nyc_taxi where pickup_date <= '2011-07-19' and passenger_cnt = 6;;, elapsed: 5.103612899780273s, found points: 995464
+select * from nyc_taxi where pickup_date <= '2011-07-02' and passenger_cnt = 0;;, elapsed: 2.7251181602478027s, found points: 517607
+select * from nyc_taxi where pickup_date <= '2011-03-06' and passenger_cnt = 6;;, elapsed: 4.229556560516357s, found points: 824285
+select * from nyc_taxi where pickup_date <= '2011-05-20' and passenger_cnt = 6;;, elapsed: 4.5986168384552s, found points: 893228
+select * from nyc_taxi where pickup_date <= '2011-10-19' and passenger_cnt = 0;;, elapsed: 5.1862218379974365s, found points: 1006394
+select * from nyc_taxi where trip_dist <= 10 and fare_amt between 62 AND 2147;;, elapsed: 8.282580375671387s, found points: 362300
+select * from nyc_taxi where trip_dist <= 118 and fare_amt between 68 AND 4596;;, elapsed: 10.632138729095459s, found points: 963413
+select * from nyc_taxi where pickup_date <= '2011-07-27' and passenger_cnt = 6;;, elapsed: 4.964538335800171s, found points: 1000630
+select * from nyc_taxi where pickup_date <= '2011-01-31' and passenger_cnt = 6;;, elapsed: 3.9259777069091797s, found points: 786861
+select * from nyc_taxi where pickup_date <= '2011-04-29' and passenger_cnt = 6;;, elapsed: 4.373412609100342s, found points: 880587
+select * from nyc_taxi where pickup_date <= '2011-08-14' and passenger_cnt = 0;;, elapsed: 3.7162210941314697s, found points: 726700
+select * from nyc_taxi where pickup_date <= '2011-07-01' and passenger_cnt = 6;;, elapsed: 4.8024139404296875s, found points: 953454
+select * from nyc_taxi where pickup_date <= '2011-10-06' and passenger_cnt = 0;;, elapsed: 4.752478122711182s, found points: 937086
+select * from nyc_taxi where trip_dist <= 273 and fare_amt between 70 AND 7556;;, elapsed: 10.2188138961792s, found points: 866219
+select * from nyc_taxi where trip_dist <= 289 and fare_amt between 71 AND 2190;;, elapsed: 5.0998594760894775s, found points: 784477
+select * from nyc_taxi where pickup_date <= '2011-05-15' and passenger_cnt = 6;;, elapsed: 4.46247935295105s, found points: 883707
+select * from nyc_taxi where pickup_date <= '2011-10-15' and passenger_cnt = 0;;, elapsed: 5.042977571487427s, found points: 984639
+select * from nyc_taxi where pickup_date <= '2011-08-11' and passenger_cnt = 0;;, elapsed: 3.6040730476379395s, found points: 707741
+select * from nyc_taxi where pickup_date <= '2011-10-13' and passenger_cnt = 0;;, elapsed: 4.886856555938721s, found points: 977767
+select * from nyc_taxi where pickup_date <= '2011-06-02' and passenger_cnt = 6;;, elapsed: 4.683039665222168s, found points: 915714
+select * from nyc_taxi where pickup_date <= '2011-02-22' and passenger_cnt = 6;;, elapsed: 4.089798927307129s, found points: 811745
+select * from nyc_taxi where pickup_date <= '2011-04-24' and passenger_cnt = 6;;, elapsed: 4.355876922607422s, found points: 878067
+select * from nyc_taxi where pickup_date <= '2011-10-04' and passenger_cnt = 0;;, elapsed: 4.653415679931641s, found points: 918363
+select * from nyc_taxi where pickup_date <= '2011-04-29' and passenger_cnt = 6;;, elapsed: 4.45003867149353s, found points: 880587
+select * from nyc_taxi where pickup_date <= '2011-10-18' and passenger_cnt = 0;;, elapsed: 5.118703603744507s, found points: 1000940
+select * from nyc_taxi where pickup_date <= '2011-01-17' and passenger_cnt = 6;;, elapsed: 3.9561593532562256s, found points: 773472
+select * from nyc_taxi where trip_dist <= 107 and fare_amt between 76 AND 7103;;, elapsed: 4.1962995529174805s, found points: 598913
+select * from nyc_taxi where pickup_date <= '2011-05-19' and passenger_cnt = 6;;, elapsed: 4.419266223907471s, found points: 890619
+select * from nyc_taxi where trip_dist <= 279 and fare_amt between 77 AND 7294;;, elapsed: 4.080675363540649s, found points: 575202
+select * from nyc_taxi where pickup_date <= '2011-08-07' and passenger_cnt = 0;;, elapsed: 3.3835010528564453s, found points: 675143
+select * from nyc_taxi where pickup_date <= '2011-01-11' and passenger_cnt = 6;;, elapsed: 3.8778586387634277s, found points: 765254
+select * from nyc_taxi where pickup_date <= '2011-09-14' and passenger_cnt = 0;;, elapsed: 4.294309854507446s, found points: 848754
+select * from nyc_taxi where pickup_date <= '2011-04-08' and passenger_cnt = 6;;, elapsed: 4.288581132888794s, found points: 857070
+select * from nyc_taxi where pickup_date <= '2011-10-06' and passenger_cnt = 0;;, elapsed: 4.71950626373291s, found points: 937086
+select * from nyc_taxi where trip_dist <= 237 and fare_amt between 74 AND 5263;;, elapsed: 4.613034009933472s, found points: 680840
+select * from nyc_taxi where pickup_date <= '2011-06-09' and passenger_cnt = 0;;, elapsed: 2.1710355281829834s, found points: 420297
+select * from nyc_taxi where pickup_date <= '2011-05-08' and passenger_cnt = 6;;, elapsed: 4.438575029373169s, found points: 883707
+select * from nyc_taxi where trip_dist <= 115 and fare_amt between 70 AND 5200;;, elapsed: 10.180062294006348s, found points: 866005
+select * from nyc_taxi where pickup_date <= '2011-08-20' and passenger_cnt = 0;;, elapsed: 3.7524149417877197s, found points: 744606
+select * from nyc_taxi where pickup_date <= '2011-02-06' and passenger_cnt = 6;;, elapsed: 3.9568991661071777s, found points: 794135
+select * from nyc_taxi where pickup_date <= '2011-03-26' and passenger_cnt = 6;;, elapsed: 4.2421205043792725s, found points: 849573
+select * from nyc_taxi where pickup_date <= '2011-08-04' and passenger_cnt = 0;;, elapsed: 3.33471941947937s, found points: 654440
+select * from nyc_taxi where pickup_date <= '2011-09-22' and passenger_cnt = 0;;, elapsed: 4.344332218170166s, found points: 862956
+select * from nyc_taxi where pickup_date <= '2011-09-05' and passenger_cnt = 0;;, elapsed: 3.9128501415252686s, found points: 778332
+select * from nyc_taxi where pickup_date <= '2011-04-25' and passenger_cnt = 6;;, elapsed: 4.395304203033447s, found points: 878391
+select * from nyc_taxi where pickup_date <= '2011-06-25' and passenger_cnt = 6;;, elapsed: 4.780085802078247s, found points: 952795
+select * from nyc_taxi where pickup_date <= '2011-02-08' and passenger_cnt = 6;;, elapsed: 4.009667873382568s, found points: 795367
+select * from nyc_taxi where pickup_date <= '2011-05-20' and passenger_cnt = 0;;, elapsed: 1.7862696647644043s, found points: 342693
+select * from nyc_taxi where trip_dist <= 152 and fare_amt between 68 AND 6689;;, elapsed: 10.645952701568604s, found points: 963543
+select * from nyc_taxi where pickup_date <= '2011-08-25' and passenger_cnt = 0;;, elapsed: 3.7569878101348877s, found points: 745950
+select * from nyc_taxi where trip_dist <= 53 and fare_amt between 68 AND 1512;;, elapsed: 10.565167427062988s, found points: 957421
+select * from nyc_taxi where trip_dist <= 215 and fare_amt between 82 AND 6865;;, elapsed: 3.485271453857422s, found points: 456963
+select * from nyc_taxi where trip_dist <= 285 and fare_amt between 80 AND 1910;;, elapsed: 3.818094253540039s, found points: 522891
+select * from nyc_taxi where trip_dist <= 37 and fare_amt between 70 AND 9530;;, elapsed: 10.219388246536255s, found points: 832015
+select * from nyc_taxi where trip_dist <= 119 and fare_amt between 70 AND 7753;;, elapsed: 10.25981879234314s, found points: 866027
+select * from nyc_taxi where trip_dist <= 143 and fare_amt between 78 AND 4156;;, elapsed: 4.063313245773315s, found points: 557162
+select * from nyc_taxi where trip_dist <= 110 and fare_amt between 81 AND 4162;;, elapsed: 3.7210235595703125s, found points: 467254
+select * from nyc_taxi where trip_dist <= 278 and fare_amt between 90 AND 9802;;, elapsed: 3.087193012237549s, found points: 358997
+select * from nyc_taxi where trip_dist <= 121 and fare_amt between 83 AND 2866;;, elapsed: 3.4940991401672363s, found points: 445085
+select * from nyc_taxi where trip_dist <= 144 and fare_amt between 88 AND 1480;;, elapsed: 3.1821513175964355s, found points: 377730
+select * from nyc_taxi where trip_dist <= 82 and fare_amt between 69 AND 1204;;, elapsed: 10.54770827293396s, found points: 909189
+select * from nyc_taxi where trip_dist <= 105 and fare_amt between 78 AND 7462;;, elapsed: 4.090415716171265s, found points: 557022
+select * from nyc_taxi where trip_dist <= 186 and fare_amt between 71 AND 5415;;, elapsed: 5.220301628112793s, found points: 784480
+select * from nyc_taxi where trip_dist <= 87 and fare_amt between 76 AND 7780;;, elapsed: 4.296970367431641s, found points: 598542
+select * from nyc_taxi where trip_dist <= 249 and fare_amt between 71 AND 5509;;, elapsed: 5.254020690917969s, found points: 784519
+select * from nyc_taxi where trip_dist <= 127 and fare_amt between 89 AND 5834;;, elapsed: 3.1154394149780273s, found points: 366582
+select * from nyc_taxi where trip_dist <= 207 and fare_amt between 86 AND 3331;;, elapsed: 3.2781481742858887s, found points: 395406
+select * from nyc_taxi where trip_dist <= 18 and fare_amt between 61 AND 4338;;, elapsed: 10.088273286819458s, found points: 812202
+select * from nyc_taxi where trip_dist <= 204 and fare_amt between 75 AND 7669;;, elapsed: 4.59974479675293s, found points: 654751
+select * from nyc_taxi where trip_dist <= 132 and fare_amt between 83 AND 4164;;, elapsed: 3.467926502227783s, found points: 445156
+select * from nyc_taxi where trip_dist <= 81 and fare_amt between 73 AND 4772;;, elapsed: 4.802051305770874s, found points: 710775
+select * from nyc_taxi where trip_dist <= 155 and fare_amt between 75 AND 5416;;, elapsed: 4.583888292312622s, found points: 654710
+select * from nyc_taxi where trip_dist <= 121 and fare_amt between 77 AND 338;;, elapsed: 4.120079755783081s, found points: 570044
+select * from nyc_taxi where trip_dist <= 227 and fare_amt between 74 AND 7864;;, elapsed: 4.7205705642700195s, found points: 680845
+select * from nyc_taxi where trip_dist <= 290 and fare_amt between 83 AND 5657;;, elapsed: 3.620112419128418s, found points: 445304
+select * from nyc_taxi where trip_dist <= 161 and fare_amt between 77 AND 3168;;, elapsed: 4.176752090454102s, found points: 575099
+select * from nyc_taxi where trip_dist <= 195 and fare_amt between 86 AND 5724;;, elapsed: 3.277676820755005s, found points: 395423
+select * from nyc_taxi where trip_dist <= 175 and fare_amt between 78 AND 5572;;, elapsed: 4.080894947052002s, found points: 557205
+select * from nyc_taxi where trip_dist <= 78 and fare_amt between 77 AND 8018;;, elapsed: 4.177076578140259s, found points: 574213
+select * from nyc_taxi where trip_dist <= 53 and fare_amt between 67 AND 9168;;, elapsed: 11.160163402557373s, found points: 1010459
+select * from nyc_taxi where trip_dist <= 203 and fare_amt between 78 AND 8922;;, elapsed: 4.121709108352661s, found points: 557248
+select * from nyc_taxi where trip_dist <= 175 and fare_amt between 73 AND 1435;;, elapsed: 4.9164369106292725s, found points: 711438
+select * from nyc_taxi where trip_dist <= 259 and fare_amt between 82 AND 9359;;, elapsed: 3.5628163814544678s, found points: 457010
+select * from nyc_taxi where trip_dist <= 43 and fare_amt between 81 AND 1033;;, elapsed: 3.564845085144043s, found points: 450591
+select * from nyc_taxi where trip_dist <= 158 and fare_amt between 88 AND 838;;, elapsed: 3.34167742729187s, found points: 377611
+select * from nyc_taxi where trip_dist <= 299 and fare_amt between 89 AND 2684;;, elapsed: 3.1354477405548096s, found points: 366680
+select * from nyc_taxi where trip_dist <= 220 and fare_amt between 83 AND 5316;;, elapsed: 3.5449774265289307s, found points: 445271
+select * from nyc_taxi where trip_dist <= 67 and fare_amt between 83 AND 6692;;, elapsed: 3.537585973739624s, found points: 443341
+select * from nyc_taxi where trip_dist <= 62 and fare_amt between 84 AND 8686;;, elapsed: 3.4553091526031494s, found points: 431438
+select * from nyc_taxi where trip_dist <= 139 and fare_amt between 70 AND 192;;, elapsed: 10.122964859008789s, found points: 835701
+select * from nyc_taxi where trip_dist <= 204 and fare_amt between 70 AND 6446;;, elapsed: 10.336505651473999s, found points: 866171
+select * from nyc_taxi where trip_dist <= 297 and fare_amt between 90 AND 2460;;, elapsed: 3.072312593460083s, found points: 358919
+select * from nyc_taxi where trip_dist <= 292 and fare_amt between 85 AND 7478;;, elapsed: 3.4370946884155273s, found points: 424637
+select * from nyc_taxi where trip_dist <= 184 and fare_amt between 81 AND 406;;, elapsed: 3.61755108833313s, found points: 464914
+select * from nyc_taxi where trip_dist <= 152 and fare_amt between 73 AND 1574;;, elapsed: 4.88541054725647s, found points: 711427
+select * from nyc_taxi where trip_dist <= 163 and fare_amt between 82 AND 8396;;, elapsed: 3.679264783859253s, found points: 456940
+select * from nyc_taxi where trip_dist <= 200 and fare_amt between 83 AND 7207;;, elapsed: 3.5408127307891846s, found points: 445270
+select * from nyc_taxi where trip_dist <= 191 and fare_amt between 76 AND 6158;;, elapsed: 4.327151298522949s, found points: 599101
+select * from nyc_taxi where trip_dist <= 24 and fare_amt between 79 AND 6687;;, elapsed: 3.2314553260803223s, found points: 379009
+select * from nyc_taxi where trip_dist <= 143 and fare_amt between 69 AND 6867;;, elapsed: 10.587312698364258s, found points: 909999
+select * from nyc_taxi where trip_dist <= 99 and fare_amt between 70 AND 5788;;, elapsed: 10.361919641494751s, found points: 865884
+select * from nyc_taxi where trip_dist <= 165 and fare_amt between 88 AND 5368;;, elapsed: 3.2160425186157227s, found points: 377860
+select * from nyc_taxi where trip_dist <= 209 and fare_amt between 68 AND 7467;;, elapsed: 10.847123622894287s, found points: 963588
+select * from nyc_taxi where trip_dist <= 262 and fare_amt between 70 AND 4732;;, elapsed: 10.314669132232666s, found points: 866195
+select * from nyc_taxi where trip_dist <= 169 and fare_amt between 68 AND 3388;;, elapsed: 10.853213787078857s, found points: 963531
+select * from nyc_taxi where trip_dist <= 236 and fare_amt between 86 AND 3425;;, elapsed: 3.3920230865478516s, found points: 395427
+select * from nyc_taxi where trip_dist <= 175 and fare_amt between 86 AND 758;;, elapsed: 3.2879014015197754s, found points: 395117
+select * from nyc_taxi where trip_dist <= 177 and fare_amt between 71 AND 1774;;, elapsed: 5.2111146450042725s, found points: 784375
+select * from nyc_taxi where trip_dist <= 281 and fare_amt between 77 AND 6589;;, elapsed: 4.26491117477417s, found points: 575199
+select * from nyc_taxi where trip_dist <= 267 and fare_amt between 84 AND 3196;;, elapsed: 3.4617514610290527s, found points: 434213
+select * from nyc_taxi where trip_dist <= 242 and fare_amt between 83 AND 9651;;, elapsed: 3.644237518310547s, found points: 445308
+select * from nyc_taxi where trip_dist <= 201 and fare_amt between 75 AND 802;;, elapsed: 4.610397815704346s, found points: 654481
+select * from nyc_taxi where trip_dist <= 282 and fare_amt between 78 AND 5853;;, elapsed: 4.120283603668213s, found points: 557273
+select * from nyc_taxi where trip_dist <= 56 and fare_amt between 88 AND 998;;, elapsed: 3.231071949005127s, found points: 373247
+select * from nyc_taxi where trip_dist <= 166 and fare_amt between 79 AND 8008;;, elapsed: 4.10084080696106s, found points: 538734
+select * from nyc_taxi where trip_dist <= 277 and fare_amt between 72 AND 962;;, elapsed: 5.139543533325195s, found points: 747727
+select * from nyc_taxi where trip_dist <= 167 and fare_amt between 79 AND 870;;, elapsed: 4.0824151039123535s, found points: 538497
+select * from nyc_taxi where trip_dist <= 85 and fare_amt between 77 AND 9339;;, elapsed: 4.230042457580566s, found points: 574552
+select * from nyc_taxi where trip_dist <= 267 and fare_amt between 78 AND 264;;, elapsed: 4.189970970153809s, found points: 547370
+select * from nyc_taxi where trip_dist <= 55 and fare_amt between 71 AND 5984;;, elapsed: 5.176624298095703s, found points: 779464
+select * from nyc_taxi where trip_dist <= 247 and fare_amt between 81 AND 3903;;, elapsed: 3.740654706954956s, found points: 467453
+select * from nyc_taxi where trip_dist <= 96 and fare_amt between 81 AND 175;;, elapsed: 3.4763803482055664s, found points: 426653
+select * from nyc_taxi where trip_dist <= 60 and fare_amt between 81 AND 5629;;, elapsed: 3.6748151779174805s, found points: 464203
+select * from nyc_taxi where trip_dist <= 132 and fare_amt between 73 AND 8428;;, elapsed: 4.910717964172363s, found points: 711490
+select * from nyc_taxi where trip_dist <= 175 and fare_amt between 70 AND 4625;;, elapsed: 10.35056185722351s, found points: 866134
+select * from nyc_taxi where trip_dist <= 171 and fare_amt between 81 AND 504;;, elapsed: 3.694415807723999s, found points: 466813
+select * from nyc_taxi where trip_dist <= 76 and fare_amt between 70 AND 1112;;, elapsed: 10.348841428756714s, found points: 864953
+select * from nyc_taxi where trip_dist <= 50 and fare_amt between 89 AND 7496;;, elapsed: 3.183183431625366s, found points: 358809
+select * from nyc_taxi where trip_dist <= 152 and fare_amt between 85 AND 3759;;, elapsed: 3.4729292392730713s, found points: 424533
+select * from nyc_taxi where trip_dist <= 18 and fare_amt between 64 AND 1354;;, elapsed: 9.539551496505737s, found points: 707360
+select * from nyc_taxi where trip_dist <= 292 and fare_amt between 69 AND 6352;;, elapsed: 10.682815313339233s, found points: 910097
+select * from nyc_taxi where trip_dist <= 119 and fare_amt between 71 AND 5746;;, elapsed: 5.257437229156494s, found points: 784342
+select * from nyc_taxi where trip_dist <= 184 and fare_amt between 68 AND 9855;;, elapsed: 10.848998785018921s, found points: 963591
+select * from nyc_taxi where trip_dist <= 218 and fare_amt between 86 AND 6393;;, elapsed: 3.4067866802215576s, found points: 395438
+select * from nyc_taxi where trip_dist <= 78 and fare_amt between 69 AND 5733;;, elapsed: 10.593878984451294s, found points: 909075
+select * from nyc_taxi where trip_dist <= 127 and fare_amt between 87 AND 8132;;, elapsed: 3.2951834201812744s, found points: 387307
+select * from nyc_taxi where trip_dist <= 60 and fare_amt between 69 AND 4861;;, elapsed: 10.549840688705444s, found points: 906712
+select * from nyc_taxi where trip_dist <= 160 and fare_amt between 89 AND 2067;;, elapsed: 3.1426706314086914s, found points: 366602
+select * from nyc_taxi where trip_dist <= 188 and fare_amt between 78 AND 4096;;, elapsed: 4.135140657424927s, found points: 557205
+select * from nyc_taxi where trip_dist <= 244 and fare_amt between 76 AND 6061;;, elapsed: 4.326595306396484s, found points: 599133
+select * from nyc_taxi where trip_dist <= 179 and fare_amt between 77 AND 5738;;, elapsed: 4.218210220336914s, found points: 575136
+select * from nyc_taxi where trip_dist <= 179 and fare_amt between 72 AND 9140;;, elapsed: 5.076715707778931s, found points: 747861
+select * from nyc_taxi where trip_dist <= 56 and fare_amt between 70 AND 4251;;, elapsed: 10.3972749710083s, found points: 861532
+select * from nyc_taxi where trip_dist <= 193 and fare_amt between 85 AND 9621;;, elapsed: 3.4597322940826416s, found points: 424605
+select * from nyc_taxi where trip_dist <= 128 and fare_amt between 90 AND 4440;;, elapsed: 3.114657163619995s, found points: 358818
+select * from nyc_taxi where trip_dist <= 297 and fare_amt between 80 AND 2293;;, elapsed: 3.931691884994507s, found points: 522933
+select * from nyc_taxi where trip_dist <= 124 and fare_amt between 79 AND 1805;;, elapsed: 4.020328044891357s, found points: 538519
+select * from nyc_taxi where trip_dist <= 126 and fare_amt between 71 AND 3234;;, elapsed: 5.299088716506958s, found points: 784347
+select * from nyc_taxi where trip_dist <= 245 and fare_amt between 76 AND 1895;;, elapsed: 4.333527326583862s, found points: 599031
+select * from nyc_taxi where trip_dist <= 294 and fare_amt between 74 AND 6863;;, elapsed: 4.747153282165527s, found points: 680870
+select * from nyc_taxi where trip_dist <= 12 and fare_amt between 56 AND 7622;;, elapsed: 9.821802139282227s, found points: 550136
+select * from nyc_taxi where trip_dist <= 300 and fare_amt between 80 AND 9299;;, elapsed: 3.9758358001708984s, found points: 523016
+select * from nyc_taxi where trip_dist <= 102 and fare_amt between 82 AND 4518;;, elapsed: 3.6136374473571777s, found points: 456698
+select * from nyc_taxi where trip_dist <= 218 and fare_amt between 89 AND 2657;;, elapsed: 3.1560044288635254s, found points: 366645
+select * from nyc_taxi where trip_dist <= 95 and fare_amt between 86 AND 3051;;, elapsed: 3.3051531314849854s, found points: 395036
+select * from nyc_taxi where trip_dist <= 26 and fare_amt between 65 AND 7520;;, elapsed: 11.084125995635986s, found points: 1002663
+select * from nyc_taxi where trip_dist <= 278 and fare_amt between 88 AND 4043;;, elapsed: 3.2466540336608887s, found points: 377908
+select * from nyc_taxi where trip_dist <= 104 and fare_amt between 75 AND 833;;, elapsed: 4.863046407699585s, found points: 654273
+select * from nyc_taxi where trip_dist <= 276 and fare_amt between 86 AND 2140;;, elapsed: 3.553601026535034s, found points: 395405
+select * from nyc_taxi where trip_dist <= 201 and fare_amt between 72 AND 5811;;, elapsed: 5.1268839836120605s, found points: 747851
+select * from nyc_taxi where trip_dist <= 206 and fare_amt between 76 AND 1531;;, elapsed: 4.321019172668457s, found points: 598998
+select * from nyc_taxi where trip_dist <= 40 and fare_amt between 81 AND 5074;;, elapsed: 3.5574519634246826s, found points: 443818
+select * from nyc_taxi where trip_dist <= 76 and fare_amt between 86 AND 9524;;, elapsed: 3.3085572719573975s, found points: 394397
+select * from nyc_taxi where trip_dist <= 172 and fare_amt between 72 AND 3569;;, elapsed: 5.046859264373779s, found points: 747810
+select * from nyc_taxi where trip_dist <= 228 and fare_amt between 90 AND 1495;;, elapsed: 3.1371448040008545s, found points: 358845
+select * from nyc_taxi where trip_dist <= 35 and fare_amt between 78 AND 4573;;, elapsed: 4.205174684524536s, found points: 511828
+select * from nyc_taxi where trip_dist <= 56 and fare_amt between 83 AND 5837;;, elapsed: 3.5115842819213867s, found points: 440740
+select * from nyc_taxi where trip_dist <= 217 and fare_amt between 69 AND 7361;;, elapsed: 10.609516620635986s, found points: 910063
+select * from nyc_taxi where trip_dist <= 160 and fare_amt between 82 AND 3990;;, elapsed: 3.6089961528778076s, found points: 456906
+select * from nyc_taxi where trip_dist <= 232 and fare_amt between 90 AND 8005;;, elapsed: 3.1300742626190186s, found points: 358964
+select * from nyc_taxi where trip_dist <= 126 and fare_amt between 76 AND 3950;;, elapsed: 4.312288522720337s, found points: 598968
+select * from nyc_taxi where trip_dist <= 273 and fare_amt between 84 AND 7604;;, elapsed: 3.4346141815185547s, found points: 434246
+select * from nyc_taxi where trip_dist <= 192 and fare_amt between 68 AND 7909;;, elapsed: 10.8017737865448s, found points: 963580
+select * from nyc_taxi where trip_dist <= 233 and fare_amt between 71 AND 5721;;, elapsed: 5.27291464805603s, found points: 784512
+select * from nyc_taxi where trip_dist <= 285 and fare_amt between 79 AND 3331;;, elapsed: 4.042675971984863s, found points: 538770
+select * from nyc_taxi where trip_dist <= 192 and fare_amt between 66 AND 128;;, elapsed: 11.05890679359436s, found points: 959333
+select * from nyc_taxi where trip_dist <= 4 and fare_amt between 56 AND 1237;;, elapsed: 8.881617546081543s, found points: 444843
+select * from nyc_taxi where trip_dist <= 23 and fare_amt between 74 AND 8917;;, elapsed: 3.7536797523498535s, found points: 480767
+select * from nyc_taxi where trip_dist <= 226 and fare_amt between 85 AND 3008;;, elapsed: 3.4436516761779785s, found points: 424564
+select * from nyc_taxi where trip_dist <= 52 and fare_amt between 90 AND 7326;;, elapsed: 3.097045660018921s, found points: 352456
+select * from nyc_taxi where trip_dist <= 119 and fare_amt between 84 AND 4589;;, elapsed: 3.4803948402404785s, found points: 434046
+select * from nyc_taxi where trip_dist <= 252 and fare_amt between 74 AND 5685;;, elapsed: 4.752728700637817s, found points: 680850
+select * from nyc_taxi where trip_dist <= 156 and fare_amt between 71 AND 9944;;, elapsed: 5.25537896156311s, found points: 784483
+select * from nyc_taxi where trip_dist <= 21 and fare_amt between 67 AND 953;;, elapsed: 9.492151021957397s, found points: 698329
+select * from nyc_taxi where trip_dist <= 169 and fare_amt between 75 AND 9935;;, elapsed: 4.613840341567993s, found points: 654742
+select * from nyc_taxi where trip_dist <= 150 and fare_amt between 72 AND 1673;;, elapsed: 5.123963117599487s, found points: 747711
+select * from nyc_taxi where trip_dist <= 286 and fare_amt between 69 AND 625;;, elapsed: 10.591626644134521s, found points: 909665
+select * from nyc_taxi where trip_dist <= 155 and fare_amt between 88 AND 919;;, elapsed: 3.2244081497192383s, found points: 377678
+select * from nyc_taxi where trip_dist <= 57 and fare_amt between 87 AND 1042;;, elapsed: 3.2240538597106934s, found points: 383125
+select * from nyc_taxi where trip_dist <= 153 and fare_amt between 88 AND 694;;, elapsed: 3.213698387145996s, found points: 377514
+select * from nyc_taxi where trip_dist <= 20 and fare_amt between 63 AND 943;;, elapsed: 10.397776365280151s, found points: 872656
+select * from nyc_taxi where trip_dist <= 57 and fare_amt between 71 AND 6903;;, elapsed: 5.218900442123413s, found points: 780252
+select * from nyc_taxi where trip_dist <= 52 and fare_amt between 89 AND 2408;;, elapsed: 3.1448280811309814s, found points: 360143
+select * from nyc_taxi where trip_dist <= 283 and fare_amt between 70 AND 5066;;, elapsed: 10.339591026306152s, found points: 866213
+select * from nyc_taxi where trip_dist <= 195 and fare_amt between 86 AND 8338;;, elapsed: 3.3189072608947754s, found points: 395439
+select * from nyc_taxi where trip_dist <= 119 and fare_amt between 76 AND 6762;;, elapsed: 4.316650390625s, found points: 598963
+select * from nyc_taxi where trip_dist <= 210 and fare_amt between 84 AND 9505;;, elapsed: 3.500223398208618s, found points: 434225
+select * from nyc_taxi where trip_dist <= 252 and fare_amt between 76 AND 9686;;, elapsed: 4.3139238357543945s, found points: 599161
+select * from nyc_taxi where trip_dist <= 286 and fare_amt between 83 AND 7918;;, elapsed: 3.5687031745910645s, found points: 445312
+select * from nyc_taxi where trip_dist <= 188 and fare_amt between 74 AND 451;;, elapsed: 4.743158578872681s, found points: 679247
+select * from nyc_taxi where trip_dist <= 202 and fare_amt between 79 AND 8378;;, elapsed: 4.022125720977783s, found points: 538762
+select * from nyc_taxi where trip_dist <= 109 and fare_amt between 82 AND 3683;;, elapsed: 3.642401933670044s, found points: 456750
+select * from nyc_taxi where trip_dist <= 158 and fare_amt between 68 AND 9459;;, elapsed: 10.849450588226318s, found points: 963570
+select * from nyc_taxi where trip_dist <= 280 and fare_amt between 68 AND 8901;;, elapsed: 10.829287767410278s, found points: 963644
+select * from nyc_taxi where trip_dist <= 31 and fare_amt between 78 AND 4511;;, elapsed: 3.7670788764953613s, found points: 480696
+select * from nyc_taxi where trip_dist <= 175 and fare_amt between 68 AND 7071;;, elapsed: 10.839624643325806s, found points: 963563
+select * from nyc_taxi where trip_dist <= 212 and fare_amt between 80 AND 4086;;, elapsed: 3.959470748901367s, found points: 522934
+select * from nyc_taxi where trip_dist <= 20 and fare_amt between 75 AND 6822;;, elapsed: 3.338132381439209s, found points: 403721
+select * from nyc_taxi where trip_dist <= 221 and fare_amt between 82 AND 185;;, elapsed: 3.438828468322754s, found points: 423258
+select * from nyc_taxi where trip_dist <= 263 and fare_amt between 80 AND 5681;;, elapsed: 3.9717798233032227s, found points: 522982
+select * from nyc_taxi where trip_dist <= 231 and fare_amt between 80 AND 3844;;, elapsed: 3.9743800163269043s, found points: 522947
+select * from nyc_taxi where trip_dist <= 111 and fare_amt between 83 AND 874;;, elapsed: 3.5449159145355225s, found points: 444866
+select * from nyc_taxi where trip_dist <= 100 and fare_amt between 76 AND 4574;;, elapsed: 4.3366992473602295s, found points: 598827
+select * from nyc_taxi where trip_dist <= 213 and fare_amt between 76 AND 3421;;, elapsed: 4.336111545562744s, found points: 599089
+select * from nyc_taxi where trip_dist <= 106 and fare_amt between 79 AND 7066;;, elapsed: 4.052773952484131s, found points: 538551
+select * from nyc_taxi where trip_dist <= 172 and fare_amt between 87 AND 9811;;, elapsed: 3.2654173374176025s, found points: 387403
+select * from nyc_taxi where trip_dist <= 251 and fare_amt between 84 AND 1046;;, elapsed: 3.494544267654419s, found points: 434104
+select * from nyc_taxi where trip_dist <= 251 and fare_amt between 80 AND 9972;;, elapsed: 3.9648749828338623s, found points: 523001
+select * from nyc_taxi where trip_dist <= 57 and fare_amt between 87 AND 2524;;, elapsed: 3.2613136768341064s, found points: 383192
+select * from nyc_taxi where trip_dist <= 237 and fare_amt between 89 AND 6493;;, elapsed: 3.5958638191223145s, found points: 366714
+select * from nyc_taxi where trip_dist <= 266 and fare_amt between 78 AND 2631;;, elapsed: 4.102927923202515s, found points: 557212
+select * from nyc_taxi where trip_dist <= 241 and fare_amt between 74 AND 5437;;, elapsed: 4.827417612075806s, found points: 680841
+select * from nyc_taxi where trip_dist <= 125 and fare_amt between 89 AND 6902;;, elapsed: 3.187441825866699s, found points: 366574
+select * from nyc_taxi where trip_dist <= 126 and fare_amt between 89 AND 8109;;, elapsed: 3.190033435821533s, found points: 366592
+select * from nyc_taxi where trip_dist <= 182 and fare_amt between 69 AND 5998;;, elapsed: 10.58357310295105s, found points: 910034
+select * from nyc_taxi where trip_dist <= 46 and fare_amt between 86 AND 2962;;, elapsed: 3.2970223426818848s, found points: 383277
+select * from nyc_taxi where trip_dist <= 192 and fare_amt between 73 AND 6317;;, elapsed: 4.931737184524536s, found points: 711568
+select * from nyc_taxi where trip_dist <= 59 and fare_amt between 83 AND 1607;;, elapsed: 3.5521981716156006s, found points: 441633
+select * from nyc_taxi where trip_dist <= 260 and fare_amt between 69 AND 7525;;, elapsed: 10.652626991271973s, found points: 910094
+select * from nyc_taxi where trip_dist <= 128 and fare_amt between 81 AND 9929;;, elapsed: 3.685910940170288s, found points: 467368
+select * from nyc_taxi where trip_dist <= 42 and fare_amt between 69 AND 6922;;, elapsed: 10.542171955108643s, found points: 890910
+select * from nyc_taxi where trip_dist <= 257 and fare_amt between 87 AND 8022;;, elapsed: 3.2883224487304688s, found points: 387447
+select * from nyc_taxi where trip_dist <= 49 and fare_amt between 71 AND 3509;;, elapsed: 5.229259729385376s, found points: 775531
+select * from nyc_taxi where trip_dist <= 288 and fare_amt between 70 AND 1326;;, elapsed: 10.414501667022705s, found points: 866098
+select * from nyc_taxi where trip_dist <= 65 and fare_amt between 90 AND 9607;;, elapsed: 3.1516175270080566s, found points: 356750
+select * from nyc_taxi where trip_dist <= 282 and fare_amt between 86 AND 8814;;, elapsed: 3.3796794414520264s, found points: 395489
+select * from nyc_taxi where trip_dist <= 94 and fare_amt between 71 AND 9021;;, elapsed: 5.291046142578125s, found points: 784124
+select * from nyc_taxi where trip_dist <= 191 and fare_amt between 69 AND 2542;;, elapsed: 10.68688702583313s, found points: 909985
+select * from nyc_taxi where trip_dist <= 192 and fare_amt between 89 AND 1373;;, elapsed: 3.1927549839019775s, found points: 366573
+select * from nyc_taxi where trip_dist <= 127 and fare_amt between 73 AND 3780;;, elapsed: 4.909207582473755s, found points: 711437
+select * from nyc_taxi where trip_dist <= 285 and fare_amt between 90 AND 4912;;, elapsed: 3.1203064918518066s, found points: 358965
+select * from nyc_taxi where trip_dist <= 217 and fare_amt between 85 AND 5348;;, elapsed: 3.4749152660369873s, found points: 424592
+select * from nyc_taxi where trip_dist <= 22 and fare_amt between 66 AND 5693;;, elapsed: 9.897108793258667s, found points: 769563
+select * from nyc_taxi where trip_dist <= 213 and fare_amt between 83 AND 4098;;, elapsed: 3.6028082370758057s, found points: 445252
+select * from nyc_taxi where trip_dist <= 277 and fare_amt between 78 AND 651;;, elapsed: 4.134759426116943s, found points: 556870
+select * from nyc_taxi where trip_dist <= 178 and fare_amt between 82 AND 4295;;, elapsed: 3.6435093879699707s, found points: 456925
+select * from nyc_taxi where trip_dist <= 286 and fare_amt between 75 AND 5122;;, elapsed: 4.619394063949585s, found points: 654787
+select * from nyc_taxi where trip_dist <= 190 and fare_amt between 75 AND 4779;;, elapsed: 4.635761976242065s, found points: 654724
+select * from nyc_taxi where trip_dist <= 169 and fare_amt between 85 AND 9641;;, elapsed: 3.4678337574005127s, found points: 424587
+select * from nyc_taxi where trip_dist <= 130 and fare_amt between 71 AND 4220;;, elapsed: 5.262938737869263s, found points: 784373
+select * from nyc_taxi where trip_dist <= 145 and fare_amt between 77 AND 3415;;, elapsed: 4.239877700805664s, found points: 575080
+select * from nyc_taxi where trip_dist <= 66 and fare_amt between 88 AND 441;;, elapsed: 3.228614091873169s, found points: 373883
+select * from nyc_taxi where trip_dist <= 121 and fare_amt between 85 AND 2553;;, elapsed: 3.49577260017395s, found points: 424398
+select * from nyc_taxi where trip_dist <= 228 and fare_amt between 87 AND 8957;;, elapsed: 3.2645113468170166s, found points: 387439
+select * from nyc_taxi where trip_dist <= 60 and fare_amt between 85 AND 1423;;, elapsed: 3.4807162284851074s, found points: 421235
+select * from nyc_taxi where trip_dist <= 181 and fare_amt between 85 AND 1353;;, elapsed: 3.4929444789886475s, found points: 424461
+select * from nyc_taxi where trip_dist <= 210 and fare_amt between 83 AND 8197;;, elapsed: 3.6150245666503906s, found points: 445279
+select * from nyc_taxi where trip_dist <= 86 and fare_amt between 73 AND 9451;;, elapsed: 4.9262473583221436s, found points: 710983
+select * from nyc_taxi where trip_dist <= 234 and fare_amt between 70 AND 1423;;, elapsed: 10.326648473739624s, found points: 866080
+select * from nyc_taxi where trip_dist <= 159 and fare_amt between 85 AND 5959;;, elapsed: 3.4753222465515137s, found points: 424558

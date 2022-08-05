@@ -111,4 +111,4 @@ asinfo -v "truncate:namespace=tpch;set=tpch_macro"
 asinfo -v "set-config:context=namespace;id=github;set=tpch_macro;set-delete=true;"
 
 asinfo -v "drop:namespace=github;set=tpch_macro"
-asadm -e "show statistics for github like memory_used_bytes"
+asadm -e "show statistics for macro_bench like memory_used_bytes"

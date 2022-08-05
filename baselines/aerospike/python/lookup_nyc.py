@@ -11,6 +11,7 @@ from multiprocessing import Process
 from concurrent.futures import ProcessPoolExecutor
 from threading import Thread, Lock
 import fcntl
+from zipf_generator import ZipfGenerator
 
 config = {
   'hosts': [ ('10.10.1.12', 3000), ('10.10.1.13', 3000), ('10.10.1.14', 3000), ('10.10.1.15', 3000), ('10.10.1.16', 3000)]
@@ -28,6 +29,18 @@ total_points = int(30000000) # 30M
 warmup_points = int(total_points * 0.2)
 # file_path = "/mntData/nyc_split_10/x{}".format(int(sys.argv[1]))
 
+
+zipf_distribution = "/proj/trinity-PG0/Trinity/queries/zipf_keys_30m"
+zipf_keys = []
+
+def load_zipf():
+
+    global zipf_keys
+    with open(zipf_distribution) as file:
+        lines = file.readlines()
+        zipf_keys = [int(line) for line in lines]
+
+
 def lookup_each_worker(total_num_workers, worker_idx):
 
     try:
@@ -42,42 +55,54 @@ def lookup_each_worker(total_num_workers, worker_idx):
     effective_line_count = 0
     warmup_ended = False
 
-    # with open(file_path) as f:
-    #     for line in f:
+    i = worker_idx
+    with open(zipf_distribution) as f:
+        for line in f:
+            
+            if i >= total_points:
+                break
 
-    for i in range(worker_idx, total_points, total_num_workers):
+            zipf_key = int(line)
+        # for i in range(worker_idx, total_points, total_num_workers):
 
-        # line_count += 1
+            # line_count += 1
 
-        # if line_count % total_num_workers != worker_idx:
-        #     continue
+            # if line_count % total_num_workers != worker_idx:
+            #     continue
 
-        if i > warmup_points:
-            if not warmup_ended:
-                start_time = time.time()
-                warmup_ended = True
-            effective_line_count += 1
+            if i > warmup_points:
+                if not warmup_ended:
+                    start_time = time.time()
+                    warmup_ended = True
+                effective_line_count += 1
 
-        '''
-        Load points
-        '''
+            '''
+            Load points
+            '''
+            primary_key = total_vect[zipf_key]
+            # primary_key = total_vect[i]
+            # primary_key = total_vect[zipf_g.next()]
 
-        primary_key = total_vect[i]
+            '''
+            Lookup
+            '''            
 
-        '''
-        Lookup
-        '''            
+            key_query = ('macro_bench', 'nyc_taxi_macro', primary_key)
+            try:
+                (key, meta, record) = client.get(key_query)
+            except Exception as e:
+                import sys
+                print(key)
+                print("error: {0}".format(e), file=sys.stderr)
+                exit(0)
 
-        key = ('macro_bench', 'nyc_taxi_macro', primary_key)
-        try:
-            (_, _, _) = client.get(key)
-        except Exception as e:
-            import sys
-            print(key)
-            print("error: {0}".format(e), file=sys.stderr)
-            exit(0)
+            del key
+            del meta
+            del record
+            del key_query
+            del primary_key
 
-        del key
+            i += total_num_workers
 
     end_time = time.time()
     return effective_line_count / (end_time - start_time)
@@ -106,8 +131,8 @@ def load_all_points(client_idx):
             if loaded_lines == total_points:
                 break
 
+# load_zipf()
 load_all_points(int(sys.argv[1]))
-
 
 if int(sys.argv[1]) == 0:
     with open('/proj/trinity-PG0/Trinity/baselines/aerospike/python/nyc_lookup_throughput.txt', 'a') as f:

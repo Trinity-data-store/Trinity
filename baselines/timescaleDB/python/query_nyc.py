@@ -11,8 +11,8 @@ import re
 CONNECTION = "dbname=defaultdb host=localhost user=postgres password=adifficultpassword sslmode=disable"
 
 COLS = ["pickup_date", "dropoff_date", "pickup_lon", "pickup_lat", "dropoff_lon", "dropoff_lat", "passenger_cnt", "trip_dist", "fare_amt", "extra", "mta_tax", "tip_amt", "tolls_amt", "impt_sur", "total_amt"]
-filename = "/proj/trinity-PG0/Trinity/results/nyc_clickhouse_new"
-outfile_addr = "/proj/trinity-PG0/Trinity/results/nyc_timescale"
+filename = "/proj/trinity-PG0/Trinity/results/nyc_clickhouse_4T"
+outfile_addr = "/proj/trinity-PG0/Trinity/results/nyc_timescale_4T"
 
 
 dates = [0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
@@ -48,7 +48,7 @@ def clean_query(query):
     return query
 
 finished_line = 0
-for line in lines:
+for line in lines[565:]:
 
     query = line.split(";,")[0] + ";"
     query_select = clean_query(query.replace("count(*)", "*"))

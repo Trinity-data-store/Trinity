@@ -31,7 +31,7 @@ using namespace apache::thrift::server;
 level_t max_depth = 32;
 level_t trie_depth = 6;
 const preorder_t max_tree_node = 512;
-const dimension_t DIMENSION = 9;
+const dimension_t DIMENSION = 15;
 const int shard_num = 20;
 
 class MDTrieHandler : public MDTrieShardIf {
@@ -65,7 +65,6 @@ public:
       // std::vector<level_t> bit_widths = {24, 24, 24, 24, 24, 24, 24, 16, 32, 32, 32, 24, 24}; // 13 Dimensions;
       // std::vector<level_t> start_bits = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}; // 13 Dimensions;
       
-      use_hybrid_ = false;
       std::vector<level_t> bit_widths = {24, 24, 24, 24, 24, 24, 24, 16, 24, 24}; // 10 Dimensions;
       std::vector<level_t> start_bits = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0}; // 10 Dimensions;
 
@@ -87,11 +86,11 @@ public:
 
     else if (dataset_idx == 2) // TPC-H
     {
-      use_hybrid_ = false;
       std::vector<level_t> bit_widths = {8, 32, 16, 24, 32, 32, 32, 32, 32}; // 9 Dimensions;
       std::vector<level_t> start_bits = {0, 0, 8, 16, 0, 0, 0, 0, 0}; // 9 Dimensions;
       // [QUANTITY, EXTENDEDPRICE, DISCOUNT, TAX, SHIPDATE, COMMITDATE, RECEIPTDATE, TOTALPRICE, ORDERDATE]
       // {50, 10494950, 10, 8, 19981201, 19981031, 19981231, 58063825, 19980802};
+      
       bit_widths = {8, 32, 16, 24, 20, 20, 20, 32, 20};
 
       // bit_widths = {8, 24, 16, 24, 20, 20, 20, 26, 20};  // TODO! Tried actually increase storage footprint...
@@ -121,19 +120,14 @@ public:
 
       // queried: trip_distance, fare_amount, tip_amount, pickup_date, dropoff_date, passenger_count. pickup_longitude, pickup_latitude
 
-      use_hybrid_ = false;
-
       std::vector<level_t> bit_widths = {18, 20, 10, 10, 10 + 10, 10 + 10, 8, 13, 10, 10 + 10, 11 + 9, 10, 10 + 10, 8, 10 + 10}; // 15 Dimensions;
       std::vector<level_t> start_bits = {0, 0, 0, 0, 0 + 10, 0 + 10, 0, 0, 0, 0 + 10, 0 + 9, 0, 0 + 10, 0, 0 + 10}; // 15 Dimensions; 24.54 GB, int
 
-      if (!use_hybrid_) {
-          bit_widths = {18, 20, 10, 10, 10 + 21, 10 + 21, 8, 28, 25, 10 + 21, 11 + 20, 22, 25 + 7, 8 + 23, 25 + 6}; // 15 Dimensions;
-          start_bits = {0, 0, 0, 0, 0 + 21, 0 + 21, 0, 0, 0, 0 + 21, 0 + 20, 0, 0 + 7, 0 + 23, 0 + 6}; // 15 Dimensions; 24.54 GB, int
-      }
-      max_values_ = {20160630 - 20090000, 20221220 - 19700000, 899, 898, 899, 898, 255, 5000, 1000, 1000, 1312, 1000, 1000, 138, 1000};
+
+      bit_widths = {18, 20, 10, 10, 10 + 18, 10 + 18, 8, 28, 25, 10 + 18, 11 + 17, 22, 25, 8 + 20, 25}; // 15 Dimensions;
+      start_bits = {0, 0, 0, 0, 0 + 18, 0 + 18, 0, 0, 0, 0 + 18, 0 + 17, 0, 0, 0 + 20, 0}; // 15 Dimensions; 24.54 GB, int
 
       trie_depth = 6;
-      max_depth = 20;
       max_depth = 28;
 
       no_dynamic_sizing = true;
@@ -172,26 +166,8 @@ public:
 
     data_point<DIMENSION> leaf_point;
 
-    for (uint8_t i = 0; i <= 6 ; i++) {
+    for (uint8_t i = 0; i <= DIMENSION ; i++) {
       leaf_point.set_coordinate(i, point[i]);
-    }
-
-    for (uint8_t i = 7; i < DIMENSION; i++) {
-
-      leaf_point.set_coordinate(i, point[i]);
-      
-      if (use_hybrid_ && point[i] > max_values_[i])
-      {
-        std::vector<int32_t> new_point = point;
-        new_point.push_back(inserted_points_);
-        backup_points_.push_back(new_point);
-        inserted_points_ ++;
-
-        for (const auto &coordinate : point) outfile_ << coordinate << ",";
-        outfile_ << std::endl;
-
-        return inserted_points_ - 1;
-      }
     }
 
     mdtrie_->insert_trie(&leaf_point, inserted_points_, p_key_to_treeblock_compact_);
@@ -213,57 +189,13 @@ public:
     data_point<DIMENSION> end_range_point;
     for (uint8_t i = 0; i < DIMENSION; i++) {
       end_range_point.set_coordinate(i, end_range[i]);   
-      if (end_range[i] > max_values_[i])
-        end_range_point.set_coordinate(i, max_values_[i]);
     }  
 
     mdtrie_->range_search_trie(&start_range_point, &end_range_point, mdtrie_->root(), 0, _return);
-
-    if (!use_hybrid_)
-      return;
-
-    unsigned int backup_points_size = backup_points_.size();
-    // std::cout << "backup_points_size: " << backup_points_.size() << std::endl;
-    for (unsigned int i = 0; i < backup_points_size; i ++ ){
-      bool not_met = false;
-      for (uint8_t j = 0; j < DIMENSION; j++) {
-        if (backup_points_[i][j] < start_range[j] || backup_points_[i][j] > end_range[j])
-        {
-          not_met = true;
-          break;
-        }
-      }
-      if (!not_met) {
-        for (uint8_t k = 0; k < DIMENSION; k++) {
-          _return.push_back(backup_points_[i][k]);
-        }
-      }  
-    }
+    return;
   }
 
   void primary_key_lookup(std::vector<int32_t> & _return, const int32_t primary_key){
-
-
-    // _return.reserve(DIMENSION);
-
-    /*
-    int32_t primary_key = primary_key;
-    if (primary_key > (int32_t) inserted_points_)
-      primary_key = (int32_t) inserted_points_ - 1;
-
-    */
-    
-    if (use_hybrid_) {
-      unsigned int backup_points_size = backup_points_.size();
-      for (unsigned int i = 0; i < backup_points_size; i ++ ){
-        if (backup_points_[i][DIMENSION] == primary_key) {
-          for (uint8_t j = 0; i < DIMENSION; i++) {
-            _return[j] = backup_points_[i][j];
-          }
-          return;
-        }
-      }
-    }
 
     std::vector<morton_t> node_path_from_primary(max_depth + 1);
     tree_block<DIMENSION> *t_ptr = (tree_block<DIMENSION> *) (p_key_to_treeblock_compact_->At(primary_key));
@@ -271,33 +203,10 @@ public:
     morton_t parent_symbol_from_primary = t_ptr->get_node_path_primary_key(primary_key, node_path_from_primary);
     node_path_from_primary[max_depth - 1] = parent_symbol_from_primary;
 
-    /*
-    auto returned_coordinates = t_ptr->node_path_to_coordinates(node_path_from_primary, DIMENSION);  
-    
-    for (uint8_t i = 0; i < DIMENSION; i++){
-      _return.emplace_back(returned_coordinates->get_coordinate(i));
-    } 
-    */
-
-    _return =   t_ptr->node_path_to_coordinates_vect(node_path_from_primary, DIMENSION);  
-
-
+    _return =  t_ptr->node_path_to_coordinates_vect(node_path_from_primary, DIMENSION);  
   }
 
   void primary_key_lookup_path(std::vector<int32_t> & _return, const int32_t primary_key){
-
-
-    if (use_hybrid_) {
-      unsigned int backup_points_size = backup_points_.size();
-      for (unsigned int i = 0; i < backup_points_size; i ++ ){
-        if (backup_points_[i][DIMENSION] == primary_key) {
-          for (uint8_t j = 0; i < DIMENSION; i++) {
-            _return[j] = backup_points_[i][j];
-          }
-          return;
-        }
-      }
-    }
 
     std::vector<morton_t> node_path_from_primary(max_depth + 1);
     tree_block<DIMENSION> *t_ptr = (tree_block<DIMENSION> *) (p_key_to_treeblock_compact_->At(primary_key));
@@ -314,19 +223,6 @@ public:
 
   void primary_key_lookup_binary(std::string & _return, const int32_t primary_key){
 
-
-    if (use_hybrid_) {
-      unsigned int backup_points_size = backup_points_.size();
-      for (unsigned int i = 0; i < backup_points_size; i ++ ){
-        if (backup_points_[i][DIMENSION] == primary_key) {
-          for (uint8_t j = 0; i < DIMENSION; i++) {
-            _return[j] = backup_points_[i][j];
-          }
-          return;
-        }
-      }
-    }
-
     std::vector<morton_t> node_path_from_primary(max_depth + 1);
     tree_block<DIMENSION> *t_ptr = (tree_block<DIMENSION> *) (p_key_to_treeblock_compact_->At(primary_key));
 
@@ -334,7 +230,7 @@ public:
     node_path_from_primary[max_depth - 1] = parent_symbol_from_primary;
 
     std::vector<int32_t> return_vect;
-    return_vect =   t_ptr->node_path_to_coordinates_vect(node_path_from_primary, DIMENSION);  
+    return_vect =  t_ptr->node_path_to_coordinates_vect(node_path_from_primary, DIMENSION);  
 
     std::stringstream ss;
 
@@ -354,11 +250,9 @@ protected:
   md_trie<DIMENSION> *mdtrie_; 
   bitmap::CompactPtrVector *p_key_to_treeblock_compact_;
   uint64_t inserted_points_ = 0;
-  std::vector<int32_t> max_values_;
   std::vector<std::vector<int32_t>> backup_points_;
   // std::vector<int32_t> min_values_;
   ofstream outfile_;
-  bool use_hybrid_;
 };
 
 class MDTrieCloneFactory : virtual public MDTrieShardIfFactory {

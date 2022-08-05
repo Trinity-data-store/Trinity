@@ -54,8 +54,8 @@ int main(){
     std::vector<int32_t> min_values = {20090101, 19700101, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 
 
-    char *infile_address = (char *)"/proj/trinity-PG0/Trinity/queries/nyc/nyc_query_converted";
-    char *outfile_address = (char *)"/proj/trinity-PG0/Trinity/results/nyc_trinity_new";
+    char *infile_address = (char *)"/proj/trinity-PG0/Trinity/queries/nyc/nyc_query_new_converted";
+    char *outfile_address = (char *)"/proj/trinity-PG0/Trinity/results/nyc_trinity_4T";
     
     std::ifstream file(infile_address);
     std::ofstream outfile(outfile_address, std::ios_base::app);

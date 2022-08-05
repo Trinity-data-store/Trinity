@@ -26,6 +26,16 @@ num_data_nodes = 5
 total_points = int(30000000) # 30M
 warmup_points = int(total_points * 0.2)
 
+zipf_distribution = "/proj/trinity-PG0/Trinity/queries/zipf_keys_30m"
+zipf_keys = []
+
+def load_zipf():
+
+    with open(zipf_distribution) as file:
+        lines = file.readlines()
+        zipf_keys = [int(line) for line in lines]
+
+        
 def lookup_each_worker(total_num_workers, worker_idx):
 
     try:
@@ -39,34 +49,45 @@ def lookup_each_worker(total_num_workers, worker_idx):
     effective_line_count = 0
     warmup_ended = False
 
-    for i in range(worker_idx, total_points, total_num_workers):
+    i = worker_idx
+    with open(zipf_distribution) as f:
+        for line in f:
+            
+            if i >= total_points:
+                break
 
-        if i > warmup_points:
-            if not warmup_ended:
-                start_time = time.time()
-                warmup_ended = True
-            effective_line_count += 1
+            zipf_key = int(line)
 
-        '''
-        Load points
-        '''
+        # for i in range(worker_idx, total_points, total_num_workers):
 
-        primary_key = total_vect[i]
+            if i > warmup_points:
+                if not warmup_ended:
+                    start_time = time.time()
+                    warmup_ended = True
+                effective_line_count += 1
 
-        '''
-        Lookup
-        '''            
+            '''
+            Load points
+            '''
 
-        key = ('macro_bench', 'github_macro', primary_key)
-        try:
-            (_, _, _) = client.get(key)
-        except Exception as e:
-            import sys
-            print(key)
-            print("error: {0}".format(e), file=sys.stderr)
-            exit(0)
+            # primary_key = total_vect[zipf_keys[i]]
+            primary_key = total_vect[zipf_key]
 
-        del key
+            '''
+            Lookup
+            '''            
+
+            key = ('macro_bench', 'github_macro', primary_key)
+            try:
+                (_, _, _) = client.get(key)
+            except Exception as e:
+                import sys
+                print(key)
+                print("error: {0}".format(e), file=sys.stderr)
+                exit(0)
+
+            del key
+            i += total_num_workers
 
     end_time = time.time()
     return effective_line_count / (end_time - start_time)

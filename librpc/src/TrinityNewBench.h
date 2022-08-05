@@ -108,7 +108,7 @@ uint32_t total_client_insert(int shard_number, int client_number, std::vector<st
 
     if (current_dataset_idx == 3) {
         points_to_insert = 675200000 / 10;
-        points_to_insert = 30000000 / 2; // See Aerospike
+        // points_to_insert = 30000000 / 2; // See Aerospike
     }
         
     std::vector<std::vector<int32_t>> total_points_stored;

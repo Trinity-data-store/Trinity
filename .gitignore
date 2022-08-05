@@ -91,3 +91,5 @@ build_*
 # *.log
 *_out
 *.pdf
+queries/zipf_keys_30m
+scripts/timescale_progress

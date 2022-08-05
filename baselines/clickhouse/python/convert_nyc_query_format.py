@@ -1,8 +1,8 @@
 import re 
 import sys
 
-datapath = "/proj/trinity-PG0/Trinity/queries/nyc/nyc_taxi_query"
-outfile = open("/proj/trinity-PG0/Trinity/queries/nyc/nyc_query_converted", "w")  # write mode
+datapath = "/proj/trinity-PG0/Trinity/queries/nyc/nyc_query_new"
+outfile = open("/proj/trinity-PG0/Trinity/queries/nyc/nyc_query_new_converted", "w")  # write mode
 
 # ["pickup_date", "dropoff_date", "pickup_lon", "pickup_lat", "dropoff_lon", "dropoff_lat", "passenger_cnt", "trip_dist", "fare_amt", "extra", "mta_tax", "tip_amt", "tolls_amt", "impt_sur", "total_amt"]
 

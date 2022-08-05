@@ -20,8 +20,8 @@ except:
   print("failed to connect to the cluster with", config['hosts'])
   sys.exit(1)
 
-filename = "/proj/trinity-PG0/Trinity/queries/nyc/nyc_taxi_query"
-out_filename = "/proj/trinity-PG0/Trinity/results/nyc_aerospike"
+filename = "/proj/trinity-PG0/Trinity/queries/nyc/nyc_query_new"
+out_filename = "/proj/trinity-PG0/Trinity/results/nyc_aerospike_4T"
 
 trip_distance_range = [0, 198623000]
 fare_amount_range = [0, 21474808]
@@ -43,12 +43,12 @@ with open(filename) as file:
     lines = file.readlines()
     lines = [line.rstrip() for line in lines]
 
-for line in lines:
+for line in lines[347:348]:
 
     line = line.split(",")[0] + ";"
     line = line.replace("count(*)", "*")
 
-    query = client.query('github', 'nyc_taxi_macro')
+    query = client.query('macro_bench', 'nyc_taxi_macro')
     query.select("pickup_date", "dropoff_date", "pickup_lon", "pickup_lat", "dropoff_lon", "dropoff_lat", "passenger_cnt", "trip_dist", "fare_amt", "extra", "mta_tax", "tip_amt", "tolls_amt", "impt_sur", "total_amt")
     picked_template = 1
     for reg in [regex_template_1, regex_template_2, regex_template_3, regex_template_4, regex_template_5]:
@@ -192,15 +192,24 @@ for line in lines:
     policy = {
         'expressions': expr,
         'total_timeout':200000,
-        'socket_timeout': 100000
+        'socket_timeout': 200000
     }
 
+    records_query = []
+
     start = time.time()
-    records_query = query.results(policy)
-    end = time.time()
+    try:
+        records_query = query.results(policy)
+        
+    except Exception as e:
+        print(e)
+
+    #     # Out of time.
+    elapsed = time.time() - start
+    #     records_query = []
 
     with open(out_filename, "a") as outfile:
-        outfile.write("{}, elapsed: {}s, found points: {}\n".format(line, end - start, len(records_query)))
+        outfile.write("{}, elapsed: {}s, found points: {}\n".format(line, elapsed, len(records_query)))
 
     print(len(records_query), "\n")
     del records_query
