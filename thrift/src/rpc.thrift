@@ -3,7 +3,7 @@ service MDTrieShard {
 
     bool ping(1:i32 dataset_idx),
 
-    i32 insert(1:list<i32> point),
+    i32 insert(1:list<i32> point, 2:i32 primary_key),
 
     bool check(1:list<i32> point),
 

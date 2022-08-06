@@ -93,14 +93,14 @@ public:
   int32_t insert(vector<int32_t> point, int32_t p_key){
 
     int shard_index = p_key % shard_vector_.size();
-    shard_vector_[shard_index].send_insert(point);
+    shard_vector_[shard_index].send_insert(point, p_key);
     return shard_vector_[shard_index].recv_insert();
   }
 
   void insert_send(vector<int32_t> point, int32_t p_key){
 
     int shard_index = p_key % shard_vector_.size();
-    shard_vector_[shard_index].send_insert(point);
+    shard_vector_[shard_index].send_insert(point, p_key);
   }
 
   int32_t insert_rec(int32_t p_key){
@@ -131,8 +131,7 @@ public:
   void primary_key_lookup(std::vector<int32_t> & return_vect, const int32_t p_key){
 
     int shard_index = p_key % shard_vector_.size();
-    // shard_vector_[shard_index].send_primary_key_lookup(p_key / shard_vector_.size());
-    shard_vector_[shard_index].send_primary_key_lookup(shard_queried_cnt_[shard_index] / 10);
+    shard_vector_[shard_index].send_primary_key_lookup(p_key);
     shard_queried_cnt_[shard_index] ++;
     shard_vector_[shard_index].recv_primary_key_lookup(return_vect);
 
@@ -141,11 +140,9 @@ public:
   void primary_key_lookup_send(const int32_t p_key){
 
     int shard_index = p_key % shard_vector_.size();
-    // shard_vector_[shard_index].send_primary_key_lookup(p_key / shard_vector_.size());
-    shard_vector_[shard_index].send_primary_key_lookup(shard_queried_cnt_[shard_index] / 10);
+    shard_vector_[shard_index].send_primary_key_lookup(p_key);
     shard_queried_cnt_[shard_index] ++;
   }
-
 
   void primary_key_lookup_rec(std::vector<int32_t> & return_vect, const int32_t p_key){
 
@@ -153,51 +150,17 @@ public:
     shard_vector_[shard_index].recv_primary_key_lookup(return_vect);
   }
 
-  void primary_key_lookup_path(std::vector<int32_t> & return_vect, const int32_t p_key){
+  void primary_key_lookup_send_zipf(const int32_t p_key, const int32_t shard_key){
 
-    int shard_index = p_key % shard_vector_.size();
-    // shard_vector_[shard_index].send_primary_key_lookup(p_key / shard_vector_.size());
-    shard_vector_[shard_index].send_primary_key_lookup_path(shard_queried_cnt_[shard_index] / 10);
-    shard_queried_cnt_[shard_index] ++;
-    shard_vector_[shard_index].recv_primary_key_lookup_path(return_vect);
-
-  }
-
-  void primary_key_lookup_path_send(const int32_t p_key){
-
-    int shard_index = p_key % shard_vector_.size();
-    // shard_vector_[shard_index].send_primary_key_lookup(p_key / shard_vector_.size());
-    shard_vector_[shard_index].send_primary_key_lookup_path(shard_queried_cnt_[shard_index] / 10);
+    int shard_index = shard_key % shard_vector_.size();
+    shard_vector_[shard_index].send_primary_key_lookup(p_key);
     shard_queried_cnt_[shard_index] ++;
   }
 
+  void primary_key_lookup_rec_zipf(std::vector<int32_t> & return_vect, const int32_t shard_key){
 
-  void primary_key_lookup_path_rec(std::vector<int32_t> & return_vect, const int32_t p_key){
-
-    int shard_index = p_key % shard_vector_.size();
-    shard_vector_[shard_index].recv_primary_key_lookup_path(return_vect);
-  }
-
-
-  void primary_key_lookup_binary(std::string & return_str, const int32_t p_key){
-
-    int shard_index = p_key % shard_vector_.size();
-    shard_vector_[shard_index].send_primary_key_lookup_binary(p_key / shard_vector_.size());
-    shard_vector_[shard_index].recv_primary_key_lookup_binary(return_str);
-
-  }
-
-  void primary_key_lookup_binary_send(const int32_t p_key){
-
-    int shard_index = p_key % shard_vector_.size();
-    shard_vector_[shard_index].send_primary_key_lookup_binary(p_key / shard_vector_.size());
-  }
-
-
-  void primary_key_lookup_binary_rec(std::string & return_str, const int32_t p_key){
-
-    int shard_index = p_key % shard_vector_.size();
-    shard_vector_[shard_index].recv_primary_key_lookup_binary(return_str);
+    int shard_index = shard_key % shard_vector_.size();
+    shard_vector_[shard_index].recv_primary_key_lookup(return_vect);
   }
 
 

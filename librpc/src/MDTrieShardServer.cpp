@@ -12,6 +12,7 @@
 #include <thrift/server/TThreadPoolServer.h>
 #include <thrift/transport/TNonblockingServerSocket.h>
 #include <thrift/transport/TNonblockingServerTransport.h>
+#include <queue>
 
 #include <iostream>
 #include <stdexcept>
@@ -57,7 +58,7 @@ public:
     if (mdtrie_ != nullptr && p_key_to_treeblock_compact_ != nullptr)
       return true;
 
-    if (dataset_idx == 1) // Github
+    if (dataset_idx == 2) // Github
     {
       // [events_count, authors_count, forks, stars, issues, pushes, pulls, downloads, adds, dels, add_del_ratio, start_date, end_date]
       // MIN: [1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 20110211, 20110211]
@@ -84,7 +85,7 @@ public:
       std::cout << "Github experiment started" << std::endl; 
     }
 
-    else if (dataset_idx == 2) // TPC-H
+    else if (dataset_idx == 1) // TPC-H
     {
       std::vector<level_t> bit_widths = {8, 32, 16, 24, 32, 32, 32, 32, 32}; // 9 Dimensions;
       std::vector<level_t> start_bits = {0, 0, 8, 16, 0, 0, 0, 0, 0}; // 9 Dimensions;
@@ -97,7 +98,7 @@ public:
       // start_bits = {0, 0, 8, 16, 0, 0, 0, 0, 0};
 
       trie_depth = 6;
-      max_depth = 26;
+      max_depth = 32;
       no_dynamic_sizing = true;
       total_points_count = 1000000000 / (shard_num * 5) + 1; 
 
@@ -132,6 +133,7 @@ public:
 
       no_dynamic_sizing = true;
       total_points_count = 675200000 / (shard_num * 5) + 1; 
+      total_points_count = 675200000;
 
       if (DIMENSION != 15) {
         std::cerr << "wrong config!\n" << std::endl;
@@ -162,7 +164,7 @@ public:
     return result;
   }
 
-  int32_t insert(const std::vector<int32_t> & point){
+  int32_t insert(const std::vector<int32_t> & point, const int32_t primary_key){
 
     data_point<DIMENSION> leaf_point;
 
@@ -176,7 +178,7 @@ public:
     for (const auto &coordinate : point) outfile_ << coordinate << ",";
     outfile_ << std::endl;
 
-    return inserted_points_ - 1;
+    return inserted_points_;
   }
 
   void range_search(std::vector<int32_t> & _return, const std::vector<int32_t> & start_range, const std::vector<int32_t> & end_range){
@@ -197,10 +199,11 @@ public:
 
   void primary_key_lookup(std::vector<int32_t> & _return, const int32_t primary_key){
 
+    // std::cout << primary_key << "," << inserted_points_  << std::endl;
     std::vector<morton_t> node_path_from_primary(max_depth + 1);
-    tree_block<DIMENSION> *t_ptr = (tree_block<DIMENSION> *) (p_key_to_treeblock_compact_->At(primary_key));
+    tree_block<DIMENSION> *t_ptr = (tree_block<DIMENSION> *) (p_key_to_treeblock_compact_->At(primary_key % inserted_points_));
 
-    morton_t parent_symbol_from_primary = t_ptr->get_node_path_primary_key(primary_key, node_path_from_primary);
+    morton_t parent_symbol_from_primary = t_ptr->get_node_path_primary_key(primary_key % inserted_points_, node_path_from_primary);
     node_path_from_primary[max_depth - 1] = parent_symbol_from_primary;
 
     _return =  t_ptr->node_path_to_coordinates_vect(node_path_from_primary, DIMENSION);  
@@ -253,6 +256,8 @@ protected:
   std::vector<std::vector<int32_t>> backup_points_;
   // std::vector<int32_t> min_values_;
   ofstream outfile_;
+  // std::queue<std::vector<int32_t> lookup_cache_;
+  // std::vector<std::vector<int32_t> lookup_cache;
 };
 
 class MDTrieCloneFactory : virtual public MDTrieShardIfFactory {

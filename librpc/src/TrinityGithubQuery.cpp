@@ -61,24 +61,26 @@ int main(int argc, char *argv[]){
     std::vector<int32_t> min_values = {1, 1, 0, 0, 0, 0, 0, 0, 20110211, 20110211};
 
     // char *infile_address = (char *)"/proj/trinity-PG0/Trinity/queries/github/github_query_new_converted";
-    char *infile_address = (char *)"/proj/trinity-PG0/Trinity/queries/github/github_query_new_timestamps_converted";
+    // char *infile_address = (char *)"/proj/trinity-PG0/Trinity/queries/github/github_query_new_timestamps_converted";
+    // char *outfile_address = (char *)"query_github_trinity_timestamps";
+    char *infile_address = (char *)"/proj/trinity-PG0/Trinity/queries/github/github_query_new_converted";
     char *outfile_address = (char *)"query_github_trinity_timestamps";
     cout << argc << endl;
     
-    if (argc == 3) {
-      infile_address = argv[1];
-      outfile_address = argv[2];
-    }
-    else {
-      return 0;
-    }
+    // if (argc == 3) {
+    //   infile_address = argv[1];
+    //   outfile_address = argv[2];
+    // }
+    // else {
+    //   return 0;
+    // }
     
     cout << infile_address << endl;
     cout << outfile_address << endl;
     std::ifstream file(infile_address);
     std::ofstream outfile(outfile_address, std::ios_base::app);
 
-    for (int i = 0; i < 250; i ++) {
+    for (int i = 0; i < 5; i ++) {
 
       std::vector<int32_t> found_points;
       std::vector<int32_t> start_range = min_values;
@@ -127,7 +129,7 @@ int main(int argc, char *argv[]){
       client.range_search_trie(found_points, start_range, end_range);
       diff = GetTimestamp() - start;
       std::cout << "Query " << i << " end to end latency (ms): " << diff / 1000 << ", found points count: " << found_points.size() / DIMENSION << std::endl;
-      outfile << "Query " << i << " end to end latency (ms): " << diff / 1000 << ", found points count: " << found_points.size() / DIMENSION << std::endl;
+      // outfile << "Query " << i << " end to end latency (ms): " << diff / 1000 << ", found points count: " << found_points.size() / DIMENSION << std::endl;
       found_points.clear();
     }
 

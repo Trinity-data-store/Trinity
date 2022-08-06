@@ -27,6 +27,11 @@ const int DIMENSION = 9;
 const int shard_num = 20;
 const int client_num = 60;
 
+#define TPCH 1
+#define GITHUB 2
+#define NYC 3
+#define CURRENT_DATASET NYC
+
 int main(int argc, char *argv[]){
 
     if (argc < 2) {
@@ -43,10 +48,12 @@ int main(int argc, char *argv[]){
     total_points_count = 1000000000;
     auto client = MDTrieClient(server_ips, shard_num);
 
-    if (!client.ping(2)){
+    if (!client.ping(CURRENT_DATASET)){
         std::cerr << "Server setting wrong!" << std::endl;
         exit(-1);
     }
+
+    current_dataset_idx = CURRENT_DATASET;
 
     /** 
         Insert all points

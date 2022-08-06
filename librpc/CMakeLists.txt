@@ -33,6 +33,13 @@ add_executable(TrinityTPCHQuery
         src/TrinityBenchShared.h
         src/MDTrieShard.cpp)
 
+add_executable(TrinityInsertionLookupLatency
+        src/TrinityInsertionLookupLatency.cpp
+        src/MDTrieShardClient.h
+        src/MDTrieShard.h
+        src/TrinityBenchShared.h
+        src/MDTrieShard.cpp)
+
 add_executable(TrinityGithubQuery
         src/TrinityGithubQuery.cpp
         src/MDTrieShardClient.h
@@ -134,6 +141,9 @@ endif()
 
 target_link_libraries(TrinityTPCHQuery ${MDTRIE_LIBS} ${RPC_LIBS} event thrift)
 add_dependencies(TrinityTPCHQuery thrift_ep)
+
+target_link_libraries(TrinityInsertionLookupLatency ${MDTRIE_LIBS} ${RPC_LIBS} event thrift)
+add_dependencies(TrinityInsertionLookupLatency thrift_ep)
 
 target_link_libraries(TrinityGithubQuery ${MDTRIE_LIBS} ${RPC_LIBS} event thrift)
 add_dependencies(TrinityGithubQuery thrift_ep)

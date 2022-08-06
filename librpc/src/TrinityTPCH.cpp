@@ -35,7 +35,7 @@ int main(){
     //     server_to_client.push_back({});
     //   }
     // }
-    if (!client.ping(2)){
+    if (!client.ping(1)){
         std::cerr << "Server setting wrong!" << std::endl;
         exit(-1);
     }

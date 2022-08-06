@@ -39,7 +39,7 @@ int main(int argc, char *argv[]){
     total_points_count = 828056295;
     auto client = MDTrieClient(server_ips, shard_num);
 
-    if (!client.ping(1)){
+    if (!client.ping(2)){
         std::cerr << "Server setting wrong!" << std::endl;
         exit(-1);
     }

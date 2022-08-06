@@ -34,15 +34,11 @@ int main(int argc, char *argv[]){
     // int which_part = stoi(argv[1]);
 
     // std::vector<std::string> server_ips = {"10.254.254.225", "10.254.254.213", "10.254.254.217", "10.254.254.205", "10.254.254.221"};
-    std::vector<std::string> server_ips = {"10.10.1.3", "10.10.1.4", "10.10.1.5", "10.10.1.6", "10.10.1.7"};
+    std::vector<std::string> server_ips = {"10.10.1.12", "10.10.1.13", "10.10.1.14", "10.10.1.15", "10.10.1.16"};
 
     total_points_count = 1000000000;
     auto client = MDTrieClient(server_ips, shard_num);
 
-    if (!client.ping(2)){
-        std::cerr << "Server setting wrong!" << std::endl;
-        exit(-1);
-    }
     /** 
         Insert all points
     */
@@ -78,17 +74,17 @@ int main(int argc, char *argv[]){
     std::vector<int32_t> max_values = {50, 10494950, 10, 8, 19981201, 19981031, 19981231, 58063825, 19980802};
     std::vector<int32_t> min_values = {1, 90000, 0, 0, 19920102, 19920131, 19920103, 81300, 19920101};
 
-    char *infile_address = (char *)"../baselines/clickhouse/query_tpch_rerun_converted";
-    char *outfile_address = (char *)"query_tpch_trinity";
+    char *infile_address = (char *)"/proj/trinity-PG0/Trinity/queries/tpch/tpch_query_converted";
+    char *outfile_address = (char *)"/proj/trinity-PG0/Trinity/results/query_tpch_to_confirm";
     cout << argc << endl;
     
-    if (argc == 4) {
-      infile_address = argv[2];
-      outfile_address = argv[3];
-    }
-    else {
-      return 0;
-    }
+    // if (argc == 4) {
+    //   infile_address = argv[2];
+    //   outfile_address = argv[3];
+    // }
+    // else {
+    //   return 0;
+    // }
     // client.clear_trie();
     
     cout << infile_address << endl;
