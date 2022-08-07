@@ -12,15 +12,15 @@ import random
 import re
 import fcntl
 
-COLS = ['id', 'quantity', 'extendedprice', 'discount', 'tax', 'shipdate', 'commitdate', 'receiptdate', 'totalprice', 'orderdate']
+COLS = ["pkey", "events_count", "authors_count", "forks", "stars", "issues", "pushes", "pulls", "downloads", "start_date", "end_date"]
 
 processes = []
 total_vect = []
 num_data_nodes = 5
-begin_measuring = int(5000000)  # 5M
-total_points = int(5000500)  # 5.01M
+begin_measuring = int(50000000)  # 50M
+total_points = int(50000500)  # + 500 queries
 
-filename = "/proj/trinity-PG0/Trinity/results/tpch_aerospike"
+filename = "/proj/trinity-PG0/Trinity/queries/github/github_query_final"
 
 with open(filename) as file:
     lines = file.readlines()
@@ -33,22 +33,28 @@ elif len(sys.argv) == 3:
     print(sys.argv)
     exit(0)
 
-COLS = ['id', 'quantity', 'extendedprice', 'discount', 'tax', 'shipdate', 'commitdate', 'receiptdate', 'totalprice', 'orderdate']
 dates = [0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
 
 def search(line_idx, cursor_search_list): 
 
     line = lines[line_idx]
-    query = line.split(";,")[0] + ";"
-    query_select = query.replace("COUNT(*)", "*")
+    query = line.split(",")[0] + ";"
+    query_select = query.replace("COUNT(*)", "*").replace("github_events_final", "github_events")
 
-    StringRegex = re.compile(r'BETWEEN \d\d\d\d\d\d\d\d AND \d\d\d\d\d\d\d\d')
+    StringRegex = re.compile(r'where start_date >= \d\d\d\d\d\d\d\d AND start_date <= \d\d\d\d\d\d\d\d AND end_date >= \d\d\d\d\d\d\d\d AND end_date <= \d\d\d\d\d\d\d\d;')
+    if not StringRegex.search(query_select):
+        StringRegex = re.compile(r'where start_date <= \d\d\d\d\d\d\d\d AND end_date >= \d\d\d\d\d\d\d\d AND')
+
     while StringRegex.search(query_select):
         old_string = StringRegex.search(query_select).group()
         new_string = old_string
         DateRegex = re.compile(r'\d\d\d\d\d\d\d\d')
 
-        for i in range(2):
+        # for i in range(4):
+        i = -1
+        while DateRegex.search(new_string):
+            i += 1
+
             old_dateString = DateRegex.search(new_string).group()
             new_dateString = old_dateString[0:4] + "-" + old_dateString[4:6] + "-" + old_dateString[6:]
             
@@ -131,8 +137,8 @@ def search_insert_each_worker(worker_idx, total_workers):
 
         if not is_search:
             chunk = total_vect[i]
-            hash_i = hash(i)
-            cursor_insert_list[hash_i % 5].execute("INSERT INTO tpch_macro (ID, QUANTITY, EXTENDEDPRICE, DISCOUNT, TAX, SHIPDATE, COMMITDATE, RECEIPTDATE, TOTALPRICE, ORDERDATE) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s);", chunk)
+            hash_i = hash(int(chunk[0]))
+            cursor_insert_list[hash_i % 5].execute("INSERT INTO github_events (pkey, events_count, authors_count, forks, stars, issues, pushes, pulls, downloads, start_date, end_date) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);", chunk)
             connection_list[hash_i % 5].commit() # Needed for atomic transaction.
         else:
             num_found_points = search(i % 1000, cursor_search_list)
@@ -159,7 +165,7 @@ manager = multiprocessing.Manager()
 return_dict = manager.dict()
 
 def load_all_points(client_idx):
-    file_path = "/mntData/tpch_split_10/x{}".format(client_idx)
+    file_path = "/mntData/github_split_10/x{}".format(client_idx)
     loaded_lines = 0
     with open(file_path) as f:
         for line in f:
@@ -180,9 +186,9 @@ if not no_insert:
     load_all_points(int(sys.argv[1]))
 
 if not no_insert:
-    out_addr = '/proj/trinity-PG0/Trinity/baselines/timescaleDB/python/tpch_search_insert_throughput.txt'
+    out_addr = '/proj/trinity-PG0/Trinity/baselines/timescaleDB/python/github_search_insert_throughput.txt'
 else:
-    out_addr = '/proj/trinity-PG0/Trinity/baselines/timescaleDB/python/tpch_search_throughput.txt'
+    out_addr = '/proj/trinity-PG0/Trinity/baselines/timescaleDB/python/github_search_throughput.txt'
 
 if int(sys.argv[1]) == 0:
     with open(out_addr, 'a') as f:
@@ -200,14 +206,7 @@ for p in processes:
 
 print("total throughput", sum([return_dict[worker]["throughput"] for worker in return_dict]))
 
-if not no_insert:
-    with open('/proj/trinity-PG0/Trinity/baselines/timescaleDB/python/tpch_search_insert_throughput.txt', 'a') as f:
-        fcntl.flock(f, fcntl.LOCK_EX)
-        print(sum([return_dict[worker]["throughput"] for worker in return_dict]), file=f)
-        fcntl.flock(f, fcntl.LOCK_UN)
-
-else:
-    with open('/proj/trinity-PG0/Trinity/baselines/timescaleDB/python/tpch_search_throughput.txt', 'a') as f:
-        fcntl.flock(f, fcntl.LOCK_EX)
-        print(sum([return_dict[worker]["throughput"] for worker in return_dict]), file=f)
-        fcntl.flock(f, fcntl.LOCK_UN)
+with open(out_addr, 'a') as f:
+    fcntl.flock(f, fcntl.LOCK_EX)
+    print(sum([return_dict[worker]["throughput"] for worker in return_dict]), file=f)
+    fcntl.flock(f, fcntl.LOCK_UN)

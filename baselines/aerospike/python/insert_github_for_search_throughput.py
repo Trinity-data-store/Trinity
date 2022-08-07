@@ -26,7 +26,7 @@ processes = []
 threads = []
 total_vect = []
 num_data_nodes = 5
-total_points = int(30000000) # 30M
+total_points = int(50000000) # 30M
 warmup_points = int(total_points * 0.2)
 file_path = "/mntData/github_split_10/x{}".format(int(sys.argv[1]))
 
@@ -56,7 +56,6 @@ def insert_each_worker(total_num_workers, worker_idx):
             '''
 
             string_list = line.split(",")
-            # string_list = string_list[:9] + string_list[12:]
             column = 0
             rec = {}
             primary_key = 0

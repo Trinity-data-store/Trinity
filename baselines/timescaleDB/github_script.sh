@@ -13,9 +13,6 @@ CREATE TABLE github_events (
     pushes     INT             NOT NULL,
     pulls     INT             NOT NULL,
     downloads     INT             NOT NULL,
-    adds     INT             NOT NULL,
-    dels     INT             NOT NULL,
-    add_del_ratio     float8             NOT NULL,
     start_date   TIMESTAMP NOT NULL,
     end_date TIMESTAMP NOT NULL,
     PRIMARY KEY (start_date, pkey)

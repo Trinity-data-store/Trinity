@@ -12,15 +12,16 @@ import random
 import re
 import fcntl
 
-COLS = ['id', 'quantity', 'extendedprice', 'discount', 'tax', 'shipdate', 'commitdate', 'receiptdate', 'totalprice', 'orderdate']
+
+COLS = ["pickup_date", "dropoff_date", "pickup_lon", "pickup_lat", "dropoff_lon", "dropoff_lat", "passenger_cnt", "trip_dist", "fare_amt", "extra", "mta_tax", "tip_amt", "tolls_amt", "impt_sur", "total_amt"]
 
 processes = []
 total_vect = []
 num_data_nodes = 5
-begin_measuring = int(5000000)  # 5M
-total_points = int(5000500)  # 5.01M
+begin_measuring = int(50000000)  # 50M
+total_points = int(50000500)  # + 500 queries
 
-filename = "/proj/trinity-PG0/Trinity/results/tpch_aerospike"
+filename = "/proj/trinity-PG0/Trinity/queries/nyc/nyc_query_new"
 
 with open(filename) as file:
     lines = file.readlines()
@@ -33,37 +34,51 @@ elif len(sys.argv) == 3:
     print(sys.argv)
     exit(0)
 
-COLS = ['id', 'quantity', 'extendedprice', 'discount', 'tax', 'shipdate', 'commitdate', 'receiptdate', 'totalprice', 'orderdate']
 dates = [0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
+
+def clean_query(query):
+
+    # ["pickup_date", "dropoff_date", "pickup_lon", "pickup_lat", "dropoff_lon", "dropoff_lat", "passenger_cnt", "trip_dist", "fare_amt", "extra", "mta_tax", "tip_amt", "tolls_amt", "impt_sur", "total_amt"]
+
+    cleaned_pair = [
+        ("trip_distance", "trip_dist"),
+        ("fare_amount", "fare_amt"),
+        ("tip_amount", "tip_amt"),
+        ("passenger_count", "passenger_cnt"),
+        ("pickup_longitude", "pickup_lon"),
+        ("pickup_latitude", "pickup_lat")
+    ]
+
+    for pair in cleaned_pair:
+        before = pair[0]
+        after = pair[1]
+        query = query.replace(before, after)
+
+    return query
 
 def search(line_idx, cursor_search_list): 
 
     line = lines[line_idx]
-    query = line.split(";,")[0] + ";"
-    query_select = query.replace("COUNT(*)", "*")
+    query = line.split(",")[0] + ";"
+    query_select = clean_query(query.replace("count(*)", "*"))
 
-    StringRegex = re.compile(r'BETWEEN \d\d\d\d\d\d\d\d AND \d\d\d\d\d\d\d\d')
+    StringRegex = re.compile(r'\d\d\d\d\d\d\d\d')
     while StringRegex.search(query_select):
         old_string = StringRegex.search(query_select).group()
         new_string = old_string
         DateRegex = re.compile(r'\d\d\d\d\d\d\d\d')
 
-        for i in range(2):
+        # for i in range(4):
+        i = -1
+        while DateRegex.search(new_string):
+            i += 1
+
             old_dateString = DateRegex.search(new_string).group()
             new_dateString = old_dateString[0:4] + "-" + old_dateString[4:6] + "-" + old_dateString[6:]
             
             year = int(new_dateString.split("-")[0])
             month = int(new_dateString.split("-")[1])
             day = int(new_dateString.split("-")[2])
-            if i == 0:
-                if month <= 12 and month > 0 and day > dates[month]:
-                    month += 1
-                    day = 1
-            if i == 1:
-                if month <= 12 and month > 0 and day > dates[month]:
-                    day = dates[month]
-                    if year % 4 == 0 and month == 2:
-                        day = 29
             
             if month < 10 and month > 0:
                 month_string = "0{}".format(month)
@@ -78,16 +93,6 @@ def search(line_idx, cursor_search_list):
             else:
                 day_string = "{}".format(day)
             new_dateString = old_dateString[0:4] + "-" + month_string + "-" + day_string
-
-            if i == 0 and month > 12:
-                new_dateString = str(int(new_dateString.split("-")[0]) + 1) + "-01-01"
-            if i == 0 and month == 0:
-                new_dateString = str(int(new_dateString.split("-")[0])) + "-01-01"
-            if i == 1 and month > 12:
-                new_dateString = str(int(new_dateString.split("-")[0])) + "-12-31"
-            if i == 1 and month == 0:
-                new_dateString = str(int(new_dateString.split("-")[0]) - 1) + "-12-31"
-
             new_string = new_string.replace(old_dateString, "\'{}\'".format(new_dateString))
 
         query_select = query_select.replace(old_string, new_string)
@@ -131,8 +136,8 @@ def search_insert_each_worker(worker_idx, total_workers):
 
         if not is_search:
             chunk = total_vect[i]
-            hash_i = hash(i)
-            cursor_insert_list[hash_i % 5].execute("INSERT INTO tpch_macro (ID, QUANTITY, EXTENDEDPRICE, DISCOUNT, TAX, SHIPDATE, COMMITDATE, RECEIPTDATE, TOTALPRICE, ORDERDATE) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s);", chunk)
+            hash_i = hash(int(chunk[0]))
+            cursor_list[hash_i % 5].execute("INSERT INTO nyc_taxi (pkey, pickup_date, dropoff_date, pickup_lon, pickup_lat, dropoff_lon, dropoff_lat, passenger_cnt, trip_dist, fare_amt, extra, mta_tax, tip_amt, tolls_amt, impt_sur, total_amt) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);", chunk)
             connection_list[hash_i % 5].commit() # Needed for atomic transaction.
         else:
             num_found_points = search(i % 1000, cursor_search_list)
@@ -159,20 +164,22 @@ manager = multiprocessing.Manager()
 return_dict = manager.dict()
 
 def load_all_points(client_idx):
-    file_path = "/mntData/tpch_split_10/x{}".format(client_idx)
+    file_path = "/mntData/nyc_split_10/x{}".format(client_idx)
     loaded_lines = 0
     with open(file_path) as f:
         for line in f:
+
             string_list = line.split(",")
-            chunk = [int(entry) for entry in string_list]
+            chunk = []
+            for i, entry in enumerate(string_list):
+                if i >= 3 and i <= 6:
+                    chunk.append(float(entry))
+                else:
+                    chunk.append(int(entry))
 
-            chunk[5] = datetime.strptime(str(chunk[5]), "%Y%m%d")
-            chunk[6] = datetime.strptime(str(chunk[6]), "%Y%m%d")
-            chunk[7] = datetime.strptime(str(chunk[7]), "%Y%m%d")
-            chunk[9] = datetime.strptime(str(chunk[9]), "%Y%m%d")
+            chunk[1] = datetime.strptime(str(chunk[1]), "%Y%m%d")
+            chunk[2] = datetime.strptime(str(chunk[2]), "%Y%m%d")
 
-            total_vect.append(chunk)
-            loaded_lines += 1
             if loaded_lines == total_points:
                 break
 
@@ -180,9 +187,9 @@ if not no_insert:
     load_all_points(int(sys.argv[1]))
 
 if not no_insert:
-    out_addr = '/proj/trinity-PG0/Trinity/baselines/timescaleDB/python/tpch_search_insert_throughput.txt'
+    out_addr = '/proj/trinity-PG0/Trinity/baselines/timescaleDB/python/nyc_search_insert_throughput.txt'
 else:
-    out_addr = '/proj/trinity-PG0/Trinity/baselines/timescaleDB/python/tpch_search_throughput.txt'
+    out_addr = '/proj/trinity-PG0/Trinity/baselines/timescaleDB/python/nyc_search_throughput.txt'
 
 if int(sys.argv[1]) == 0:
     with open(out_addr, 'a') as f:
@@ -200,14 +207,7 @@ for p in processes:
 
 print("total throughput", sum([return_dict[worker]["throughput"] for worker in return_dict]))
 
-if not no_insert:
-    with open('/proj/trinity-PG0/Trinity/baselines/timescaleDB/python/tpch_search_insert_throughput.txt', 'a') as f:
-        fcntl.flock(f, fcntl.LOCK_EX)
-        print(sum([return_dict[worker]["throughput"] for worker in return_dict]), file=f)
-        fcntl.flock(f, fcntl.LOCK_UN)
-
-else:
-    with open('/proj/trinity-PG0/Trinity/baselines/timescaleDB/python/tpch_search_throughput.txt', 'a') as f:
-        fcntl.flock(f, fcntl.LOCK_EX)
-        print(sum([return_dict[worker]["throughput"] for worker in return_dict]), file=f)
-        fcntl.flock(f, fcntl.LOCK_UN)
+with open(out_addr, 'a') as f:
+    fcntl.flock(f, fcntl.LOCK_EX)
+    print(sum([return_dict[worker]["throughput"] for worker in return_dict]), file=f)
+    fcntl.flock(f, fcntl.LOCK_UN)
