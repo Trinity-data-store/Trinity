@@ -2,7 +2,7 @@
 # Run in on CLOUDLAB terminal!!
 
 cd /proj/trinity-PG0/Trinity/build/
-make
+make -j
 
 for i in {1..9}
 do
@@ -11,6 +11,6 @@ done
 
 /proj/trinity-PG0/Trinity/build/librpc/TrinityTPCHInsertLookup 0
 
-cd /proj/trinity-PG0/Trinity
+# cd /proj/trinity-PG0/Trinity
 # ulimit -n 100000
 # cd /proj/trinity-PG0/Trinity/build

@@ -23,7 +23,7 @@ using namespace std;
 using namespace apache::thrift;
 using namespace apache::thrift::protocol;
 using namespace apache::thrift::transport;
-const int DIMENSION = 9;
+
 const int shard_num = 20;
 const int client_num = 60;
 

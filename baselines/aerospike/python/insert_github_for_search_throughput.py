@@ -27,6 +27,8 @@ threads = []
 total_vect = []
 num_data_nodes = 5
 total_points = int(50000000) # 30M
+# total_points = int(10000000) # Insert Lookup
+
 warmup_points = int(total_points * 0.2)
 file_path = "/mntData/github_split_10/x{}".format(int(sys.argv[1]))
 
@@ -131,7 +133,7 @@ load_all_points(int(sys.argv[1]))
 '''
 
 # threads_per_node = 60 # Some client timeout error
-threads_per_node = 40
+threads_per_node = 60
 
 manager = multiprocessing.Manager()
 return_dict = manager.dict()

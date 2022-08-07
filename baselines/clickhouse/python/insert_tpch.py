@@ -13,7 +13,7 @@ from threading import Thread, Lock
 # master = ("10.10.1.2", "9000")
 
 num_workers = 20
-total_points = int(100000000 / 1000)
+total_points = int(100000) # 100k
 processes = []
 total_vect = []
 num_data_nodes = 5

@@ -21,6 +21,7 @@ using namespace apache::thrift::protocol;
 using namespace apache::thrift::transport;
 int WARMUP_FACTOR = 5;
 uint32_t points_to_skip;
+std::vector<int> pkey_vect;
 
 std::vector<std::vector<int32_t>> load_dataset_vector_tpch(std::string file_address, uint32_t total_points) 
 {
@@ -416,7 +417,7 @@ uint32_t total_client_lookup(int shard_number, int client_number, std::vector<st
         points_to_lookup = 67520000;
         points_to_lookup = 30000000; 
     }
-    std::vector<int> pkey_vect = primary_key_zipfan(points_to_lookup);
+    pkey_vect = primary_key_zipfan(points_to_lookup);
     // std::vector<int> pkey_value_vect = load_pkey_vector_nyc(file_address, points_to_lookup);
     // for (int i = 0; i < 10; i ++) {
     //     std::cout << pkey_value_vect[pkey_vect[i]] << ",";
@@ -442,7 +443,6 @@ uint32_t total_client_lookup(int shard_number, int client_number, std::vector<st
 uint32_t insert_lookup_each_client(std::vector<std::vector<int32_t>> *total_points_stored, int shard_number, int client_number, int client_index, std::vector<std::string> server_ips, uint32_t points_to_insert)
 {
     auto client = MDTrieClient(server_ips, shard_number);
-    // uint32_t warmup_points = points_to_skip + (points_to_insert - points_to_skip) / WARMUP_FACTOR;
 
     TimeStamp start, diff = 0; 
     bool finished_warmup = false;
@@ -477,9 +477,11 @@ uint32_t insert_lookup_each_client(std::vector<std::vector<int32_t>> *total_poin
             client.insert_send(data_point, point_idx);
             client.insert_rec(point_idx);
         } else {
-            client.primary_key_lookup_send(point_idx - points_to_skip);
             std::vector<int32_t> rec_vect;
-            client.primary_key_lookup_rec(rec_vect, point_idx - points_to_skip);
+            uint32_t pkey = pkey_vect[point_idx - points_to_skip];
+            client.primary_key_lookup_send_zipf(pkey, point_idx - points_to_skip);
+            client.primary_key_lookup_rec_zipf(rec_vect, point_idx - points_to_skip);
+
         }
     }
     diff = GetTimestamp() - start;
@@ -493,10 +495,23 @@ uint32_t total_client_insert_lookup(int shard_number, int client_number, std::ve
         file_address = "/mntData/tpch_split_10/x" + std::to_string(which_part);
     if (current_dataset_idx == 2)
         file_address = "/mntData/github_split_10/x" + std::to_string(which_part);
+    if (current_dataset_idx == 3)
+        file_address = "/mntData/nyc_split_10/x" + std::to_string(which_part);
 
-    uint32_t points_to_operate = 100000000 / 10; 
-    points_to_skip = points_to_operate / 2;
-    std::vector<std::vector<int32_t>> total_points_stored = load_dataset_vector_tpch(file_address, points_to_operate);
+    points_to_skip = 10000000;
+    uint32_t points_to_operate = points_to_skip + points_to_skip / 10; 
+    pkey_vect = primary_key_zipfan(points_to_operate);
+
+    std::vector<std::vector<int32_t>> total_points_stored;
+
+    if (current_dataset_idx == 1)
+        total_points_stored = load_dataset_vector_tpch(file_address, points_to_operate);
+    if (current_dataset_idx == 2) {
+        total_points_stored = load_dataset_vector_github(file_address, points_to_operate);
+    }
+    if (current_dataset_idx == 3) {
+        total_points_stored = load_dataset_vector_nyc(file_address, points_to_operate);
+    }
 
     std::vector<std::future<uint32_t>> threads; 
     threads.reserve(client_number);
@@ -651,6 +666,8 @@ uint32_t total_client_insert_query(int shard_number, int client_number, std::vec
     if (current_dataset_idx == 3) {
         total_points_stored = load_dataset_vector_nyc(file_address, points_to_operate);
     }
+
+    pkey_vect = primary_key_zipfan(points_to_operate);
 
     std::vector<std::future<uint32_t>> threads; 
     threads.reserve(client_number);

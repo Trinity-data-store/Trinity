@@ -16,16 +16,15 @@ config = {
   'hosts': [ ('10.10.1.12', 3000), ('10.10.1.13', 3000), ('10.10.1.14', 3000), ('10.10.1.15', 3000), ('10.10.1.16', 3000)]
 }
 
-header = ["QUANTITY", "EXTENDEDPRICE", "DISCOUNT", "TAX", "SHIPDATE", "COMMITDATE", "RECEIPTDATE", "TOTALPRICE", "ORDERDATE"]
+header = ["events_count", "authors_count", "forks", "stars", "issues", "pushes", "pulls", "downloads", "start_date", "end_date"]
 processes = []
 total_vect = []
 num_data_nodes = 5
-skip_points = int(5000000) # 5M # Need to run aerospike_insert first!!
+skip_points = int(10000000) # 10M # Need to run aerospike_insert first!!
 total_points = skip_points + int(skip_points / 10) # 11M
-
 zipf_keys = []
 zipf_distribution = "/proj/trinity-PG0/Trinity/queries/zipf_keys_30m"
-file_path = "/mntData/tpch_split_10/x{}".format(int(sys.argv[1]))
+file_path = "/mntData/github_split_10/x{}".format(int(sys.argv[1]))
 
 with open(zipf_distribution) as f:
     i = 0
@@ -52,13 +51,14 @@ def insert_lookup_each_worker(total_num_workers, worker_idx):
 
     i = worker_idx
     with open(file_path) as f:
-
         for line in f:
-
+            
             if i > total_points:
                 break
 
             i += total_num_workers
+
+    # for i in range(worker_idx, total_points, total_num_workers):
 
             effective_line_count += 1
             
@@ -80,7 +80,8 @@ def insert_lookup_each_worker(total_num_workers, worker_idx):
                         rec[header[column - 1]] = int(col)
                     column += 1
 
-                key = ('tpch', 'tpch_macro', primary_key)
+                # primary_key, rec = total_vect[i]
+                key = ('macro_bench', 'github_macro', primary_key)
                 if rec:
                     try:
                         client_insert.put(key, rec)
@@ -96,7 +97,8 @@ def insert_lookup_each_worker(total_num_workers, worker_idx):
             else:
                 # primary_key_to_query = random.choice(primary_key_list)
                 primary_key = inserted_pts[zipf_keys[i - skip_points] % len(inserted_pts)]
-                key = ('tpch', 'tpch_macro', primary_key)
+            
+                key = ('macro_bench', 'github_macro', primary_key)
                 try:
                     (_, _, _) = client_lookup.get(key)
                 except Exception as e:
@@ -104,7 +106,6 @@ def insert_lookup_each_worker(total_num_workers, worker_idx):
                     print(key)
                     print("error: {0}".format(e), file=sys.stderr)
                     exit(0)
-
 
     end_time = time.time()
 
@@ -123,10 +124,12 @@ manager = multiprocessing.Manager()
 return_dict = manager.dict()
 
 if int(sys.argv[1]) == 0:
-    with open('/proj/trinity-PG0/Trinity/baselines/aerospike/python/tpch_insert_lookup_throughput.txt', 'a') as f:
+    with open('/proj/trinity-PG0/Trinity/baselines/aerospike/python/github_insert_lookup_throughput.txt', 'a') as f:
         fcntl.flock(f, fcntl.LOCK_EX)
         print("---- {}K ----".format(int(total_points / 1000)), file=f)
         fcntl.flock(f, fcntl.LOCK_UN)
+
+# load_all_points(int(sys.argv[1]))
 
 for worker in range(threads_per_node):
     p = Process(target=insert_lookup_worker, args=(worker, threads_per_node, return_dict, ))
@@ -138,7 +141,7 @@ for p in processes:
 
 print("total throughput", sum([return_dict[worker]["throughput"] for worker in return_dict]))
 
-with open('/proj/trinity-PG0/Trinity/baselines/aerospike/python/tpch_insert_lookup_throughput.txt', 'a') as f:
+with open('/proj/trinity-PG0/Trinity/baselines/aerospike/python/github_insert_lookup_throughput.txt', 'a') as f:
     fcntl.flock(f, fcntl.LOCK_EX)
     print(sum([return_dict[worker]["throughput"] for worker in return_dict]), file=f)
     fcntl.flock(f, fcntl.LOCK_UN)

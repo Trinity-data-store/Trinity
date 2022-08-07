@@ -22,9 +22,15 @@ using namespace std;
 using namespace apache::thrift;
 using namespace apache::thrift::protocol;
 using namespace apache::thrift::transport;
-const int DIMENSION = 9;
+
 const int shard_num = 20;
-const int client_num = 60;
+const int client_num = 100;
+
+#define TPCH 1
+#define GITHUB 2
+#define NYC 3
+#define CURRENT_DATASET TPCH
+
 
 int main(int argc, char *argv[]){
 
@@ -38,10 +44,12 @@ int main(int argc, char *argv[]){
     total_points_count = 1000000000;
     auto client = MDTrieClient(server_ips, shard_num);
 
-    if (!client.ping(1)){
+    if (!client.ping(CURRENT_DATASET)){
         std::cerr << "Server setting wrong!" << std::endl;
         exit(-1);
     }
+
+    current_dataset_idx = CURRENT_DATASET;
 
     /** 
         Insert all points

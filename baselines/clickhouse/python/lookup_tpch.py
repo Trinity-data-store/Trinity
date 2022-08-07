@@ -8,12 +8,14 @@ import multiprocessing
 from multiprocessing import Process
 from concurrent.futures import ProcessPoolExecutor
 from threading import Thread, Lock
+import fcntl
 
 # master = ("10.10.1.{}".format(int(sys.argv[1]) + 2), "9000")
 # master = ("10.10.1.2", "9000")
 
 num_workers = 20
-total_points = int(100000000 / 1000)
+total_points = int(100000)
+warmup_points = int(total_points * 0.2)
 processes = []
 total_vect = []
 num_data_nodes = 5
@@ -24,23 +26,30 @@ def insert_each_worker(worker_idx, total_workers):
     for node_id in range(num_data_nodes):
         client_list.append(Client("10.10.1.{}".format(12 + node_id), "9000"))
     # client = Client(master[0], master[1])
-    line_count = 0
+    effective_line_count = 0
     start_time = time.time()
+    warmup_ended = False
 
     for i in range(worker_idx, total_points, total_workers):
 
-        hash_i = hash(i)
+        if i > warmup_points:
+            if not warmup_ended:
+                start_time = time.time()
+                warmup_ended = True
+            effective_line_count += 1
+
+        hash_i = hash(int(total_vect[i]))
         results = client_list[hash_i % num_data_nodes].execute("SELECT * FROM tpch_macro WHERE ID = {}".format(total_vect[i]))
         if not results:
-            print("failed!", total_vect)
+            print("failed!", total_vect[i])
             exit(0)
+
         del results
-        line_count += 1
-        if line_count % 5000 == 0:
-            print(line_count)
+        effective_line_count += 1
+
 
     end_time = time.time()
-    return line_count / (end_time - start_time)
+    return effective_line_count / (end_time - start_time)
 
 def insert_worker(worker, total_workers, return_dict):
 
@@ -48,7 +57,7 @@ def insert_worker(worker, total_workers, return_dict):
     return_dict[worker] = {"throughput": throughput}
 
 
-threads_per_node = 60
+threads_per_node = 40
 total_num_nodes = 10
 
 manager = multiprocessing.Manager()
@@ -65,6 +74,12 @@ def load_all_points(client_idx):
             if loaded_lines == total_points:
                 break
 
+if int(sys.argv[1]) == 0:
+    with open('/proj/trinity-PG0/Trinity/baselines/clickhouse/python/tpch_lookup_throughput.txt', 'a') as f:
+        fcntl.flock(f, fcntl.LOCK_EX)
+        print("---- {}K ----".format(int(total_points / 1000)), file=f)
+        fcntl.flock(f, fcntl.LOCK_UN)
+
 load_all_points(int(sys.argv[1]))
 
 for worker in range(threads_per_node):
@@ -78,4 +93,6 @@ for p in processes:
 print("total throughput", sum([return_dict[worker]["throughput"] for worker in return_dict]))
 
 with open('/proj/trinity-PG0/Trinity/baselines/clickhouse/python/tpch_lookup_throughput.txt', 'a') as f:
+    fcntl.flock(f, fcntl.LOCK_EX)
     print(sum([return_dict[worker]["throughput"] for worker in return_dict]), file=f)
+    fcntl.flock(f, fcntl.LOCK_UN)

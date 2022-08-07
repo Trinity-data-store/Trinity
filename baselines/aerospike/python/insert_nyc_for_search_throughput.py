@@ -27,6 +27,7 @@ threads = []
 total_vect = []
 num_data_nodes = 5
 total_points = int(5000000) # 30M
+total_points = int(10000000) # 30M
 warmup_points = int(total_points * 0.2)
 file_path = "/mntData/nyc_split_10/x{}".format(int(sys.argv[1]))
 
