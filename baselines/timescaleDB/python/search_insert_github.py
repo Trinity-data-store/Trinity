@@ -17,8 +17,8 @@ COLS = ["pkey", "events_count", "authors_count", "forks", "stars", "issues", "pu
 processes = []
 total_vect = []
 num_data_nodes = 5
-begin_measuring = int(50000000)  # 50M
-total_points = int(50000500)  # + 500 queries
+begin_measuring = int(40000000 + 5000000)  # 50M
+total_points = int(40000000 + 5000000 + 500)  # + 500 queries
 
 filename = "/proj/trinity-PG0/Trinity/queries/github/github_query_final"
 
@@ -125,7 +125,8 @@ def search_insert_each_worker(worker_idx, total_workers):
     effective_line_count = 0
     start_time = time.time()
 
-    for i in range(begin_measuring + worker_idx, total_points, total_workers):
+    # for i in range(begin_measuring + worker_idx, total_points, total_workers):
+    for i in range(begin_measuring + worker_idx - begin_measuring, total_points - begin_measuring, total_workers):
 
         effective_line_count += 1
         line_count += 1
@@ -169,16 +170,17 @@ def load_all_points(client_idx):
     loaded_lines = 0
     with open(file_path) as f:
         for line in f:
+
+            loaded_lines += 1
+            if loaded_lines < begin_measuring:
+                continue
+                
             string_list = line.split(",")
             chunk = [int(entry) for entry in string_list]
-
-            chunk[5] = datetime.strptime(str(chunk[5]), "%Y%m%d")
-            chunk[6] = datetime.strptime(str(chunk[6]), "%Y%m%d")
-            chunk[7] = datetime.strptime(str(chunk[7]), "%Y%m%d")
             chunk[9] = datetime.strptime(str(chunk[9]), "%Y%m%d")
+            chunk[10] = datetime.strptime(str(chunk[10]), "%Y%m%d")
 
             total_vect.append(chunk)
-            loaded_lines += 1
             if loaded_lines == total_points:
                 break
 

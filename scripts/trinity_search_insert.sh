@@ -11,6 +11,6 @@ done
 
 /proj/trinity-PG0/Trinity/build/librpc/TrinityTPCHInsertQuery 0
 
-cd /proj/trinity-PG0/Trinity
+# cd /proj/trinity-PG0/Trinity
 # ulimit -n 100000
 # cd /proj/trinity-PG0/Trinity/build

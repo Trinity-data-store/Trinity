@@ -136,11 +136,6 @@ threads_per_node = 40
 manager = multiprocessing.Manager()
 return_dict = manager.dict()
 
-if int(sys.argv[1]) == 0:
-    with open('/proj/trinity-PG0/Trinity/baselines/aerospike/python/github_insert_throughput.txt', 'a') as f:
-        fcntl.flock(f, fcntl.LOCK_EX)
-        print("---- {}M ----".format(int(total_points / 1000000)), file=f)
-        fcntl.flock(f, fcntl.LOCK_UN)
 
 for worker in range(threads_per_node):
     p = Process(target=insert_worker, args=(worker, threads_per_node, return_dict, ))
@@ -149,9 +144,3 @@ for worker in range(threads_per_node):
     
 for p in processes:
     p.join()
-
-print("total throughput", sum([return_dict[worker]["throughput"] for worker in return_dict]))
-with open('/proj/trinity-PG0/Trinity/baselines/aerospike/python/github_insert_throughput.txt', 'a') as f:
-    fcntl.flock(f, fcntl.LOCK_EX)
-    print(sum([return_dict[worker]["throughput"] for worker in return_dict]), file=f)
-    fcntl.flock(f, fcntl.LOCK_UN)

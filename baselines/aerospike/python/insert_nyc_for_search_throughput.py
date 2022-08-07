@@ -135,11 +135,6 @@ def load_all_points(client_idx):
 
 # load_all_points(int(sys.argv[1]))
 
-if int(sys.argv[1]) == 0:
-    with open('/proj/trinity-PG0/Trinity/baselines/aerospike/python/nyc_insert_throughput.txt', 'a') as f:
-        fcntl.flock(f, fcntl.LOCK_EX)
-        print("---- {}M ----".format(int(total_points / 1000000)), file=f)
-        fcntl.flock(f, fcntl.LOCK_UN)
 
 for worker in range(threads_per_node):
     p = Process(target=insert_worker, args=(worker, threads_per_node, return_dict, ))
@@ -157,9 +152,3 @@ for p in processes:
 
 # for t in threads:
 #     t.join()
-
-print("total throughput", sum([return_dict[worker]["throughput"] for worker in return_dict]))
-with open('/proj/trinity-PG0/Trinity/baselines/aerospike/python/nyc_insert_throughput.txt', 'a') as f:
-    fcntl.flock(f, fcntl.LOCK_EX)
-    print(sum([return_dict[worker]["throughput"] for worker in return_dict]), file=f)
-    fcntl.flock(f, fcntl.LOCK_UN)

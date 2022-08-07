@@ -13,7 +13,7 @@ import fcntl
 processes = []
 total_vect = []
 num_data_nodes = 5
-total_points = int(2500000) # 2M # 5 min
+total_points = int(5000000) # 2M # 5 min
 warmup_points = int(total_points * 0.2)
 file_path = "/mntData/nyc_split_10/x{}".format(int(sys.argv[1]))
 

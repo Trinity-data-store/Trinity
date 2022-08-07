@@ -18,8 +18,8 @@ COLS = ["pickup_date", "dropoff_date", "pickup_lon", "pickup_lat", "dropoff_lon"
 processes = []
 total_vect = []
 num_data_nodes = 5
-begin_measuring = int(50000000)  # 50M
-total_points = int(50000500)  # + 500 queries
+begin_measuring = int(5000000)  # 50M
+total_points = int(5000000 + 500)  # + 500 queries
 
 filename = "/proj/trinity-PG0/Trinity/queries/nyc/nyc_query_new"
 
@@ -109,22 +109,20 @@ def search(line_idx, cursor_search_list):
 def search_insert_each_worker(worker_idx, total_workers):
 
     connection_list = []
-    cursor_search_list = []
-    cursor_insert_list = []
+    cursor_list = []
     for data_node_idx in range(num_data_nodes):
         client_ip = "10.10.1.{}".format(12 + data_node_idx)
         CONNECTION = "dbname=defaultdb host={} user=postgres password=adifficultpassword sslmode=disable".format(client_ip)
         CONN = psycopg2.connect(CONNECTION)
         # CONN.autocommit = True
         connection_list.append(CONN)
-        cursor_search_list.append(CONN.cursor())
-        cursor_insert_list.append(CONN.cursor())
+        cursor_list.append(CONN.cursor())
 
     line_count = 0
     effective_line_count = 0
     start_time = time.time()
 
-    for i in range(begin_measuring + worker_idx, total_points, total_workers):
+    for i in range(begin_measuring + worker_idx -  begin_measuring, total_points - begin_measuring, total_workers):
 
         effective_line_count += 1
         line_count += 1
@@ -140,7 +138,7 @@ def search_insert_each_worker(worker_idx, total_workers):
             cursor_list[hash_i % 5].execute("INSERT INTO nyc_taxi (pkey, pickup_date, dropoff_date, pickup_lon, pickup_lat, dropoff_lon, dropoff_lat, passenger_cnt, trip_dist, fare_amt, extra, mta_tax, tip_amt, tolls_amt, impt_sur, total_amt) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);", chunk)
             connection_list[hash_i % 5].commit() # Needed for atomic transaction.
         else:
-            num_found_points = search(i % 1000, cursor_search_list)
+            num_found_points = search(i % 1000, cursor_list)
             effective_line_count += num_found_points - 1
 
         if line_count:
@@ -168,6 +166,11 @@ def load_all_points(client_idx):
     loaded_lines = 0
     with open(file_path) as f:
         for line in f:
+            
+            loaded_lines += 1
+
+            if loaded_lines < begin_measuring:
+                continue
 
             string_list = line.split(",")
             chunk = []
@@ -179,6 +182,7 @@ def load_all_points(client_idx):
 
             chunk[1] = datetime.strptime(str(chunk[1]), "%Y%m%d")
             chunk[2] = datetime.strptime(str(chunk[2]), "%Y%m%d")
+            total_vect.append(chunk)
 
             if loaded_lines == total_points:
                 break

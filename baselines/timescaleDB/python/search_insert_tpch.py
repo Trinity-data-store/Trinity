@@ -18,7 +18,7 @@ processes = []
 total_vect = []
 num_data_nodes = 5
 begin_measuring = int(5000000)  # 5M
-total_points = int(5000500)  # 5.01M
+total_points = int(5000000 + 500)  # 5.01M
 
 filename = "/proj/trinity-PG0/Trinity/results/tpch_aerospike"
 

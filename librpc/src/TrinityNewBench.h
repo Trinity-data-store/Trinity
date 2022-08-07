@@ -627,10 +627,30 @@ uint32_t insert_query_each_client(std::vector<std::vector<int32_t>> *total_point
 
 uint32_t total_client_insert_query(int shard_number, int client_number, std::vector<std::string> server_ips, int which_part = 0){
 
-    std::string file_address = "/mntData/tpch_split_10/x" + std::to_string(which_part);
+    std::string file_address;
+    if (current_dataset_idx == 1)
+        file_address = "/mntData/tpch_split_10/x" + std::to_string(which_part);
+    if (current_dataset_idx == 2)
+        file_address = "/mntData/github_split_10/x" + std::to_string(which_part);
+    if (current_dataset_idx == 3)
+        file_address = "/mntData/nyc_split_10/x" + std::to_string(which_part);
+
     points_to_skip = 5000000;
+    if (current_dataset_idx == 2)
+        points_to_skip = 50000000; // 50M
+
     uint32_t points_to_operate = points_to_skip + 500; 
-    std::vector<std::vector<int32_t>> total_points_stored = load_dataset_vector_tpch(file_address, points_to_operate);
+
+    std::vector<std::vector<int32_t>> total_points_stored;
+
+    if (current_dataset_idx == 1)
+        total_points_stored = load_dataset_vector_tpch(file_address, points_to_operate);
+    if (current_dataset_idx == 2) {
+        total_points_stored = load_dataset_vector_github(file_address, points_to_operate);
+    }
+    if (current_dataset_idx == 3) {
+        total_points_stored = load_dataset_vector_nyc(file_address, points_to_operate);
+    }
 
     std::vector<std::future<uint32_t>> threads; 
     threads.reserve(client_number);

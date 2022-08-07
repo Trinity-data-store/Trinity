@@ -30,7 +30,7 @@ const int client_num = 60;
 #define TPCH 1
 #define GITHUB 2
 #define NYC 3
-#define CURRENT_DATASET TPCH
+#define CURRENT_DATASET NYC
 
 int main(int argc, char *argv[]){
 
