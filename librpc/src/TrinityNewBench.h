@@ -91,6 +91,11 @@ std::vector<int32_t> load_pkey_vector_nyc(std::string file_address, uint32_t tot
     return pkey_vect;
 }
 
+void flush_vector_to_file(std::vector<TimeStamp> vect, std::string filename){
+    std::ofstream outFile(filename);
+    for (const auto &e : vect) outFile << std::to_string(e) << "\n";
+}
+
 uint32_t insertion_latency_bench (std::vector<std::string> server_ips, int client_number, int shard_number, int which_part = 0)
 {
     std::string file_address;
@@ -114,7 +119,7 @@ uint32_t insertion_latency_bench (std::vector<std::string> server_ips, int clien
     /*
         Insertion
     */
-
+    std::vector<TimeStamp> latency_list;
     auto client = MDTrieClient(server_ips, shard_number);
     uint32_t warmup_points = points_to_insert / WARMUP_FACTOR;
 
@@ -130,11 +135,22 @@ uint32_t insertion_latency_bench (std::vector<std::string> server_ips, int clien
         vector <int32_t> data_point = total_points_stored[point_idx];
         TimeStamp start = GetTimestamp();
         client.insert(data_point, point_idx);
-        if (finished_warmup)
-            cumulative += GetTimestamp() - start;
+        if (finished_warmup) {
+            TimeStamp latency = GetTimestamp() - start;
+            cumulative += latency;
+            latency_list.push_back(latency);
+        }
 
         inserted_points_count ++;
     }
+
+    if (current_dataset_idx == 1)
+        flush_vector_to_file(latency_list, "/proj/trinity-PG0/Trinity/results/latency_cdf/trinity_tpch_insert");
+    if (current_dataset_idx == 2)
+        flush_vector_to_file(latency_list, "/proj/trinity-PG0/Trinity/results/latency_cdf/trinity_github_insert");
+    if (current_dataset_idx == 3)
+        flush_vector_to_file(latency_list, "/proj/trinity-PG0/Trinity/results/latency_cdf/trinity_nyc_insert");
+
     return cumulative / inserted_points_count;
 }
 
@@ -162,9 +178,9 @@ uint32_t lookup_latency_bench (std::vector<std::string> server_ips, int client_n
     // std::cout << "Loaded dataset " << endl; 
 
     /*
-        Insertion
+        Lookup
     */
-
+    std::vector<TimeStamp> latency_list;
     auto client = MDTrieClient(server_ips, shard_number);
     uint32_t warmup_points = points_to_lookup / WARMUP_FACTOR;
 
@@ -185,8 +201,11 @@ uint32_t lookup_latency_bench (std::vector<std::string> server_ips, int client_n
         client.primary_key_lookup_rec_zipf(rec_vect, point_idx);
         // std::cout << "primary_key_lookup_rec_zipf:  " << point_idx << endl; 
 
-        if (finished_warmup)
-            cumulative += GetTimestamp() - start;
+        if (finished_warmup) {
+            TimeStamp latency = GetTimestamp() - start;
+            cumulative += latency;
+            latency_list.push_back(latency);
+        }
 
 
         std::vector<int32_t> correct_vect = total_points_stored[point_idx];
@@ -211,6 +230,14 @@ uint32_t lookup_latency_bench (std::vector<std::string> server_ips, int client_n
         // if (lookup_points_count % 100 == 0)
         //     std::cout << "lookup_pts_count: " << lookup_points_count << std::endl;
     }
+
+    if (current_dataset_idx == 1)
+        flush_vector_to_file(latency_list, "/proj/trinity-PG0/Trinity/results/latency_cdf/trinity_tpch_lookup");
+    if (current_dataset_idx == 2)
+        flush_vector_to_file(latency_list, "/proj/trinity-PG0/Trinity/results/latency_cdf/trinity_github_lookup");
+    if (current_dataset_idx == 3)
+        flush_vector_to_file(latency_list, "/proj/trinity-PG0/Trinity/results/latency_cdf/trinity_nyc_lookup");
+
     return cumulative / lookup_points_count;
 }
 

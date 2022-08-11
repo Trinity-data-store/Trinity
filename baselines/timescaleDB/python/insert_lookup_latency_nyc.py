@@ -18,6 +18,13 @@ num_data_nodes = 5
 total_points = int(30000) # 30M
 warmup_points = int(total_points * 0.2)
 file_path = "/mntData/nyc_split_10/x0"
+insert_latency_vect = []
+lookup_latency_vect = []
+
+def flush_list_to_file(vect, file_name):
+    with open(file_name, 'w') as f:
+        for val in vect:
+            f.write("{}\n".format(val))
 
 def insert_each_worker():
 
@@ -71,8 +78,10 @@ def insert_each_worker():
             cursor_list[hash_i % 5].execute("INSERT INTO nyc_taxi (pkey, pickup_date, dropoff_date, pickup_lon, pickup_lat, dropoff_lon, dropoff_lat, passenger_cnt, trip_dist, fare_amt, extra, mta_tax, tip_amt, tolls_amt, impt_sur, total_amt) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);", chunk)
             connection_list[hash_i % 5].commit() # Needed for atomic transaction.
             if warmup_ended:
-                cumulative += time.time() - start_time
-
+                latency = time.time() - start_time
+                cumulative += latency
+                insert_latency_vect.append(latency * 1000000)
+                
             '''
             Break
             '''
@@ -139,7 +148,9 @@ def lookup_each_worker():
             cursor_list[hash_i % 5].execute("SELECT * FROM nyc_taxi WHERE pkey = {}".format(chunk[0]))
             connection_list[hash_i % 5].commit() # Needed for atomic transaction.
             if warmup_ended:
-                cumulative += time.time() - start_time
+                latency =  time.time() - start_time
+                cumulative += latency
+                lookup_latency_vect.append(latency * 1000000)
 
             '''
             Break
@@ -158,3 +169,6 @@ insertion_latency = insert_each_worker()
 print("insertion latency: ", insertion_latency * 1000000, "us")
 lookup_latency = lookup_each_worker()
 print("lookup latency: ", lookup_latency * 1000000, "us")
+
+flush_list_to_file(insert_latency_vect, "/proj/trinity-PG0/Trinity/results/latency_cdf/timescale_nyc_insert")
+flush_list_to_file(lookup_latency_vect, "/proj/trinity-PG0/Trinity/results/latency_cdf/timescale_nyc_lookup")

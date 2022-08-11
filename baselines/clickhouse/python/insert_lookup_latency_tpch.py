@@ -18,6 +18,13 @@ warmup_points = int(total_points * 0.2)
 processes = []
 total_vect = []
 num_data_nodes = 5
+insert_latency_vect = []
+lookup_latency_vect = []
+
+def flush_list_to_file(vect, file_name):
+    with open(file_name, 'w') as f:
+        for val in vect:
+            f.write("{}\n".format(val))
 
 def insert_each_worker():
 
@@ -41,7 +48,9 @@ def insert_each_worker():
             start_time = time.time()
             client_list[hash_i % num_data_nodes].execute("INSERT INTO tpch_macro (ID, QUANTITY, EXTENDEDPRICE, DISCOUNT, TAX, SHIPDATE, COMMITDATE, RECEIPTDATE, TOTALPRICE, ORDERDATE) VALUES", [total_vect[i]])
             if warmup_ended:
-                cumulative += time.time() - start_time
+                latency = time.time() - start_time
+                cumulative += latency
+                insert_latency_vect.append(latency * 1000000)
 
         except Exception as e:
             import sys
@@ -78,7 +87,9 @@ def lookup_each_worker():
             start_time = time.time()
             results = client_list[hash_i % num_data_nodes].execute("SELECT * FROM tpch_macro WHERE ID = {}".format(total_vect[i][0]))
             if warmup_ended:
-                cumulative += time.time() - start_time
+                latency =  time.time() - start_time
+                cumulative += latency
+                lookup_latency_vect.append(latency * 1000000)
 
         except Exception as e:
             import sys
@@ -109,3 +120,6 @@ insertion_latency = insert_each_worker()
 print("insertion latency: ", insertion_latency * 1000000, "us")
 lookup_latency = lookup_each_worker()
 print("lookup latency: ", lookup_latency * 1000000, "us")
+
+flush_list_to_file(insert_latency_vect, "/proj/trinity-PG0/Trinity/results/latency_cdf/clickhouse_tpch_insert")
+flush_list_to_file(lookup_latency_vect, "/proj/trinity-PG0/Trinity/results/latency_cdf/clickhouse_tpch_lookup")
