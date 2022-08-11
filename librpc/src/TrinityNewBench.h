@@ -467,7 +467,7 @@ uint32_t total_client_lookup(int shard_number, int client_number, std::vector<st
 }
 
 
-uint32_t insert_lookup_each_client(std::vector<std::vector<int32_t>> *total_points_stored, int shard_number, int client_number, int client_index, std::vector<std::string> server_ips, uint32_t points_to_insert)
+uint32_t insert_lookup_each_client(std::vector<std::vector<int32_t>> *total_points_stored, int shard_number, int client_number, int client_index, std::vector<std::string> server_ips, uint32_t points_to_insert, bool is_50 = false)
 {
     auto client = MDTrieClient(server_ips, shard_number);
 
@@ -476,13 +476,15 @@ uint32_t insert_lookup_each_client(std::vector<std::vector<int32_t>> *total_poin
 
     uint32_t op_count = 0;
     uint32_t effective_op_count = 0;
-
+    int factor = 20;
+    if (is_50) 
+        factor = 2;
     for (uint32_t point_idx = client_index; point_idx < points_to_insert; point_idx += client_number){
 
         op_count ++;
 
         bool do_insert;
-        if (op_count % 20 != 19 && point_idx > points_to_skip)
+        if (op_count % factor != 1 && point_idx > points_to_skip)
             do_insert = false;
         else
             do_insert = true;
@@ -515,7 +517,7 @@ uint32_t insert_lookup_each_client(std::vector<std::vector<int32_t>> *total_poin
     return ((float) effective_op_count / diff) * 1000000;
 }
 
-uint32_t total_client_insert_lookup(int shard_number, int client_number, std::vector<std::string> server_ips, int which_part = 0){
+uint32_t total_client_insert_lookup(int shard_number, int client_number, std::vector<std::string> server_ips, int which_part = 0, bool is_50 = false){
 
     std::string file_address;
     if (current_dataset_idx == 1)
@@ -543,7 +545,7 @@ uint32_t total_client_insert_lookup(int shard_number, int client_number, std::ve
     std::vector<std::future<uint32_t>> threads; 
     threads.reserve(client_number);
     for (int i = 0; i < client_number; i++){
-        threads.push_back(std::async(insert_lookup_each_client, &total_points_stored, shard_number, client_number, i, server_ips, points_to_operate));
+        threads.push_back(std::async(insert_lookup_each_client, &total_points_stored, shard_number, client_number, i, server_ips, points_to_operate, is_50));
     }
     uint32_t total_throughput = 0;
     for (int i = 0; i < client_number; i++){

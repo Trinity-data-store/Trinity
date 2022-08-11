@@ -29,7 +29,7 @@ const int client_num = 100;
 #define TPCH 1
 #define GITHUB 2
 #define NYC 3
-#define CURRENT_DATASET TPCH
+#define CURRENT_DATASET NYC
 
 
 int main(int argc, char *argv[]){
@@ -38,7 +38,10 @@ int main(int argc, char *argv[]){
       cerr << "./TrinityTPCHMacro [dataset part] [Infile] [Outfile]" << endl;
     }
     int which_part = stoi(argv[1]);
-
+    bool is_50 = false;
+    if (argc == 3) {
+        is_50 = true;
+    }
     std::vector<std::string> server_ips = {"10.10.1.12", "10.10.1.13", "10.10.1.14", "10.10.1.15", "10.10.1.16"};
 
     total_points_count = 1000000000;
@@ -57,6 +60,6 @@ int main(int argc, char *argv[]){
 
     // uint32_t throughput;
 
-    uint32_t throughput = total_client_insert_lookup(shard_num, client_num, server_ips, which_part);
+    uint32_t throughput = total_client_insert_lookup(shard_num, client_num, server_ips, which_part, is_50);
     std::cout << "Throughput (ops / seconds): " << throughput << endl;
 }
