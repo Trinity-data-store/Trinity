@@ -96,7 +96,7 @@ void flush_vector_to_file(std::vector<TimeStamp> vect, std::string filename){
     for (const auto &e : vect) outFile << std::to_string(e) << "\n";
 }
 
-uint32_t insertion_latency_bench (std::vector<std::string> server_ips, int client_number, int shard_number, int which_part = 0)
+uint32_t insertion_latency_bench (std::vector<std::string> server_ips, int shard_number, int which_part = 0)
 {
     std::string file_address;
     if (current_dataset_idx == 1)
@@ -106,7 +106,7 @@ uint32_t insertion_latency_bench (std::vector<std::string> server_ips, int clien
     if (current_dataset_idx == 3)
         file_address = "/mntData/nyc_split_10/x" + std::to_string(which_part);
 
-    uint32_t points_to_insert = 30000000 / client_number;
+    uint32_t points_to_insert = 30000;
     std::vector<std::vector<int32_t>> total_points_stored;
     if (current_dataset_idx == 1)
         total_points_stored = load_dataset_vector_tpch(file_address, points_to_insert);
@@ -154,7 +154,7 @@ uint32_t insertion_latency_bench (std::vector<std::string> server_ips, int clien
     return cumulative / inserted_points_count;
 }
 
-uint32_t lookup_latency_bench (std::vector<std::string> server_ips, int client_number, int shard_number, int which_part = 0)
+uint32_t lookup_latency_bench (std::vector<std::string> server_ips, int shard_number, int which_part = 0)
 {
     std::string file_address;
     if (current_dataset_idx == 1)
@@ -165,7 +165,7 @@ uint32_t lookup_latency_bench (std::vector<std::string> server_ips, int client_n
         file_address = "/mntData/nyc_split_10/x" + std::to_string(which_part);
 
     // std::cout << "Loading dataset " << endl; 
-    uint32_t points_to_lookup = 30000000 / client_number;
+    uint32_t points_to_lookup = 30000;
     std::vector<std::vector<int32_t>> total_points_stored;
     if (current_dataset_idx == 1)
         total_points_stored = load_dataset_vector_tpch(file_address, points_to_lookup);

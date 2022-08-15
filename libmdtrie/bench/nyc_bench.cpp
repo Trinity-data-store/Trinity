@@ -5,11 +5,12 @@
 #include <vector>
 #include <iostream>
 #include <fstream>
+#include <string> 
 #include "../../librpc/src/TrinityParseFIle.h"
 
 #define LATENCY_BENCH
 
-const dimension_t DIMENSION = 9;
+const dimension_t DIMENSION = 15;
 level_t max_depth = 32;
 level_t trie_depth = 6;
 preorder_t max_tree_node = 512;
@@ -23,11 +24,11 @@ void flush_vector_to_file(std::vector<TimeStamp> vect, std::string filename){
 
 void run_bench(){
 
-    std::vector<int32_t> found_points;
+    std::vector<std::vector<int32_t>> found_points;
     md_trie<DIMENSION> mdtrie(max_depth, trie_depth, max_tree_node);
     data_point<DIMENSION> leaf_point;
 
-    std::ifstream infile("/mntData2/tpch/data_300/tpch_processed_1B.csv");
+    std::ifstream infile("/mntData2/nyc_taxi/nyc_taxi_processed_675.csv");
     std::string line;
     point_t n_points = 0;
     std::vector<TimeStamp> insertion_latency_vect;
@@ -40,7 +41,7 @@ void run_bench(){
 
     while (std::getline(infile, line))
     {
-        std::vector<int32_t> vect = parse_line_tpch(line);
+        std::vector<int32_t> vect = parse_line_nyc(line);
         data_point<DIMENSION> leaf_point;
 
         for (dimension_t i = 0; i < DIMENSION; i++) {
@@ -71,20 +72,19 @@ void run_bench(){
     std::cout << "Insertion Latency: " << (float) diff / n_points << std::endl;
     std::cout << "mdtrie storage: " << mdtrie.size(p_key_to_treeblock_compact) << std::endl;
     infile.close();
-    flush_vector_to_file(insertion_latency_vect, "/proj/trinity-PG0/Trinity/results/latency_cdf/trinity_tpch_insert_micro");
+    flush_vector_to_file(insertion_latency_vect, "/proj/trinity-PG0/Trinity/results/latency_cdf/trinity_nyc_insert_micro");
 
     /**
      * Point Lookup
      */
 
     TimeStamp cumulative = 0;
-    
+
     for (point_t i = 0; i < points_to_insert; i ++) {
 
         std::vector<morton_t> node_path_from_primary(max_depth + 1);
 
         tree_block<DIMENSION> *t_ptr = (tree_block<DIMENSION> *) (p_key_to_treeblock_compact->At(i));
-
         start = GetTimestamp();
         morton_t parent_symbol_from_primary = t_ptr->get_node_path_primary_key(i, node_path_from_primary);
         node_path_from_primary[max_depth - 1] = parent_symbol_from_primary;
@@ -101,7 +101,7 @@ void run_bench(){
             lookup_latency_vect.push_back(temp_diff);
     }
     std::cout << "Done! " << "Lookup Latency per point: " << (float) cumulative / points_to_insert << std::endl;
-    flush_vector_to_file(lookup_latency_vect, "/proj/trinity-PG0/Trinity/results/latency_cdf/trinity_tpch_lookup_micro");
+    flush_vector_to_file(lookup_latency_vect, "/proj/trinity-PG0/Trinity/results/latency_cdf/trinity_nyc_lookup_micro");
 
     /** 
         Range Search
@@ -110,13 +110,12 @@ void run_bench(){
     #ifdef LATENCY_BENCH
     return;
     #endif
+    
+    char *infile_address = (char *)"/proj/trinity-PG0/Trinity/queries/nyc/nyc_query_new_converted";
+    char *outfile_address = (char *)"/proj/trinity-PG0/Trinity/results/nyc_trinity_micro";
 
-    char *infile_address = (char *)"/proj/trinity-PG0/Trinity/queries/tpch/tpch_query_converted";
-    char *outfile_address = (char *)"/proj/trinity-PG0/Trinity/results/tpch_trinity_micro";
-
-    // [QUANTITY, EXTENDEDPRICE, DISCOUNT, TAX, SHIPDATE, COMMITDATE, RECEIPTDATE, TOTALPRICE, ORDERDATE]
-    std::vector<int32_t> max_values = {50, 10494950, 10, 8, 19981201, 19981031, 19981231, 58063825, 19980802};
-    std::vector<int32_t> min_values = {1, 90000, 0, 0, 19920102, 19920131, 19920103, 81300, 19920101};
+    std::vector<int32_t> max_values = {20160630, 20221220, 899, 898, 899, 898, 255, 198623000, 21474808, 1000, 1312,  3950589, 21474836, 138, 21474830};
+    std::vector<int32_t> min_values = {20090101, 19700101, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 
     std::ifstream file(infile_address);
     std::ofstream outfile(outfile_address);
@@ -147,22 +146,30 @@ void run_bench(){
             std::string end_range_str;
             std::getline(ss, end_range_str, ',');
 
-            // std::cout << start_range_str << " " << end_range_str << std::endl;
+            int index = std::stoul(index_str);
             if (start_range_str != "-1") {
-                start_range.set_coordinate(std::stoul(index_str), std::stoul(start_range_str));
+                if (index >= 2 && index <= 5) {
+                    float num_float = std::stof(start_range_str);
+                    start_range.set_coordinate(index, static_cast<int32_t>(num_float * 10));                    
+                }
+                else 
+                    start_range.set_coordinate(index, std::stoul(start_range_str));
             }
             if (end_range_str != "-1") {
-                end_range.set_coordinate(std::stoul(index_str), std::stoul(end_range_str));
+                if (index >= 2 && index <= 5) {
+                    float num_float = std::stof(end_range_str);
+                    end_range.set_coordinate(index, static_cast<int32_t>(num_float * 10));                    
+                }
+                else
+                    end_range.set_coordinate(index, std::stoul(end_range_str));
             }
         }
-        
-        for (dimension_t i = 0; i < DIMENSION; i++){
-            if (i >= 4 && i != 7) {
-                start_range.set_coordinate(i, start_range.get_coordinate(i) - 19000000);
-                end_range.set_coordinate(i, end_range.get_coordinate(i) - 19000000);
-            }
-        }
-        
+
+        start_range.set_coordinate(0, start_range.get_coordinate(0) - 20090000);
+        start_range.set_coordinate(1, start_range.get_coordinate(1) - 19700000);
+        end_range.set_coordinate(0, end_range.get_coordinate(0) - 20090000);
+        end_range.set_coordinate(1, end_range.get_coordinate(1) - 19700000);
+
         start = GetTimestamp();
         mdtrie.range_search_trie(&start_range, &end_range, mdtrie.root(), 0, found_points);
         diff = GetTimestamp() - start;
@@ -181,14 +188,13 @@ int main() {
      * bit_widths: the bit widths of each column, with default start-level all set to 0.
      */
 
-    std::vector<level_t> bit_widths = {8, 32, 16, 24, 32, 32, 32, 32, 32}; // 9 Dimensions;
-    std::vector<level_t> start_bits = {0, 0, 8, 16, 0, 0, 0, 0, 0}; // 9 Dimensions;
-    
-    bit_widths = {8, 32, 16, 24, 20, 20, 20, 32, 20};
+    std::vector<level_t> bit_widths = {18, 20, 10, 10, 10 + 18, 10 + 18, 8, 28, 25, 10 + 18, 11 + 17, 22, 25, 8 + 20, 25}; 
+    std::vector<level_t> start_bits = {0, 0, 0, 0, 0 + 18, 0 + 18, 0, 0, 0, 0 + 18, 0 + 17, 0, 0, 0 + 20, 0}; 
+
     trie_depth = 6;
-    max_depth = 32;
+    max_depth = 28;
     no_dynamic_sizing = true;
-    total_points_count = 250000000; 
+    total_points_count = 200000000; 
 
     bitmap::CompactPtrVector tmp_ptr_vect(total_points_count);
     p_key_to_treeblock_compact = &tmp_ptr_vect;

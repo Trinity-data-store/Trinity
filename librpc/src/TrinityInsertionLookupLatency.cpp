@@ -54,9 +54,9 @@ int main(int argc, char *argv[]){
     */
     uint32_t latency;
 
-    latency = insertion_latency_bench(server_ips, client_num, shard_num, which_part);
+    latency = insertion_latency_bench(server_ips, shard_num, which_part);
     std::cout << "Insertion Latency (us): " << latency << endl; 
 
-    latency = lookup_latency_bench(server_ips, client_num, shard_num, which_part);
+    latency = lookup_latency_bench(server_ips, shard_num, which_part);
     std::cout << "Lookup Latency (us): " << latency << endl; 
 }
