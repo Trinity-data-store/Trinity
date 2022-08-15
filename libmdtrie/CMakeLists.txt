@@ -43,6 +43,11 @@ add_executable(github_bench
 add_executable(tpch_bench
         bench/tpch_bench.cpp)
 
+add_executable(tpch_bench_sensitivity
+        bench/tpch_bench_sensitivity.cpp)
+
+
 target_link_libraries(nyc_bench ${MDTRIE_LIBS})
 target_link_libraries(github_bench ${MDTRIE_LIBS})
 target_link_libraries(tpch_bench ${MDTRIE_LIBS})
+target_link_libraries(tpch_bench_sensitivity ${MDTRIE_LIBS})
