@@ -24,6 +24,7 @@ class MDTrieShardIf {
   virtual ~MDTrieShardIf() {}
   virtual bool ping(const int32_t dataset_idx) = 0;
   virtual int32_t insert(const std::vector<int32_t> & point, const int32_t primary_key) = 0;
+  virtual int32_t insert_for_latency(const std::vector<int32_t> & point, const int32_t primary_key) = 0;
   virtual bool check(const std::vector<int32_t> & point) = 0;
   virtual void range_search(std::vector<int32_t> & _return, const std::vector<int32_t> & start_range, const std::vector<int32_t> & end_range) = 0;
   virtual void primary_key_lookup(std::vector<int32_t> & _return, const int32_t primary_key) = 0;
@@ -31,6 +32,8 @@ class MDTrieShardIf {
   virtual void primary_key_lookup_binary(std::string& _return, const int32_t primary_key) = 0;
   virtual int32_t get_size() = 0;
   virtual void clear_trie() = 0;
+  virtual void get_insert_latency(std::vector<int32_t> & _return) = 0;
+  virtual void get_lookup_latency(std::vector<int32_t> & _return) = 0;
 };
 
 class MDTrieShardIfFactory {
@@ -68,6 +71,10 @@ class MDTrieShardNull : virtual public MDTrieShardIf {
     int32_t _return = 0;
     return _return;
   }
+  int32_t insert_for_latency(const std::vector<int32_t> & /* point */, const int32_t /* primary_key */) override {
+    int32_t _return = 0;
+    return _return;
+  }
   bool check(const std::vector<int32_t> & /* point */) override {
     bool _return = false;
     return _return;
@@ -89,6 +96,12 @@ class MDTrieShardNull : virtual public MDTrieShardIf {
     return _return;
   }
   void clear_trie() override {
+    return;
+  }
+  void get_insert_latency(std::vector<int32_t> & /* _return */) override {
+    return;
+  }
+  void get_lookup_latency(std::vector<int32_t> & /* _return */) override {
     return;
   }
 };
@@ -318,6 +331,125 @@ class MDTrieShard_insert_presult {
   int32_t* success;
 
   _MDTrieShard_insert_presult__isset __isset;
+
+  template <class Protocol_>
+  uint32_t read(Protocol_* iprot);
+
+};
+
+typedef struct _MDTrieShard_insert_for_latency_args__isset {
+  _MDTrieShard_insert_for_latency_args__isset() : point(false), primary_key(false) {}
+  bool point :1;
+  bool primary_key :1;
+} _MDTrieShard_insert_for_latency_args__isset;
+
+class MDTrieShard_insert_for_latency_args {
+ public:
+
+  MDTrieShard_insert_for_latency_args(const MDTrieShard_insert_for_latency_args&);
+  MDTrieShard_insert_for_latency_args& operator=(const MDTrieShard_insert_for_latency_args&);
+  MDTrieShard_insert_for_latency_args() noexcept
+                                      : primary_key(0) {
+  }
+
+  virtual ~MDTrieShard_insert_for_latency_args() noexcept;
+  std::vector<int32_t>  point;
+  int32_t primary_key;
+
+  _MDTrieShard_insert_for_latency_args__isset __isset;
+
+  void __set_point(const std::vector<int32_t> & val);
+
+  void __set_primary_key(const int32_t val);
+
+  bool operator == (const MDTrieShard_insert_for_latency_args & rhs) const
+  {
+    if (!(point == rhs.point))
+      return false;
+    if (!(primary_key == rhs.primary_key))
+      return false;
+    return true;
+  }
+  bool operator != (const MDTrieShard_insert_for_latency_args &rhs) const {
+    return !(*this == rhs);
+  }
+
+  bool operator < (const MDTrieShard_insert_for_latency_args & ) const;
+
+  template <class Protocol_>
+  uint32_t read(Protocol_* iprot);
+  template <class Protocol_>
+  uint32_t write(Protocol_* oprot) const;
+
+};
+
+
+class MDTrieShard_insert_for_latency_pargs {
+ public:
+
+
+  virtual ~MDTrieShard_insert_for_latency_pargs() noexcept;
+  const std::vector<int32_t> * point;
+  const int32_t* primary_key;
+
+  template <class Protocol_>
+  uint32_t write(Protocol_* oprot) const;
+
+};
+
+typedef struct _MDTrieShard_insert_for_latency_result__isset {
+  _MDTrieShard_insert_for_latency_result__isset() : success(false) {}
+  bool success :1;
+} _MDTrieShard_insert_for_latency_result__isset;
+
+class MDTrieShard_insert_for_latency_result {
+ public:
+
+  MDTrieShard_insert_for_latency_result(const MDTrieShard_insert_for_latency_result&) noexcept;
+  MDTrieShard_insert_for_latency_result& operator=(const MDTrieShard_insert_for_latency_result&) noexcept;
+  MDTrieShard_insert_for_latency_result() noexcept
+                                        : success(0) {
+  }
+
+  virtual ~MDTrieShard_insert_for_latency_result() noexcept;
+  int32_t success;
+
+  _MDTrieShard_insert_for_latency_result__isset __isset;
+
+  void __set_success(const int32_t val);
+
+  bool operator == (const MDTrieShard_insert_for_latency_result & rhs) const
+  {
+    if (!(success == rhs.success))
+      return false;
+    return true;
+  }
+  bool operator != (const MDTrieShard_insert_for_latency_result &rhs) const {
+    return !(*this == rhs);
+  }
+
+  bool operator < (const MDTrieShard_insert_for_latency_result & ) const;
+
+  template <class Protocol_>
+  uint32_t read(Protocol_* iprot);
+  template <class Protocol_>
+  uint32_t write(Protocol_* oprot) const;
+
+};
+
+typedef struct _MDTrieShard_insert_for_latency_presult__isset {
+  _MDTrieShard_insert_for_latency_presult__isset() : success(false) {}
+  bool success :1;
+} _MDTrieShard_insert_for_latency_presult__isset;
+
+class MDTrieShard_insert_for_latency_presult {
+ public:
+
+
+  virtual ~MDTrieShard_insert_for_latency_presult() noexcept;
+  int32_t* success;
+
+  _MDTrieShard_insert_for_latency_presult__isset __isset;
 
   template <class Protocol_>
   uint32_t read(Protocol_* iprot);
@@ -1065,6 +1197,202 @@ class MDTrieShard_clear_trie_presult {
 
 };
 
+
+class MDTrieShard_get_insert_latency_args {
+ public:
+
+  MDTrieShard_get_insert_latency_args(const MDTrieShard_get_insert_latency_args&) noexcept;
+  MDTrieShard_get_insert_latency_args& operator=(const MDTrieShard_get_insert_latency_args&) noexcept;
+  MDTrieShard_get_insert_latency_args() noexcept {
+  }
+
+  virtual ~MDTrieShard_get_insert_latency_args() noexcept;
+
+  bool operator == (const MDTrieShard_get_insert_latency_args & /* rhs */) const
+  {
+    return true;
+  }
+  bool operator != (const MDTrieShard_get_insert_latency_args &rhs) const {
+    return !(*this == rhs);
+  }
+
+  bool operator < (const MDTrieShard_get_insert_latency_args & ) const;
+
+  template <class Protocol_>
+  uint32_t read(Protocol_* iprot);
+  template <class Protocol_>
+  uint32_t write(Protocol_* oprot) const;
+
+};
+
+
+class MDTrieShard_get_insert_latency_pargs {
+ public:
+
+
+  virtual ~MDTrieShard_get_insert_latency_pargs() noexcept;
+
+  template <class Protocol_>
+  uint32_t write(Protocol_* oprot) const;
+
+};
+
+typedef struct _MDTrieShard_get_insert_latency_result__isset {
+  _MDTrieShard_get_insert_latency_result__isset() : success(false) {}
+  bool success :1;
+} _MDTrieShard_get_insert_latency_result__isset;
+
+class MDTrieShard_get_insert_latency_result {
+ public:
+
+  MDTrieShard_get_insert_latency_result(const MDTrieShard_get_insert_latency_result&);
+  MDTrieShard_get_insert_latency_result& operator=(const MDTrieShard_get_insert_latency_result&);
+  MDTrieShard_get_insert_latency_result() noexcept {
+  }
+
+  virtual ~MDTrieShard_get_insert_latency_result() noexcept;
+  std::vector<int32_t>  success;
+
+  _MDTrieShard_get_insert_latency_result__isset __isset;
+
+  void __set_success(const std::vector<int32_t> & val);
+
+  bool operator == (const MDTrieShard_get_insert_latency_result & rhs) const
+  {
+    if (!(success == rhs.success))
+      return false;
+    return true;
+  }
+  bool operator != (const MDTrieShard_get_insert_latency_result &rhs) const {
+    return !(*this == rhs);
+  }
+
+  bool operator < (const MDTrieShard_get_insert_latency_result & ) const;
+
+  template <class Protocol_>
+  uint32_t read(Protocol_* iprot);
+  template <class Protocol_>
+  uint32_t write(Protocol_* oprot) const;
+
+};
+
+typedef struct _MDTrieShard_get_insert_latency_presult__isset {
+  _MDTrieShard_get_insert_latency_presult__isset() : success(false) {}
+  bool success :1;
+} _MDTrieShard_get_insert_latency_presult__isset;
+
+class MDTrieShard_get_insert_latency_presult {
+ public:
+
+
+  virtual ~MDTrieShard_get_insert_latency_presult() noexcept;
+  std::vector<int32_t> * success;
+
+  _MDTrieShard_get_insert_latency_presult__isset __isset;
+
+  template <class Protocol_>
+  uint32_t read(Protocol_* iprot);
+
+};
+
+
+class MDTrieShard_get_lookup_latency_args {
+ public:
+
+  MDTrieShard_get_lookup_latency_args(const MDTrieShard_get_lookup_latency_args&) noexcept;
+  MDTrieShard_get_lookup_latency_args& operator=(const MDTrieShard_get_lookup_latency_args&) noexcept;
+  MDTrieShard_get_lookup_latency_args() noexcept {
+  }
+
+  virtual ~MDTrieShard_get_lookup_latency_args() noexcept;
+
+  bool operator == (const MDTrieShard_get_lookup_latency_args & /* rhs */) const
+  {
+    return true;
+  }
+  bool operator != (const MDTrieShard_get_lookup_latency_args &rhs) const {
+    return !(*this == rhs);
+  }
+
+  bool operator < (const MDTrieShard_get_lookup_latency_args & ) const;
+
+  template <class Protocol_>
+  uint32_t read(Protocol_* iprot);
+  template <class Protocol_>
+  uint32_t write(Protocol_* oprot) const;
+
+};
+
+
+class MDTrieShard_get_lookup_latency_pargs {
+ public:
+
+
+  virtual ~MDTrieShard_get_lookup_latency_pargs() noexcept;
+
+  template <class Protocol_>
+  uint32_t write(Protocol_* oprot) const;
+
+};
+
+typedef struct _MDTrieShard_get_lookup_latency_result__isset {
+  _MDTrieShard_get_lookup_latency_result__isset() : success(false) {}
+  bool success :1;
+} _MDTrieShard_get_lookup_latency_result__isset;
+
+class MDTrieShard_get_lookup_latency_result {
+ public:
+
+  MDTrieShard_get_lookup_latency_result(const MDTrieShard_get_lookup_latency_result&);
+  MDTrieShard_get_lookup_latency_result& operator=(const MDTrieShard_get_lookup_latency_result&);
+  MDTrieShard_get_lookup_latency_result() noexcept {
+  }
+
+  virtual ~MDTrieShard_get_lookup_latency_result() noexcept;
+  std::vector<int32_t>  success;
+
+  _MDTrieShard_get_lookup_latency_result__isset __isset;
+
+  void __set_success(const std::vector<int32_t> & val);
+
+  bool operator == (const MDTrieShard_get_lookup_latency_result & rhs) const
+  {
+    if (!(success == rhs.success))
+      return false;
+    return true;
+  }
+  bool operator != (const MDTrieShard_get_lookup_latency_result &rhs) const {
+    return !(*this == rhs);
+  }
+
+  bool operator < (const MDTrieShard_get_lookup_latency_result & ) const;
+
+  template <class Protocol_>
+  uint32_t read(Protocol_* iprot);
+  template <class Protocol_>
+  uint32_t write(Protocol_* oprot) const;
+
+};
+
+typedef struct _MDTrieShard_get_lookup_latency_presult__isset {
+  _MDTrieShard_get_lookup_latency_presult__isset() : success(false) {}
+  bool success :1;
+} _MDTrieShard_get_lookup_latency_presult__isset;
+
+class MDTrieShard_get_lookup_latency_presult {
+ public:
+
+
+  virtual ~MDTrieShard_get_lookup_latency_presult() noexcept;
+  std::vector<int32_t> * success;
+
+  _MDTrieShard_get_lookup_latency_presult__isset __isset;
+
+  template <class Protocol_>
+  uint32_t read(Protocol_* iprot);
+
+};
+
 template <class Protocol_>
 class MDTrieShardClientT : virtual public MDTrieShardIf {
  public:
@@ -1097,6 +1425,9 @@ class MDTrieShardClientT : virtual public MDTrieShardIf {
   int32_t insert(const std::vector<int32_t> & point, const int32_t primary_key) override;
   void send_insert(const std::vector<int32_t> & point, const int32_t primary_key);
   int32_t recv_insert();
+  int32_t insert_for_latency(const std::vector<int32_t> & point, const int32_t primary_key) override;
+  void send_insert_for_latency(const std::vector<int32_t> & point, const int32_t primary_key);
+  int32_t recv_insert_for_latency();
   bool check(const std::vector<int32_t> & point) override;
   void send_check(const std::vector<int32_t> & point);
   bool recv_check();
@@ -1118,6 +1449,12 @@ class MDTrieShardClientT : virtual public MDTrieShardIf {
   void clear_trie() override;
   void send_clear_trie();
   void recv_clear_trie();
+  void get_insert_latency(std::vector<int32_t> & _return) override;
+  void send_get_insert_latency();
+  void recv_get_insert_latency(std::vector<int32_t> & _return);
+  void get_lookup_latency(std::vector<int32_t> & _return) override;
+  void send_get_lookup_latency();
+  void recv_get_lookup_latency(std::vector<int32_t> & _return);
  protected:
   std::shared_ptr< Protocol_> piprot_;
   std::shared_ptr< Protocol_> poprot_;
@@ -1150,6 +1487,8 @@ class MDTrieShardProcessorT : public ::apache::thrift::TDispatchProcessorT<Proto
   void process_ping(int32_t seqid, Protocol_* iprot, Protocol_* oprot, void* callContext);
   void process_insert(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
   void process_insert(int32_t seqid, Protocol_* iprot, Protocol_* oprot, void* callContext);
+  void process_insert_for_latency(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
+  void process_insert_for_latency(int32_t seqid, Protocol_* iprot, Protocol_* oprot, void* callContext);
   void process_check(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
   void process_check(int32_t seqid, Protocol_* iprot, Protocol_* oprot, void* callContext);
   void process_range_search(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
@@ -1164,6 +1503,10 @@ class MDTrieShardProcessorT : public ::apache::thrift::TDispatchProcessorT<Proto
   void process_get_size(int32_t seqid, Protocol_* iprot, Protocol_* oprot, void* callContext);
   void process_clear_trie(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
   void process_clear_trie(int32_t seqid, Protocol_* iprot, Protocol_* oprot, void* callContext);
+  void process_get_insert_latency(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
+  void process_get_insert_latency(int32_t seqid, Protocol_* iprot, Protocol_* oprot, void* callContext);
+  void process_get_lookup_latency(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
+  void process_get_lookup_latency(int32_t seqid, Protocol_* iprot, Protocol_* oprot, void* callContext);
  public:
   MDTrieShardProcessorT(::std::shared_ptr<MDTrieShardIf> iface) :
     iface_(iface) {
@@ -1173,6 +1516,9 @@ class MDTrieShardProcessorT : public ::apache::thrift::TDispatchProcessorT<Proto
     processMap_["insert"] = ProcessFunctions(
       &MDTrieShardProcessorT::process_insert,
       &MDTrieShardProcessorT::process_insert);
+    processMap_["insert_for_latency"] = ProcessFunctions(
+      &MDTrieShardProcessorT::process_insert_for_latency,
+      &MDTrieShardProcessorT::process_insert_for_latency);
     processMap_["check"] = ProcessFunctions(
       &MDTrieShardProcessorT::process_check,
       &MDTrieShardProcessorT::process_check);
@@ -1194,6 +1540,12 @@ class MDTrieShardProcessorT : public ::apache::thrift::TDispatchProcessorT<Proto
     processMap_["clear_trie"] = ProcessFunctions(
       &MDTrieShardProcessorT::process_clear_trie,
       &MDTrieShardProcessorT::process_clear_trie);
+    processMap_["get_insert_latency"] = ProcessFunctions(
+      &MDTrieShardProcessorT::process_get_insert_latency,
+      &MDTrieShardProcessorT::process_get_insert_latency);
+    processMap_["get_lookup_latency"] = ProcessFunctions(
+      &MDTrieShardProcessorT::process_get_lookup_latency,
+      &MDTrieShardProcessorT::process_get_lookup_latency);
   }
 
   virtual ~MDTrieShardProcessorT() {}
@@ -1243,6 +1595,15 @@ class MDTrieShardMultiface : virtual public MDTrieShardIf {
       ifaces_[i]->insert(point, primary_key);
     }
     return ifaces_[i]->insert(point, primary_key);
+  }
+
+  int32_t insert_for_latency(const std::vector<int32_t> & point, const int32_t primary_key) override {
+    size_t sz = ifaces_.size();
+    size_t i = 0;
+    for (; i < (sz - 1); ++i) {
+      ifaces_[i]->insert_for_latency(point, primary_key);
+    }
+    return ifaces_[i]->insert_for_latency(point, primary_key);
   }
 
   bool check(const std::vector<int32_t> & point) override {
@@ -1312,6 +1673,26 @@ class MDTrieShardMultiface : virtual public MDTrieShardIf {
     ifaces_[i]->clear_trie();
   }
 
+  void get_insert_latency(std::vector<int32_t> & _return) override {
+    size_t sz = ifaces_.size();
+    size_t i = 0;
+    for (; i < (sz - 1); ++i) {
+      ifaces_[i]->get_insert_latency(_return);
+    }
+    ifaces_[i]->get_insert_latency(_return);
+    return;
+  }
+
+  void get_lookup_latency(std::vector<int32_t> & _return) override {
+    size_t sz = ifaces_.size();
+    size_t i = 0;
+    for (; i < (sz - 1); ++i) {
+      ifaces_[i]->get_lookup_latency(_return);
+    }
+    ifaces_[i]->get_lookup_latency(_return);
+    return;
+  }
+
 };
 
 // The 'concurrent' client is a thread safe client that correctly handles
@@ -1351,6 +1732,9 @@ class MDTrieShardConcurrentClientT : virtual public MDTrieShardIf {
   int32_t insert(const std::vector<int32_t> & point, const int32_t primary_key) override;
   int32_t send_insert(const std::vector<int32_t> & point, const int32_t primary_key);
   int32_t recv_insert(const int32_t seqid);
+  int32_t insert_for_latency(const std::vector<int32_t> & point, const int32_t primary_key) override;
+  int32_t send_insert_for_latency(const std::vector<int32_t> & point, const int32_t primary_key);
+  int32_t recv_insert_for_latency(const int32_t seqid);
   bool check(const std::vector<int32_t> & point) override;
   int32_t send_check(const std::vector<int32_t> & point);
   bool recv_check(const int32_t seqid);
@@ -1372,6 +1756,12 @@ class MDTrieShardConcurrentClientT : virtual public MDTrieShardIf {
   void clear_trie() override;
   int32_t send_clear_trie();
   void recv_clear_trie(const int32_t seqid);
+  void get_insert_latency(std::vector<int32_t> & _return) override;
+  int32_t send_get_insert_latency();
+  void recv_get_insert_latency(std::vector<int32_t> & _return, const int32_t seqid);
+  void get_lookup_latency(std::vector<int32_t> & _return) override;
+  int32_t send_get_lookup_latency();
+  void recv_get_lookup_latency(std::vector<int32_t> & _return, const int32_t seqid);
  protected:
   std::shared_ptr< Protocol_> piprot_;
   std::shared_ptr< Protocol_> poprot_;

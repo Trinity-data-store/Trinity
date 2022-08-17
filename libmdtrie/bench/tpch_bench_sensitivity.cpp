@@ -200,6 +200,7 @@ int main(int argc, char *argv[]){
     bitmap::CompactPtrVector tmp_ptr_vect(total_points_count);
     p_key_to_treeblock_compact = &tmp_ptr_vect;
 
+    std::cout << "scale_factor: " << scale_factor << std::endl;
     create_level_to_num_children(bit_widths, start_bits, max_depth);
     run_bench();
 }

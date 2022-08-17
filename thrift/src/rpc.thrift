@@ -4,6 +4,7 @@ service MDTrieShard {
     bool ping(1:i32 dataset_idx),
 
     i32 insert(1:list<i32> point, 2:i32 primary_key),
+    i32 insert_for_latency(1:list<i32> point, 2:i32 primary_key),
 
     bool check(1:list<i32> point),
 
@@ -17,4 +18,8 @@ service MDTrieShard {
     i32 get_size(),
 
     void clear_trie(),
+
+    list<i32> get_insert_latency(),
+
+    list<i32> get_lookup_latency(),
 }

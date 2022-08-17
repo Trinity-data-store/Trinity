@@ -134,7 +134,7 @@ uint32_t insertion_latency_bench (std::vector<std::string> server_ips, int shard
         }
         vector <int32_t> data_point = total_points_stored[point_idx];
         TimeStamp start = GetTimestamp();
-        client.insert(data_point, point_idx);
+        client.insert_for_latency(data_point, point_idx);
         if (finished_warmup) {
             TimeStamp latency = GetTimestamp() - start;
             cumulative += latency;
@@ -150,6 +150,13 @@ uint32_t insertion_latency_bench (std::vector<std::string> server_ips, int shard
         flush_vector_to_file(latency_list, "/proj/trinity-PG0/Trinity/results/latency_cdf/trinity_github_insert");
     if (current_dataset_idx == 3)
         flush_vector_to_file(latency_list, "/proj/trinity-PG0/Trinity/results/latency_cdf/trinity_nyc_insert");
+
+    std::vector<int32_t> server_latency_list;
+    client.get_insert_latency(server_latency_list);
+    int32_t cumulative_server = 0;
+    for (const auto l : server_latency_list)
+        cumulative_server += l;
+    std::cout << "server latency: " << cumulative_server / server_latency_list.size() << std::endl;
 
     return cumulative / inserted_points_count;
 }
@@ -211,6 +218,7 @@ uint32_t lookup_latency_bench (std::vector<std::string> server_ips, int shard_nu
         std::vector<int32_t> correct_vect = total_points_stored[point_idx];
         // std::cout << "correct_vect.size():  " << correct_vect.size() << endl; 
 
+        /*
         for (unsigned int i = 0; i < correct_vect.size(); i ++) {
             if (correct_vect[i] != rec_vect[i]) {
                 std::cerr << "lookup failed!" << std::endl;
@@ -226,6 +234,7 @@ uint32_t lookup_latency_bench (std::vector<std::string> server_ips, int shard_nu
                 exit(0);
             }
         }
+        */
         lookup_points_count ++;
         // if (lookup_points_count % 100 == 0)
         //     std::cout << "lookup_pts_count: " << lookup_points_count << std::endl;
@@ -237,6 +246,13 @@ uint32_t lookup_latency_bench (std::vector<std::string> server_ips, int shard_nu
         flush_vector_to_file(latency_list, "/proj/trinity-PG0/Trinity/results/latency_cdf/trinity_github_lookup");
     if (current_dataset_idx == 3)
         flush_vector_to_file(latency_list, "/proj/trinity-PG0/Trinity/results/latency_cdf/trinity_nyc_lookup");
+
+    std::vector<int32_t> server_latency_list;
+    client.get_lookup_latency(server_latency_list);
+    int32_t cumulative_server = 0;
+    for (const auto l : server_latency_list)
+        cumulative_server += l;
+    std::cout << "server latency: " << cumulative_server / server_latency_list.size() << std::endl;
 
     return cumulative / lookup_points_count;
 }

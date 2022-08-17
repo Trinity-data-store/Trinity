@@ -42,6 +42,22 @@ MDTrieShard_insert_presult::~MDTrieShard_insert_presult() noexcept {
 }
 
 
+MDTrieShard_insert_for_latency_args::~MDTrieShard_insert_for_latency_args() noexcept {
+}
+
+
+MDTrieShard_insert_for_latency_pargs::~MDTrieShard_insert_for_latency_pargs() noexcept {
+}
+
+
+MDTrieShard_insert_for_latency_result::~MDTrieShard_insert_for_latency_result() noexcept {
+}
+
+
+MDTrieShard_insert_for_latency_presult::~MDTrieShard_insert_for_latency_presult() noexcept {
+}
+
+
 MDTrieShard_check_args::~MDTrieShard_check_args() noexcept {
 }
 
@@ -151,6 +167,38 @@ MDTrieShard_clear_trie_result::~MDTrieShard_clear_trie_result() noexcept {
 
 
 MDTrieShard_clear_trie_presult::~MDTrieShard_clear_trie_presult() noexcept {
+}
+
+
+MDTrieShard_get_insert_latency_args::~MDTrieShard_get_insert_latency_args() noexcept {
+}
+
+
+MDTrieShard_get_insert_latency_pargs::~MDTrieShard_get_insert_latency_pargs() noexcept {
+}
+
+
+MDTrieShard_get_insert_latency_result::~MDTrieShard_get_insert_latency_result() noexcept {
+}
+
+
+MDTrieShard_get_insert_latency_presult::~MDTrieShard_get_insert_latency_presult() noexcept {
+}
+
+
+MDTrieShard_get_lookup_latency_args::~MDTrieShard_get_lookup_latency_args() noexcept {
+}
+
+
+MDTrieShard_get_lookup_latency_pargs::~MDTrieShard_get_lookup_latency_pargs() noexcept {
+}
+
+
+MDTrieShard_get_lookup_latency_result::~MDTrieShard_get_lookup_latency_result() noexcept {
+}
+
+
+MDTrieShard_get_lookup_latency_presult::~MDTrieShard_get_lookup_latency_presult() noexcept {
 }
 
 

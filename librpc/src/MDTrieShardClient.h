@@ -90,6 +90,15 @@ public:
     return true;
   }
 
+
+  int32_t insert_for_latency(vector<int32_t> point, int32_t p_key){
+
+    int shard_index = p_key % shard_vector_.size();
+    shard_vector_[shard_index].send_insert_for_latency(point, p_key);
+    return shard_vector_[shard_index].recv_insert_for_latency();
+  }
+
+
   int32_t insert(vector<int32_t> point, int32_t p_key){
 
     int shard_index = p_key % shard_vector_.size();
@@ -114,6 +123,25 @@ public:
     int shard_index = p_key % shard_vector_.size();
     shard_vector_[shard_index].send_check(point);
     return shard_vector_[shard_index].recv_check();
+  }
+
+
+  void get_insert_latency(std::vector<int32_t> & return_vect){
+    int client_count = shard_vector_.size();
+    for (uint16_t i = 0; i < client_count; i++){
+      std::vector<int32_t> return_vect_tmp;
+      shard_vector_[i].get_insert_latency(return_vect_tmp);
+      return_vect.insert(return_vect.end(), return_vect_tmp.begin(), return_vect_tmp.end());
+    }  
+  }
+
+  void get_lookup_latency(std::vector<int32_t> & return_vect){
+    int client_count = shard_vector_.size();
+    for (uint16_t i = 0; i < client_count; i++){
+      std::vector<int32_t> return_vect_tmp;
+      shard_vector_[i].get_lookup_latency(return_vect_tmp);
+      return_vect.insert(return_vect.end(), return_vect_tmp.begin(), return_vect_tmp.end());
+    }  
   }
 
   void check_send(vector<int32_t> point, int32_t p_key){

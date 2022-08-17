@@ -411,7 +411,7 @@ uint32_t MDTrieShard_insert_presult::read(Protocol_* iprot) {
 
 
 template <class Protocol_>
-uint32_t MDTrieShard_check_args::read(Protocol_* iprot) {
+uint32_t MDTrieShard_insert_for_latency_args::read(Protocol_* iprot) {
 
   ::apache::thrift::protocol::TInputRecursionTracker tracker(*iprot);
   uint32_t xfer = 0;
@@ -452,6 +452,227 @@ uint32_t MDTrieShard_check_args::read(Protocol_* iprot) {
           xfer += iprot->skip(ftype);
         }
         break;
+      case 2:
+        if (ftype == ::apache::thrift::protocol::T_I32) {
+          xfer += iprot->readI32(this->primary_key);
+          this->__isset.primary_key = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      default:
+        xfer += iprot->skip(ftype);
+        break;
+    }
+    xfer += iprot->readFieldEnd();
+  }
+
+  xfer += iprot->readStructEnd();
+
+  return xfer;
+}
+
+template <class Protocol_>
+uint32_t MDTrieShard_insert_for_latency_args::write(Protocol_* oprot) const {
+  uint32_t xfer = 0;
+  ::apache::thrift::protocol::TOutputRecursionTracker tracker(*oprot);
+  xfer += oprot->writeStructBegin("MDTrieShard_insert_for_latency_args");
+
+  xfer += oprot->writeFieldBegin("point", ::apache::thrift::protocol::T_LIST, 1);
+  {
+    xfer += oprot->writeListBegin(::apache::thrift::protocol::T_I32, static_cast<uint32_t>(this->point.size()));
+    std::vector<int32_t> ::const_iterator _iter12;
+    for (_iter12 = this->point.begin(); _iter12 != this->point.end(); ++_iter12)
+    {
+      xfer += oprot->writeI32((*_iter12));
+    }
+    xfer += oprot->writeListEnd();
+  }
+  xfer += oprot->writeFieldEnd();
+
+  xfer += oprot->writeFieldBegin("primary_key", ::apache::thrift::protocol::T_I32, 2);
+  xfer += oprot->writeI32(this->primary_key);
+  xfer += oprot->writeFieldEnd();
+
+  xfer += oprot->writeFieldStop();
+  xfer += oprot->writeStructEnd();
+  return xfer;
+}
+
+
+template <class Protocol_>
+uint32_t MDTrieShard_insert_for_latency_pargs::write(Protocol_* oprot) const {
+  uint32_t xfer = 0;
+  ::apache::thrift::protocol::TOutputRecursionTracker tracker(*oprot);
+  xfer += oprot->writeStructBegin("MDTrieShard_insert_for_latency_pargs");
+
+  xfer += oprot->writeFieldBegin("point", ::apache::thrift::protocol::T_LIST, 1);
+  {
+    xfer += oprot->writeListBegin(::apache::thrift::protocol::T_I32, static_cast<uint32_t>((*(this->point)).size()));
+    std::vector<int32_t> ::const_iterator _iter13;
+    for (_iter13 = (*(this->point)).begin(); _iter13 != (*(this->point)).end(); ++_iter13)
+    {
+      xfer += oprot->writeI32((*_iter13));
+    }
+    xfer += oprot->writeListEnd();
+  }
+  xfer += oprot->writeFieldEnd();
+
+  xfer += oprot->writeFieldBegin("primary_key", ::apache::thrift::protocol::T_I32, 2);
+  xfer += oprot->writeI32((*(this->primary_key)));
+  xfer += oprot->writeFieldEnd();
+
+  xfer += oprot->writeFieldStop();
+  xfer += oprot->writeStructEnd();
+  return xfer;
+}
+
+
+template <class Protocol_>
+uint32_t MDTrieShard_insert_for_latency_result::read(Protocol_* iprot) {
+
+  ::apache::thrift::protocol::TInputRecursionTracker tracker(*iprot);
+  uint32_t xfer = 0;
+  std::string fname;
+  ::apache::thrift::protocol::TType ftype;
+  int16_t fid;
+
+  xfer += iprot->readStructBegin(fname);
+
+  using ::apache::thrift::protocol::TProtocolException;
+
+
+  while (true)
+  {
+    xfer += iprot->readFieldBegin(fname, ftype, fid);
+    if (ftype == ::apache::thrift::protocol::T_STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 0:
+        if (ftype == ::apache::thrift::protocol::T_I32) {
+          xfer += iprot->readI32(this->success);
+          this->__isset.success = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      default:
+        xfer += iprot->skip(ftype);
+        break;
+    }
+    xfer += iprot->readFieldEnd();
+  }
+
+  xfer += iprot->readStructEnd();
+
+  return xfer;
+}
+
+template <class Protocol_>
+uint32_t MDTrieShard_insert_for_latency_result::write(Protocol_* oprot) const {
+
+  uint32_t xfer = 0;
+
+  xfer += oprot->writeStructBegin("MDTrieShard_insert_for_latency_result");
+
+  if (this->__isset.success) {
+    xfer += oprot->writeFieldBegin("success", ::apache::thrift::protocol::T_I32, 0);
+    xfer += oprot->writeI32(this->success);
+    xfer += oprot->writeFieldEnd();
+  }
+  xfer += oprot->writeFieldStop();
+  xfer += oprot->writeStructEnd();
+  return xfer;
+}
+
+
+template <class Protocol_>
+uint32_t MDTrieShard_insert_for_latency_presult::read(Protocol_* iprot) {
+
+  ::apache::thrift::protocol::TInputRecursionTracker tracker(*iprot);
+  uint32_t xfer = 0;
+  std::string fname;
+  ::apache::thrift::protocol::TType ftype;
+  int16_t fid;
+
+  xfer += iprot->readStructBegin(fname);
+
+  using ::apache::thrift::protocol::TProtocolException;
+
+
+  while (true)
+  {
+    xfer += iprot->readFieldBegin(fname, ftype, fid);
+    if (ftype == ::apache::thrift::protocol::T_STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 0:
+        if (ftype == ::apache::thrift::protocol::T_I32) {
+          xfer += iprot->readI32((*(this->success)));
+          this->__isset.success = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      default:
+        xfer += iprot->skip(ftype);
+        break;
+    }
+    xfer += iprot->readFieldEnd();
+  }
+
+  xfer += iprot->readStructEnd();
+
+  return xfer;
+}
+
+
+template <class Protocol_>
+uint32_t MDTrieShard_check_args::read(Protocol_* iprot) {
+
+  ::apache::thrift::protocol::TInputRecursionTracker tracker(*iprot);
+  uint32_t xfer = 0;
+  std::string fname;
+  ::apache::thrift::protocol::TType ftype;
+  int16_t fid;
+
+  xfer += iprot->readStructBegin(fname);
+
+  using ::apache::thrift::protocol::TProtocolException;
+
+
+  while (true)
+  {
+    xfer += iprot->readFieldBegin(fname, ftype, fid);
+    if (ftype == ::apache::thrift::protocol::T_STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 1:
+        if (ftype == ::apache::thrift::protocol::T_LIST) {
+          {
+            this->point.clear();
+            uint32_t _size14;
+            ::apache::thrift::protocol::TType _etype17;
+            xfer += iprot->readListBegin(_etype17, _size14);
+            this->point.resize(_size14);
+            uint32_t _i18;
+            for (_i18 = 0; _i18 < _size14; ++_i18)
+            {
+              xfer += iprot->readI32(this->point[_i18]);
+            }
+            xfer += iprot->readListEnd();
+          }
+          this->__isset.point = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
       default:
         xfer += iprot->skip(ftype);
         break;
@@ -473,10 +694,10 @@ uint32_t MDTrieShard_check_args::write(Protocol_* oprot) const {
   xfer += oprot->writeFieldBegin("point", ::apache::thrift::protocol::T_LIST, 1);
   {
     xfer += oprot->writeListBegin(::apache::thrift::protocol::T_I32, static_cast<uint32_t>(this->point.size()));
-    std::vector<int32_t> ::const_iterator _iter12;
-    for (_iter12 = this->point.begin(); _iter12 != this->point.end(); ++_iter12)
+    std::vector<int32_t> ::const_iterator _iter19;
+    for (_iter19 = this->point.begin(); _iter19 != this->point.end(); ++_iter19)
     {
-      xfer += oprot->writeI32((*_iter12));
+      xfer += oprot->writeI32((*_iter19));
     }
     xfer += oprot->writeListEnd();
   }
@@ -497,10 +718,10 @@ uint32_t MDTrieShard_check_pargs::write(Protocol_* oprot) const {
   xfer += oprot->writeFieldBegin("point", ::apache::thrift::protocol::T_LIST, 1);
   {
     xfer += oprot->writeListBegin(::apache::thrift::protocol::T_I32, static_cast<uint32_t>((*(this->point)).size()));
-    std::vector<int32_t> ::const_iterator _iter13;
-    for (_iter13 = (*(this->point)).begin(); _iter13 != (*(this->point)).end(); ++_iter13)
+    std::vector<int32_t> ::const_iterator _iter20;
+    for (_iter20 = (*(this->point)).begin(); _iter20 != (*(this->point)).end(); ++_iter20)
     {
-      xfer += oprot->writeI32((*_iter13));
+      xfer += oprot->writeI32((*_iter20));
     }
     xfer += oprot->writeListEnd();
   }
@@ -641,14 +862,14 @@ uint32_t MDTrieShard_range_search_args::read(Protocol_* iprot) {
         if (ftype == ::apache::thrift::protocol::T_LIST) {
           {
             this->start_range.clear();
-            uint32_t _size14;
-            ::apache::thrift::protocol::TType _etype17;
-            xfer += iprot->readListBegin(_etype17, _size14);
-            this->start_range.resize(_size14);
-            uint32_t _i18;
-            for (_i18 = 0; _i18 < _size14; ++_i18)
+            uint32_t _size21;
+            ::apache::thrift::protocol::TType _etype24;
+            xfer += iprot->readListBegin(_etype24, _size21);
+            this->start_range.resize(_size21);
+            uint32_t _i25;
+            for (_i25 = 0; _i25 < _size21; ++_i25)
             {
-              xfer += iprot->readI32(this->start_range[_i18]);
+              xfer += iprot->readI32(this->start_range[_i25]);
             }
             xfer += iprot->readListEnd();
           }
@@ -661,14 +882,14 @@ uint32_t MDTrieShard_range_search_args::read(Protocol_* iprot) {
         if (ftype == ::apache::thrift::protocol::T_LIST) {
           {
             this->end_range.clear();
-            uint32_t _size19;
-            ::apache::thrift::protocol::TType _etype22;
-            xfer += iprot->readListBegin(_etype22, _size19);
-            this->end_range.resize(_size19);
-            uint32_t _i23;
-            for (_i23 = 0; _i23 < _size19; ++_i23)
+            uint32_t _size26;
+            ::apache::thrift::protocol::TType _etype29;
+            xfer += iprot->readListBegin(_etype29, _size26);
+            this->end_range.resize(_size26);
+            uint32_t _i30;
+            for (_i30 = 0; _i30 < _size26; ++_i30)
             {
-              xfer += iprot->readI32(this->end_range[_i23]);
+              xfer += iprot->readI32(this->end_range[_i30]);
             }
             xfer += iprot->readListEnd();
           }
@@ -698,10 +919,10 @@ uint32_t MDTrieShard_range_search_args::write(Protocol_* oprot) const {
   xfer += oprot->writeFieldBegin("start_range", ::apache::thrift::protocol::T_LIST, 1);
   {
     xfer += oprot->writeListBegin(::apache::thrift::protocol::T_I32, static_cast<uint32_t>(this->start_range.size()));
-    std::vector<int32_t> ::const_iterator _iter24;
-    for (_iter24 = this->start_range.begin(); _iter24 != this->start_range.end(); ++_iter24)
+    std::vector<int32_t> ::const_iterator _iter31;
+    for (_iter31 = this->start_range.begin(); _iter31 != this->start_range.end(); ++_iter31)
     {
-      xfer += oprot->writeI32((*_iter24));
+      xfer += oprot->writeI32((*_iter31));
     }
     xfer += oprot->writeListEnd();
   }
@@ -710,10 +931,10 @@ uint32_t MDTrieShard_range_search_args::write(Protocol_* oprot) const {
   xfer += oprot->writeFieldBegin("end_range", ::apache::thrift::protocol::T_LIST, 2);
   {
     xfer += oprot->writeListBegin(::apache::thrift::protocol::T_I32, static_cast<uint32_t>(this->end_range.size()));
-    std::vector<int32_t> ::const_iterator _iter25;
-    for (_iter25 = this->end_range.begin(); _iter25 != this->end_range.end(); ++_iter25)
+    std::vector<int32_t> ::const_iterator _iter32;
+    for (_iter32 = this->end_range.begin(); _iter32 != this->end_range.end(); ++_iter32)
     {
-      xfer += oprot->writeI32((*_iter25));
+      xfer += oprot->writeI32((*_iter32));
     }
     xfer += oprot->writeListEnd();
   }
@@ -734,10 +955,10 @@ uint32_t MDTrieShard_range_search_pargs::write(Protocol_* oprot) const {
   xfer += oprot->writeFieldBegin("start_range", ::apache::thrift::protocol::T_LIST, 1);
   {
     xfer += oprot->writeListBegin(::apache::thrift::protocol::T_I32, static_cast<uint32_t>((*(this->start_range)).size()));
-    std::vector<int32_t> ::const_iterator _iter26;
-    for (_iter26 = (*(this->start_range)).begin(); _iter26 != (*(this->start_range)).end(); ++_iter26)
+    std::vector<int32_t> ::const_iterator _iter33;
+    for (_iter33 = (*(this->start_range)).begin(); _iter33 != (*(this->start_range)).end(); ++_iter33)
     {
-      xfer += oprot->writeI32((*_iter26));
+      xfer += oprot->writeI32((*_iter33));
     }
     xfer += oprot->writeListEnd();
   }
@@ -746,10 +967,10 @@ uint32_t MDTrieShard_range_search_pargs::write(Protocol_* oprot) const {
   xfer += oprot->writeFieldBegin("end_range", ::apache::thrift::protocol::T_LIST, 2);
   {
     xfer += oprot->writeListBegin(::apache::thrift::protocol::T_I32, static_cast<uint32_t>((*(this->end_range)).size()));
-    std::vector<int32_t> ::const_iterator _iter27;
-    for (_iter27 = (*(this->end_range)).begin(); _iter27 != (*(this->end_range)).end(); ++_iter27)
+    std::vector<int32_t> ::const_iterator _iter34;
+    for (_iter34 = (*(this->end_range)).begin(); _iter34 != (*(this->end_range)).end(); ++_iter34)
     {
-      xfer += oprot->writeI32((*_iter27));
+      xfer += oprot->writeI32((*_iter34));
     }
     xfer += oprot->writeListEnd();
   }
@@ -787,14 +1008,14 @@ uint32_t MDTrieShard_range_search_result::read(Protocol_* iprot) {
         if (ftype == ::apache::thrift::protocol::T_LIST) {
           {
             this->success.clear();
-            uint32_t _size28;
-            ::apache::thrift::protocol::TType _etype31;
-            xfer += iprot->readListBegin(_etype31, _size28);
-            this->success.resize(_size28);
-            uint32_t _i32;
-            for (_i32 = 0; _i32 < _size28; ++_i32)
+            uint32_t _size35;
+            ::apache::thrift::protocol::TType _etype38;
+            xfer += iprot->readListBegin(_etype38, _size35);
+            this->success.resize(_size35);
+            uint32_t _i39;
+            for (_i39 = 0; _i39 < _size35; ++_i39)
             {
-              xfer += iprot->readI32(this->success[_i32]);
+              xfer += iprot->readI32(this->success[_i39]);
             }
             xfer += iprot->readListEnd();
           }
@@ -826,10 +1047,10 @@ uint32_t MDTrieShard_range_search_result::write(Protocol_* oprot) const {
     xfer += oprot->writeFieldBegin("success", ::apache::thrift::protocol::T_LIST, 0);
     {
       xfer += oprot->writeListBegin(::apache::thrift::protocol::T_I32, static_cast<uint32_t>(this->success.size()));
-      std::vector<int32_t> ::const_iterator _iter33;
-      for (_iter33 = this->success.begin(); _iter33 != this->success.end(); ++_iter33)
+      std::vector<int32_t> ::const_iterator _iter40;
+      for (_iter40 = this->success.begin(); _iter40 != this->success.end(); ++_iter40)
       {
-        xfer += oprot->writeI32((*_iter33));
+        xfer += oprot->writeI32((*_iter40));
       }
       xfer += oprot->writeListEnd();
     }
@@ -867,14 +1088,14 @@ uint32_t MDTrieShard_range_search_presult::read(Protocol_* iprot) {
         if (ftype == ::apache::thrift::protocol::T_LIST) {
           {
             (*(this->success)).clear();
-            uint32_t _size34;
-            ::apache::thrift::protocol::TType _etype37;
-            xfer += iprot->readListBegin(_etype37, _size34);
-            (*(this->success)).resize(_size34);
-            uint32_t _i38;
-            for (_i38 = 0; _i38 < _size34; ++_i38)
+            uint32_t _size41;
+            ::apache::thrift::protocol::TType _etype44;
+            xfer += iprot->readListBegin(_etype44, _size41);
+            (*(this->success)).resize(_size41);
+            uint32_t _i45;
+            for (_i45 = 0; _i45 < _size41; ++_i45)
             {
-              xfer += iprot->readI32((*(this->success))[_i38]);
+              xfer += iprot->readI32((*(this->success))[_i45]);
             }
             xfer += iprot->readListEnd();
           }
@@ -996,14 +1217,14 @@ uint32_t MDTrieShard_primary_key_lookup_result::read(Protocol_* iprot) {
         if (ftype == ::apache::thrift::protocol::T_LIST) {
           {
             this->success.clear();
-            uint32_t _size39;
-            ::apache::thrift::protocol::TType _etype42;
-            xfer += iprot->readListBegin(_etype42, _size39);
-            this->success.resize(_size39);
-            uint32_t _i43;
-            for (_i43 = 0; _i43 < _size39; ++_i43)
+            uint32_t _size46;
+            ::apache::thrift::protocol::TType _etype49;
+            xfer += iprot->readListBegin(_etype49, _size46);
+            this->success.resize(_size46);
+            uint32_t _i50;
+            for (_i50 = 0; _i50 < _size46; ++_i50)
             {
-              xfer += iprot->readI32(this->success[_i43]);
+              xfer += iprot->readI32(this->success[_i50]);
             }
             xfer += iprot->readListEnd();
           }
@@ -1035,10 +1256,10 @@ uint32_t MDTrieShard_primary_key_lookup_result::write(Protocol_* oprot) const {
     xfer += oprot->writeFieldBegin("success", ::apache::thrift::protocol::T_LIST, 0);
     {
       xfer += oprot->writeListBegin(::apache::thrift::protocol::T_I32, static_cast<uint32_t>(this->success.size()));
-      std::vector<int32_t> ::const_iterator _iter44;
-      for (_iter44 = this->success.begin(); _iter44 != this->success.end(); ++_iter44)
+      std::vector<int32_t> ::const_iterator _iter51;
+      for (_iter51 = this->success.begin(); _iter51 != this->success.end(); ++_iter51)
       {
-        xfer += oprot->writeI32((*_iter44));
+        xfer += oprot->writeI32((*_iter51));
       }
       xfer += oprot->writeListEnd();
     }
@@ -1076,14 +1297,14 @@ uint32_t MDTrieShard_primary_key_lookup_presult::read(Protocol_* iprot) {
         if (ftype == ::apache::thrift::protocol::T_LIST) {
           {
             (*(this->success)).clear();
-            uint32_t _size45;
-            ::apache::thrift::protocol::TType _etype48;
-            xfer += iprot->readListBegin(_etype48, _size45);
-            (*(this->success)).resize(_size45);
-            uint32_t _i49;
-            for (_i49 = 0; _i49 < _size45; ++_i49)
+            uint32_t _size52;
+            ::apache::thrift::protocol::TType _etype55;
+            xfer += iprot->readListBegin(_etype55, _size52);
+            (*(this->success)).resize(_size52);
+            uint32_t _i56;
+            for (_i56 = 0; _i56 < _size52; ++_i56)
             {
-              xfer += iprot->readI32((*(this->success))[_i49]);
+              xfer += iprot->readI32((*(this->success))[_i56]);
             }
             xfer += iprot->readListEnd();
           }
@@ -1205,14 +1426,14 @@ uint32_t MDTrieShard_primary_key_lookup_path_result::read(Protocol_* iprot) {
         if (ftype == ::apache::thrift::protocol::T_LIST) {
           {
             this->success.clear();
-            uint32_t _size50;
-            ::apache::thrift::protocol::TType _etype53;
-            xfer += iprot->readListBegin(_etype53, _size50);
-            this->success.resize(_size50);
-            uint32_t _i54;
-            for (_i54 = 0; _i54 < _size50; ++_i54)
+            uint32_t _size57;
+            ::apache::thrift::protocol::TType _etype60;
+            xfer += iprot->readListBegin(_etype60, _size57);
+            this->success.resize(_size57);
+            uint32_t _i61;
+            for (_i61 = 0; _i61 < _size57; ++_i61)
             {
-              xfer += iprot->readI32(this->success[_i54]);
+              xfer += iprot->readI32(this->success[_i61]);
             }
             xfer += iprot->readListEnd();
           }
@@ -1244,10 +1465,10 @@ uint32_t MDTrieShard_primary_key_lookup_path_result::write(Protocol_* oprot) con
     xfer += oprot->writeFieldBegin("success", ::apache::thrift::protocol::T_LIST, 0);
     {
       xfer += oprot->writeListBegin(::apache::thrift::protocol::T_I32, static_cast<uint32_t>(this->success.size()));
-      std::vector<int32_t> ::const_iterator _iter55;
-      for (_iter55 = this->success.begin(); _iter55 != this->success.end(); ++_iter55)
+      std::vector<int32_t> ::const_iterator _iter62;
+      for (_iter62 = this->success.begin(); _iter62 != this->success.end(); ++_iter62)
       {
-        xfer += oprot->writeI32((*_iter55));
+        xfer += oprot->writeI32((*_iter62));
       }
       xfer += oprot->writeListEnd();
     }
@@ -1285,14 +1506,14 @@ uint32_t MDTrieShard_primary_key_lookup_path_presult::read(Protocol_* iprot) {
         if (ftype == ::apache::thrift::protocol::T_LIST) {
           {
             (*(this->success)).clear();
-            uint32_t _size56;
-            ::apache::thrift::protocol::TType _etype59;
-            xfer += iprot->readListBegin(_etype59, _size56);
-            (*(this->success)).resize(_size56);
-            uint32_t _i60;
-            for (_i60 = 0; _i60 < _size56; ++_i60)
+            uint32_t _size63;
+            ::apache::thrift::protocol::TType _etype66;
+            xfer += iprot->readListBegin(_etype66, _size63);
+            (*(this->success)).resize(_size63);
+            uint32_t _i67;
+            for (_i67 = 0; _i67 < _size63; ++_i67)
             {
-              xfer += iprot->readI32((*(this->success))[_i60]);
+              xfer += iprot->readI32((*(this->success))[_i67]);
             }
             xfer += iprot->readListEnd();
           }
@@ -1771,6 +1992,382 @@ uint32_t MDTrieShard_clear_trie_presult::read(Protocol_* iprot) {
   return xfer;
 }
 
+
+template <class Protocol_>
+uint32_t MDTrieShard_get_insert_latency_args::read(Protocol_* iprot) {
+
+  ::apache::thrift::protocol::TInputRecursionTracker tracker(*iprot);
+  uint32_t xfer = 0;
+  std::string fname;
+  ::apache::thrift::protocol::TType ftype;
+  int16_t fid;
+
+  xfer += iprot->readStructBegin(fname);
+
+  using ::apache::thrift::protocol::TProtocolException;
+
+
+  while (true)
+  {
+    xfer += iprot->readFieldBegin(fname, ftype, fid);
+    if (ftype == ::apache::thrift::protocol::T_STOP) {
+      break;
+    }
+    xfer += iprot->skip(ftype);
+    xfer += iprot->readFieldEnd();
+  }
+
+  xfer += iprot->readStructEnd();
+
+  return xfer;
+}
+
+template <class Protocol_>
+uint32_t MDTrieShard_get_insert_latency_args::write(Protocol_* oprot) const {
+  uint32_t xfer = 0;
+  ::apache::thrift::protocol::TOutputRecursionTracker tracker(*oprot);
+  xfer += oprot->writeStructBegin("MDTrieShard_get_insert_latency_args");
+
+  xfer += oprot->writeFieldStop();
+  xfer += oprot->writeStructEnd();
+  return xfer;
+}
+
+
+template <class Protocol_>
+uint32_t MDTrieShard_get_insert_latency_pargs::write(Protocol_* oprot) const {
+  uint32_t xfer = 0;
+  ::apache::thrift::protocol::TOutputRecursionTracker tracker(*oprot);
+  xfer += oprot->writeStructBegin("MDTrieShard_get_insert_latency_pargs");
+
+  xfer += oprot->writeFieldStop();
+  xfer += oprot->writeStructEnd();
+  return xfer;
+}
+
+
+template <class Protocol_>
+uint32_t MDTrieShard_get_insert_latency_result::read(Protocol_* iprot) {
+
+  ::apache::thrift::protocol::TInputRecursionTracker tracker(*iprot);
+  uint32_t xfer = 0;
+  std::string fname;
+  ::apache::thrift::protocol::TType ftype;
+  int16_t fid;
+
+  xfer += iprot->readStructBegin(fname);
+
+  using ::apache::thrift::protocol::TProtocolException;
+
+
+  while (true)
+  {
+    xfer += iprot->readFieldBegin(fname, ftype, fid);
+    if (ftype == ::apache::thrift::protocol::T_STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 0:
+        if (ftype == ::apache::thrift::protocol::T_LIST) {
+          {
+            this->success.clear();
+            uint32_t _size68;
+            ::apache::thrift::protocol::TType _etype71;
+            xfer += iprot->readListBegin(_etype71, _size68);
+            this->success.resize(_size68);
+            uint32_t _i72;
+            for (_i72 = 0; _i72 < _size68; ++_i72)
+            {
+              xfer += iprot->readI32(this->success[_i72]);
+            }
+            xfer += iprot->readListEnd();
+          }
+          this->__isset.success = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      default:
+        xfer += iprot->skip(ftype);
+        break;
+    }
+    xfer += iprot->readFieldEnd();
+  }
+
+  xfer += iprot->readStructEnd();
+
+  return xfer;
+}
+
+template <class Protocol_>
+uint32_t MDTrieShard_get_insert_latency_result::write(Protocol_* oprot) const {
+
+  uint32_t xfer = 0;
+
+  xfer += oprot->writeStructBegin("MDTrieShard_get_insert_latency_result");
+
+  if (this->__isset.success) {
+    xfer += oprot->writeFieldBegin("success", ::apache::thrift::protocol::T_LIST, 0);
+    {
+      xfer += oprot->writeListBegin(::apache::thrift::protocol::T_I32, static_cast<uint32_t>(this->success.size()));
+      std::vector<int32_t> ::const_iterator _iter73;
+      for (_iter73 = this->success.begin(); _iter73 != this->success.end(); ++_iter73)
+      {
+        xfer += oprot->writeI32((*_iter73));
+      }
+      xfer += oprot->writeListEnd();
+    }
+    xfer += oprot->writeFieldEnd();
+  }
+  xfer += oprot->writeFieldStop();
+  xfer += oprot->writeStructEnd();
+  return xfer;
+}
+
+
+template <class Protocol_>
+uint32_t MDTrieShard_get_insert_latency_presult::read(Protocol_* iprot) {
+
+  ::apache::thrift::protocol::TInputRecursionTracker tracker(*iprot);
+  uint32_t xfer = 0;
+  std::string fname;
+  ::apache::thrift::protocol::TType ftype;
+  int16_t fid;
+
+  xfer += iprot->readStructBegin(fname);
+
+  using ::apache::thrift::protocol::TProtocolException;
+
+
+  while (true)
+  {
+    xfer += iprot->readFieldBegin(fname, ftype, fid);
+    if (ftype == ::apache::thrift::protocol::T_STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 0:
+        if (ftype == ::apache::thrift::protocol::T_LIST) {
+          {
+            (*(this->success)).clear();
+            uint32_t _size74;
+            ::apache::thrift::protocol::TType _etype77;
+            xfer += iprot->readListBegin(_etype77, _size74);
+            (*(this->success)).resize(_size74);
+            uint32_t _i78;
+            for (_i78 = 0; _i78 < _size74; ++_i78)
+            {
+              xfer += iprot->readI32((*(this->success))[_i78]);
+            }
+            xfer += iprot->readListEnd();
+          }
+          this->__isset.success = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      default:
+        xfer += iprot->skip(ftype);
+        break;
+    }
+    xfer += iprot->readFieldEnd();
+  }
+
+  xfer += iprot->readStructEnd();
+
+  return xfer;
+}
+
+
+template <class Protocol_>
+uint32_t MDTrieShard_get_lookup_latency_args::read(Protocol_* iprot) {
+
+  ::apache::thrift::protocol::TInputRecursionTracker tracker(*iprot);
+  uint32_t xfer = 0;
+  std::string fname;
+  ::apache::thrift::protocol::TType ftype;
+  int16_t fid;
+
+  xfer += iprot->readStructBegin(fname);
+
+  using ::apache::thrift::protocol::TProtocolException;
+
+
+  while (true)
+  {
+    xfer += iprot->readFieldBegin(fname, ftype, fid);
+    if (ftype == ::apache::thrift::protocol::T_STOP) {
+      break;
+    }
+    xfer += iprot->skip(ftype);
+    xfer += iprot->readFieldEnd();
+  }
+
+  xfer += iprot->readStructEnd();
+
+  return xfer;
+}
+
+template <class Protocol_>
+uint32_t MDTrieShard_get_lookup_latency_args::write(Protocol_* oprot) const {
+  uint32_t xfer = 0;
+  ::apache::thrift::protocol::TOutputRecursionTracker tracker(*oprot);
+  xfer += oprot->writeStructBegin("MDTrieShard_get_lookup_latency_args");
+
+  xfer += oprot->writeFieldStop();
+  xfer += oprot->writeStructEnd();
+  return xfer;
+}
+
+
+template <class Protocol_>
+uint32_t MDTrieShard_get_lookup_latency_pargs::write(Protocol_* oprot) const {
+  uint32_t xfer = 0;
+  ::apache::thrift::protocol::TOutputRecursionTracker tracker(*oprot);
+  xfer += oprot->writeStructBegin("MDTrieShard_get_lookup_latency_pargs");
+
+  xfer += oprot->writeFieldStop();
+  xfer += oprot->writeStructEnd();
+  return xfer;
+}
+
+
+template <class Protocol_>
+uint32_t MDTrieShard_get_lookup_latency_result::read(Protocol_* iprot) {
+
+  ::apache::thrift::protocol::TInputRecursionTracker tracker(*iprot);
+  uint32_t xfer = 0;
+  std::string fname;
+  ::apache::thrift::protocol::TType ftype;
+  int16_t fid;
+
+  xfer += iprot->readStructBegin(fname);
+
+  using ::apache::thrift::protocol::TProtocolException;
+
+
+  while (true)
+  {
+    xfer += iprot->readFieldBegin(fname, ftype, fid);
+    if (ftype == ::apache::thrift::protocol::T_STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 0:
+        if (ftype == ::apache::thrift::protocol::T_LIST) {
+          {
+            this->success.clear();
+            uint32_t _size79;
+            ::apache::thrift::protocol::TType _etype82;
+            xfer += iprot->readListBegin(_etype82, _size79);
+            this->success.resize(_size79);
+            uint32_t _i83;
+            for (_i83 = 0; _i83 < _size79; ++_i83)
+            {
+              xfer += iprot->readI32(this->success[_i83]);
+            }
+            xfer += iprot->readListEnd();
+          }
+          this->__isset.success = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      default:
+        xfer += iprot->skip(ftype);
+        break;
+    }
+    xfer += iprot->readFieldEnd();
+  }
+
+  xfer += iprot->readStructEnd();
+
+  return xfer;
+}
+
+template <class Protocol_>
+uint32_t MDTrieShard_get_lookup_latency_result::write(Protocol_* oprot) const {
+
+  uint32_t xfer = 0;
+
+  xfer += oprot->writeStructBegin("MDTrieShard_get_lookup_latency_result");
+
+  if (this->__isset.success) {
+    xfer += oprot->writeFieldBegin("success", ::apache::thrift::protocol::T_LIST, 0);
+    {
+      xfer += oprot->writeListBegin(::apache::thrift::protocol::T_I32, static_cast<uint32_t>(this->success.size()));
+      std::vector<int32_t> ::const_iterator _iter84;
+      for (_iter84 = this->success.begin(); _iter84 != this->success.end(); ++_iter84)
+      {
+        xfer += oprot->writeI32((*_iter84));
+      }
+      xfer += oprot->writeListEnd();
+    }
+    xfer += oprot->writeFieldEnd();
+  }
+  xfer += oprot->writeFieldStop();
+  xfer += oprot->writeStructEnd();
+  return xfer;
+}
+
+
+template <class Protocol_>
+uint32_t MDTrieShard_get_lookup_latency_presult::read(Protocol_* iprot) {
+
+  ::apache::thrift::protocol::TInputRecursionTracker tracker(*iprot);
+  uint32_t xfer = 0;
+  std::string fname;
+  ::apache::thrift::protocol::TType ftype;
+  int16_t fid;
+
+  xfer += iprot->readStructBegin(fname);
+
+  using ::apache::thrift::protocol::TProtocolException;
+
+
+  while (true)
+  {
+    xfer += iprot->readFieldBegin(fname, ftype, fid);
+    if (ftype == ::apache::thrift::protocol::T_STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 0:
+        if (ftype == ::apache::thrift::protocol::T_LIST) {
+          {
+            (*(this->success)).clear();
+            uint32_t _size85;
+            ::apache::thrift::protocol::TType _etype88;
+            xfer += iprot->readListBegin(_etype88, _size85);
+            (*(this->success)).resize(_size85);
+            uint32_t _i89;
+            for (_i89 = 0; _i89 < _size85; ++_i89)
+            {
+              xfer += iprot->readI32((*(this->success))[_i89]);
+            }
+            xfer += iprot->readListEnd();
+          }
+          this->__isset.success = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      default:
+        xfer += iprot->skip(ftype);
+        break;
+    }
+    xfer += iprot->readFieldEnd();
+  }
+
+  xfer += iprot->readStructEnd();
+
+  return xfer;
+}
+
 template <class Protocol_>
 bool MDTrieShardClientT<Protocol_>::ping(const int32_t dataset_idx)
 {
@@ -1892,6 +2489,68 @@ int32_t MDTrieShardClientT<Protocol_>::recv_insert()
     return _return;
   }
   throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "insert failed: unknown result");
+}
+
+template <class Protocol_>
+int32_t MDTrieShardClientT<Protocol_>::insert_for_latency(const std::vector<int32_t> & point, const int32_t primary_key)
+{
+  send_insert_for_latency(point, primary_key);
+  return recv_insert_for_latency();
+}
+
+template <class Protocol_>
+void MDTrieShardClientT<Protocol_>::send_insert_for_latency(const std::vector<int32_t> & point, const int32_t primary_key)
+{
+  int32_t cseqid = 0;
+  this->oprot_->writeMessageBegin("insert_for_latency", ::apache::thrift::protocol::T_CALL, cseqid);
+
+  MDTrieShard_insert_for_latency_pargs args;
+  args.point = &point;
+  args.primary_key = &primary_key;
+  args.write(this->oprot_);
+
+  this->oprot_->writeMessageEnd();
+  this->oprot_->getTransport()->writeEnd();
+  this->oprot_->getTransport()->flush();
+}
+
+template <class Protocol_>
+int32_t MDTrieShardClientT<Protocol_>::recv_insert_for_latency()
+{
+
+  int32_t rseqid = 0;
+  std::string fname;
+  ::apache::thrift::protocol::TMessageType mtype;
+
+  this->iprot_->readMessageBegin(fname, mtype, rseqid);
+  if (mtype == ::apache::thrift::protocol::T_EXCEPTION) {
+    ::apache::thrift::TApplicationException x;
+    x.read(this->iprot_);
+    this->iprot_->readMessageEnd();
+    this->iprot_->getTransport()->readEnd();
+    throw x;
+  }
+  if (mtype != ::apache::thrift::protocol::T_REPLY) {
+    this->iprot_->skip(::apache::thrift::protocol::T_STRUCT);
+    this->iprot_->readMessageEnd();
+    this->iprot_->getTransport()->readEnd();
+  }
+  if (fname.compare("insert_for_latency") != 0) {
+    this->iprot_->skip(::apache::thrift::protocol::T_STRUCT);
+    this->iprot_->readMessageEnd();
+    this->iprot_->getTransport()->readEnd();
+  }
+  int32_t _return;
+  MDTrieShard_insert_for_latency_presult result;
+  result.success = &_return;
+  result.read(this->iprot_);
+  this->iprot_->readMessageEnd();
+  this->iprot_->getTransport()->readEnd();
+
+  if (result.__isset.success) {
+    return _return;
+  }
+  throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "insert_for_latency failed: unknown result");
 }
 
 template <class Protocol_>
@@ -2316,6 +2975,126 @@ void MDTrieShardClientT<Protocol_>::recv_clear_trie()
 }
 
 template <class Protocol_>
+void MDTrieShardClientT<Protocol_>::get_insert_latency(std::vector<int32_t> & _return)
+{
+  send_get_insert_latency();
+  recv_get_insert_latency(_return);
+}
+
+template <class Protocol_>
+void MDTrieShardClientT<Protocol_>::send_get_insert_latency()
+{
+  int32_t cseqid = 0;
+  this->oprot_->writeMessageBegin("get_insert_latency", ::apache::thrift::protocol::T_CALL, cseqid);
+
+  MDTrieShard_get_insert_latency_pargs args;
+  args.write(this->oprot_);
+
+  this->oprot_->writeMessageEnd();
+  this->oprot_->getTransport()->writeEnd();
+  this->oprot_->getTransport()->flush();
+}
+
+template <class Protocol_>
+void MDTrieShardClientT<Protocol_>::recv_get_insert_latency(std::vector<int32_t> & _return)
+{
+
+  int32_t rseqid = 0;
+  std::string fname;
+  ::apache::thrift::protocol::TMessageType mtype;
+
+  this->iprot_->readMessageBegin(fname, mtype, rseqid);
+  if (mtype == ::apache::thrift::protocol::T_EXCEPTION) {
+    ::apache::thrift::TApplicationException x;
+    x.read(this->iprot_);
+    this->iprot_->readMessageEnd();
+    this->iprot_->getTransport()->readEnd();
+    throw x;
+  }
+  if (mtype != ::apache::thrift::protocol::T_REPLY) {
+    this->iprot_->skip(::apache::thrift::protocol::T_STRUCT);
+    this->iprot_->readMessageEnd();
+    this->iprot_->getTransport()->readEnd();
+  }
+  if (fname.compare("get_insert_latency") != 0) {
+    this->iprot_->skip(::apache::thrift::protocol::T_STRUCT);
+    this->iprot_->readMessageEnd();
+    this->iprot_->getTransport()->readEnd();
+  }
+  MDTrieShard_get_insert_latency_presult result;
+  result.success = &_return;
+  result.read(this->iprot_);
+  this->iprot_->readMessageEnd();
+  this->iprot_->getTransport()->readEnd();
+
+  if (result.__isset.success) {
+    // _return pointer has now been filled
+    return;
+  }
+  throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "get_insert_latency failed: unknown result");
+}
+
+template <class Protocol_>
+void MDTrieShardClientT<Protocol_>::get_lookup_latency(std::vector<int32_t> & _return)
+{
+  send_get_lookup_latency();
+  recv_get_lookup_latency(_return);
+}
+
+template <class Protocol_>
+void MDTrieShardClientT<Protocol_>::send_get_lookup_latency()
+{
+  int32_t cseqid = 0;
+  this->oprot_->writeMessageBegin("get_lookup_latency", ::apache::thrift::protocol::T_CALL, cseqid);
+
+  MDTrieShard_get_lookup_latency_pargs args;
+  args.write(this->oprot_);
+
+  this->oprot_->writeMessageEnd();
+  this->oprot_->getTransport()->writeEnd();
+  this->oprot_->getTransport()->flush();
+}
+
+template <class Protocol_>
+void MDTrieShardClientT<Protocol_>::recv_get_lookup_latency(std::vector<int32_t> & _return)
+{
+
+  int32_t rseqid = 0;
+  std::string fname;
+  ::apache::thrift::protocol::TMessageType mtype;
+
+  this->iprot_->readMessageBegin(fname, mtype, rseqid);
+  if (mtype == ::apache::thrift::protocol::T_EXCEPTION) {
+    ::apache::thrift::TApplicationException x;
+    x.read(this->iprot_);
+    this->iprot_->readMessageEnd();
+    this->iprot_->getTransport()->readEnd();
+    throw x;
+  }
+  if (mtype != ::apache::thrift::protocol::T_REPLY) {
+    this->iprot_->skip(::apache::thrift::protocol::T_STRUCT);
+    this->iprot_->readMessageEnd();
+    this->iprot_->getTransport()->readEnd();
+  }
+  if (fname.compare("get_lookup_latency") != 0) {
+    this->iprot_->skip(::apache::thrift::protocol::T_STRUCT);
+    this->iprot_->readMessageEnd();
+    this->iprot_->getTransport()->readEnd();
+  }
+  MDTrieShard_get_lookup_latency_presult result;
+  result.success = &_return;
+  result.read(this->iprot_);
+  this->iprot_->readMessageEnd();
+  this->iprot_->getTransport()->readEnd();
+
+  if (result.__isset.success) {
+    // _return pointer has now been filled
+    return;
+  }
+  throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "get_lookup_latency failed: unknown result");
+}
+
+template <class Protocol_>
 bool MDTrieShardProcessorT<Protocol_>::dispatchCall(::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, const std::string& fname, int32_t seqid, void* callContext) {
   typename ProcessMap::iterator pfn;
   pfn = processMap_.find(fname);
@@ -2572,6 +3351,116 @@ void MDTrieShardProcessorT<Protocol_>::process_insert(int32_t seqid, Protocol_* 
 
   if (this->eventHandler_.get() != nullptr) {
     this->eventHandler_->postWrite(ctx, "MDTrieShard.insert", bytes);
+  }
+}
+
+template <class Protocol_>
+void MDTrieShardProcessorT<Protocol_>::process_insert_for_latency(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext)
+{
+  void* ctx = nullptr;
+  if (this->eventHandler_.get() != nullptr) {
+    ctx = this->eventHandler_->getContext("MDTrieShard.insert_for_latency", callContext);
+  }
+  ::apache::thrift::TProcessorContextFreer freer(this->eventHandler_.get(), ctx, "MDTrieShard.insert_for_latency");
+
+  if (this->eventHandler_.get() != nullptr) {
+    this->eventHandler_->preRead(ctx, "MDTrieShard.insert_for_latency");
+  }
+
+  MDTrieShard_insert_for_latency_args args;
+  args.read(iprot);
+  iprot->readMessageEnd();
+  uint32_t bytes = iprot->getTransport()->readEnd();
+
+  if (this->eventHandler_.get() != nullptr) {
+    this->eventHandler_->postRead(ctx, "MDTrieShard.insert_for_latency", bytes);
+  }
+
+  MDTrieShard_insert_for_latency_result result;
+  try {
+    result.success = iface_->insert_for_latency(args.point, args.primary_key);
+    result.__isset.success = true;
+  } catch (const std::exception& e) {
+    if (this->eventHandler_.get() != nullptr) {
+      this->eventHandler_->handlerError(ctx, "MDTrieShard.insert_for_latency");
+    }
+
+    ::apache::thrift::TApplicationException x(e.what());
+    oprot->writeMessageBegin("insert_for_latency", ::apache::thrift::protocol::T_EXCEPTION, seqid);
+    x.write(oprot);
+    oprot->writeMessageEnd();
+    oprot->getTransport()->writeEnd();
+    oprot->getTransport()->flush();
+    return;
+  }
+
+  if (this->eventHandler_.get() != nullptr) {
+    this->eventHandler_->preWrite(ctx, "MDTrieShard.insert_for_latency");
+  }
+
+  oprot->writeMessageBegin("insert_for_latency", ::apache::thrift::protocol::T_REPLY, seqid);
+  result.write(oprot);
+  oprot->writeMessageEnd();
+  bytes = oprot->getTransport()->writeEnd();
+  oprot->getTransport()->flush();
+
+  if (this->eventHandler_.get() != nullptr) {
+    this->eventHandler_->postWrite(ctx, "MDTrieShard.insert_for_latency", bytes);
+  }
+}
+
+template <class Protocol_>
+void MDTrieShardProcessorT<Protocol_>::process_insert_for_latency(int32_t seqid, Protocol_* iprot, Protocol_* oprot, void* callContext)
+{
+  void* ctx = nullptr;
+  if (this->eventHandler_.get() != nullptr) {
+    ctx = this->eventHandler_->getContext("MDTrieShard.insert_for_latency", callContext);
+  }
+  ::apache::thrift::TProcessorContextFreer freer(this->eventHandler_.get(), ctx, "MDTrieShard.insert_for_latency");
+
+  if (this->eventHandler_.get() != nullptr) {
+    this->eventHandler_->preRead(ctx, "MDTrieShard.insert_for_latency");
+  }
+
+  MDTrieShard_insert_for_latency_args args;
+  args.read(iprot);
+  iprot->readMessageEnd();
+  uint32_t bytes = iprot->getTransport()->readEnd();
+
+  if (this->eventHandler_.get() != nullptr) {
+    this->eventHandler_->postRead(ctx, "MDTrieShard.insert_for_latency", bytes);
+  }
+
+  MDTrieShard_insert_for_latency_result result;
+  try {
+    result.success = iface_->insert_for_latency(args.point, args.primary_key);
+    result.__isset.success = true;
+  } catch (const std::exception& e) {
+    if (this->eventHandler_.get() != nullptr) {
+      this->eventHandler_->handlerError(ctx, "MDTrieShard.insert_for_latency");
+    }
+
+    ::apache::thrift::TApplicationException x(e.what());
+    oprot->writeMessageBegin("insert_for_latency", ::apache::thrift::protocol::T_EXCEPTION, seqid);
+    x.write(oprot);
+    oprot->writeMessageEnd();
+    oprot->getTransport()->writeEnd();
+    oprot->getTransport()->flush();
+    return;
+  }
+
+  if (this->eventHandler_.get() != nullptr) {
+    this->eventHandler_->preWrite(ctx, "MDTrieShard.insert_for_latency");
+  }
+
+  oprot->writeMessageBegin("insert_for_latency", ::apache::thrift::protocol::T_REPLY, seqid);
+  result.write(oprot);
+  oprot->writeMessageEnd();
+  bytes = oprot->getTransport()->writeEnd();
+  oprot->getTransport()->flush();
+
+  if (this->eventHandler_.get() != nullptr) {
+    this->eventHandler_->postWrite(ctx, "MDTrieShard.insert_for_latency", bytes);
   }
 }
 
@@ -3344,6 +4233,226 @@ void MDTrieShardProcessorT<Protocol_>::process_clear_trie(int32_t seqid, Protoco
 }
 
 template <class Protocol_>
+void MDTrieShardProcessorT<Protocol_>::process_get_insert_latency(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext)
+{
+  void* ctx = nullptr;
+  if (this->eventHandler_.get() != nullptr) {
+    ctx = this->eventHandler_->getContext("MDTrieShard.get_insert_latency", callContext);
+  }
+  ::apache::thrift::TProcessorContextFreer freer(this->eventHandler_.get(), ctx, "MDTrieShard.get_insert_latency");
+
+  if (this->eventHandler_.get() != nullptr) {
+    this->eventHandler_->preRead(ctx, "MDTrieShard.get_insert_latency");
+  }
+
+  MDTrieShard_get_insert_latency_args args;
+  args.read(iprot);
+  iprot->readMessageEnd();
+  uint32_t bytes = iprot->getTransport()->readEnd();
+
+  if (this->eventHandler_.get() != nullptr) {
+    this->eventHandler_->postRead(ctx, "MDTrieShard.get_insert_latency", bytes);
+  }
+
+  MDTrieShard_get_insert_latency_result result;
+  try {
+    iface_->get_insert_latency(result.success);
+    result.__isset.success = true;
+  } catch (const std::exception& e) {
+    if (this->eventHandler_.get() != nullptr) {
+      this->eventHandler_->handlerError(ctx, "MDTrieShard.get_insert_latency");
+    }
+
+    ::apache::thrift::TApplicationException x(e.what());
+    oprot->writeMessageBegin("get_insert_latency", ::apache::thrift::protocol::T_EXCEPTION, seqid);
+    x.write(oprot);
+    oprot->writeMessageEnd();
+    oprot->getTransport()->writeEnd();
+    oprot->getTransport()->flush();
+    return;
+  }
+
+  if (this->eventHandler_.get() != nullptr) {
+    this->eventHandler_->preWrite(ctx, "MDTrieShard.get_insert_latency");
+  }
+
+  oprot->writeMessageBegin("get_insert_latency", ::apache::thrift::protocol::T_REPLY, seqid);
+  result.write(oprot);
+  oprot->writeMessageEnd();
+  bytes = oprot->getTransport()->writeEnd();
+  oprot->getTransport()->flush();
+
+  if (this->eventHandler_.get() != nullptr) {
+    this->eventHandler_->postWrite(ctx, "MDTrieShard.get_insert_latency", bytes);
+  }
+}
+
+template <class Protocol_>
+void MDTrieShardProcessorT<Protocol_>::process_get_insert_latency(int32_t seqid, Protocol_* iprot, Protocol_* oprot, void* callContext)
+{
+  void* ctx = nullptr;
+  if (this->eventHandler_.get() != nullptr) {
+    ctx = this->eventHandler_->getContext("MDTrieShard.get_insert_latency", callContext);
+  }
+  ::apache::thrift::TProcessorContextFreer freer(this->eventHandler_.get(), ctx, "MDTrieShard.get_insert_latency");
+
+  if (this->eventHandler_.get() != nullptr) {
+    this->eventHandler_->preRead(ctx, "MDTrieShard.get_insert_latency");
+  }
+
+  MDTrieShard_get_insert_latency_args args;
+  args.read(iprot);
+  iprot->readMessageEnd();
+  uint32_t bytes = iprot->getTransport()->readEnd();
+
+  if (this->eventHandler_.get() != nullptr) {
+    this->eventHandler_->postRead(ctx, "MDTrieShard.get_insert_latency", bytes);
+  }
+
+  MDTrieShard_get_insert_latency_result result;
+  try {
+    iface_->get_insert_latency(result.success);
+    result.__isset.success = true;
+  } catch (const std::exception& e) {
+    if (this->eventHandler_.get() != nullptr) {
+      this->eventHandler_->handlerError(ctx, "MDTrieShard.get_insert_latency");
+    }
+
+    ::apache::thrift::TApplicationException x(e.what());
+    oprot->writeMessageBegin("get_insert_latency", ::apache::thrift::protocol::T_EXCEPTION, seqid);
+    x.write(oprot);
+    oprot->writeMessageEnd();
+    oprot->getTransport()->writeEnd();
+    oprot->getTransport()->flush();
+    return;
+  }
+
+  if (this->eventHandler_.get() != nullptr) {
+    this->eventHandler_->preWrite(ctx, "MDTrieShard.get_insert_latency");
+  }
+
+  oprot->writeMessageBegin("get_insert_latency", ::apache::thrift::protocol::T_REPLY, seqid);
+  result.write(oprot);
+  oprot->writeMessageEnd();
+  bytes = oprot->getTransport()->writeEnd();
+  oprot->getTransport()->flush();
+
+  if (this->eventHandler_.get() != nullptr) {
+    this->eventHandler_->postWrite(ctx, "MDTrieShard.get_insert_latency", bytes);
+  }
+}
+
+template <class Protocol_>
+void MDTrieShardProcessorT<Protocol_>::process_get_lookup_latency(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext)
+{
+  void* ctx = nullptr;
+  if (this->eventHandler_.get() != nullptr) {
+    ctx = this->eventHandler_->getContext("MDTrieShard.get_lookup_latency", callContext);
+  }
+  ::apache::thrift::TProcessorContextFreer freer(this->eventHandler_.get(), ctx, "MDTrieShard.get_lookup_latency");
+
+  if (this->eventHandler_.get() != nullptr) {
+    this->eventHandler_->preRead(ctx, "MDTrieShard.get_lookup_latency");
+  }
+
+  MDTrieShard_get_lookup_latency_args args;
+  args.read(iprot);
+  iprot->readMessageEnd();
+  uint32_t bytes = iprot->getTransport()->readEnd();
+
+  if (this->eventHandler_.get() != nullptr) {
+    this->eventHandler_->postRead(ctx, "MDTrieShard.get_lookup_latency", bytes);
+  }
+
+  MDTrieShard_get_lookup_latency_result result;
+  try {
+    iface_->get_lookup_latency(result.success);
+    result.__isset.success = true;
+  } catch (const std::exception& e) {
+    if (this->eventHandler_.get() != nullptr) {
+      this->eventHandler_->handlerError(ctx, "MDTrieShard.get_lookup_latency");
+    }
+
+    ::apache::thrift::TApplicationException x(e.what());
+    oprot->writeMessageBegin("get_lookup_latency", ::apache::thrift::protocol::T_EXCEPTION, seqid);
+    x.write(oprot);
+    oprot->writeMessageEnd();
+    oprot->getTransport()->writeEnd();
+    oprot->getTransport()->flush();
+    return;
+  }
+
+  if (this->eventHandler_.get() != nullptr) {
+    this->eventHandler_->preWrite(ctx, "MDTrieShard.get_lookup_latency");
+  }
+
+  oprot->writeMessageBegin("get_lookup_latency", ::apache::thrift::protocol::T_REPLY, seqid);
+  result.write(oprot);
+  oprot->writeMessageEnd();
+  bytes = oprot->getTransport()->writeEnd();
+  oprot->getTransport()->flush();
+
+  if (this->eventHandler_.get() != nullptr) {
+    this->eventHandler_->postWrite(ctx, "MDTrieShard.get_lookup_latency", bytes);
+  }
+}
+
+template <class Protocol_>
+void MDTrieShardProcessorT<Protocol_>::process_get_lookup_latency(int32_t seqid, Protocol_* iprot, Protocol_* oprot, void* callContext)
+{
+  void* ctx = nullptr;
+  if (this->eventHandler_.get() != nullptr) {
+    ctx = this->eventHandler_->getContext("MDTrieShard.get_lookup_latency", callContext);
+  }
+  ::apache::thrift::TProcessorContextFreer freer(this->eventHandler_.get(), ctx, "MDTrieShard.get_lookup_latency");
+
+  if (this->eventHandler_.get() != nullptr) {
+    this->eventHandler_->preRead(ctx, "MDTrieShard.get_lookup_latency");
+  }
+
+  MDTrieShard_get_lookup_latency_args args;
+  args.read(iprot);
+  iprot->readMessageEnd();
+  uint32_t bytes = iprot->getTransport()->readEnd();
+
+  if (this->eventHandler_.get() != nullptr) {
+    this->eventHandler_->postRead(ctx, "MDTrieShard.get_lookup_latency", bytes);
+  }
+
+  MDTrieShard_get_lookup_latency_result result;
+  try {
+    iface_->get_lookup_latency(result.success);
+    result.__isset.success = true;
+  } catch (const std::exception& e) {
+    if (this->eventHandler_.get() != nullptr) {
+      this->eventHandler_->handlerError(ctx, "MDTrieShard.get_lookup_latency");
+    }
+
+    ::apache::thrift::TApplicationException x(e.what());
+    oprot->writeMessageBegin("get_lookup_latency", ::apache::thrift::protocol::T_EXCEPTION, seqid);
+    x.write(oprot);
+    oprot->writeMessageEnd();
+    oprot->getTransport()->writeEnd();
+    oprot->getTransport()->flush();
+    return;
+  }
+
+  if (this->eventHandler_.get() != nullptr) {
+    this->eventHandler_->preWrite(ctx, "MDTrieShard.get_lookup_latency");
+  }
+
+  oprot->writeMessageBegin("get_lookup_latency", ::apache::thrift::protocol::T_REPLY, seqid);
+  result.write(oprot);
+  oprot->writeMessageEnd();
+  bytes = oprot->getTransport()->writeEnd();
+  oprot->getTransport()->flush();
+
+  if (this->eventHandler_.get() != nullptr) {
+    this->eventHandler_->postWrite(ctx, "MDTrieShard.get_lookup_latency", bytes);
+  }
+}
+
+template <class Protocol_>
 ::std::shared_ptr< ::apache::thrift::TProcessor > MDTrieShardProcessorFactoryT<Protocol_>::getProcessor(const ::apache::thrift::TConnectionInfo& connInfo) {
   ::apache::thrift::ReleaseHandler< MDTrieShardIfFactory > cleanup(handlerFactory_);
   ::std::shared_ptr< MDTrieShardIf > handler(handlerFactory_->getHandler(connInfo), cleanup);
@@ -3517,6 +4626,94 @@ int32_t MDTrieShardConcurrentClientT<Protocol_>::recv_insert(const int32_t seqid
       }
       // in a bad state, don't commit
       throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "insert failed: unknown result");
+    }
+    // seqid != rseqid
+    this->sync_->updatePending(fname, mtype, rseqid);
+
+    // this will temporarily unlock the readMutex, and let other clients get work done
+    this->sync_->waitForWork(seqid);
+  } // end while(true)
+}
+
+template <class Protocol_>
+int32_t MDTrieShardConcurrentClientT<Protocol_>::insert_for_latency(const std::vector<int32_t> & point, const int32_t primary_key)
+{
+  int32_t seqid = send_insert_for_latency(point, primary_key);
+  return recv_insert_for_latency(seqid);
+}
+
+template <class Protocol_>
+int32_t MDTrieShardConcurrentClientT<Protocol_>::send_insert_for_latency(const std::vector<int32_t> & point, const int32_t primary_key)
+{
+  int32_t cseqid = this->sync_->generateSeqId();
+  ::apache::thrift::async::TConcurrentSendSentry sentry(this->sync_.get());
+  this->oprot_->writeMessageBegin("insert_for_latency", ::apache::thrift::protocol::T_CALL, cseqid);
+
+  MDTrieShard_insert_for_latency_pargs args;
+  args.point = &point;
+  args.primary_key = &primary_key;
+  args.write(this->oprot_);
+
+  this->oprot_->writeMessageEnd();
+  this->oprot_->getTransport()->writeEnd();
+  this->oprot_->getTransport()->flush();
+
+  sentry.commit();
+  return cseqid;
+}
+
+template <class Protocol_>
+int32_t MDTrieShardConcurrentClientT<Protocol_>::recv_insert_for_latency(const int32_t seqid)
+{
+
+  int32_t rseqid = 0;
+  std::string fname;
+  ::apache::thrift::protocol::TMessageType mtype;
+
+  // the read mutex gets dropped and reacquired as part of waitForWork()
+  // The destructor of this sentry wakes up other clients
+  ::apache::thrift::async::TConcurrentRecvSentry sentry(this->sync_.get(), seqid);
+
+  while(true) {
+    if(!this->sync_->getPending(fname, mtype, rseqid)) {
+      this->iprot_->readMessageBegin(fname, mtype, rseqid);
+    }
+    if(seqid == rseqid) {
+      if (mtype == ::apache::thrift::protocol::T_EXCEPTION) {
+        ::apache::thrift::TApplicationException x;
+        x.read(this->iprot_);
+        this->iprot_->readMessageEnd();
+        this->iprot_->getTransport()->readEnd();
+        sentry.commit();
+        throw x;
+      }
+      if (mtype != ::apache::thrift::protocol::T_REPLY) {
+        this->iprot_->skip(::apache::thrift::protocol::T_STRUCT);
+        this->iprot_->readMessageEnd();
+        this->iprot_->getTransport()->readEnd();
+      }
+      if (fname.compare("insert_for_latency") != 0) {
+        this->iprot_->skip(::apache::thrift::protocol::T_STRUCT);
+        this->iprot_->readMessageEnd();
+        this->iprot_->getTransport()->readEnd();
+
+        // in a bad state, don't commit
+        using ::apache::thrift::protocol::TProtocolException;
+        throw TProtocolException(TProtocolException::INVALID_DATA);
+      }
+      int32_t _return;
+      MDTrieShard_insert_for_latency_presult result;
+      result.success = &_return;
+      result.read(this->iprot_);
+      this->iprot_->readMessageEnd();
+      this->iprot_->getTransport()->readEnd();
+
+      if (result.__isset.success) {
+        sentry.commit();
+        return _return;
+      }
+      // in a bad state, don't commit
+      throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "insert_for_latency failed: unknown result");
     }
     // seqid != rseqid
     this->sync_->updatePending(fname, mtype, rseqid);
@@ -4119,6 +5316,178 @@ void MDTrieShardConcurrentClientT<Protocol_>::recv_clear_trie(const int32_t seqi
 
       sentry.commit();
       return;
+    }
+    // seqid != rseqid
+    this->sync_->updatePending(fname, mtype, rseqid);
+
+    // this will temporarily unlock the readMutex, and let other clients get work done
+    this->sync_->waitForWork(seqid);
+  } // end while(true)
+}
+
+template <class Protocol_>
+void MDTrieShardConcurrentClientT<Protocol_>::get_insert_latency(std::vector<int32_t> & _return)
+{
+  int32_t seqid = send_get_insert_latency();
+  recv_get_insert_latency(_return, seqid);
+}
+
+template <class Protocol_>
+int32_t MDTrieShardConcurrentClientT<Protocol_>::send_get_insert_latency()
+{
+  int32_t cseqid = this->sync_->generateSeqId();
+  ::apache::thrift::async::TConcurrentSendSentry sentry(this->sync_.get());
+  this->oprot_->writeMessageBegin("get_insert_latency", ::apache::thrift::protocol::T_CALL, cseqid);
+
+  MDTrieShard_get_insert_latency_pargs args;
+  args.write(this->oprot_);
+
+  this->oprot_->writeMessageEnd();
+  this->oprot_->getTransport()->writeEnd();
+  this->oprot_->getTransport()->flush();
+
+  sentry.commit();
+  return cseqid;
+}
+
+template <class Protocol_>
+void MDTrieShardConcurrentClientT<Protocol_>::recv_get_insert_latency(std::vector<int32_t> & _return, const int32_t seqid)
+{
+
+  int32_t rseqid = 0;
+  std::string fname;
+  ::apache::thrift::protocol::TMessageType mtype;
+
+  // the read mutex gets dropped and reacquired as part of waitForWork()
+  // The destructor of this sentry wakes up other clients
+  ::apache::thrift::async::TConcurrentRecvSentry sentry(this->sync_.get(), seqid);
+
+  while(true) {
+    if(!this->sync_->getPending(fname, mtype, rseqid)) {
+      this->iprot_->readMessageBegin(fname, mtype, rseqid);
+    }
+    if(seqid == rseqid) {
+      if (mtype == ::apache::thrift::protocol::T_EXCEPTION) {
+        ::apache::thrift::TApplicationException x;
+        x.read(this->iprot_);
+        this->iprot_->readMessageEnd();
+        this->iprot_->getTransport()->readEnd();
+        sentry.commit();
+        throw x;
+      }
+      if (mtype != ::apache::thrift::protocol::T_REPLY) {
+        this->iprot_->skip(::apache::thrift::protocol::T_STRUCT);
+        this->iprot_->readMessageEnd();
+        this->iprot_->getTransport()->readEnd();
+      }
+      if (fname.compare("get_insert_latency") != 0) {
+        this->iprot_->skip(::apache::thrift::protocol::T_STRUCT);
+        this->iprot_->readMessageEnd();
+        this->iprot_->getTransport()->readEnd();
+
+        // in a bad state, don't commit
+        using ::apache::thrift::protocol::TProtocolException;
+        throw TProtocolException(TProtocolException::INVALID_DATA);
+      }
+      MDTrieShard_get_insert_latency_presult result;
+      result.success = &_return;
+      result.read(this->iprot_);
+      this->iprot_->readMessageEnd();
+      this->iprot_->getTransport()->readEnd();
+
+      if (result.__isset.success) {
+        // _return pointer has now been filled
+        sentry.commit();
+        return;
+      }
+      // in a bad state, don't commit
+      throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "get_insert_latency failed: unknown result");
+    }
+    // seqid != rseqid
+    this->sync_->updatePending(fname, mtype, rseqid);
+
+    // this will temporarily unlock the readMutex, and let other clients get work done
+    this->sync_->waitForWork(seqid);
+  } // end while(true)
+}
+
+template <class Protocol_>
+void MDTrieShardConcurrentClientT<Protocol_>::get_lookup_latency(std::vector<int32_t> & _return)
+{
+  int32_t seqid = send_get_lookup_latency();
+  recv_get_lookup_latency(_return, seqid);
+}
+
+template <class Protocol_>
+int32_t MDTrieShardConcurrentClientT<Protocol_>::send_get_lookup_latency()
+{
+  int32_t cseqid = this->sync_->generateSeqId();
+  ::apache::thrift::async::TConcurrentSendSentry sentry(this->sync_.get());
+  this->oprot_->writeMessageBegin("get_lookup_latency", ::apache::thrift::protocol::T_CALL, cseqid);
+
+  MDTrieShard_get_lookup_latency_pargs args;
+  args.write(this->oprot_);
+
+  this->oprot_->writeMessageEnd();
+  this->oprot_->getTransport()->writeEnd();
+  this->oprot_->getTransport()->flush();
+
+  sentry.commit();
+  return cseqid;
+}
+
+template <class Protocol_>
+void MDTrieShardConcurrentClientT<Protocol_>::recv_get_lookup_latency(std::vector<int32_t> & _return, const int32_t seqid)
+{
+
+  int32_t rseqid = 0;
+  std::string fname;
+  ::apache::thrift::protocol::TMessageType mtype;
+
+  // the read mutex gets dropped and reacquired as part of waitForWork()
+  // The destructor of this sentry wakes up other clients
+  ::apache::thrift::async::TConcurrentRecvSentry sentry(this->sync_.get(), seqid);
+
+  while(true) {
+    if(!this->sync_->getPending(fname, mtype, rseqid)) {
+      this->iprot_->readMessageBegin(fname, mtype, rseqid);
+    }
+    if(seqid == rseqid) {
+      if (mtype == ::apache::thrift::protocol::T_EXCEPTION) {
+        ::apache::thrift::TApplicationException x;
+        x.read(this->iprot_);
+        this->iprot_->readMessageEnd();
+        this->iprot_->getTransport()->readEnd();
+        sentry.commit();
+        throw x;
+      }
+      if (mtype != ::apache::thrift::protocol::T_REPLY) {
+        this->iprot_->skip(::apache::thrift::protocol::T_STRUCT);
+        this->iprot_->readMessageEnd();
+        this->iprot_->getTransport()->readEnd();
+      }
+      if (fname.compare("get_lookup_latency") != 0) {
+        this->iprot_->skip(::apache::thrift::protocol::T_STRUCT);
+        this->iprot_->readMessageEnd();
+        this->iprot_->getTransport()->readEnd();
+
+        // in a bad state, don't commit
+        using ::apache::thrift::protocol::TProtocolException;
+        throw TProtocolException(TProtocolException::INVALID_DATA);
+      }
+      MDTrieShard_get_lookup_latency_presult result;
+      result.success = &_return;
+      result.read(this->iprot_);
+      this->iprot_->readMessageEnd();
+      this->iprot_->getTransport()->readEnd();
+
+      if (result.__isset.success) {
+        // _return pointer has now been filled
+        sentry.commit();
+        return;
+      }
+      // in a bad state, don't commit
+      throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "get_lookup_latency failed: unknown result");
     }
     // seqid != rseqid
     this->sync_->updatePending(fname, mtype, rseqid);

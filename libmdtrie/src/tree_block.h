@@ -621,7 +621,7 @@ public:
             return;
         } 
         else {
-
+            num_treeblock_expand ++;
             preorder_t subtree_size, selected_node_depth;
             preorder_t selected_node_pos = 0;
             preorder_t num_primary = 0, selected_primary_index = 0;
@@ -1145,6 +1145,7 @@ public:
         else {
             ((trie_node<DIMENSION> *)parent_combined_ptr_)->get_node_path(root_depth_, node_path);
         }        
+        lookup_scanned_nodes += current_node;
         return parent_symbol;
     }
 

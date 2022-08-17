@@ -116,6 +116,8 @@ bool enable_client_cache_pkey_mapping = false;
 bool REUSE_RANGE_SEARCH_CHILD = true;
 
 int current_dataset_idx = 0;
+int num_treeblock_expand = 0;
+int lookup_scanned_nodes = 0;
 
 void create_level_to_num_children(std::vector<level_t> bit_widths, std::vector<level_t> start_bits, level_t max_level){
 

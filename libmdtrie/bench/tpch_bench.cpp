@@ -8,6 +8,8 @@
 #include "../../librpc/src/TrinityParseFIle.h"
 
 #define LATENCY_BENCH
+#define NEW_LATENCY_BENCH
+#define TPCH_SIZE 250000000 // 250M
 
 const dimension_t DIMENSION = 9;
 level_t max_depth = 32;
@@ -17,9 +19,14 @@ point_t points_to_insert = 30000;
 point_t points_for_warmup = points_to_insert / 5;
 
 void flush_vector_to_file(std::vector<TimeStamp> vect, std::string filename){
+    #ifdef NEW_LATENCY_BENCH
+    std::ofstream outFile(filename + "_new");
+    #else
     std::ofstream outFile(filename);
+    #endif
     for (const auto &e : vect) outFile << std::to_string(e) << "\n";
 }
+
 
 void run_bench(){
 
@@ -56,12 +63,23 @@ void run_bench(){
         if (n_points > points_for_warmup && n_points <= points_to_insert)
             insertion_latency_vect.push_back(latency);
 
-        #ifdef LATENCY_BENCH
+        #if defined(NEW_LATENCY_BENCH)
+        if (n_points == TPCH_SIZE)
+            break;
+        #elif defined(LATENCY_BENCH)
         if (n_points == points_to_insert)
             break;    
         #else
-        if (n_points == total_points_count)
+        if (n_points == TPCH_SIZE)
             break;
+        #endif
+
+        #ifdef NEW_LATENCY_BENCH
+        if (n_points > TPCH_SIZE - points_to_insert + points_for_warmup)
+            insertion_latency_vect.push_back(latency);
+        #else
+        if (n_points > points_for_warmup && n_points <= points_to_insert)
+            insertion_latency_vect.push_back(latency);
         #endif
 
         if (n_points % (total_points_count / 50) == 0)

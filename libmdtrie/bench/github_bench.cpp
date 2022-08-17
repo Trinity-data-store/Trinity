@@ -8,6 +8,8 @@
 #include "../../librpc/src/TrinityParseFIle.h"
 
 #define LATENCY_BENCH
+// #define NEW_LATENCY_BENCH
+#define GITHUB_SIZE 200000000 // 200M
 
 const dimension_t DIMENSION = 10;
 level_t max_depth = 32;
@@ -18,7 +20,11 @@ point_t points_for_warmup = points_to_insert / 5;
 point_t skip_size = 0;
 
 void flush_vector_to_file(std::vector<TimeStamp> vect, std::string filename){
+    #ifdef NEW_LATENCY_BENCH
+    std::ofstream outFile(filename + "_new");
+    #else
     std::ofstream outFile(filename);
+    #endif
     for (const auto &e : vect) outFile << std::to_string(e) << "\n";
 }
 
@@ -59,19 +65,35 @@ void run_bench(){
         diff += latency;
         n_points ++;
 
-        if (n_points > points_for_warmup && n_points <= points_to_insert)
-            insertion_latency_vect.push_back(latency);
-
-        #ifdef LATENCY_BENCH
+        #if defined(NEW_LATENCY_BENCH)
+        if (n_points == GITHUB_SIZE)
+            break;
+        #elif defined(LATENCY_BENCH)
         if (n_points == points_to_insert)
             break;    
         #else
-        if (n_points == total_points_count)
+        if (n_points == GITHUB_SIZE)
             break;
+        #endif
+
+        #ifdef NEW_LATENCY_BENCH
+        if (n_points > GITHUB_SIZE - points_to_insert + points_for_warmup)
+            insertion_latency_vect.push_back(latency);
+        #else
+        if (n_points > points_for_warmup && n_points <= points_to_insert)
+            insertion_latency_vect.push_back(latency);
         #endif
 
         if (n_points % (total_points_count / 50) == 0)
             std::cout << "n_points: "  << n_points << std::endl;
+
+        if (latency > 1000) {
+            for (const auto c : vect) {
+                std::cout << c << ",";
+            }
+            std::cout << "latency (us): " << latency << ", num treeblock expansion: " << num_treeblock_expand << std::endl;
+        }
+        num_treeblock_expand = 0;
     }    
 
     std::cout << "Insertion Latency: " << (float) diff / n_points << std::endl;
@@ -104,6 +126,14 @@ void run_bench(){
 
         if (i > points_for_warmup && i <= points_to_insert)
             lookup_latency_vect.push_back(temp_diff);
+
+        if (temp_diff > 200) {
+            for (dimension_t d = 0; d < DIMENSION; d++) {
+                std::cout << coordinates->get_coordinate(d) << ",";
+            }
+            std::cout << "latency (us): " << temp_diff << ", lookup_scanned_nodes: " << lookup_scanned_nodes << std::endl;
+        }
+        lookup_scanned_nodes = 0;
     }
     std::cout << "Done! " << "Lookup Latency per point: " << (float) cumulative / points_to_insert << std::endl;
     flush_vector_to_file(lookup_latency_vect, "/proj/trinity-PG0/Trinity/results/latency_cdf/trinity_github_lookup_micro");
@@ -199,7 +229,8 @@ int main() {
     no_dynamic_sizing = true;
     total_points_count = 200000000; 
     skip_size = 700000000 - total_points_count;
-
+    max_tree_node = 512;
+    
     bitmap::CompactPtrVector tmp_ptr_vect(total_points_count);
     p_key_to_treeblock_compact = &tmp_ptr_vect;
 

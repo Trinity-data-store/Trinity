@@ -32,8 +32,10 @@ using namespace apache::thrift::server;
 level_t max_depth = 32;
 level_t trie_depth = 6;
 const preorder_t max_tree_node = 512;
-const dimension_t DIMENSION = 15;
+const dimension_t DIMENSION = 10;
 const int shard_num = 20;
+
+#define SERVER_LATENCY
 
 class MDTrieHandler : public MDTrieShardIf {
 public:
@@ -172,12 +174,41 @@ public:
       leaf_point.set_coordinate(i, point[i]);
     }
 
+
     mdtrie_->insert_trie(&leaf_point, inserted_points_, p_key_to_treeblock_compact_);
+
+    
+    inserted_points_ ++;
+
+    for (const auto &coordinate : point) outfile_ << coordinate << ",";
+    outfile_ << std::endl;
+    return inserted_points_;
+  }
+
+  int32_t insert_for_latency(const std::vector<int32_t> & point, const int32_t primary_key){
+
+    #ifdef SERVER_LATENCY
+    TimeStamp start = GetTimestamp();
+    #endif
+
+    data_point<DIMENSION> leaf_point;
+
+    for (uint8_t i = 0; i <= DIMENSION ; i++) {
+      leaf_point.set_coordinate(i, point[i]);
+    }
+
+
+    mdtrie_->insert_trie(&leaf_point, inserted_points_, p_key_to_treeblock_compact_);
+
+    
     inserted_points_ ++;
 
     for (const auto &coordinate : point) outfile_ << coordinate << ",";
     outfile_ << std::endl;
 
+    #ifdef SERVER_LATENCY
+    insert_latency_list_.push_back(GetTimestamp() - start);
+    #endif
     return inserted_points_;
   }
 
@@ -200,13 +231,21 @@ public:
   void primary_key_lookup(std::vector<int32_t> & _return, const int32_t primary_key){
 
     // std::cout << primary_key << "," << inserted_points_  << std::endl;
+    #ifdef SERVER_LATENCY
+    TimeStamp start = GetTimestamp();
+    #endif
+
     std::vector<morton_t> node_path_from_primary(max_depth + 1);
     tree_block<DIMENSION> *t_ptr = (tree_block<DIMENSION> *) (p_key_to_treeblock_compact_->At(primary_key % inserted_points_));
+
 
     morton_t parent_symbol_from_primary = t_ptr->get_node_path_primary_key(primary_key % inserted_points_, node_path_from_primary);
     node_path_from_primary[max_depth - 1] = parent_symbol_from_primary;
 
-    _return =  t_ptr->node_path_to_coordinates_vect(node_path_from_primary, DIMENSION);  
+    _return =  t_ptr->node_path_to_coordinates_vect(node_path_from_primary, DIMENSION); 
+    #ifdef SERVER_LATENCY
+    lookup_latency_list_.push_back(GetTimestamp() - start);
+    #endif 
   }
 
   void primary_key_lookup_path(std::vector<int32_t> & _return, const int32_t primary_key){
@@ -248,6 +287,14 @@ public:
     return mdtrie_->size(p_key_to_treeblock_compact_) + sizeof(int32_t) * (DIMENSION + 1) * backup_points_.size();
   }
 
+  void get_insert_latency(std::vector<int32_t> &_return){
+    _return = insert_latency_list_;
+  }
+
+  void get_lookup_latency(std::vector<int32_t> &_return){
+    _return = lookup_latency_list_;
+  }
+
 protected:
 
   md_trie<DIMENSION> *mdtrie_; 
@@ -258,6 +305,10 @@ protected:
   ofstream outfile_;
   // std::queue<std::vector<int32_t> lookup_cache_;
   // std::vector<std::vector<int32_t> lookup_cache;
+  #ifdef SERVER_LATENCY
+  std::vector<int32_t> insert_latency_list_;
+  std::vector<int32_t> lookup_latency_list_;
+  #endif
 };
 
 class MDTrieCloneFactory : virtual public MDTrieShardIfFactory {
