@@ -21,7 +21,7 @@ typedef uint32_t preorder_t;
 typedef uint32_t n_leaves_t;
 typedef uint64_t node_pos_t;
 typedef uint8_t level_t;
-typedef uint16_t morton_t;
+typedef uint64_t morton_t;
 typedef uint64_t dimension_t;
 typedef uint64_t point_t;
 
@@ -118,6 +118,9 @@ bool REUSE_RANGE_SEARCH_CHILD = true;
 int current_dataset_idx = 0;
 int num_treeblock_expand = 0;
 int lookup_scanned_nodes = 0;
+
+#define COLLAPSED_NODE_EXP
+
 
 void create_level_to_num_children(std::vector<level_t> bit_widths, std::vector<level_t> start_bits, level_t max_level){
 

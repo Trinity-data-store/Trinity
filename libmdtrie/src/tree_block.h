@@ -561,7 +561,11 @@ public:
                 shifted = true;
                 morton_t total_bits_to_shift = 0;
                 for (level_t i = level + 1; i < max_depth_; i++) {
+                    #ifdef COLLAPSED_NODE_EXP
+                    total_bits_to_shift += (1 << level_to_num_children[i]); 
+                    #else
                     total_bits_to_shift += level_to_num_children[i];    // Compressed Node Representation
+                    #endif
                 }
 
                 dfuds_->shift_backward(node, node_pos, total_bits_to_shift, max_depth_ - level - 1);
@@ -578,7 +582,11 @@ public:
 
                 if (!shifted)
                 {
+                    #ifdef COLLAPSED_NODE_EXP
+                    dfuds_->ClearWidth(from_node_pos, (1 << level_to_num_children[current_level]), true);
+                    #else
                     dfuds_->ClearWidth(from_node_pos, level_to_num_children[current_level], true);
+                    #endif
                     dfuds_->ClearWidth(from_node, 1, false);
                 }
                 morton_t next_symbol = leaf_point->leaf_to_symbol(current_level);
@@ -603,9 +611,13 @@ public:
         } 
         else if (num_nodes_ + (max_depth_ - level) - 1 <= max_tree_nodes) 
         {
-            uint64_t total_extra_bits = 0;
+            uint64_t total_extra_bits = 0; 
             for (unsigned int i = level; i < max_depth_; i++){
+                #ifdef COLLAPSED_NODE_EXP
+                total_extra_bits += (1 << level_to_num_children[i]);
+                #else
                 total_extra_bits += level_to_num_children[i];
+                #endif
             }
 
             dfuds_->keep_bits(total_nodes_bits_, true);

@@ -4,7 +4,7 @@
 # done
 
 # i=10
-# ssh -o StrictHostKeyChecking=no -i /proj/trinity-PG0/Trinity/scripts/key -l Ziming 10.10.1.$(($i + 2)) 'asinfo -v "truncate:namespace=macro_bench;set=nyc_taxi_macro"'
+# ssh -o StrictHostKeyChecking=no -i /proj/trinity-PG0/Trinity/scripts/key -l Ziming 10.10.1.$(($i + 2)) 'asinfo -v "truncate:namespace=macro_bench;set=github_macro"'
 
 # sleep 10
 

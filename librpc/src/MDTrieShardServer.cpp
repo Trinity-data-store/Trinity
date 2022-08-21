@@ -32,7 +32,7 @@ using namespace apache::thrift::server;
 level_t max_depth = 32;
 level_t trie_depth = 6;
 const preorder_t max_tree_node = 512;
-const dimension_t DIMENSION = 10;
+const dimension_t DIMENSION = 9;
 const int shard_num = 20;
 
 #define SERVER_LATENCY

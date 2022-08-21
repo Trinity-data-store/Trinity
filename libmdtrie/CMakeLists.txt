@@ -43,11 +43,30 @@ add_executable(github_bench
 add_executable(tpch_bench
         bench/tpch_bench.cpp)
 
-add_executable(tpch_bench_sensitivity
-        bench/tpch_bench_sensitivity.cpp)
+add_executable(tpch_bench_dataset_sensitivity
+        bench/tpch_bench_dataset_sensitivity.cpp)
 
+add_executable(tpch_bench_query_selectivity
+        bench/tpch_bench_query_selectivity.cpp)
+
+add_executable(tpch_bench_dimension_sensitivity
+        bench/tpch_bench_dimension_sensitivity.cpp)
+
+add_executable(tpch_optimization
+        bench/tpch_optimization.cpp)
+
+add_executable(github_optimization
+        bench/github_optimization.cpp)
+
+add_executable(nyc_optimization
+        bench/nyc_optimization.cpp)
 
 target_link_libraries(nyc_bench ${MDTRIE_LIBS})
 target_link_libraries(github_bench ${MDTRIE_LIBS})
 target_link_libraries(tpch_bench ${MDTRIE_LIBS})
-target_link_libraries(tpch_bench_sensitivity ${MDTRIE_LIBS})
+target_link_libraries(tpch_bench_dataset_sensitivity ${MDTRIE_LIBS})
+target_link_libraries(tpch_bench_query_selectivity ${MDTRIE_LIBS})
+target_link_libraries(tpch_bench_dimension_sensitivity ${MDTRIE_LIBS})
+target_link_libraries(tpch_optimization ${MDTRIE_LIBS})
+target_link_libraries(github_optimization ${MDTRIE_LIBS})
+target_link_libraries(nyc_optimization ${MDTRIE_LIBS})

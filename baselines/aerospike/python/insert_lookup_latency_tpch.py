@@ -16,7 +16,9 @@ import fcntl
 config = {
   'hosts': [ ('10.10.1.12', 3000), ('10.10.1.13', 3000), ('10.10.1.14', 3000), ('10.10.1.15', 3000), ('10.10.1.16', 3000)]
 }
-
+# config = {
+#   'hosts': [ ('10.10.1.13', 3000)]
+# }
 
 write_policies = {'total_timeout': 4000, 'max_retries': 0}
 read_policies = {'total_timeout': 3000, 'max_retries': 1}
