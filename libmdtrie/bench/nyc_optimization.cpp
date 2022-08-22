@@ -18,8 +18,8 @@ point_t points_to_insert = 30000;
 point_t points_for_warmup = points_to_insert / 5;
 std::string identification_string;
 
-#define NO_MORTON_CODE_OPT
-// #define GENERALIZE_MORTON_CODE_EXP
+// #define NO_MORTON_CODE_OPT
+#define GENERALIZE_MORTON_CODE_EXP
 // #define STAGGER_MORTON_CODE_EXP
 
 void flush_vector_to_file(std::vector<TimeStamp> vect, std::string filename){
@@ -190,6 +190,10 @@ int main() {
     std::vector<level_t> start_bits = {0, 0, 0, 0, 0 + 18, 0 + 18, 0, 0, 0, 0 + 18, 0 + 17, 0, 0, 0 + 20, 0}; 
     total_points_count = NYC_SIZE; 
 
+    trie_depth = 6;
+    max_depth = 28;
+    no_dynamic_sizing = true;
+
     #ifdef NO_MORTON_CODE_OPT
     bit_widths = {28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28}; 
     start_bits = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}; 
@@ -202,9 +206,11 @@ int main() {
     #endif
 
     #ifdef GENERALIZE_MORTON_CODE_EXP
-    bit_widths = {18, 20, 10, 10, 10, 10, 8, 28, 25, 10, 11, 22, 25, 8, 25}; 
-    start_bits = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}; 
-    identification_string = "generalize_morton_code_exp";
+    bit_widths = {18, 20, 10, 10, 10, 10, 8, 28, 28, 14, 14, 26, 28, 12, 28}; // 15 Dimensions;
+    start_bits = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}; // 15 Dimensions;
+    identification_string = "generalize_morton_code_exp_new";
+    max_depth = 28;
+
     #endif
 
     // [events_count, authors_count, forks, stars, issues, pushes, pulls, downloads, start_date, end_date]
@@ -212,7 +218,7 @@ int main() {
 
     #ifdef STAGGER_MORTON_CODE_EXP
     bit_widths = {18, 20, 10, 10, 10 + 18, 10 + 18, 8, 28, 25, 10 + 18, 11 + 17, 22, 25, 8 + 20, 25}; 
-    start_bits = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}; 
+    start_bits = {0, 0, 0, 0, 0 + 18, 0 + 18, 0, 0, 0, 0 + 18, 0 + 17, 0, 0, 0 + 20, 0}; 
     identification_string = "stagger_morton_code_exp";
     #endif 
 
@@ -221,10 +227,6 @@ int main() {
     start_bits = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}; 
     identification_string = "collapsed_node_exp";
     #endif
-
-    trie_depth = 6;
-    max_depth = 28;
-    no_dynamic_sizing = true;
 
     #ifdef COLLAPSED_NODE_EXP_REDUCED
     identification_string = "collapsed_node_exp_reduced";
