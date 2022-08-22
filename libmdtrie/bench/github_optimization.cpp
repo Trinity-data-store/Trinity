@@ -19,8 +19,8 @@ point_t skip_size = 0;
 std::string identification_string;
 
 #define NO_MORTON_CODE_OPT
-// #define GENERALIZE_MORTON_CODE_EXP
-// #define STAGGER_MORTON_CODE_EXP
+#define GENERALIZE_MORTON_CODE_EXP
+#define STAGGER_MORTON_CODE_EXP
 
 void flush_vector_to_file(std::vector<TimeStamp> vect, std::string filename){
     std::ofstream outFile(filename);
@@ -64,13 +64,13 @@ void run_bench(){
         diff += latency;
         n_points ++;
 
-        if (n_points == GITHUB_SIZE)
+        if (n_points == total_points_count)
             break;
 
-        if (n_points > GITHUB_SIZE - points_to_insert)
+        if (n_points > total_points_count - points_to_insert)
             insertion_latency_vect.push_back(latency);
 
-        if (n_points % (GITHUB_SIZE / 50) == 0)
+        if (n_points % (total_points_count / 50) == 0)
             std::cout << "n_points: "  << n_points << std::endl;
 
         num_treeblock_expand = 0;
@@ -200,20 +200,24 @@ int main() {
     bit_widths = {24, 24, 24, 24, 24, 24, 24, 24, 24, 24};
     start_bits = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
     identification_string = "no_morton_code_opt";
+
+
     #endif
 
     #ifdef GENERALIZE_MORTON_CODE_EXP
-    bit_widths = {24, 24, 21, 21, 21, 24, 24, 14, 18, 18};
+    bit_widths = {24, 24, 24, 24, 24, 24, 24, 16, 24, 24}; 
     start_bits = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
     identification_string = "generalize_morton_code_exp";
+
+
     #endif
 
     // [events_count, authors_count, forks, stars, issues, pushes, pulls, downloads, start_date, end_date]
     // [start_date, end_date, stars, forks, events_count, issues]
 
     #ifdef STAGGER_MORTON_CODE_EXP
-    bit_widths = {24, 24, 21, 21, 21, 24, 24, 24, 18, 18};
-    start_bits = {0, 0, 0, 0, 0, 0, 0, 10, 0, 0};
+    bit_widths = {24, 24, 24, 24, 24, 24, 24, 16 + 8, 24, 24}; 
+    start_bits = {0, 0, 0, 0, 0, 0, 0, 8, 0, 0};
     identification_string = "stagger_morton_code_exp";
     #endif 
 
@@ -226,9 +230,14 @@ int main() {
     trie_depth = 6;
     max_depth = 24;
     no_dynamic_sizing = true;
-    total_points_count = 200000000; 
+    total_points_count = GITHUB_SIZE; 
     skip_size = 700000000 - total_points_count;
     max_tree_node = 512;
+
+    #ifdef COLLAPSED_NODE_EXP_REDUCED
+    identification_string = "collapsed_node_exp_reduced";
+    total_points_count /= 50;
+    #endif
 
     std::cout << "identification_string: " << identification_string << std::endl;
 

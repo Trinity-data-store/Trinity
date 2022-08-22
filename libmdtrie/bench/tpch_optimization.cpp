@@ -59,13 +59,13 @@ void run_bench(){
         diff += latency;
         n_points ++;
 
-        if (n_points == TPCH_SIZE)
+        if (n_points == total_points_count)
             break;
 
-        if (n_points > TPCH_SIZE - points_to_insert)
+        if (n_points > total_points_count - points_to_insert)
             insertion_latency_vect.push_back(latency);
 
-        if (n_points % (TPCH_SIZE / 50) == 0)
+        if (n_points % (total_points_count / 50) == 0)
             std::cout << "n_points: "  << n_points << std::endl;
     }   
     std::cout << "Insertion Latency: " << (float) diff / n_points << std::endl; 
@@ -210,7 +210,12 @@ int main() {
     trie_depth = 6;
     max_depth = 32;
     no_dynamic_sizing = true;
-    total_points_count = 250000000; 
+    total_points_count = TPCH_SIZE; 
+
+    #ifdef COLLAPSED_NODE_EXP_REDUCED
+    identification_string = "collapsed_node_exp_reduced";
+    total_points_count /= 50;
+    #endif
 
     std::cout << "identification_string: " << identification_string << std::endl;
     bitmap::CompactPtrVector tmp_ptr_vect(total_points_count);

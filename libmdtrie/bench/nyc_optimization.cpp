@@ -19,8 +19,8 @@ point_t points_for_warmup = points_to_insert / 5;
 std::string identification_string;
 
 #define NO_MORTON_CODE_OPT
-#define GENERALIZE_MORTON_CODE_EXP
-#define STAGGER_MORTON_CODE_EXP
+// #define GENERALIZE_MORTON_CODE_EXP
+// #define STAGGER_MORTON_CODE_EXP
 
 void flush_vector_to_file(std::vector<TimeStamp> vect, std::string filename){
     std::ofstream outFile(filename);
@@ -59,13 +59,13 @@ void run_bench(){
         diff += latency;
         n_points ++;
 
-        if (n_points == NYC_SIZE)
+        if (n_points == total_points_count)
             break;
 
-        if (n_points > NYC_SIZE - points_to_insert)
+        if (n_points > total_points_count - points_to_insert)
             insertion_latency_vect.push_back(latency);
 
-        if (n_points % (NYC_SIZE / 50) == 0)
+        if (n_points % (total_points_count / 50) == 0)
             std::cout << "n_points: "  << n_points << std::endl;
     }    
 
@@ -188,11 +188,17 @@ int main() {
 
     std::vector<level_t> bit_widths = {18, 20, 10, 10, 10 + 18, 10 + 18, 8, 28, 25, 10 + 18, 11 + 17, 22, 25, 8 + 20, 25}; 
     std::vector<level_t> start_bits = {0, 0, 0, 0, 0 + 18, 0 + 18, 0, 0, 0, 0 + 18, 0 + 17, 0, 0, 0 + 20, 0}; 
+    total_points_count = NYC_SIZE; 
 
     #ifdef NO_MORTON_CODE_OPT
     bit_widths = {28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28}; 
     start_bits = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}; 
     identification_string = "no_morton_code_opt";
+
+
+    total_points_count /= 50;
+    identification_string = "no_morton_code_opt_reduced";
+
     #endif
 
     #ifdef GENERALIZE_MORTON_CODE_EXP
@@ -219,7 +225,11 @@ int main() {
     trie_depth = 6;
     max_depth = 28;
     no_dynamic_sizing = true;
-    total_points_count = 200000000; 
+
+    #ifdef COLLAPSED_NODE_EXP_REDUCED
+    identification_string = "collapsed_node_exp_reduced";
+    total_points_count /= 50;
+    #endif
 
     std::cout << "identification_string: " << identification_string << std::endl;
 

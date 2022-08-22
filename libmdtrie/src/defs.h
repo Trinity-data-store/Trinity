@@ -17,8 +17,8 @@
 #include <fcntl.h>
 #include <unistd.h>
 
-typedef uint32_t preorder_t;
-typedef uint32_t n_leaves_t;
+typedef uint64_t preorder_t;
+typedef uint64_t n_leaves_t;
 typedef uint64_t node_pos_t;
 typedef uint8_t level_t;
 typedef uint64_t morton_t;
@@ -119,7 +119,8 @@ int current_dataset_idx = 0;
 int num_treeblock_expand = 0;
 int lookup_scanned_nodes = 0;
 
-#define COLLAPSED_NODE_EXP
+// #define COLLAPSED_NODE_EXP
+// #define COLLAPSED_NODE_EXP_REDUCED
 
 
 void create_level_to_num_children(std::vector<level_t> bit_widths, std::vector<level_t> start_bits, level_t max_level){
