@@ -110,8 +110,8 @@ void run_bench(){
         Range Search
     */
 
-    char *infile_address = (char *)"/proj/trinity-PG0/Trinity/queries/tpch/tpch_query_converted";
-    std::string outfile_address = "/proj/trinity-PG0/Trinity/results/sensitivity_optimization/tpch_search_" + identification_string;
+    std::string infile_address = "/proj/trinity-PG0/Trinity/results/sensitivity_dimension/search_base_9";
+    std::string outfile_address = "/proj/trinity-PG0/Trinity/results/sensitivity_optimization/tpch_search_" + identification_string + "_random_query";
 
     // [QUANTITY, EXTENDEDPRICE, DISCOUNT, TAX, SHIPDATE, COMMITDATE, RECEIPTDATE, TOTALPRICE, ORDERDATE]
     std::vector<int32_t> max_values = {50, 10494950, 10, 8, 19981201, 19981031, 19981231, 58063825, 19980802};
@@ -120,53 +120,39 @@ void run_bench(){
     std::ifstream file(infile_address);
     std::ofstream outfile(outfile_address);
 
-    for (int i = 0; i < 1000; i ++) {
+    int i = 0;
+
+    while (i < 1000) {
 
         std::vector<int32_t> found_points;
         data_point<DIMENSION> start_range;
         data_point<DIMENSION> end_range;
 
-        for (dimension_t i = 0; i < DIMENSION; i++){
-            start_range.set_coordinate(i, min_values[i]);
-            end_range.set_coordinate(i, max_values[i]);
-        }
-
         std::string line;
         std::getline(file, line);
 
         std::stringstream ss(line);
-
-        while (ss.good()) {
-
-            std::string index_str;
-            std::getline(ss, index_str, ',');
-
-            std::string start_range_str;
-            std::getline(ss, start_range_str, ',');
-            std::string end_range_str;
-            std::getline(ss, end_range_str, ',');
-
-            // std::cout << start_range_str << " " << end_range_str << std::endl;
-            if (start_range_str != "-1") {
-                start_range.set_coordinate(std::stoul(index_str), std::stoul(start_range_str));
-            }
-            if (end_range_str != "-1") {
-                end_range.set_coordinate(std::stoul(index_str), std::stoul(end_range_str));
-            }
+        for (dimension_t j = 0; j < 9; j++){
+            std::string str;
+            std::getline(ss, str, ',');
+            if (j < DIMENSION)
+                start_range.set_coordinate(j, static_cast<int32_t>(std::stoul(str)));
         }
-        
-        for (dimension_t i = 0; i < DIMENSION; i++){
-            if (i >= 4 && i != 7) {
-                start_range.set_coordinate(i, start_range.get_coordinate(i) - 19000000);
-                end_range.set_coordinate(i, end_range.get_coordinate(i) - 19000000);
-            }
+        for (dimension_t j = 0; j < 9; j++){
+            std::string str;
+            std::getline(ss, str, ',');
+            if (j < DIMENSION)
+                end_range.set_coordinate(j, static_cast<int32_t>(std::stoul(str)));
         }
-        
+
         start = GetTimestamp();
         mdtrie.range_search_trie(&start_range, &end_range, mdtrie.root(), 0, found_points);
         diff = GetTimestamp() - start;
+
         outfile << "Query " << i << " end to end latency (ms): " << diff / 1000 << ", found points count: " << found_points.size() / DIMENSION << std::endl;
         found_points.clear();
+        i += 1;
+
     }
 }
 
@@ -214,7 +200,7 @@ int main() {
 
     #ifdef COLLAPSED_NODE_EXP_REDUCED
     identification_string = "collapsed_node_exp_reduced";
-    total_points_count /= 50;
+    // total_points_count /= 5;
     #endif
 
     std::cout << "identification_string: " << identification_string << std::endl;

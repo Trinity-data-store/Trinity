@@ -138,7 +138,9 @@ void create_level_to_num_children(std::vector<level_t> bit_widths, std::vector<l
                 dimension_left --;
         }
         level_to_num_children[level] = dimension_left;
+        // std::cout << "level: " << level << ", dimension: " << dimension_left << std::endl;
     }
+    // exit(0);
 }
 
 #endif //MD_TRIE_DEFS_H

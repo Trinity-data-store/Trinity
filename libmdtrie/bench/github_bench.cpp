@@ -7,7 +7,7 @@
 #include <fstream>
 #include "../../librpc/src/TrinityParseFIle.h"
 
-#define LATENCY_BENCH
+// #define LATENCY_BENCH
 // #define NEW_LATENCY_BENCH
 #define GITHUB_SIZE 200000000 // 200M
 
@@ -34,7 +34,7 @@ void run_bench(){
     md_trie<DIMENSION> mdtrie(max_depth, trie_depth, max_tree_node);
     data_point<DIMENSION> leaf_point;
 
-    std::ifstream infile("/mntData2/github/github_events_processed_9.csv");
+    std::ifstream infile("/mntData/github_events_processed_9.csv");
     std::string line;
     point_t n_points = 0;
     std::vector<TimeStamp> insertion_latency_vect;
@@ -87,12 +87,12 @@ void run_bench(){
         if (n_points % (total_points_count / 50) == 0)
             std::cout << "n_points: "  << n_points << std::endl;
 
-        if (latency > 1000) {
-            for (const auto c : vect) {
-                std::cout << c << ",";
-            }
-            std::cout << "latency (us): " << latency << ", num treeblock expansion: " << num_treeblock_expand << std::endl;
-        }
+        // if (latency > 1000) {
+        //     for (const auto c : vect) {
+        //         std::cout << c << ",";
+        //     }
+        //     std::cout << "latency (us): " << latency << ", num treeblock expansion: " << num_treeblock_expand << std::endl;
+        // }
         num_treeblock_expand = 0;
     }    
 
@@ -127,12 +127,12 @@ void run_bench(){
         if (i > points_for_warmup && i <= points_to_insert)
             lookup_latency_vect.push_back(temp_diff);
 
-        if (temp_diff > 200) {
-            for (dimension_t d = 0; d < DIMENSION; d++) {
-                std::cout << coordinates->get_coordinate(d) << ",";
-            }
-            std::cout << "latency (us): " << temp_diff << ", lookup_scanned_nodes: " << lookup_scanned_nodes << std::endl;
-        }
+        // if (temp_diff > 200) {
+        //     for (dimension_t d = 0; d < DIMENSION; d++) {
+        //         std::cout << coordinates->get_coordinate(d) << ",";
+        //     }
+        //     std::cout << "latency (us): " << temp_diff << ", lookup_scanned_nodes: " << lookup_scanned_nodes << std::endl;
+        // }
         lookup_scanned_nodes = 0;
     }
     std::cout << "Done! " << "Lookup Latency per point: " << (float) cumulative / points_to_insert << std::endl;

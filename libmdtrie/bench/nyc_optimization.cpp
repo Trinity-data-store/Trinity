@@ -9,6 +9,7 @@
 #include "../../librpc/src/TrinityParseFIle.h"
 
 #define NYC_SIZE 200000000 // 200M
+// #define GENERATE_QUERY 
 
 const dimension_t DIMENSION = 15;
 level_t max_depth = 32;
@@ -19,13 +20,20 @@ point_t points_for_warmup = points_to_insert / 5;
 std::string identification_string;
 
 // #define NO_MORTON_CODE_OPT
-#define GENERALIZE_MORTON_CODE_EXP
-// #define STAGGER_MORTON_CODE_EXP
+// #define GENERALIZE_MORTON_CODE_EXP
+#define STAGGER_MORTON_CODE_EXP
+// #define OLD_EXP
 
 void flush_vector_to_file(std::vector<TimeStamp> vect, std::string filename){
     std::ofstream outFile(filename);
     for (const auto &e : vect) outFile << std::to_string(e) << "\n";
 }
+
+#ifdef GENERATE_QUERY
+int gen_rand(int start, int end) {
+    return start + ( std::rand() % ( end - start + 1 ) );
+}
+#endif
 
 void run_bench(){
 
@@ -72,9 +80,12 @@ void run_bench(){
     std::cout << "Insertion Latency: " << (float) diff / n_points << std::endl;
     std::cout << "mdtrie storage: " << mdtrie.size(p_key_to_treeblock_compact) << std::endl;
     infile.close();
+
+    #ifndef GENERATE_QUERY
     std::ofstream out_storage("/proj/trinity-PG0/Trinity/results/sensitivity_optimization/nyc_storage_" + identification_string);
     out_storage << "mdtrie storage: " << mdtrie.size(p_key_to_treeblock_compact) << std::endl;
     flush_vector_to_file(insertion_latency_vect, "/proj/trinity-PG0/Trinity/results/sensitivity_optimization/nyc_insert_" + identification_string);
+    #endif
 
     /**
      * Point Lookup
@@ -103,64 +114,49 @@ void run_bench(){
             lookup_latency_vect.push_back(temp_diff);
     }
     std::cout << "Done! " << "Lookup Latency per point: " << (float) cumulative / points_to_insert << std::endl;
+
+    #ifndef GENERATE_QUERY
     flush_vector_to_file(lookup_latency_vect, "/proj/trinity-PG0/Trinity/results/sensitivity_optimization/nyc_lookup_" + identification_string);
+    #endif
 
     /** 
         Range Search
     */
     
-    char *infile_address = (char *)"/proj/trinity-PG0/Trinity/queries/nyc/nyc_query_new_converted";
-    std::string outfile_address = "/proj/trinity-PG0/Trinity/results/sensitivity_optimization/nyc_search_" + identification_string;
+    std::string infile_address = "/proj/trinity-PG0/Trinity/results/sensitivity_optimization/nyc_search_base_15_dup";
+    std::string outfile_address = "/proj/trinity-PG0/Trinity/results/sensitivity_optimization/nyc_search_" + identification_string + "_random_query_dup";
 
     std::vector<int32_t> max_values = {20160630, 20221220, 899, 898, 899, 898, 255, 198623000, 21474808, 1000, 1312,  3950589, 21474836, 138, 21474830};
     std::vector<int32_t> min_values = {20090101, 19700101, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 
+    std::string search_outfile_address = "/proj/trinity-PG0/Trinity/results/sensitivity_optimization/nyc_search_base_" + std::to_string(DIMENSION);
+    std::ofstream search_outfile(search_outfile_address, std::ios_base::app);
+
     std::ifstream file(infile_address);
     std::ofstream outfile(outfile_address);
 
-    for (int i = 0; i < 1000; i ++) {
+
+    int i = 0;
+    while (i < 1000) {
+
 
         std::vector<int32_t> found_points;
         data_point<DIMENSION> start_range;
         data_point<DIMENSION> end_range;
 
-        for (dimension_t i = 0; i < DIMENSION; i++){
-            start_range.set_coordinate(i, min_values[i]);
-            end_range.set_coordinate(i, max_values[i]);
-        }
+        #ifdef GENERATE_QUERY
+        std::srand(std::time(nullptr));
 
-        std::string line;
-        std::getline(file, line);
+        for (dimension_t j = 0; j < DIMENSION; j++){
+            if (j >= 2)
+                start_range.set_coordinate(j, gen_rand(min_values[j], 5));
+            else
+                start_range.set_coordinate(j, gen_rand(min_values[j], max_values[j]));
 
-        std::stringstream ss(line);
-
-        while (ss.good()) {
-
-            std::string index_str;
-            std::getline(ss, index_str, ',');
-
-            std::string start_range_str;
-            std::getline(ss, start_range_str, ',');
-            std::string end_range_str;
-            std::getline(ss, end_range_str, ',');
-
-            int index = std::stoul(index_str);
-            if (start_range_str != "-1") {
-                if (index >= 2 && index <= 5) {
-                    float num_float = std::stof(start_range_str);
-                    start_range.set_coordinate(index, static_cast<int32_t>(num_float * 10));                    
-                }
-                else 
-                    start_range.set_coordinate(index, std::stoul(start_range_str));
-            }
-            if (end_range_str != "-1") {
-                if (index >= 2 && index <= 5) {
-                    float num_float = std::stof(end_range_str);
-                    end_range.set_coordinate(index, static_cast<int32_t>(num_float * 10));                    
-                }
-                else
-                    end_range.set_coordinate(index, std::stoul(end_range_str));
-            }
+            // if (j >= 2)
+            //     end_range.set_coordinate(j, gen_rand(start_range.get_coordinate(j), 1000));
+            // else
+            end_range.set_coordinate(j, gen_rand(start_range.get_coordinate(j), max_values[j]));
         }
 
         start_range.set_coordinate(0, start_range.get_coordinate(0) - 20090000);
@@ -168,11 +164,63 @@ void run_bench(){
         end_range.set_coordinate(0, end_range.get_coordinate(0) - 20090000);
         end_range.set_coordinate(1, end_range.get_coordinate(1) - 19700000);
 
+        #else
+
+        std::string line;
+        std::getline(file, line);
+        std::stringstream ss(line);
+        for (dimension_t j = 0; j < DIMENSION; j++){
+            std::string str;
+            std::getline(ss, str, ',');
+            if (j < DIMENSION)
+                start_range.set_coordinate(j, static_cast<int32_t>(std::stoul(str)));
+        }
+        for (dimension_t j = 0; j < DIMENSION; j++){
+            std::string str;
+            std::getline(ss, str, ',');
+            if (j < DIMENSION)
+                end_range.set_coordinate(j, static_cast<int32_t>(std::stoul(str)));
+        }
+        #endif
+
         start = GetTimestamp();
         mdtrie.range_search_trie(&start_range, &end_range, mdtrie.root(), 0, found_points);
         diff = GetTimestamp() - start;
+
+        #ifdef GENERATE_QUERY
+        /*
+        std::cout << "i: " << i << ", found_size: " << found_points.size() << std::endl;
+        for (dimension_t j = 0; j < DIMENSION; j++) {
+            std::cout << start_range.get_coordinate(j) << ",";
+        }
+        for (dimension_t j = 0; j < DIMENSION; j++) {
+            std::cout << end_range.get_coordinate(j) << ",";
+        }
+        std::cout << std::endl;
+        */
+        #endif
+
+
+        #ifdef GENERATE_QUERY
+        if (found_points.size() / DIMENSION < 1000 || found_points.size() / DIMENSION > 2000)
+            continue;
+        #endif
+
+        #ifdef GENERATE_QUERY
+        for (dimension_t j = 0; j < DIMENSION; j++) {
+            search_outfile << start_range.get_coordinate(j) << ",";
+        }
+        for (dimension_t j = 0; j < DIMENSION; j++) {
+            search_outfile << end_range.get_coordinate(j) << ",";
+        }
+        search_outfile << std::endl;
+        #else
+
         outfile << "Query " << i << " end to end latency (ms): " << diff / 1000 << ", found points count: " << found_points.size() / DIMENSION << std::endl;
+        #endif
+
         found_points.clear();
+        i += 1;
     }
 }
 
@@ -206,7 +254,15 @@ int main() {
     #endif
 
     #ifdef GENERALIZE_MORTON_CODE_EXP
-    bit_widths = {18, 20, 10, 10, 10, 10, 8, 28, 28, 14, 14, 26, 28, 12, 28}; // 15 Dimensions;
+    bit_widths = {18, 20, 10, 10, 10, 10, 8, 28, 25, 10, 11, 22, 25, 8, 25}; // 15 Dimensions;
+    start_bits = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}; // 15 Dimensions;
+    identification_string = "generalize_morton_code_exp";
+    max_depth = 28;
+
+    #endif
+
+    #ifdef OLD_EXP
+    bit_widths = {18, 20, 10, 10, 10, 10, 10, 28, 28, 14, 14, 28, 28, 14, 28}; // 15 Dimensions;
     start_bits = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}; // 15 Dimensions;
     identification_string = "generalize_morton_code_exp_new";
     max_depth = 28;
@@ -217,8 +273,8 @@ int main() {
     // [start_date, end_date, stars, forks, events_count, issues]
 
     #ifdef STAGGER_MORTON_CODE_EXP
-    bit_widths = {18, 20, 10, 10, 10 + 18, 10 + 18, 8, 28, 25, 10 + 18, 11 + 17, 22, 25, 8 + 20, 25}; 
-    start_bits = {0, 0, 0, 0, 0 + 18, 0 + 18, 0, 0, 0, 0 + 18, 0 + 17, 0, 0, 0 + 20, 0}; 
+    bit_widths = {18, 20, 10 + 18, 10 + 18, 10 + 18, 10 + 18, 8, 28, 25, 10, 11, 22, 25, 8, 25}; // 15 Dimensions;
+    start_bits = {0, 0, 0 + 18, 0 + 18, 0 + 18, 0 + 18, 0, 0, 0, 0, 0, 0, 0, 0, 0}; // 15 Dimensions;
     identification_string = "stagger_morton_code_exp";
     #endif 
 

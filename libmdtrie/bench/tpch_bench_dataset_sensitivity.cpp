@@ -113,7 +113,8 @@ void run_bench(){
     return;
     #endif
 
-    char *infile_address = (char *)"/proj/trinity-PG0/Trinity/queries/tpch/tpch_query_converted";
+    // char *infile_address = (char *)"/proj/trinity-PG0/Trinity/queries/tpch/tpch_query_converted";
+    char *infile_address = (char *)"/proj/trinity-PG0/Trinity/results/sensitivity_dimension/search_base_9";
     std::string outfile_address = "/proj/trinity-PG0/Trinity/results/sensitivity/search_" + std::to_string(scale_factor);
 
     // [QUANTITY, EXTENDEDPRICE, DISCOUNT, TAX, SHIPDATE, COMMITDATE, RECEIPTDATE, TOTALPRICE, ORDERDATE]
@@ -123,7 +124,7 @@ void run_bench(){
     std::ifstream file(infile_address);
     std::ofstream outfile(outfile_address);
 
-    for (int i = 0; i < 1000; i ++) {
+    for (int i = 0; i < 100; i ++) {
 
         std::vector<int32_t> found_points;
         data_point<DIMENSION> start_range;
@@ -138,33 +139,17 @@ void run_bench(){
         std::getline(file, line);
 
         std::stringstream ss(line);
-
-        while (ss.good()) {
-
-            std::string index_str;
-            std::getline(ss, index_str, ',');
-
-            std::string start_range_str;
-            std::getline(ss, start_range_str, ',');
-            std::string end_range_str;
-            std::getline(ss, end_range_str, ',');
-
-            // std::cout << start_range_str << " " << end_range_str << std::endl;
-            if (start_range_str != "-1") {
-                start_range.set_coordinate(std::stoul(index_str), std::stoul(start_range_str));
-            }
-            if (end_range_str != "-1") {
-                end_range.set_coordinate(std::stoul(index_str), std::stoul(end_range_str));
-            }
+        for (dimension_t j = 0; j < 9; j++){
+            std::string str;
+            std::getline(ss, str, ',');
+            start_range.set_coordinate(j, static_cast<int32_t>(std::stoul(str)));
         }
-        
-        for (dimension_t i = 0; i < DIMENSION; i++){
-            if (i >= 4 && i != 7) {
-                start_range.set_coordinate(i, start_range.get_coordinate(i) - 19000000);
-                end_range.set_coordinate(i, end_range.get_coordinate(i) - 19000000);
-            }
+        for (dimension_t j = 0; j < 9; j++){
+            std::string str;
+            std::getline(ss, str, ',');
+            end_range.set_coordinate(j, static_cast<int32_t>(std::stoul(str)));
         }
-        
+
         start = GetTimestamp();
         mdtrie.range_search_trie(&start_range, &end_range, mdtrie.root(), 0, found_points);
         diff = GetTimestamp() - start;
@@ -189,9 +174,8 @@ int main(int argc, char *argv[]){
     }
 
     std::vector<level_t> bit_widths = {8, 32, 16, 24, 32, 32, 32, 32, 32}; // 9 Dimensions;
-    std::vector<level_t> start_bits = {0, 0, 8, 16, 0, 0, 0, 0, 0}; // 9 Dimensions;
+    std::vector<level_t> start_bits = {8, 32, 16, 24, 20, 20, 20, 32, 20}; // 9 Dimensions;
     
-    bit_widths = {8, 32, 16, 24, 20, 20, 20, 32, 20};
     trie_depth = 6;
     max_depth = 32;
     no_dynamic_sizing = true;

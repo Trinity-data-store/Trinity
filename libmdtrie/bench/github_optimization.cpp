@@ -8,7 +8,7 @@
 #include "../../librpc/src/TrinityParseFIle.h"
 
 #define GITHUB_SIZE 200000000 // 200M
-
+// #define GENERATE_QUERY 
 const dimension_t DIMENSION = 10;
 level_t max_depth = 32;
 level_t trie_depth = 6;
@@ -18,14 +18,20 @@ point_t points_for_warmup = points_to_insert / 5;
 point_t skip_size = 0;
 std::string identification_string;
 
-#define NO_MORTON_CODE_OPT
-#define GENERALIZE_MORTON_CODE_EXP
+// #define NO_MORTON_CODE_OPT
+// #define GENERALIZE_MORTON_CODE_EXP
 #define STAGGER_MORTON_CODE_EXP
 
 void flush_vector_to_file(std::vector<TimeStamp> vect, std::string filename){
     std::ofstream outFile(filename);
     for (const auto &e : vect) outFile << std::to_string(e) << "\n";
 }
+
+#ifdef GENERATE_QUERY
+int gen_rand(int start, int end) {
+    return start + ( std::rand() % ( end - start + 1 ) );
+}
+#endif
 
 void run_bench(){
 
@@ -80,7 +86,7 @@ void run_bench(){
     std::cout << "mdtrie storage: " << mdtrie.size(p_key_to_treeblock_compact) << std::endl;
     std::ofstream out_storage("/proj/trinity-PG0/Trinity/results/sensitivity_optimization/github_storage_" + identification_string);
     out_storage << "mdtrie storage: " << mdtrie.size(p_key_to_treeblock_compact) << std::endl;
-    flush_vector_to_file(insertion_latency_vect, "/proj/trinity-PG0/Trinity/results/sensitivity_optimization/github_insert_" + identification_string);
+    // flush_vector_to_file(insertion_latency_vect, "/proj/trinity-PG0/Trinity/results/sensitivity_optimization/github_insert_" + identification_string);
 
     infile.close();
  
@@ -113,73 +119,90 @@ void run_bench(){
 
     }
     std::cout << "Done! " << "Lookup Latency per point: " << (float) cumulative / points_to_insert << std::endl;
-    flush_vector_to_file(lookup_latency_vect, "/proj/trinity-PG0/Trinity/results/sensitivity_optimization/github_lookup_" + identification_string);
+    // flush_vector_to_file(lookup_latency_vect, "/proj/trinity-PG0/Trinity/results/sensitivity_optimization/github_lookup_" + identification_string);
 
     /** 
         Range Search
     */
 
-    char *infile_address = (char *)"/proj/trinity-PG0/Trinity/queries/github/github_query_new_converted";
-    std::string outfile_address = "/proj/trinity-PG0/Trinity/results/sensitivity_optimization/github_search_" + identification_string;
+    char *infile_address = (char *)"/proj/trinity-PG0/Trinity/results/sensitivity_optimization/github_search_base_10";
+    std::string outfile_address = "/proj/trinity-PG0/Trinity/results/sensitivity_optimization/github_search_" + identification_string + "_random_query";
+    std::string search_outfile_address = "/proj/trinity-PG0/Trinity/results/sensitivity_optimization/github_search_base_" + std::to_string(DIMENSION);
+    std::ofstream search_outfile(search_outfile_address, std::ios_base::app);
 
-    // [QUANTITY, EXTENDEDPRICE, DISCOUNT, TAX, SHIPDATE, COMMITDATE, RECEIPTDATE, TOTALPRICE, ORDERDATE]
+    //   [events_count, authors_count, forks, stars, issues, pushes, pulls, downloads, start_date, end_date]
+
     std::vector<int32_t> max_values = {7451541, 737170, 262926, 354850, 379379, 3097263, 703341, 8745, 20201206, 20201206};
     std::vector<int32_t> min_values = {1, 1, 0, 0, 0, 0, 0, 0, 20110211, 20110211};
 
     std::ifstream file(infile_address);
     std::ofstream outfile(outfile_address);
 
-    for (int i = 0; i < 1000; i ++) {
+    int i = 0;
+    while (i < 1000) {
 
         std::vector<int32_t> found_points;
         data_point<DIMENSION> start_range;
         data_point<DIMENSION> end_range;
 
-        for (dimension_t i = 0; i < DIMENSION; i++){
-            start_range.set_coordinate(i, min_values[i]);
-            end_range.set_coordinate(i, max_values[i]);
+        #ifdef GENERATE_QUERY
+        for (dimension_t j = 0; j < DIMENSION; j++){
+            if (j <= 7)
+                start_range.set_coordinate(j, gen_rand(min_values[j], 10));
+            else
+                start_range.set_coordinate(j, gen_rand(min_values[j], max_values[j]));
+            end_range.set_coordinate(j, gen_rand(start_range.get_coordinate(j), max_values[j]));
         }
+
+        #else
 
         std::string line;
         std::getline(file, line);
 
         std::stringstream ss(line);
-
-        while (ss.good()) {
-
-            std::string index_str;
-            std::getline(ss, index_str, ',');
-
-            std::string start_range_str;
-            std::getline(ss, start_range_str, ',');
-            std::string end_range_str;
-            std::getline(ss, end_range_str, ',');
-
-            // std::cout << start_range_str << " " << end_range_str << std::endl;
-            int index = std::stoul(index_str);
-            if (index > 10)
-                index -= 3;
-
-            if (start_range_str != "-1") {
-                start_range.set_coordinate(index, std::stoul(start_range_str));
-            }
-            if (end_range_str != "-1") {
-                end_range.set_coordinate(index, std::stoul(end_range_str));
-            }
+        for (dimension_t j = 0; j < DIMENSION; j++){
+            std::string str;
+            std::getline(ss, str, ',');
+            start_range.set_coordinate(j, static_cast<int32_t>(std::stoul(str)));
         }
-        
-        for (dimension_t i = 0; i < DIMENSION; i++){
-            if (i >= 8) {
-                start_range.set_coordinate(i, start_range.get_coordinate(i) - 20110000);
-                end_range.set_coordinate(i, end_range.get_coordinate(i) - 20110000);            
-            }
+        for (dimension_t j = 0; j < DIMENSION; j++){
+            std::string str;
+            std::getline(ss, str, ',');
+            end_range.set_coordinate(j, static_cast<int32_t>(std::stoul(str)));
         }
+        #endif
 
         start = GetTimestamp();
         mdtrie.range_search_trie(&start_range, &end_range, mdtrie.root(), 0, found_points);
         diff = GetTimestamp() - start;
+
+        std::cout << "i: " << i << ", " << found_points.size() << std::endl;
+        for (dimension_t j = 0; j < DIMENSION; j++) {
+            std::cout << start_range.get_coordinate(j) << ",";
+        }
+        for (dimension_t j = 0; j < DIMENSION; j++) {
+            std::cout << end_range.get_coordinate(j) << ",";
+        }
+        std::cout << std::endl;
+        
+        #ifdef GENERATE_QUERY
+        if (found_points.size() / DIMENSION < 1000 || found_points.size() / DIMENSION > 2000)
+            continue;
+        #endif
+
+        #ifdef GENERATE_QUERY
+        for (dimension_t j = 0; j < DIMENSION; j++) {
+            search_outfile << start_range.get_coordinate(j) << ",";
+        }
+        for (dimension_t j = 0; j < DIMENSION; j++) {
+            search_outfile << end_range.get_coordinate(j) << ",";
+        }
+        search_outfile << std::endl;
+        #else
         outfile << "Query " << i << " end to end latency (ms): " << diff / 1000 << ", found points count: " << found_points.size() / DIMENSION << std::endl;
+        #endif
         found_points.clear();
+        i += 1;
     }
 }
 
@@ -239,6 +262,7 @@ int main() {
     total_points_count /= 50;
     #endif
 
+    // total_points_count /= 10;
     std::cout << "identification_string: " << identification_string << std::endl;
 
     bitmap::CompactPtrVector tmp_ptr_vect(total_points_count);
