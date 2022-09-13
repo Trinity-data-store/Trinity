@@ -60,6 +60,43 @@ public:
         return result;
     }    
 
+    inline morton_t leaf_to_full_symbol(level_t level) {
+        
+        morton_t result = 0;
+        dimension_t dimension = DIMENSION;
+
+        for (size_t i = 0; i < dimension; i++) 
+        {
+            if (dimension_to_num_bits[i] <= level || level < start_dimension_bits[i])
+                continue;
+
+            level_t offset = dimension_to_num_bits[i] - level - 1;
+            point_t coordinate = coordinates_[i];
+
+            bool bit = 1;
+            result = (result << 1U) + bit;
+        }
+        return result;
+    }    
+
+    uint64_t coordinate_to_raw_morton() {
+
+        uint64_t result = 0;
+
+        for (level_t level = 0; level < 32; level ++)
+        {
+            for (size_t i = 0; i < DIMENSION; i++) 
+            {
+                level_t offset = DIMENSION - level - 1;
+                point_t coordinate = coordinates_[i];
+
+                bool bit = GETBIT(coordinate, offset);
+                result = (result << 1U) + bit;
+            }
+        }
+        return result;
+    }
+
     inline void update_symbol(data_point *end_range, morton_t current_symbol, level_t level) {
         
         dimension_t dimension = DIMENSION;

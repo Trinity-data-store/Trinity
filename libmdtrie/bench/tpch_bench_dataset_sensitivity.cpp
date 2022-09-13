@@ -14,10 +14,16 @@ preorder_t max_tree_node = 512;
 point_t points_to_insert = 30000;
 point_t points_for_warmup = points_to_insert / 5;
 int scale_factor = 1;
+#define FILTER_RANGE_MIN 1000
+#define FILTER_RANGE_MAX 2000
 
 void flush_vector_to_file(std::vector<TimeStamp> vect, std::string filename){
     std::ofstream outFile(filename);
     for (const auto &e : vect) outFile << std::to_string(e) << "\n";
+}
+
+int gen_rand(int start, int end) {
+    return start + ( std::rand() % ( end - start + 1 ) );
 }
 
 void run_bench(){
@@ -26,7 +32,7 @@ void run_bench(){
     md_trie<DIMENSION> mdtrie(max_depth, trie_depth, max_tree_node);
     data_point<DIMENSION> leaf_point;
 
-    std::ifstream infile("/mntData2/tpch/data_300/tpch_processed_1B.csv");
+    std::ifstream infile("/mntData/tpch_processed_1B.csv");
     std::string line;
     point_t n_points = 0;
     std::vector<TimeStamp> insertion_latency_vect;
@@ -63,17 +69,17 @@ void run_bench(){
             break;
         #endif
 
-        // if (n_points % (total_points_count / 50) == 0)
-        //     std::cout << "n_points: "  << n_points << std::endl;
+        if (n_points % (total_points_count / 50) == 0)
+            std::cout << "n_points: "  << n_points << std::endl;
     }    
 
     std::cout << "Insertion Latency: " << (float) diff / n_points << std::endl;
     std::cout << "mdtrie storage: " << mdtrie.size(p_key_to_treeblock_compact) << std::endl;
-    std::ofstream out_storage("/proj/trinity-PG0/Trinity/results/sensitivity/storage_" + std::to_string(scale_factor));
-    out_storage << "mdtrie storage: " << mdtrie.size(p_key_to_treeblock_compact) << std::endl;
+    // std::ofstream out_storage("/proj/trinity-PG0/Trinity/results/sensitivity/storage_" + std::to_string(scale_factor));
+    // out_storage << "mdtrie storage: " << mdtrie.size(p_key_to_treeblock_compact) << std::endl;
 
     infile.close();
-    flush_vector_to_file(insertion_latency_vect, "/proj/trinity-PG0/Trinity/results/sensitivity/insert_" + std::to_string(scale_factor));
+    // flush_vector_to_file(insertion_latency_vect, "/proj/trinity-PG0/Trinity/results/sensitivity/insert_" + std::to_string(scale_factor));
 
     /**
      * Point Lookup
@@ -103,7 +109,7 @@ void run_bench(){
             lookup_latency_vect.push_back(temp_diff);
     }
     std::cout << "Done! " << "Lookup Latency per point: " << (float) cumulative / points_to_insert << std::endl;
-    flush_vector_to_file(lookup_latency_vect, "/proj/trinity-PG0/Trinity/results/sensitivity/lookup_" + std::to_string(scale_factor));
+    // flush_vector_to_file(lookup_latency_vect, "/proj/trinity-PG0/Trinity/results/sensitivity/lookup_" + std::to_string(scale_factor));
 
     /** 
         Range Search
@@ -114,17 +120,19 @@ void run_bench(){
     #endif
 
     // char *infile_address = (char *)"/proj/trinity-PG0/Trinity/queries/tpch/tpch_query_converted";
-    char *infile_address = (char *)"/proj/trinity-PG0/Trinity/results/sensitivity_dimension/search_base_9";
-    std::string outfile_address = "/proj/trinity-PG0/Trinity/results/sensitivity/search_" + std::to_string(scale_factor);
 
+    std::string outfile_address = "/proj/trinity-PG0/Trinity/results/sensitivity/search_" + std::to_string(scale_factor) + "_second";
+    std::string query_address = "/proj/trinity-PG0/Trinity/results/sensitivity/search_base_" + std::to_string(scale_factor);
+    
     // [QUANTITY, EXTENDEDPRICE, DISCOUNT, TAX, SHIPDATE, COMMITDATE, RECEIPTDATE, TOTALPRICE, ORDERDATE]
-    std::vector<int32_t> max_values = {50, 10494950, 10, 8, 19981201, 19981031, 19981231, 58063825, 19980802};
-    std::vector<int32_t> min_values = {1, 90000, 0, 0, 19920102, 19920131, 19920103, 81300, 19920101};
+    std::vector<int32_t> max_values = {50, 10494950, 10, 8, 19981201 - 19000000, 19981031 - 19000000, 19981231 - 19000000, 58063825, 19980802 - 19000000};
+    std::vector<int32_t> min_values = {1, 90000, 0, 0, 19920102 - 19000000, 19920131 - 19000000, 19920103 - 19000000, 81300, 19920101 - 19000000};
 
-    std::ifstream file(infile_address);
     std::ofstream outfile(outfile_address);
+    std::ofstream query_file(query_address);
 
-    for (int i = 0; i < 100; i ++) {
+    int i = 0;
+    while (i < 1000) {
 
         std::vector<int32_t> found_points;
         data_point<DIMENSION> start_range;
@@ -135,26 +143,33 @@ void run_bench(){
             end_range.set_coordinate(i, max_values[i]);
         }
 
-        std::string line;
-        std::getline(file, line);
-
-        std::stringstream ss(line);
-        for (dimension_t j = 0; j < 9; j++){
-            std::string str;
-            std::getline(ss, str, ',');
-            start_range.set_coordinate(j, static_cast<int32_t>(std::stoul(str)));
-        }
-        for (dimension_t j = 0; j < 9; j++){
-            std::string str;
-            std::getline(ss, str, ',');
-            end_range.set_coordinate(j, static_cast<int32_t>(std::stoul(str)));
+        for (dimension_t j = 0; j < DIMENSION; j++){
+            start_range.set_coordinate(j, gen_rand(min_values[j], max_values[j]));
+            end_range.set_coordinate(j, gen_rand(start_range.get_coordinate(j), max_values[j]));
         }
 
         start = GetTimestamp();
         mdtrie.range_search_trie(&start_range, &end_range, mdtrie.root(), 0, found_points);
         diff = GetTimestamp() - start;
+
+        if (found_points.size() / DIMENSION < FILTER_RANGE_MIN || found_points.size() / DIMENSION > FILTER_RANGE_MAX)
+            continue;
+
         outfile << "Query " << i << " end to end latency (ms): " << diff / 1000 << ", found points count: " << found_points.size() / DIMENSION << std::endl;
+
+        for (dimension_t j = 0; j < DIMENSION; j++) {
+            query_file << start_range.get_coordinate(j) << ",";
+            std::cout << start_range.get_coordinate(j) << ",";
+        }
+        for (dimension_t j = 0; j < DIMENSION; j++) {
+            query_file << end_range.get_coordinate(j) << ",";
+            std::cout << end_range.get_coordinate(j) << ",";   
+        }
+        query_file << std::endl;
+        std::cout << std::endl;
+
         found_points.clear();
+        i += 1;
     }
 }
 
@@ -173,8 +188,8 @@ int main(int argc, char *argv[]){
       exit(-1);
     }
 
-    std::vector<level_t> bit_widths = {8, 32, 16, 24, 32, 32, 32, 32, 32}; // 9 Dimensions;
-    std::vector<level_t> start_bits = {8, 32, 16, 24, 20, 20, 20, 32, 20}; // 9 Dimensions;
+    std::vector<level_t> bit_widths = {8, 32, 16, 24, 20, 20, 20, 32, 20}; // 9 Dimensions;
+    std::vector<level_t> start_bits = {0, 0, 8, 16, 0, 0, 0, 0, 0}; // 9 Dimensions;
     
     trie_depth = 6;
     max_depth = 32;
@@ -185,6 +200,9 @@ int main(int argc, char *argv[]){
     p_key_to_treeblock_compact = &tmp_ptr_vect;
 
     std::cout << "scale_factor: " << scale_factor << std::endl;
+    std::cout << "filter range min: " << FILTER_RANGE_MIN << std::endl;
+    std::cout << "filter range max: " << FILTER_RANGE_MAX << std::endl;
+
     create_level_to_num_children(bit_widths, start_bits, max_depth);
     run_bench();
 }

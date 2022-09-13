@@ -9,8 +9,8 @@
 #include <random>
 
 #define TPCH_SIZE 250000000 // 250M
-#define LOAD_QUERY
-const dimension_t DIMENSION = 4;
+// #define LOAD_QUERY
+const dimension_t DIMENSION = 8;
 level_t max_depth = 32;
 level_t trie_depth = 6;
 preorder_t max_tree_node = 512;
@@ -73,9 +73,9 @@ void run_bench(){
     infile.close();
     std::cout << "Insertion Latency: " << (float) diff / n_points << std::endl;
     std::cout << "mdtrie storage: " << mdtrie.size(p_key_to_treeblock_compact) << std::endl;
-    std::ofstream out_storage("/proj/trinity-PG0/Trinity/results/sensitivity_dimension/storage_" + std::to_string(DIMENSION));
-    out_storage << "mdtrie storage: " << mdtrie.size(p_key_to_treeblock_compact) << std::endl;
-    flush_vector_to_file(insertion_latency_vect, "/proj/trinity-PG0/Trinity/results/sensitivity_dimension/insert_" + std::to_string(DIMENSION));
+    // std::ofstream out_storage("/proj/trinity-PG0/Trinity/results/sensitivity_dimension/storage_" + std::to_string(DIMENSION));
+    // out_storage << "mdtrie storage: " << mdtrie.size(p_key_to_treeblock_compact) << std::endl;
+    // flush_vector_to_file(insertion_latency_vect, "/proj/trinity-PG0/Trinity/results/sensitivity_dimension/insert_" + std::to_string(DIMENSION));
 
     /** 
         Lookup
@@ -105,7 +105,7 @@ void run_bench(){
             lookup_latency_vect.push_back(temp_diff);
     }
     std::cout << "Done! " << "Lookup Latency per point: " << (float) cumulative / points_to_insert << std::endl;
-    flush_vector_to_file(lookup_latency_vect, "/proj/trinity-PG0/Trinity/results/sensitivity_dimension/lookup_" + std::to_string(DIMENSION));
+    // flush_vector_to_file(lookup_latency_vect, "/proj/trinity-PG0/Trinity/results/sensitivity_dimension/lookup_" + std::to_string(DIMENSION));
 
 
     /** 
@@ -172,11 +172,15 @@ void run_bench(){
         #ifndef LOAD_QUERY
         for (dimension_t j = 0; j < DIMENSION; j++) {
             search_outfile << start_range.get_coordinate(j) << ",";
+            std::cout << start_range.get_coordinate(j) << ",";
         }
         for (dimension_t j = 0; j < DIMENSION; j++) {
             search_outfile << end_range.get_coordinate(j) << ",";
+            std::cout << end_range.get_coordinate(j) << ",";   
         }
         search_outfile << std::endl;
+        std::cout << std::endl;
+
         #endif
         found_points.clear();
         i += 1;

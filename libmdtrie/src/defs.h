@@ -119,6 +119,9 @@ int current_dataset_idx = 0;
 int num_treeblock_expand = 0;
 int lookup_scanned_nodes = 0;
 
+uint64_t bare_minimum_count = 0;
+uint64_t checked_points_count = 0;
+int query_optimization = 2;
 // #define COLLAPSED_NODE_EXP
 // #define COLLAPSED_NODE_EXP_REDUCED
 

@@ -1301,15 +1301,26 @@ public:
         // symbol_diff_count += end_range_symbol - current_symbol;
 
         // bool going_down = false;
+        bare_minimum_count += end_range_symbol - current_symbol + 1;
+        checked_points_count += 1;
+
+        if (!query_optimization) { // BUG
+            current_symbol = 0;
+            end_range_symbol = end_range->leaf_to_full_symbol(level);
+        }
         while (current_symbol <= end_range_symbol){
+
+        // while (current_symbol <= end_range_symbol){
 
             // range_search_count ++;
 
             if (!dfuds_->has_symbol(current_node, current_node_pos, current_symbol, level_to_num_children[level])){
                 continue;
             }
+            
+            if (query_optimization == 1 || (start_range_symbol & neg_representation) == (current_symbol & neg_representation)){
 
-            if ((start_range_symbol & neg_representation) == (current_symbol & neg_representation)){
+
                 // going_down = true;
                 /*
                 new_current_block = current_block;

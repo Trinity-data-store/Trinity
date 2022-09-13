@@ -133,6 +133,7 @@ void tpch()
 
     }
     std::cout << "Done! " << "Insertion Latency per point: " << (float) diff / n_points << std::endl;
+    exit(0);
     flush_vector_to_file(insertion_latency_vect, "/proj/trinity-PG0/Trinity/results/latency_cdf/rstar_tpch_insert");
 
     /**

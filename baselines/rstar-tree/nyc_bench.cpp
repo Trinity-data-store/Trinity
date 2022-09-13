@@ -138,7 +138,9 @@ void nyc()
 
     }
     std::cout << "Done! " << "Insertion Latency per point: " << (float) diff / n_points << std::endl;
-    flush_vector_to_file(insertion_latency_vect, "/proj/trinity-PG0/Trinity/results/latency_cdf/rstar_nyc_insert");
+    flush_vector_to_file(insertion_latency_vect, "./rstar_nyc_insert");
+    // flush_vector_to_file(insertion_latency_vect, "/proj/trinity-PG0/Trinity/results/latency_cdf/rstar_nyc_insert");
+    exit(0);
 
     /**
      * Range Search
