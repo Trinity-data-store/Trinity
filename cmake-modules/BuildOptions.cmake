@@ -6,7 +6,7 @@ option(USE_SYSTEM_BOOST "Use system boost libraries" ON)
 option(USE_SYSTEM_THRIFT "Use system thrift library" ON)
 option(USE_SYSTEM_JEMALLOC "Use system Jemalloc" ON)
 option(USE_SYSTEM_LIBEVENT "Use system libevent" ON)
-option(GENERATE_THRIFT "Generate thrift files" OFF)
+option(GENERATE_THRIFT "Generate thrift files" ON)
 
 message(STATUS "----------------------------------------------------------")
 message(STATUS "${PROJECT_NAME} version:                            ${PROJECT_VERSION}")

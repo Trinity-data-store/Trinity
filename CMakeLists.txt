@@ -43,6 +43,7 @@ endif ()
 
 add_subdirectory(libmdtrie)
 
-add_subdirectory(librpc)
-
+if (build_rpc)
+  add_subdirectory(librpc)
+endif()
 
