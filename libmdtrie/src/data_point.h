@@ -70,9 +70,6 @@ public:
             if (dimension_to_num_bits[i] <= level || level < start_dimension_bits[i])
                 continue;
 
-            level_t offset = dimension_to_num_bits[i] - level - 1;
-            point_t coordinate = coordinates_[i];
-
             bool bit = 1;
             result = (result << 1U) + bit;
         }
