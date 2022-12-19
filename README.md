@@ -7,7 +7,7 @@ Repository for [Trinity: A Fast and Space-efficient Multi-attribute Data Store](
 ```setup
 mkdir -p build
 cd build
-cmake -DGENERATE_THRIFT=on ..
+cmake -DGENERATE_THRIFT=on -Dbuild_rpc=on ..
 make
 ```
 
