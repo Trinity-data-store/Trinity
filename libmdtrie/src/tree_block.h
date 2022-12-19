@@ -1183,6 +1183,10 @@ public:
                 coordinates->set_coordinate(j, coordinate);
             }
         }
+        if (!coordinates) {
+            std::cerr << "TPCH: range search failed!" << std::endl;
+            exit(-1);
+        }
         return coordinates;
     }
 
