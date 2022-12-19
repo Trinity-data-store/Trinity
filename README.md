@@ -1,14 +1,6 @@
 # Trinity
 
 Repository for [Trinity: A Fast and Space-efficient Multi-attribute Data Store]().   
-In-progress
-
-## Install Dependencies
-
-```
-cd ..
-source setup.sh
-```
 
 ## Build
 
@@ -21,21 +13,6 @@ make
 
 ## Run Unit Tests
     make test
-
-## Simple Example
-A simple example can be found [here](libmdtrie/bench/tpch_bench.cpp). 
-
-## Reproduce Results
-
-```
-nohup sh scripts/microbench.sh &
-nohup sh scripts/macrobench.sh &
-nohup sh scripts/dataset_size_sensitivity.sh &
-nohup sh scripts/rstar_microbench.sh &
-nohup sh scripts/phtree_microbench.sh &
-```
-
-## Contributing
 
 ### The MIT License
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)  
