@@ -100,7 +100,7 @@ bool test_contiguous_data(n_leaves_t n_points, level_t max_depth, level_t trie_d
 }
 
 TEST_CASE("Check Random Data Insertion", "[trie]") {
-    REQUIRE(test_random_data(100000, 20, 10, 1024));
+    REQUIRE(test_random_data(10000, 20, 10, 1024));
 }
 
 TEST_CASE("Check Nonexistent Data", "[trie]") {

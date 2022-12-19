@@ -88,5 +88,5 @@ bool test_range_search(n_leaves_t n_points, level_t max_depth, level_t trie_dept
 }
 
 TEST_CASE("Test Range Search", "[trie]") {
-    REQUIRE(test_range_search(1000000, 10, 3, 128, 5));
+    REQUIRE(test_range_search(10000, 10, 3, 128, 5));
 }

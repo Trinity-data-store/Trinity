@@ -1,7 +1,7 @@
 #include "catch.hpp"
 #include "trie.h"
 
-const int DIMENSION = 10;
+const int DIMENSION = 6;
 const int DIMENSION_SMALL = 4;
 
 bool test_lookup(n_leaves_t n_points, level_t max_depth, level_t trie_depth, preorder_t max_tree_node){
@@ -184,13 +184,13 @@ bool test_lookup_small_dimension(n_leaves_t n_points, level_t max_depth, level_t
 }
 
 TEST_CASE("Check Lookup", "[trie]") {
-    REQUIRE(test_lookup(1000000, 10, 3, 128));
+    REQUIRE(test_lookup(100000, 10, 3, 128));
 }
 
 TEST_CASE("Check Lookup Close", "[trie]") {
-    REQUIRE(test_lookup_close(1000000, 10, 3, 128));
+    REQUIRE(test_lookup_close(100000, 10, 3, 128));
 }
 
 TEST_CASE("Check Lookup Small Dimensions", "[trie]") {
-    REQUIRE(test_lookup_small_dimension(1000000, 10, 3, 128));
+    REQUIRE(test_lookup_small_dimension(100000, 10, 3, 128));
 }
