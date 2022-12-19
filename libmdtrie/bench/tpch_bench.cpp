@@ -7,10 +7,8 @@
 #include <fstream>
 #include "../../librpc/src/TrinityParseFIle.h"
 
-// #define LATENCY_BENCH
 // #define NEW_LATENCY_BENCH
 #define TPCH_SIZE 250000000 // 250M
-#define TEST_REDUNDANT_SEARCH
 
 const dimension_t DIMENSION = 9;
 level_t max_depth = 32;
@@ -66,10 +64,7 @@ void run_bench(){
 
         #if defined(NEW_LATENCY_BENCH)
         if (n_points == TPCH_SIZE)
-            break;
-        #elif defined(LATENCY_BENCH)
-        if (n_points == points_to_insert)
-            break;    
+            break; 
         #else
         if (n_points == total_points_count)
             break;
@@ -90,15 +85,12 @@ void run_bench(){
     std::cout << "Insertion Latency: " << (float) diff / n_points << std::endl;
     std::cout << "mdtrie storage: " << mdtrie.size(p_key_to_treeblock_compact) << std::endl;
     infile.close();
-    #ifndef TEST_REDUNDANT_SEARCH
-    flush_vector_to_file(insertion_latency_vect, "/proj/trinity-PG0/Trinity/results/latency_cdf/trinity_tpch_insert_micro");
-    #endif
     /**
      * Point Lookup
      */
 
     TimeStamp cumulative = 0;
-    #ifndef TEST_REDUNDANT_SEARCH
+
     for (point_t i = 0; i < points_to_insert; i ++) {
 
         std::vector<morton_t> node_path_from_primary(max_depth + 1);
@@ -122,14 +114,10 @@ void run_bench(){
     }
     std::cout << "Done! " << "Lookup Latency per point: " << (float) cumulative / points_to_insert << std::endl;
     flush_vector_to_file(lookup_latency_vect, "/proj/trinity-PG0/Trinity/results/latency_cdf/trinity_tpch_lookup_micro");
-    #endif
+
     /** 
         Range Search
     */
-
-    #ifdef LATENCY_BENCH
-    return;
-    #endif
 
     char *infile_address = (char *)"/proj/trinity-PG0/Trinity/queries/tpch/tpch_query_converted";
     char *outfile_address = (char *)"/proj/trinity-PG0/Trinity/results/tpch_trinity_micro";
@@ -182,20 +170,9 @@ void run_bench(){
                 end_range.set_coordinate(i, end_range.get_coordinate(i) - 19000000);
             }
         }
-
-        #ifdef TEST_REDUNDANT_SEARCH
-        // std::cout << "orioginal morton range: " << end_range.coordinate_to_raw_morton() -  start_range.coordinate_to_raw_morton() << "  ";
-        #endif
-
         start = GetTimestamp();
         mdtrie.range_search_trie(&start_range, &end_range, mdtrie.root(), 0, found_points);
         diff = GetTimestamp() - start;
-
-        #ifdef TEST_REDUNDANT_SEARCH
-        std::cout << "summing max - min child positions: " << bare_minimum_count << ", checked_points_count: " << checked_points_count << std::endl;
-        std::cout << "Query " << i << " end to end latency (ms): " << diff / 1000 << ", found points count: " << found_points.size() / DIMENSION << std::endl;
-        return;
-        #endif
         outfile << "Query " << i << " end to end latency (ms): " << diff / 1000 << ", found points count: " << found_points.size() / DIMENSION << std::endl;
         found_points.clear();
     }
@@ -219,11 +196,6 @@ int main() {
     max_depth = 32;
     no_dynamic_sizing = true;
     total_points_count = 250000000; 
-    #ifdef TEST_REDUNDANT_SEARCH
-    total_points_count /= 100;
-    std::cout << "total_points_count: " << total_points_count << std::endl;
-    query_optimization = 0;
-    #endif
     bitmap::CompactPtrVector tmp_ptr_vect(total_points_count);
     p_key_to_treeblock_compact = &tmp_ptr_vect;
 
