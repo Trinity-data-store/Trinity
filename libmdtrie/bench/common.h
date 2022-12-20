@@ -14,7 +14,8 @@
 #define TPCH_DATA_ADDR "/mntData2/tpch/data_300/tpch_processed_1B.csv"
 #define TPCH_QUERY_ADDR "/proj/trinity-PG0/Trinity/queries/tpch/tpch_query_converted"
 #define QUERY_NUM 1000
-
+// #define OPTIMIZATION_CN
+// #define OPTIMIZATION_GM
 
 /**
  * Set hyperparameters
@@ -30,22 +31,43 @@ preorder_t max_tree_node = 512;
 point_t points_to_insert = 30000;
 point_t points_to_lookup = 30000;
 std::string results_folder_addr = "/proj/trinity-PG0/Trinity/results/";
-
+std::string identification_string = "";
 
 /* [QUANTITY, EXTENDEDPRICE, DISCOUNT, TAX, SHIPDATE, COMMITDATE, RECEIPTDATE, TOTALPRICE, ORDERDATE] */
 std::vector<int32_t> tpch_max_values = {50, 10494950, 10, 8, 19981201, 19981031, 19981231, 58063825, 19980802};
 std::vector<int32_t> tpch_min_values = {1, 90000, 0, 0, 19920102, 19920131, 19920103, 81300, 19920101};
 
+void use_default_tpch_setting(int dimensions) {
 
-void use_default_tpch_setting(void) {
-
-    std::vector<level_t> bit_widths = {8, 32, 16, 24, 20, 20, 20, 32, 20};// 9 Dimensions;
+    std::vector<level_t> bit_widths = {8, 32, 16, 24, 20, 20, 20, 32, 20}; // 9 Dimensions;
     std::vector<level_t> start_bits = {0, 0, 8, 16, 0, 0, 0, 0, 0}; // 9 Dimensions;
-    
+    total_points_count = TPCH_SIZE; 
+
+    #ifdef OPTIMIZATION_B
+    bit_widths = {32, 32, 32, 32, 32, 32, 32, 32, 32};
+    start_bits = {0, 0, 0, 0, 0, 0, 0, 0, 0};
+    identification_string = "B";
+    total_points_count /= 5;
+    #endif
+
+    #ifdef OPTIMIZATION_CN
+    bit_widths = {32, 32, 32, 32, 32, 32, 32, 32, 32};
+    start_bits = {0, 0, 0, 0, 0, 0, 0, 0, 0};
+    identification_string = "+CN";
+    #endif
+
+    #ifdef OPTIMIZATION_GM
+    bit_widths = {8, 32, 16, 24, 20, 20, 20, 32, 20};
+    start_bits = {0, 0, 0, 0, 0, 0, 0, 0, 0};
+    identification_string = "+GM";
+    #endif
+
+    start_bits.resize(dimensions);
+    bit_widths.resize(dimensions);
+
     trie_depth = 6;
     max_depth = 32;
     no_dynamic_sizing = true;
-    total_points_count = TPCH_SIZE; 
     bitmap::CompactPtrVector tmp_ptr_vect(total_points_count);
     p_key_to_treeblock_compact = &tmp_ptr_vect;
     create_level_to_num_children(bit_widths, start_bits, max_depth);
@@ -91,6 +113,10 @@ void get_query_tpch(std::string line, data_point<TPCH_DIMENSION> *start_range, d
             end_range->set_coordinate(i, end_range->get_coordinate(i) - 19000000);
         }
     }
+}
+
+int gen_rand(int start, int end) {
+    return start + ( std::rand() % ( end - start + 1 ) );
 }
 
 #endif //TrinityCommon_H

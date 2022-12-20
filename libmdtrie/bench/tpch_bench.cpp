@@ -63,7 +63,7 @@ void run_bench(){
         tree_block<TPCH_DIMENSION> *t_ptr = (tree_block<TPCH_DIMENSION> *) (p_key_to_treeblock_compact->At(i));
         morton_t parent_symbol_from_primary = t_ptr->get_node_path_primary_key(i, node_path_from_primary);
         node_path_from_primary[max_depth - 1] = parent_symbol_from_primary;
-        data_point<TPCH_DIMENSION> *coordinates = t_ptr->node_path_to_coordinates(node_path_from_primary, TPCH_DIMENSION);
+        t_ptr->node_path_to_coordinates(node_path_from_primary, TPCH_DIMENSION);
         TimeStamp temp_diff = GetTimestamp() - start;
         cumulative += temp_diff;
 
@@ -76,7 +76,7 @@ void run_bench(){
         Range Search
     */
 
-    std::string outfile_address = results_folder_addr + "tpch_trinity_micro";
+    std::string outfile_address = results_folder_addr + "tpch_trinity_micro" + identification_string;
     std::ifstream file(TPCH_QUERY_ADDR);
     std::ofstream outfile(outfile_address);
 
@@ -100,6 +100,6 @@ void run_bench(){
 
 int main() {
 
-    use_default_tpch_setting();
+    use_default_tpch_setting(TPCH_SIZE);
     run_bench();
 }
