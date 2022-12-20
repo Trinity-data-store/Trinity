@@ -4,7 +4,7 @@
 #include <climits>
 #include <vector>
 #include <fstream>
-#include "../../librpc/src/TrinityParseFIle.h"
+#include "../../librpc/src/TrinityParseFile.h"
 #include "common.h"
 
 void run_bench(){

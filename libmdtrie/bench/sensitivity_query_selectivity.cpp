@@ -5,7 +5,7 @@
 #include <vector>
 #include <iostream>
 #include <fstream>
-#include "../../librpc/src/TrinityParseFIle.h"
+#include "../../librpc/src/TrinityParseFile.h"
 #include <random>
 #include "common.h"
 
