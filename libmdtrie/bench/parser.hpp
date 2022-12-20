@@ -9,17 +9,14 @@
 #include <iostream>
 #include <fstream>
 #include <vector>
+#include "common.hpp"
 
 using namespace std;
-#define NETWORK_LATENCY 96
 
-const int DIMENSION_TPCH = 9;
-const int DIMENSION_GITHUB = 10;
-const int DIMENSION_NYC = 15;
 // Parse one line from TPC-H file.
 std::vector<int32_t> parse_line_tpch(std::string line) {
 
-    vector <int32_t> point(DIMENSION_TPCH, 0);
+    vector <int32_t> point(TPCH_DIMENSION, 0);
     int index = -1;
     bool primary_key = true;
     std::string delim = ",";
@@ -44,8 +41,7 @@ std::vector<int32_t> parse_line_tpch(std::string line) {
     std::string substr = line.substr(start, end - start); 
     point[index] = static_cast<int32_t>(std::stoul(substr));
 
-
-    for (int i = 0; i < DIMENSION_TPCH; i++){
+    for (int i = 0; i < TPCH_DIMENSION; i++){
         if (i >= 4 && i != 7) {
             point[i] -= 19000000;
         }
@@ -57,7 +53,7 @@ std::vector<int32_t> parse_line_tpch(std::string line) {
 // Parse one line from TPC-H file.
 std::vector<int32_t> parse_line_github(std::string line) {
 
-    vector <int32_t> point(DIMENSION_GITHUB, 0);
+    vector <int32_t> point(GITHUB_DIMENSION, 0);
     int index = -1;
     bool primary_key = true;
     std::string delim = ",";
@@ -76,20 +72,13 @@ std::vector<int32_t> parse_line_github(std::string line) {
             continue;
         }
         index ++;
-        /*
-        if (index == 8 || index == 9 || index == 10)
-            continue;
-        real_index ++;
-        */
         point[index] = static_cast<int32_t>(std::stoul(substr));
     }
     index ++; 
-    // real_index ++;
     std::string substr = line.substr(start, end - start); 
     point[index] = static_cast<int32_t>(std::stoul(substr));
 
-
-    for (int i = 0; i < DIMENSION_GITHUB; i++){
+    for (int i = 0; i < GITHUB_DIMENSION; i++){
         if (i == 8 || i == 9) {
             point[i] -= 20110000;
         }
@@ -100,12 +89,13 @@ std::vector<int32_t> parse_line_github(std::string line) {
 
 std::vector<int32_t> parse_line_nyc(std::string line) {
 
-    vector <int32_t> point(DIMENSION_NYC, 0);
+    vector <int32_t> point(NYC_DIMENSION, 0);
     bool primary_key = true;
     std::string delim = ",";
     auto start = 0U;
     auto end = line.find(delim);
     int real_index = -1;
+
     // pickup_date, dropoff_date, pickup_longitude, pickup_latitude, dropoff_longitude, dropoff_latitude, passenger_count, trip_distance, fare_amount, extra, mta_tax, tip_amount, tolls_amount, improvement_surcharge, total_amount
     while (end != std::string::npos)
     {
@@ -124,10 +114,6 @@ std::vector<int32_t> parse_line_nyc(std::string line) {
             float num_float = std::stof(substr);
             point[real_index] = static_cast<int32_t>(num_float * 10);
         }
-        // else if (real_index >= 7){
-        //     float num_float = std::stof(substr);
-        //     point[real_index] = static_cast<int32_t>(num_float * 10);
-        // }
         else {
             point[real_index] = static_cast<int32_t>(std::stoul(substr));
         }
@@ -140,11 +126,6 @@ std::vector<int32_t> parse_line_nyc(std::string line) {
     point[0] -= 20090000;
     point[1] -= 19700000;
 
-
-    // for (int i = 0; i < DIMENSION_NYC; i++) 
-    //     std::cout << point[i] << " ";
-    // std::cout << std::endl;
-    // exit(0);
     return point;
 }
 

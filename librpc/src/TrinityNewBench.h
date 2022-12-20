@@ -91,11 +91,6 @@ std::vector<int32_t> load_pkey_vector_nyc(std::string file_address, uint32_t tot
     return pkey_vect;
 }
 
-void flush_vector_to_file(std::vector<TimeStamp> vect, std::string filename){
-    std::ofstream outFile(filename);
-    for (const auto &e : vect) outFile << std::to_string(e) << "\n";
-}
-
 uint32_t insertion_latency_bench (std::vector<std::string> server_ips, int shard_number, int which_part = 0)
 {
     std::string file_address;

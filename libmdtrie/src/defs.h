@@ -123,9 +123,6 @@ uint64_t bare_minimum_count = 0;
 uint64_t checked_points_count = 0;
 int query_optimization = 2;
 bool is_collapsed_node_exp = false;
-// #define COLLAPSED_NODE_EXP
-// #define COLLAPSED_NODE_EXP_REDUCED
-
 
 void create_level_to_num_children(std::vector<level_t> bit_widths, std::vector<level_t> start_bits, level_t max_level){
 
