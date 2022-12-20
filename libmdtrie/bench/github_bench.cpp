@@ -12,7 +12,7 @@ int main() {
     
     use_github_setting();
     md_trie<GITHUB_DIMENSION> mdtrie(max_depth, trie_depth, max_tree_node);
-    TrinityBench<GITHUB_DIMENSION> bench(&mdtrie);
+    MdTrieBench<GITHUB_DIMENSION> bench(&mdtrie);
 
     bench.insert(GITHUB_DATA_ADDR, "github_insert_micro" + identification_string, total_points_count, parse_line_github);
     bench.lookup("github_lookup_micro" + identification_string);

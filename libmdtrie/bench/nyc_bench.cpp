@@ -12,7 +12,7 @@ int main() {
 
     use_nyc_setting();
     md_trie<NYC_DIMENSION> mdtrie(max_depth, trie_depth, max_tree_node);
-    TrinityBench<NYC_DIMENSION> bench(&mdtrie);
+    MdTrieBench<NYC_DIMENSION> bench(&mdtrie);
 
     bench.insert(NYC_DATA_ADDR, "nyc_insert_micro" + identification_string, total_points_count, parse_line_nyc);
     bench.lookup("nyc_lookup_micro" + identification_string);

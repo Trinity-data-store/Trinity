@@ -12,7 +12,7 @@ int main() {
 
     use_tpch_setting(TPCH_DIMENSION);
     md_trie<TPCH_DIMENSION> mdtrie(max_depth, trie_depth, max_tree_node);
-    TrinityBench<TPCH_DIMENSION> bench(&mdtrie);
+    MdTrieBench<TPCH_DIMENSION> bench(&mdtrie);
 
     bench.insert(TPCH_DATA_ADDR, "tpch_insert_micro" + identification_string, total_points_count, parse_line_tpch);
     bench.lookup("tpch_lookup_micro" + identification_string);

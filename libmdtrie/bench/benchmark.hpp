@@ -1,5 +1,5 @@
-#ifndef TrinityBench_H
-#define TrinityBench_H
+#ifndef MdTrieBench_H
+#define MdTrieBench_H
 
 #include "trie.h"
 #include <iostream>
@@ -11,9 +11,9 @@
 #include "common.hpp"
 
 template<dimension_t DIMENSION>
-class TrinityBench {
+class MdTrieBench {
 public:
-    TrinityBench(md_trie<DIMENSION> *mdtrie) {
+    MdTrieBench(md_trie<DIMENSION> *mdtrie) {
         mdtrie_ = mdtrie;
     };
 
@@ -132,5 +132,5 @@ protected:
     md_trie<DIMENSION> *mdtrie_;
 };
 
-#endif //TrinityBench_H
+#endif //MdTrieBench_H
 
