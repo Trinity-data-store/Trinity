@@ -32,7 +32,7 @@ class TrinityBench {
             warmup_size_ = 1000000;
             dataset_part_ = dataset_part;
             client_server_num_ = client_server_num;
-
+            primary_key_offset_ = 0; /* This is for mixed query workload, to ensure that same insertion does not go to the same shard */
             switch(dataset_idx) {
                 case(TPCH):
                     dataset_size_ = TPCH_SIZE / client_server_num_;
@@ -124,6 +124,7 @@ class TrinityBench {
 
             std::vector<std::future<uint32_t>> threads; 
             threads.reserve(client_num_);
+            primary_key_offset_ = 1;
 
             for (int i = 0; i < num_lookup; i++){
                 threads.push_back(std::async(&TrinityBench::lookup_each_client, this, i, dataset_size_ / client_num_));
@@ -141,6 +142,8 @@ class TrinityBench {
             for (int i = 0; i < client_num_; i++){
                 total_throughput += threads[i].get();
             } 
+
+            primary_key_offset_ = 0;
             return total_throughput;    
         }
 
@@ -199,7 +202,7 @@ class TrinityBench {
             for (uint32_t point_idx = warmup_size_ + client_index; point_idx < points_to_insert; point_idx += client_num_){
 
                 vector <int32_t> data_point = points_vect_[point_idx];
-                client.insert(data_point, data_point[0]);
+                client.insert(data_point, data_point[0] + primary_key_offset_);
                 inserted_points_count ++;
             }
             diff = GetTimestamp() - start;
@@ -256,6 +259,7 @@ class TrinityBench {
         int client_index_;
         int client_server_num_;
         int dataset_part_;
+        int primary_key_offset_;
         std::vector<std::string> server_ips_;
         uint32_t dataset_size_;
         uint32_t warmup_size_;
