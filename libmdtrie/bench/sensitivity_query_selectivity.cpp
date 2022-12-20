@@ -84,6 +84,6 @@ void run_bench(){
 
 int main() {
 
-    use_default_tpch_setting(TPCH_SIZE);
+    use_tpch_setting(TPCH_SIZE);
     run_bench();
 }

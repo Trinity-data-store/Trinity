@@ -89,6 +89,6 @@ void run_bench(){
 
 int main() {
 
-    use_default_tpch_setting(DIMENSIONS);
+    use_tpch_setting(DIMENSIONS);
     run_bench();
 }

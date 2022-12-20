@@ -47,7 +47,7 @@ void run_bench(){
 
     std::cout << "Insertion Latency: " << (float) diff / n_points << std::endl;
     std::cout << "mdtrie storage: " << mdtrie.size(p_key_to_treeblock_compact) << std::endl;
-    flush_vector_to_file(insertion_latency_vect, results_folder_addr + "trinity_tpch_insert_micro");
+    flush_vector_to_file(insertion_latency_vect, results_folder_addr + "trinity_tpch_insert_micro" + identification_string);
     infile.close();
 
     /**
@@ -69,14 +69,14 @@ void run_bench(){
 
         lookup_latency_vect.push_back(temp_diff);
     }
-    flush_vector_to_file(lookup_latency_vect, results_folder_addr + "trinity_tpch_lookup_micro");
+    flush_vector_to_file(lookup_latency_vect, results_folder_addr + "trinity_tpch_lookup_micro" + identification_string);
     std::cout << "Done! " << "Lookup Latency per point: " << (float) cumulative / points_to_lookup << std::endl;
 
     /** 
         Range Search
     */
 
-    std::string outfile_address = results_folder_addr + "tpch_trinity_micro" + identification_string;
+    std::string outfile_address = results_folder_addr + "tpch_trinity_query_micro" + identification_string;
     std::ifstream file(TPCH_QUERY_ADDR);
     std::ofstream outfile(outfile_address);
 
@@ -100,6 +100,6 @@ void run_bench(){
 
 int main() {
 
-    use_default_tpch_setting(TPCH_SIZE);
+    use_tpch_setting(TPCH_SIZE);
     run_bench();
 }
