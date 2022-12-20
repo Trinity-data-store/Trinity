@@ -26,9 +26,14 @@
 #define NYC_QUERY_ADDR "/proj/trinity-PG0/Trinity/queries/nyc/nyc_query_new_converted"
 
 #define QUERY_NUM 1000
-// #define OPTIMIZATION_CN
-// #define OPTIMIZATION_GM
-    
+
+enum{
+    OPTIMIZATION_SM = 0, /* Default*/
+    OPTIMIZATION_B = 1,
+    OPTIMIZATION_CN = 2,
+    OPTIMIZATION_GM = 3,
+};
+
 level_t max_depth = 32;
 level_t trie_depth = 6;
 preorder_t max_tree_node = 512;
@@ -36,6 +41,7 @@ point_t points_to_insert = 30000;
 point_t points_to_lookup = 30000;
 std::string results_folder_addr = "/proj/trinity-PG0/Trinity/results/";
 std::string identification_string = "";
+int optimization_code = OPTIMIZATION_SM;
 
 /* [QUANTITY, EXTENDEDPRICE, DISCOUNT, TAX, SHIPDATE, COMMITDATE, RECEIPTDATE, TOTALPRICE, ORDERDATE] */
 std::vector<int32_t> tpch_max_values = {50, 10494950, 10, 8, 19981201, 19981031, 19981231, 58063825, 19980802};
@@ -55,24 +61,24 @@ void use_nyc_setting(void) {
     std::vector<level_t> start_bits = {0, 0, 0, 0, 0 + 18, 0 + 18, 0, 0, 0, 0 + 18, 0 + 17, 0, 0, 0 + 20, 0}; 
     total_points_count = NYC_SIZE;
 
-    #ifdef OPTIMIZATION_B
-    bit_widths = {28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28}; 
-    start_bits = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}; 
-    identification_string = "B";
-    total_points_count /= 50;
-    #endif
+    if (optimization_code == OPTIMIZATION_B) {
+        bit_widths = {28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28}; 
+        start_bits = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}; 
+        identification_string = "B";
+        total_points_count /= 50;
+    }
 
-    #ifdef OPTIMIZATION_CN
-    bit_widths = {28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28}; 
-    start_bits = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}; 
-    identification_string = "+CN";
-    #endif
+    if (optimization_code == OPTIMIZATION_CN) {
+        bit_widths = {28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28}; 
+        start_bits = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}; 
+        identification_string = "+CN";
+    }
 
-    #ifdef OPTIMIZATION_GM
-    bit_widths = {18, 20, 10, 10, 10, 10, 8, 28, 25, 10, 11, 22, 25, 8, 25}; // 15 Dimensions;
-    start_bits = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}; // 15 Dimensions;
-    identification_string = "+GM";
-    #endif
+    if (optimization_code == OPTIMIZATION_GM) {
+        bit_widths = {18, 20, 10, 10, 10, 10, 8, 28, 25, 10, 11, 22, 25, 8, 25}; // 15 Dimensions;
+        start_bits = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}; // 15 Dimensions;
+        identification_string = "+GM";
+    }
 
     trie_depth = 6;
     max_depth = 28;
@@ -89,24 +95,24 @@ void use_github_setting(void) {
     std::vector<level_t> start_bits = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0}; // 10 Dimensions;
     total_points_count = GITHUB_SIZE;
 
-    #ifdef OPTIMIZATION_B
-    bit_widths = {24, 24, 24, 24, 24, 24, 24, 24, 24, 24};
-    start_bits = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-    identification_string = "B";
-    total_points_count /= 5;
-    #endif
+    if (optimization_code == OPTIMIZATION_B) {
+        bit_widths = {24, 24, 24, 24, 24, 24, 24, 24, 24, 24};
+        start_bits = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+        identification_string = "B";
+        total_points_count /= 5;
+    }
 
-    #ifdef OPTIMIZATION_CN
-    bit_widths = {24, 24, 24, 24, 24, 24, 24, 24, 24, 24};
-    start_bits = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-    identification_string = "+CN";
-    #endif
+    if (optimization_code == OPTIMIZATION_CN) {
+        bit_widths = {24, 24, 24, 24, 24, 24, 24, 24, 24, 24};
+        start_bits = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+        identification_string = "+CN";
+    }
 
-    #ifdef OPTIMIZATION_GM
-    bit_widths = {24, 24, 24, 24, 24, 24, 24, 16, 24, 24}; 
-    start_bits = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-    identification_string = "+GM";
-    #endif
+    if (optimization_code == OPTIMIZATION_GM) {
+        bit_widths = {24, 24, 24, 24, 24, 24, 24, 16, 24, 24}; 
+        start_bits = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+        identification_string = "+GM";
+    }
 
     trie_depth = 6;
     max_depth = 24;
@@ -125,24 +131,24 @@ void use_tpch_setting(int dimensions) {
     std::vector<level_t> start_bits = {0, 0, 8, 16, 0, 0, 0, 0, 0}; // 9 Dimensions;
     total_points_count = TPCH_SIZE; 
 
-    #ifdef OPTIMIZATION_B
-    bit_widths = {32, 32, 32, 32, 32, 32, 32, 32, 32};
-    start_bits = {0, 0, 0, 0, 0, 0, 0, 0, 0};
-    identification_string = "B";
-    total_points_count /= 5;
-    #endif
+    if (optimization_code == OPTIMIZATION_B) {
+        bit_widths = {32, 32, 32, 32, 32, 32, 32, 32, 32};
+        start_bits = {0, 0, 0, 0, 0, 0, 0, 0, 0};
+        identification_string = "B";
+        total_points_count /= 5;
+    }
 
-    #ifdef OPTIMIZATION_CN
-    bit_widths = {32, 32, 32, 32, 32, 32, 32, 32, 32};
-    start_bits = {0, 0, 0, 0, 0, 0, 0, 0, 0};
-    identification_string = "+CN";
-    #endif
+    if (optimization_code == OPTIMIZATION_CN) {
+        bit_widths = {32, 32, 32, 32, 32, 32, 32, 32, 32};
+        start_bits = {0, 0, 0, 0, 0, 0, 0, 0, 0};
+        identification_string = "+CN";
+    }
 
-    #ifdef OPTIMIZATION_GM
-    bit_widths = {8, 32, 16, 24, 20, 20, 20, 32, 20};
-    start_bits = {0, 0, 0, 0, 0, 0, 0, 0, 0};
-    identification_string = "+GM";
-    #endif
+    if (optimization_code == OPTIMIZATION_GM) {
+        bit_widths = {8, 32, 16, 24, 20, 20, 20, 32, 20};
+        start_bits = {0, 0, 0, 0, 0, 0, 0, 0, 0};
+        identification_string = "+GM";
+    }
 
     start_bits.resize(dimensions);
     bit_widths.resize(dimensions);
