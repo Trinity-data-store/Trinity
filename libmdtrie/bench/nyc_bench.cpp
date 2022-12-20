@@ -27,8 +27,6 @@ void run_bench(){
     while (std::getline(infile, line))
     {
         std::vector<int32_t> vect = parse_line_nyc(line);
-        data_point<NYC_DIMENSION> leaf_point;
-
         for (dimension_t i = 0; i < NYC_DIMENSION; i++) 
             leaf_point.set_coordinate(i, vect[i]);
         
