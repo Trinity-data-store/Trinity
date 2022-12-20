@@ -377,9 +377,9 @@ class compressed_bitmap {
   }
 
   inline bool is_collapse(preorder_t node){
-    #ifdef COLLAPSED_NODE_EXP
-    return false;
-    #endif
+    if (is_collapsed_node_exp)
+      return false;
+
     return !GETBITVAL(flag_, node);
   }
 
@@ -499,12 +499,10 @@ class compressed_bitmap {
     
 
     if (is_collapse(node)) {
-      #ifdef COLLAPSED_NODE_EXP
-      std::cout << "wrong! set symbol";
-      exit(-1);
-      shift_backward_to_uncollapse(node, node_pos, num_children);
-      SETBITVAL(flag_, node);
-      #endif
+      if (is_collapsed_node_exp) {
+        std::cout << "wrong! set symbol";
+        exit(-1);
+      }
     }
 
     if (is_collapse(node))

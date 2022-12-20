@@ -63,12 +63,14 @@ void use_nyc_setting(void) {
     std::vector<level_t> bit_widths = {18, 20, 10, 10, 10 + 18, 10 + 18, 8, 28, 25, 10 + 18, 11 + 17, 22, 25, 8 + 20, 25}; 
     std::vector<level_t> start_bits = {0, 0, 0, 0, 0 + 18, 0 + 18, 0, 0, 0, 0 + 18, 0 + 17, 0, 0, 0 + 20, 0}; 
     total_points_count = NYC_SIZE;
+    is_collapsed_node_exp = false;
 
     if (optimization_code == OPTIMIZATION_B) {
         bit_widths = {28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28}; 
         start_bits = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}; 
         identification_string = "B";
         total_points_count /= 50;
+        is_collapsed_node_exp = true;
     }
 
     if (optimization_code == OPTIMIZATION_CN) {
@@ -97,12 +99,14 @@ void use_github_setting(void) {
     std::vector<level_t> bit_widths = {24, 24, 24, 24, 24, 24, 24, 16, 24, 24}; // 10 Dimensions;
     std::vector<level_t> start_bits = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0}; // 10 Dimensions;
     total_points_count = GITHUB_SIZE;
+    is_collapsed_node_exp = false;
 
     if (optimization_code == OPTIMIZATION_B) {
         bit_widths = {24, 24, 24, 24, 24, 24, 24, 24, 24, 24};
         start_bits = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
         identification_string = "B";
         total_points_count /= 5;
+        is_collapsed_node_exp = true;
     }
 
     if (optimization_code == OPTIMIZATION_CN) {
@@ -133,12 +137,14 @@ void use_tpch_setting(int dimensions) {
     std::vector<level_t> bit_widths = {8, 32, 16, 24, 20, 20, 20, 32, 20}; // 9 Dimensions;
     std::vector<level_t> start_bits = {0, 0, 8, 16, 0, 0, 0, 0, 0}; // 9 Dimensions;
     total_points_count = TPCH_SIZE; 
+    is_collapsed_node_exp = false;
 
     if (optimization_code == OPTIMIZATION_B) {
         bit_widths = {32, 32, 32, 32, 32, 32, 32, 32, 32};
         start_bits = {0, 0, 0, 0, 0, 0, 0, 0, 0};
         identification_string = "B";
         total_points_count /= 5;
+        is_collapsed_node_exp = true;
     }
 
     if (optimization_code == OPTIMIZATION_CN) {
@@ -172,14 +178,11 @@ void flush_vector_to_file(std::vector<TimeStamp> vect, std::string filename){
 
 void get_query_nyc(std::string line, data_point<NYC_DIMENSION> *start_range, data_point<NYC_DIMENSION> *end_range) {
 
-
     for (dimension_t i = 0; i < NYC_DIMENSION; i++){
         start_range->set_coordinate(i, min_values[i]);
         end_range->set_coordinate(i, max_values[i]);
     }
-
     std::stringstream ss(line);
-
     while (ss.good()) {
 
         std::string index_str;
@@ -218,14 +221,11 @@ void get_query_nyc(std::string line, data_point<NYC_DIMENSION> *start_range, dat
 
 void get_query_github(std::string line, data_point<GITHUB_DIMENSION> *start_range, data_point<GITHUB_DIMENSION> *end_range) {
 
-
     for (dimension_t i = 0; i < GITHUB_DIMENSION; i++){
         start_range->set_coordinate(i, github_min_values[i]);
         end_range->set_coordinate(i, github_max_values[i]);
     }
-
     std::stringstream ss(line);
-
     while (ss.good()) {
 
         std::string index_str;
