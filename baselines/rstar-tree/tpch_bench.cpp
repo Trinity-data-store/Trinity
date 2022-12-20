@@ -9,7 +9,7 @@
 #include <stdio.h>
 #include "RStarTree.h"
 #include <vector>
-#include "../../librpc/src/TrinityParseFile.h"
+#include "../../libmdtrie/bench/parser.hpp"
 
 #include <sys/mman.h>
 #include <stdlib.h>

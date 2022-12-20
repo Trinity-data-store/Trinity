@@ -3,21 +3,14 @@
 #define TrinityParseFile_H
 
 #include <iostream>
-
-#include <thrift/protocol/TBinaryProtocol.h>
-#include <thrift/transport/TSocket.h>
-#include <thrift/transport/TTransportUtils.h>
-
 #include <future>
 #include <atomic>
 #include <tuple>
 #include <iostream>
 #include <fstream>
+#include <vector>
 
 using namespace std;
-using namespace apache::thrift;
-using namespace apache::thrift::protocol;
-using namespace apache::thrift::transport;
 #define NETWORK_LATENCY 96
 
 const int DIMENSION_TPCH = 9;
@@ -255,7 +248,6 @@ void update_range_search_range_github(std::vector<int32_t> &start_range, std::ve
             end_range[i] -= 20110000;
         }
     }
-    
 }
 
 #endif //TrinityParseFile_H

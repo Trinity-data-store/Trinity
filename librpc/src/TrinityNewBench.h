@@ -8,7 +8,7 @@
 #include <thrift/transport/TTransportUtils.h>
 
 #include "trie.h"
-#include "TrinityParseFile.h"
+#include "../../libmdtrie/bench/parser.hpp"
 #include <future>
 #include <atomic>
 #include <tuple>

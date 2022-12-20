@@ -51,10 +51,8 @@ std::vector<int32_t> tpch_min_values = {1, 90000, 0, 0, 19920102, 19920131, 1992
 std::vector<int32_t> github_max_values = {7451541, 737170, 262926, 354850, 379379, 3097263, 703341, 8745, 20201206, 20201206};
 std::vector<int32_t> github_min_values = {1, 1, 0, 0, 0, 0, 0, 0, 20110211, 20110211};
 
-
 std::vector<int32_t> max_values = {20160630, 20221220, 899, 898, 899, 898, 255, 198623000, 21474808, 1000, 1312,  3950589, 21474836, 138, 21474830};
 std::vector<int32_t> min_values = {20090101, 19700101, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-
 
 int gen_rand(int start, int end) {
     return start + ( std::rand() % ( end - start + 1 ) );
@@ -238,7 +236,6 @@ void get_query_github(std::string line, data_point<GITHUB_DIMENSION> *start_rang
         std::string end_range_str;
         std::getline(ss, end_range_str, ',');
 
-        // std::cout << start_range_str << " " << end_range_str << std::endl;
         int index = std::stoul(index_str);
         if (index > 10)
             index -= 3;
@@ -297,7 +294,6 @@ void get_query_tpch(std::string line, data_point<TPCH_DIMENSION> *start_range, d
 
 void get_random_query_tpch(data_point<TPCH_DIMENSION> *start_range, data_point<TPCH_DIMENSION> *end_range) {
 
-
     for (dimension_t i = 0; i < TPCH_DIMENSION; i++){
         start_range->set_coordinate(i, gen_rand(tpch_min_values[i], tpch_max_values[i]));
         end_range->set_coordinate(i, gen_rand(start_range->get_coordinate(i), tpch_max_values[i]));
@@ -309,7 +305,6 @@ void get_random_query_tpch(data_point<TPCH_DIMENSION> *start_range, data_point<T
             end_range->set_coordinate(i, end_range->get_coordinate(i) - 19000000);
         }
     }
-
 }
 
 #endif //TrinityCommon_H
