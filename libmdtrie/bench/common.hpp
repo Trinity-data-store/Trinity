@@ -132,7 +132,7 @@ void use_github_setting(void) {
     create_level_to_num_children(bit_widths, start_bits, max_depth);
 }
 
-void use_tpch_setting(int dimensions) {
+void use_tpch_setting(int dimensions) { /* An extra dimensions input for sensitivity experiment. */
 
     std::vector<level_t> bit_widths = {8, 32, 16, 24, 20, 20, 20, 32, 20}; // 9 Dimensions;
     std::vector<level_t> start_bits = {0, 0, 8, 16, 0, 0, 0, 0, 0}; // 9 Dimensions;
