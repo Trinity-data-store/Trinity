@@ -6,7 +6,6 @@
 
 #include "MDTrieShardClient.h"
 #include "TrinityNewBench.h"
-// #include "TrinityBenchShared.h"
 #include "trie.h"
 #include <future>
 #include <atomic>

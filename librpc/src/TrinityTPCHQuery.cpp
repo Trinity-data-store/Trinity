@@ -5,7 +5,6 @@
 #include <thrift/transport/TTransportUtils.h>
 
 #include "MDTrieShardClient.h"
-#include "TrinityBenchShared.h"
 #include "trie.h"
 #include <future>
 #include <atomic>
