@@ -27,7 +27,7 @@
 
 #define QUERY_NUM 1000
 
-enum{
+enum {
     OPTIMIZATION_SM = 0, /* Default*/
     OPTIMIZATION_B = 1,
     OPTIMIZATION_CN = 2,
@@ -54,6 +54,11 @@ std::vector<int32_t> github_min_values = {1, 1, 0, 0, 0, 0, 0, 0, 20110211, 2011
 
 std::vector<int32_t> max_values = {20160630, 20221220, 899, 898, 899, 898, 255, 198623000, 21474808, 1000, 1312,  3950589, 21474836, 138, 21474830};
 std::vector<int32_t> min_values = {20090101, 19700101, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+
+
+int gen_rand(int start, int end) {
+    return start + ( std::rand() % ( end - start + 1 ) );
+}
 
 void use_nyc_setting(void) {
 
@@ -290,8 +295,21 @@ void get_query_tpch(std::string line, data_point<TPCH_DIMENSION> *start_range, d
     }
 }
 
-int gen_rand(int start, int end) {
-    return start + ( std::rand() % ( end - start + 1 ) );
+void get_random_query_tpch(data_point<TPCH_DIMENSION> *start_range, data_point<TPCH_DIMENSION> *end_range) {
+
+
+    for (dimension_t i = 0; i < TPCH_DIMENSION; i++){
+        start_range->set_coordinate(i, gen_rand(tpch_min_values[i], tpch_max_values[i]));
+        end_range->set_coordinate(i, gen_rand(start_range->get_coordinate(i), tpch_max_values[i]));
+    }
+
+    for (dimension_t i = 0; i < TPCH_DIMENSION; i++){
+        if (i >= 4 && i != 7) {
+            start_range->set_coordinate(i, start_range->get_coordinate(i) - 19000000);
+            end_range->set_coordinate(i, end_range->get_coordinate(i) - 19000000);
+        }
+    }
+
 }
 
 #endif //TrinityCommon_H
