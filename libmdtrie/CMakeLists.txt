@@ -49,12 +49,8 @@ add_executable(sensitivity_query_selectivity
 add_executable(sensitivity_num_dimensions
         bench/sensitivity_num_dimensions.cpp)
 
-add_executable(nyc_optimization
-        bench/nyc_optimization.cpp)
-
 target_link_libraries(nyc_bench ${MDTRIE_LIBS})
 target_link_libraries(github_bench ${MDTRIE_LIBS})
 target_link_libraries(tpch_bench ${MDTRIE_LIBS})
 target_link_libraries(sensitivity_query_selectivity ${MDTRIE_LIBS})
 target_link_libraries(sensitivity_num_dimensions ${MDTRIE_LIBS})
-target_link_libraries(nyc_optimization ${MDTRIE_LIBS})

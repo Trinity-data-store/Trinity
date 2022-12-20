@@ -38,16 +38,16 @@ void run_bench(){
         diff += latency;
         n_points ++;
 
-        if (n_points > GITHUB_SIZE - points_to_insert)
+        if (n_points > total_points_count - points_to_insert)
             insertion_latency_vect.push_back(latency);
 
-        if (n_points == GITHUB_SIZE)
+        if (n_points == total_points_count)
             break; 
     }    
 
     std::cout << "Insertion Latency: " << (float) diff / n_points << std::endl;
     std::cout << "mdtrie storage: " << mdtrie.size(p_key_to_treeblock_compact) << std::endl;
-    flush_vector_to_file(insertion_latency_vect, results_folder_addr + "trinity_github_insert_micro" + identification_string);
+    flush_vector_to_file(insertion_latency_vect, results_folder_addr + "github_insert_micro" + identification_string);
     infile.close();
  
     /**
@@ -70,14 +70,14 @@ void run_bench(){
 
         lookup_latency_vect.push_back(temp_diff);
     }
-    flush_vector_to_file(lookup_latency_vect, results_folder_addr + "trinity_github_lookup_micro" + identification_string);
+    flush_vector_to_file(lookup_latency_vect, results_folder_addr + "github_lookup_micro" + identification_string);
     std::cout << "Done! " << "Lookup Latency per point: " << (float) cumulative / points_to_lookup << std::endl;
 
     /** 
         Range Search
     */
 
-    std::string outfile_address = results_folder_addr + "tpch_github_query_micro" + identification_string;
+    std::string outfile_address = results_folder_addr + "github_query_micro" + identification_string;
     std::ifstream file(GITHUB_QUERY_ADDR);
     std::ofstream outfile(outfile_address);
 
