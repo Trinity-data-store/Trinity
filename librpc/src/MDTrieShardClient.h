@@ -13,32 +13,6 @@ using namespace apache::thrift;
 using namespace apache::thrift::protocol;
 using namespace apache::thrift::transport;
 
-/*
-std::vector<int32_t> *node_path_to_coordinates(std::vector<int32_t> &node_path, dimension_t dimension) const{
-    
-    // Will be free-ed in the benchmark code
-
-    for (level_t i = 0; i < max_depth_; i++){
-        morton_t current_symbol = node_path[i];
-        morton_t current_symbol_pos = level_to_num_children[i] - 1;
-
-        for (dimension_t j = 0; j < dimension; j++){
-
-            if (dimension_to_num_bits[j] <= i || i < start_dimension_bits[j])
-                continue;         
-
-            level_t current_bit = GETBIT(current_symbol, current_symbol_pos);
-            current_symbol_pos --;
-
-            point_t coordinate = coordinates->get_coordinate(j);
-            coordinate = (coordinate << 1) + current_bit;
-            coordinates->set_coordinate(j, coordinate);
-        }
-    }
-    return coordinates;
-}
-*/
-
 class MDTrieClient {
 
 public:

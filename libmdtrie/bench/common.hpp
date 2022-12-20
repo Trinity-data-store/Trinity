@@ -17,13 +17,13 @@
 #define GITHUB_DIMENSION 10
 #define NYC_DIMENSION 15
 
-#define TPCH_DATA_ADDR "/mntData2/tpch/data_300/tpch_processed_1B.csv"
-#define GITHUB_DATA_ADDR "/mntData/github_events_processed_9.csv"
-#define NYC_DATA_ADDR "/mntData2/nyc_taxi/nyc_taxi_processed_675.csv"
+std::string TPCH_DATA_ADDR = "/mntData2/tpch/data_300/tpch_processed_1B.csv";
+std::string GITHUB_DATA_ADDR =  "/mntData/github_events_processed_9.csv";
+std::string NYC_DATA_ADDR =  "/mntData2/nyc_taxi/nyc_taxi_processed_675.csv";
 
-#define TPCH_QUERY_ADDR "/proj/trinity-PG0/Trinity/queries/tpch/tpch_query_converted"
-#define GITHUB_QUERY_ADDR "/proj/trinity-PG0/Trinity/queries/github/github_query_new_converted"
-#define NYC_QUERY_ADDR "/proj/trinity-PG0/Trinity/queries/nyc/nyc_query_new_converted"
+std::string TPCH_QUERY_ADDR =  "/proj/trinity-PG0/Trinity/queries/tpch/tpch_query_converted";
+std::string GITHUB_QUERY_ADDR =  "/proj/trinity-PG0/Trinity/queries/github/github_query_new_converted";
+std::string NYC_QUERY_ADDR = "/proj/trinity-PG0/Trinity/queries/nyc/nyc_query_new_converted";
 
 #define QUERY_NUM 1000
 
@@ -179,8 +179,8 @@ void flush_vector_to_file(std::vector<TimeStamp> vect, std::string filename){
 void get_query_nyc(std::string line, data_point<NYC_DIMENSION> *start_range, data_point<NYC_DIMENSION> *end_range) {
 
     for (dimension_t i = 0; i < NYC_DIMENSION; i++){
-        start_range->set_coordinate(i, min_values[i]);
-        end_range->set_coordinate(i, max_values[i]);
+        start_range->set_coordinate(i, nyc_min_values[i]);
+        end_range->set_coordinate(i, nyc_max_values[i]);
     }
     std::stringstream ss(line);
     while (ss.good()) {

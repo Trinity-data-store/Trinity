@@ -30,13 +30,13 @@ const int client_server_number = 10;
 int main(int argc, char *argv[]){
 
     if (argc != 2) {
-        cerr << "./TrinityTPCHTPCH [dataset part]" << std::endl;
+        cerr << "./TrinityGithub [dataset part]" << std::endl;
         exit(-1);
     }
     int dataset_part = stoi(argv[1]);
 
     std::vector<std::string> server_ips = {"10.10.1.12", "10.10.1.13", "10.10.1.14", "10.10.1.15", "10.10.1.16"};
-    TrinityBench bench(shard_num, client_num, client_server_number, server_ips, TPCH, dataset_part);
+    TrinityBench bench(shard_num, client_num, client_server_number, server_ips, GITHUB, dataset_part);
 
     uint32_t throughput = bench.insert_benchmark();
     std::cout << dataset_part << ": Insert Throughput (pt / seconds): " << throughput << std::endl;    
