@@ -17,13 +17,13 @@
 #define GITHUB_DIMENSION 10
 #define NYC_DIMENSION 15
 
-std::string TPCH_DATA_ADDR = "/mntData2/tpch/data_300/tpch_processed_1B.csv";
-std::string GITHUB_DATA_ADDR =  "/mntData/github_events_processed_9.csv";
-std::string NYC_DATA_ADDR =  "/mntData2/nyc_taxi/nyc_taxi_processed_675.csv";
+std::string TPCH_DATA_ADDR = "/mntData2/dataset_csv/tpch_dataset.csv";
+std::string GITHUB_DATA_ADDR =  "/mntData2/dataset_csv/github_dataset.csv";
+std::string NYC_DATA_ADDR =  "/mntData2/dataset_csv/nyc_dataset.csv";
 
-std::string TPCH_QUERY_ADDR =  "/proj/trinity-PG0/Trinity/queries/tpch/tpch_query_converted";
-std::string GITHUB_QUERY_ADDR =  "/proj/trinity-PG0/Trinity/queries/github/github_query_new_converted";
-std::string NYC_QUERY_ADDR = "/proj/trinity-PG0/Trinity/queries/nyc/nyc_query_new_converted";
+std::string TPCH_QUERY_ADDR =  "/mntData2/queries/tpch_query";
+std::string GITHUB_QUERY_ADDR =  "/mntData2/queries/github_query";
+std::string NYC_QUERY_ADDR = "/mntData2/queries/nyc_query";
 
 #define QUERY_NUM 1000
 
