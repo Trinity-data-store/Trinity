@@ -9,9 +9,15 @@
 #include <vector>
 #include <fstream>
 
+/*
 #define TPCH_SIZE 250000000 // 250M
 #define GITHUB_SIZE 200000000 // 200M
 #define NYC_SIZE 200000000 // 200M
+*/
+
+#define TPCH_SIZE 1000000000 // 1B
+#define GITHUB_SIZE 828056295 // 828M
+#define NYC_SIZE 675200000 // 675M
 
 #define TPCH_DIMENSION 9
 #define GITHUB_DIMENSION 10
@@ -20,6 +26,10 @@
 std::string TPCH_DATA_ADDR = "/mntData2/dataset_csv/tpch_dataset.csv";
 std::string GITHUB_DATA_ADDR =  "/mntData2/dataset_csv/github_dataset.csv";
 std::string NYC_DATA_ADDR =  "/mntData2/dataset_csv/nyc_dataset.csv";
+
+std::string TPCH_SPLIT_ADDR = "/mntData2/dataset_csv/tpch_split/";
+std::string GITHUB_SPLIT_ADDR =  "/mntData2/dataset_csv/github_split/";
+std::string NYC_SPLIT_ADDR =  "/mntData2/dataset_csv/nyc_split/";
 
 std::string TPCH_QUERY_ADDR =  "/mntData2/queries/tpch_query";
 std::string GITHUB_QUERY_ADDR =  "/mntData2/queries/github_query";

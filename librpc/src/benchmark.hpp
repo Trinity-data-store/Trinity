@@ -36,7 +36,7 @@ class TrinityBench {
             switch(dataset_idx) {
                 case(TPCH):
                     dataset_size_ = TPCH_SIZE / client_server_num_;
-                    dataset_addr_ = TPCH_DATA_ADDR + "_" + std::to_string(dataset_part);
+                    dataset_addr_ = TPCH_DATA_ADDR + "x0" + std::to_string(dataset_part);
                     query_addr_ = TPCH_QUERY_ADDR;
                     num_dimensions_ = TPCH_DIMENSION;
                     max_values_ = tpch_max_values;
