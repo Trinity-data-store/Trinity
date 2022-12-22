@@ -28,8 +28,4 @@ endif ()
 add_executable(microbench
         bench/microbench.cpp)
 
-add_executable(tpch_bench
-        bench/tpch_bench.cpp)
-
 target_link_libraries(microbench ${MDTRIE_LIBS})
-target_link_libraries(tpch_bench ${MDTRIE_LIBS})

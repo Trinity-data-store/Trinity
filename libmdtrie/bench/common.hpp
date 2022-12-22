@@ -9,11 +9,10 @@
 #include <vector>
 #include <fstream>
 
-/*
-#define TPCH_SIZE 250000000 // 250M
-#define GITHUB_SIZE 200000000 // 200M
-#define NYC_SIZE 200000000 // 200M
-*/
+
+#define TPCH_MICRO_SIZE 250000000 // 250M
+#define GITHUB_MICRO_SIZE 200000000 // 200M
+#define NYC_MICRO_SIZE 200000000 // 200M
 
 #define TPCH_SIZE 1000000000 // 1B
 #define GITHUB_SIZE 828056295 // 828M
@@ -22,6 +21,8 @@
 #define TPCH_DIMENSION 9
 #define GITHUB_DIMENSION 10
 #define NYC_DIMENSION 15
+
+#define QUERY_NUM 1000
 
 std::string TPCH_DATA_ADDR = "/mntData2/dataset_csv/tpch_dataset.csv";
 std::string GITHUB_DATA_ADDR =  "/mntData2/dataset_csv/github_dataset.csv";
@@ -35,7 +36,7 @@ std::string TPCH_QUERY_ADDR =  "/mntData2/queries/tpch_query";
 std::string GITHUB_QUERY_ADDR =  "/mntData2/queries/github_query";
 std::string NYC_QUERY_ADDR = "/mntData2/queries/nyc_query";
 
-#define QUERY_NUM 1000
+int skip_size_count = 0;
 
 enum {
     OPTIMIZATION_SM = 0, /* Default*/
@@ -72,7 +73,7 @@ void use_nyc_setting(void) {
 
     std::vector<level_t> bit_widths = {18, 20, 10, 10, 10 + 18, 10 + 18, 8, 28, 25, 10 + 18, 11 + 17, 22, 25, 8 + 20, 25}; 
     std::vector<level_t> start_bits = {0, 0, 0, 0, 0 + 18, 0 + 18, 0, 0, 0, 0 + 18, 0 + 17, 0, 0, 0 + 20, 0}; 
-    total_points_count = NYC_SIZE;
+    total_points_count = NYC_MICRO_SIZE;
     is_collapsed_node_exp = false;
 
     if (optimization_code == OPTIMIZATION_B) {
@@ -107,8 +108,9 @@ void use_github_setting(void) {
 
     std::vector<level_t> bit_widths = {24, 24, 24, 24, 24, 24, 24, 16, 24, 24}; // 10 Dimensions;
     std::vector<level_t> start_bits = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0}; // 10 Dimensions;
-    total_points_count = GITHUB_SIZE;
+    total_points_count = GITHUB_MICRO_SIZE;
     is_collapsed_node_exp = false;
+    skip_size_count = 500000000;
 
     if (optimization_code == OPTIMIZATION_B) {
         bit_widths = {24, 24, 24, 24, 24, 24, 24, 24, 24, 24};
@@ -144,7 +146,7 @@ void use_tpch_setting(int dimensions) { /* An extra dimensions input for sensiti
 
     std::vector<level_t> bit_widths = {8, 32, 16, 24, 20, 20, 20, 32, 20}; // 9 Dimensions;
     std::vector<level_t> start_bits = {0, 0, 8, 16, 0, 0, 0, 0, 0}; // 9 Dimensions;
-    total_points_count = TPCH_SIZE; 
+    total_points_count = TPCH_MICRO_SIZE; 
     is_collapsed_node_exp = false;
 
     if (optimization_code == OPTIMIZATION_B) {

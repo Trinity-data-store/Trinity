@@ -22,6 +22,7 @@ public:
         std::ifstream infile(data_addr);
         TimeStamp start, diff = 0;
         point_t n_points = 0;
+        point_t has_skipped = 0;
         data_point<DIMENSION> leaf_point;
 
         /**
@@ -31,6 +32,11 @@ public:
         std::string line;
         while (std::getline(infile, line))
         {
+            if (has_skipped < skip_size_count) {
+                has_skipped ++;
+                continue;
+            }
+
             std::vector<int32_t> vect = parse_line(line);
             for (dimension_t i = 0; i < DIMENSION; i++) {
                 leaf_point.set_coordinate(i, vect[i]);
