@@ -32,9 +32,9 @@ public:
         while (std::getline(infile, line))
         {
             std::vector<int32_t> vect = parse_line(line);
-            for (dimension_t i = 0; i < DIMENSION; i++) 
+            for (dimension_t i = 0; i < DIMENSION; i++) {
                 leaf_point.set_coordinate(i, vect[i]);
-            
+            }
             start = GetTimestamp();
             mdtrie_->insert_trie(&leaf_point, n_points, p_key_to_treeblock_compact);
             TimeStamp latency =  GetTimestamp() - start;
@@ -46,6 +46,9 @@ public:
 
             if (n_points == total_points_count)
                 break; 
+
+            if (n_points % (total_points_count / 100) == 0)
+                std::cout << n_points << " out of " << total_points_count << std::endl;
         }    
 
         std::cout << "Insertion Latency: " << (float) diff / n_points << std::endl;

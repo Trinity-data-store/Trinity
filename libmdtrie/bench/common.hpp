@@ -39,7 +39,7 @@ level_t trie_depth = 6;
 preorder_t max_tree_node = 512;
 point_t points_to_insert = 30000;
 point_t points_to_lookup = 30000;
-std::string results_folder_addr = "/proj/trinity-PG0/Trinity/results/";
+std::string results_folder_addr = "/mntData2/results/";
 std::string identification_string = "";
 int optimization_code = OPTIMIZATION_SM;
 
@@ -89,8 +89,7 @@ void use_nyc_setting(void) {
     max_depth = 28;
     no_dynamic_sizing = true;
 
-    bitmap::CompactPtrVector tmp_ptr_vect(total_points_count);
-    p_key_to_treeblock_compact = &tmp_ptr_vect;
+    p_key_to_treeblock_compact = new bitmap::CompactPtrVector(total_points_count);
     create_level_to_num_children(bit_widths, start_bits, max_depth);
 }
 
@@ -126,8 +125,7 @@ void use_github_setting(void) {
     no_dynamic_sizing = true;
     max_tree_node = 512;
     
-    bitmap::CompactPtrVector tmp_ptr_vect(total_points_count);
-    p_key_to_treeblock_compact = &tmp_ptr_vect;
+    p_key_to_treeblock_compact = new bitmap::CompactPtrVector(total_points_count);
 
     create_level_to_num_children(bit_widths, start_bits, max_depth);
 }
@@ -165,8 +163,7 @@ void use_tpch_setting(int dimensions) { /* An extra dimensions input for sensiti
     trie_depth = 6;
     max_depth = 32;
     no_dynamic_sizing = true;
-    bitmap::CompactPtrVector tmp_ptr_vect(total_points_count);
-    p_key_to_treeblock_compact = &tmp_ptr_vect;
+    p_key_to_treeblock_compact = new bitmap::CompactPtrVector(total_points_count);
     create_level_to_num_children(bit_widths, start_bits, max_depth);
 }
 
