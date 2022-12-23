@@ -42,6 +42,7 @@ int main(int argc, char *argv[]){
     std::cout << dataset_part << ": Insert Throughput (pt / seconds): " << throughput << std::endl;    
 
     std::cout << dataset_part << ": size: " << bench.get_size() << std::endl;
+    return 0;
 
     throughput = bench.lookup_benchmark();
     std::cout << dataset_part << ": Lookup Throughput (pt / seconds): " << throughput << std::endl;    

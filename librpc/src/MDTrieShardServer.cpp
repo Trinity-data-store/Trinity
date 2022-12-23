@@ -21,6 +21,7 @@
 #include <fstream>
 #include "MDTrieShard.h"
 #include "trie.h"
+// #include "benchmark.hpp"
 
 using namespace std;
 using namespace apache::thrift;
@@ -37,6 +38,12 @@ const int shard_num = 20;
 
 #define SERVER_LATENCY
 
+enum {
+    TPCH = 1,
+    GITHUB = 2,
+    NYC = 3,
+};
+
 class MDTrieHandler : public MDTrieShardIf {
 public:
 
@@ -47,12 +54,7 @@ public:
   };
 
   void clear_trie(){
-
     exit(0);
-    delete mdtrie_; // TODO
-    delete p_key_to_treeblock_compact_;
-    mdtrie_ = new md_trie<DIMENSION>(max_depth, trie_depth, max_tree_node);
-    p_key_to_treeblock_compact_ = new bitmap::CompactPtrVector(total_points_count);
   }
 
   bool ping(const int32_t dataset_idx) { 
@@ -60,7 +62,7 @@ public:
     if (mdtrie_ != nullptr && p_key_to_treeblock_compact_ != nullptr)
       return true;
 
-    if (dataset_idx == 2) // Github
+    if (dataset_idx == GITHUB) // Github
     {
       // [events_count, authors_count, forks, stars, issues, pushes, pulls, downloads, adds, dels, add_del_ratio, start_date, end_date]
       // MIN: [1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 20110211, 20110211]
@@ -87,7 +89,7 @@ public:
       std::cout << "Github experiment started" << std::endl; 
     }
 
-    else if (dataset_idx == 1) // TPC-H
+    else if (dataset_idx == TPCH) // TPC-H
     {
       std::vector<level_t> bit_widths = {8, 32, 16, 24, 32, 32, 32, 32, 32}; // 9 Dimensions;
       std::vector<level_t> start_bits = {0, 0, 8, 16, 0, 0, 0, 0, 0}; // 9 Dimensions;
@@ -114,7 +116,7 @@ public:
       std::cout << "Tpch experiment started" << std::endl; 
     }
 
-    else if (dataset_idx == 3) // NYC Taxi
+    else if (dataset_idx == NYC) // NYC Taxi
     {
       
       // pickup_date, dropoff_date, pickup_longitude, pickup_latitude, dropoff_longitude, dropoff_latitude, passenger_count, trip_distance, fare_amount, extra, mta_tax, tip_amount, tolls_amount, improvement_surcharge, total_amount
