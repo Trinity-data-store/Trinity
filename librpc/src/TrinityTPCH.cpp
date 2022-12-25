@@ -56,7 +56,7 @@ int main(int argc, char *argv[]){
     std::cout << dataset_part << ": 95 lookup, 5 insert Throughput (pt / seconds): " << throughput << std::endl;    
 
     /* 95% search, 5% insert*/
-    throughput = bench.mixed_query_benchmark(5, 0, 95);
+    throughput = bench.mixed_query_benchmark(1, 0, 20);
     std::cout << dataset_part << ": 95 search, 5 insert Throughput (pt / seconds): " << throughput << std::endl;    
 
     /* 90% insert, 10% search */

@@ -29,6 +29,16 @@ class compact_ptr {
     return (bitmap::EliasGammaDeltaEncodedArray<n_leaves_t> *) (ptr_ << 4ULL);
   }
 
+  bool scan_if_present(std::vector<n_leaves_t> *vect, n_leaves_t primary_key) {
+      int vect_size = vect->size();
+
+      for (int i = 0; i < vect_size; i++) {
+        if ((*vect)[i] == primary_key)
+          return true; 
+      }
+      return false;
+  }
+
   bool binary_if_present(std::vector<n_leaves_t> *vect, n_leaves_t primary_key){
       uint64_t low = 0;
       uint64_t high = vect->size() - 1;
@@ -111,8 +121,12 @@ class compact_ptr {
       return primary_key == (uint64_t)ptr_;
     }
     else if (flag_ == 1){
+      // return binary_if_present(get_vector_pointer(), primary_key);
+#ifdef USE_LINEAR_SCAN
+      return scan_if_present(get_vector_pointer(), primary_key);
+#else
       return binary_if_present(get_vector_pointer(), primary_key);
-
+#endif
     }
     else {
       return get_delta_encoded_array_pointer()->Find(primary_key);

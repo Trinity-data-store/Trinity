@@ -106,38 +106,6 @@ MDTrieShard_primary_key_lookup_presult::~MDTrieShard_primary_key_lookup_presult(
 }
 
 
-MDTrieShard_primary_key_lookup_path_args::~MDTrieShard_primary_key_lookup_path_args() noexcept {
-}
-
-
-MDTrieShard_primary_key_lookup_path_pargs::~MDTrieShard_primary_key_lookup_path_pargs() noexcept {
-}
-
-
-MDTrieShard_primary_key_lookup_path_result::~MDTrieShard_primary_key_lookup_path_result() noexcept {
-}
-
-
-MDTrieShard_primary_key_lookup_path_presult::~MDTrieShard_primary_key_lookup_path_presult() noexcept {
-}
-
-
-MDTrieShard_primary_key_lookup_binary_args::~MDTrieShard_primary_key_lookup_binary_args() noexcept {
-}
-
-
-MDTrieShard_primary_key_lookup_binary_pargs::~MDTrieShard_primary_key_lookup_binary_pargs() noexcept {
-}
-
-
-MDTrieShard_primary_key_lookup_binary_result::~MDTrieShard_primary_key_lookup_binary_result() noexcept {
-}
-
-
-MDTrieShard_primary_key_lookup_binary_presult::~MDTrieShard_primary_key_lookup_binary_presult() noexcept {
-}
-
-
 MDTrieShard_get_size_args::~MDTrieShard_get_size_args() noexcept {
 }
 
@@ -151,54 +119,6 @@ MDTrieShard_get_size_result::~MDTrieShard_get_size_result() noexcept {
 
 
 MDTrieShard_get_size_presult::~MDTrieShard_get_size_presult() noexcept {
-}
-
-
-MDTrieShard_clear_trie_args::~MDTrieShard_clear_trie_args() noexcept {
-}
-
-
-MDTrieShard_clear_trie_pargs::~MDTrieShard_clear_trie_pargs() noexcept {
-}
-
-
-MDTrieShard_clear_trie_result::~MDTrieShard_clear_trie_result() noexcept {
-}
-
-
-MDTrieShard_clear_trie_presult::~MDTrieShard_clear_trie_presult() noexcept {
-}
-
-
-MDTrieShard_get_insert_latency_args::~MDTrieShard_get_insert_latency_args() noexcept {
-}
-
-
-MDTrieShard_get_insert_latency_pargs::~MDTrieShard_get_insert_latency_pargs() noexcept {
-}
-
-
-MDTrieShard_get_insert_latency_result::~MDTrieShard_get_insert_latency_result() noexcept {
-}
-
-
-MDTrieShard_get_insert_latency_presult::~MDTrieShard_get_insert_latency_presult() noexcept {
-}
-
-
-MDTrieShard_get_lookup_latency_args::~MDTrieShard_get_lookup_latency_args() noexcept {
-}
-
-
-MDTrieShard_get_lookup_latency_pargs::~MDTrieShard_get_lookup_latency_pargs() noexcept {
-}
-
-
-MDTrieShard_get_lookup_latency_result::~MDTrieShard_get_lookup_latency_result() noexcept {
-}
-
-
-MDTrieShard_get_lookup_latency_presult::~MDTrieShard_get_lookup_latency_presult() noexcept {
 }
 
 

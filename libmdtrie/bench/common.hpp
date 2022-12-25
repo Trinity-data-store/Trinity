@@ -24,6 +24,12 @@
 
 #define QUERY_NUM 1000
 
+enum {
+    TPCH = 1,
+    GITHUB = 2,
+    NYC = 3,
+};
+
 std::string TPCH_DATA_ADDR = "/mntData2/dataset_csv/tpch_dataset.csv";
 std::string GITHUB_DATA_ADDR =  "/mntData2/dataset_csv/github_dataset.csv";
 std::string NYC_DATA_ADDR =  "/mntData2/dataset_csv/nyc_dataset.csv";
@@ -36,7 +42,7 @@ std::string TPCH_QUERY_ADDR =  "/mntData2/queries/tpch_query";
 std::string GITHUB_QUERY_ADDR =  "/mntData2/queries/github_query";
 std::string NYC_QUERY_ADDR = "/mntData2/queries/nyc_query";
 
-int skip_size_count = 0;
+unsigned int skip_size_count = 0;
 
 enum {
     OPTIMIZATION_SM = 0, /* Default*/
@@ -69,11 +75,11 @@ int gen_rand(int start, int end) {
     return start + ( std::rand() % ( end - start + 1 ) );
 }
 
-void use_nyc_setting(void) {
+void use_nyc_setting(int dimensions, int _total_points_count) {
 
     std::vector<level_t> bit_widths = {18, 20, 10, 10, 10 + 18, 10 + 18, 8, 28, 25, 10 + 18, 11 + 17, 22, 25, 8 + 20, 25}; 
     std::vector<level_t> start_bits = {0, 0, 0, 0, 0 + 18, 0 + 18, 0, 0, 0, 0 + 18, 0 + 17, 0, 0, 0 + 20, 0}; 
-    total_points_count = NYC_MICRO_SIZE;
+    total_points_count = _total_points_count;
     is_collapsed_node_exp = false;
 
     if (optimization_code == OPTIMIZATION_B) {
@@ -96,19 +102,21 @@ void use_nyc_setting(void) {
         identification_string = "+GM";
     }
 
+    start_bits.resize(dimensions);
+    bit_widths.resize(dimensions);
+
     trie_depth = 6;
     max_depth = 28;
     no_dynamic_sizing = true;
 
-    p_key_to_treeblock_compact = new bitmap::CompactPtrVector(total_points_count);
     create_level_to_num_children(bit_widths, start_bits, max_depth);
 }
 
-void use_github_setting(void) {
+void use_github_setting(int dimensions, int _total_points_count) {
 
     std::vector<level_t> bit_widths = {24, 24, 24, 24, 24, 24, 24, 16, 24, 24}; // 10 Dimensions;
     std::vector<level_t> start_bits = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0}; // 10 Dimensions;
-    total_points_count = GITHUB_MICRO_SIZE;
+    total_points_count = _total_points_count;
     is_collapsed_node_exp = false;
     skip_size_count = 500000000;
 
@@ -132,21 +140,22 @@ void use_github_setting(void) {
         identification_string = "+GM";
     }
 
+    start_bits.resize(dimensions);
+    bit_widths.resize(dimensions);
+
     trie_depth = 6;
     max_depth = 24;
     no_dynamic_sizing = true;
     max_tree_node = 512;
     
-    p_key_to_treeblock_compact = new bitmap::CompactPtrVector(total_points_count);
-
     create_level_to_num_children(bit_widths, start_bits, max_depth);
 }
 
-void use_tpch_setting(int dimensions) { /* An extra dimensions input for sensitivity experiment. */
+void use_tpch_setting(int dimensions, int _total_points_count) { /* An extra dimensions input for sensitivity experiment. */
 
     std::vector<level_t> bit_widths = {8, 32, 16, 24, 20, 20, 20, 32, 20}; // 9 Dimensions;
     std::vector<level_t> start_bits = {0, 0, 8, 16, 0, 0, 0, 0, 0}; // 9 Dimensions;
-    total_points_count = TPCH_MICRO_SIZE; 
+    total_points_count = _total_points_count; 
     is_collapsed_node_exp = false;
 
     if (optimization_code == OPTIMIZATION_B) {
@@ -175,7 +184,6 @@ void use_tpch_setting(int dimensions) { /* An extra dimensions input for sensiti
     trie_depth = 6;
     max_depth = 32;
     no_dynamic_sizing = true;
-    p_key_to_treeblock_compact = new bitmap::CompactPtrVector(total_points_count);
     create_level_to_num_children(bit_widths, start_bits, max_depth);
 }
 

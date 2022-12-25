@@ -17,12 +17,6 @@
 #include "../../libmdtrie/bench/parser.hpp"
 #include <future>
 
-enum {
-    TPCH = 1,
-    GITHUB = 2,
-    NYC = 3,
-};
-
 class TrinityBench {
     public:
         TrinityBench(int shard_num, int client_num, int client_server_num, std::vector<std::string> server_ips, int dataset_idx, int dataset_part) {
@@ -187,8 +181,12 @@ class TrinityBench {
         void load_dataset(std::vector<int32_t> (* parse_line)(std::string)) {
             std::ifstream file(dataset_addr_);
             std::string line;
+            unsigned int loaded_pts = 0;
             while(std::getline(file, line)) {
                 points_vect_.push_back(parse_line(line));
+                loaded_pts ++;
+                if (loaded_pts > dataset_size_)
+                    break;
             }
         }
 
