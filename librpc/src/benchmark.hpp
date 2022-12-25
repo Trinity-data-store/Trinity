@@ -35,7 +35,7 @@ class TrinityBench {
             primary_key_offset_ = 0; /* This is for mixed query workload, to ensure that same insertion does not go to the same shard */
 
             auto client = MDTrieClient(server_ips_, shard_num_);
-            if (!client.ping(1)){
+            if (!client.ping(dataset_idx)){
                 std::cerr << "Server setting wrong!" << std::endl;
                 exit(-1);
             }
@@ -48,6 +48,7 @@ class TrinityBench {
                     num_dimensions_ = TPCH_DIMENSION;
                     max_values_ = tpch_max_values;
                     min_values_ = tpch_min_values;
+                    query_out_addr_ = results_folder_addr + "macro_tpch_query_latency";
                     load_dataset(parse_line_tpch);
                     load_queries(update_range_search_range_tpch);
                     break;
@@ -58,6 +59,7 @@ class TrinityBench {
                     num_dimensions_ = GITHUB_DIMENSION;
                     max_values_ = github_max_values;
                     min_values_ = github_min_values;
+                    query_out_addr_ = results_folder_addr + "macro_github_query_latency";
                     load_dataset(parse_line_github);
                     load_queries(update_range_search_range_github);
                     break;
@@ -68,6 +70,7 @@ class TrinityBench {
                     num_dimensions_ = NYC_DIMENSION;
                     max_values_ = nyc_max_values;
                     min_values_ = nyc_min_values;
+                    query_out_addr_ = results_folder_addr + "macro_nyc_query_latency";
                     load_dataset(parse_line_nyc);
                     load_queries(update_range_search_range_nyc);
                     break;
@@ -113,16 +116,17 @@ class TrinityBench {
         }
 
         uint32_t search_benchmark(void) {
-
+            
+            int search_client_num = 5;
             std::vector<std::future<uint32_t>> threads; 
-            threads.reserve(client_num_);
+            threads.reserve(search_client_num);
 
-            for (int i = 0; i < client_num_; i++){
+            for (int i = 0; i < search_client_num; i++){
                 threads.push_back(std::async(&TrinityBench::search_each_client, this, i));
             }
 
             uint32_t total_throughput = 0;
-            for (int i = 0; i < client_num_; i++){
+            for (int i = 0; i < search_client_num; i++){
                 total_throughput += threads[i].get();
             } 
             return total_throughput;              
@@ -166,13 +170,15 @@ class TrinityBench {
             TimeStamp start, diff = 0; 
             start = GetTimestamp();
 
+            std::ofstream outFile(query_out_addr_);
+
             for (int i = 0; i < QUERY_NUM; i ++) {
 
                 std::vector<int32_t> found_points;
                 start = GetTimestamp();
                 client.range_search_trie(found_points, queries_start_vect_[i], queries_end_vect_[i]);
                 diff = GetTimestamp() - start;
-                std::cout << "Query " << i << " end to end latency (ms): " << diff / 1000 << ", found points count: " << found_points.size() / num_dimensions_ << std::endl;
+                outFile << "Query " << i << " end to end latency (ms): " << diff / 1000 << ", found points count: " << found_points.size() / num_dimensions_ << std::endl;
             }
         }
 
@@ -210,7 +216,7 @@ class TrinityBench {
             for (uint32_t point_idx = warmup_size_ + client_index; point_idx < points_to_insert; point_idx += client_num_){
 
                 vector <int32_t> data_point = points_vect_[point_idx];
-                client.insert(data_point, data_point[0] + primary_key_offset_);
+                client.insert(data_point, point_idx + primary_key_offset_);
                 inserted_points_count ++;
             }
             diff = GetTimestamp() - start;
@@ -236,7 +242,7 @@ class TrinityBench {
             start = GetTimestamp();
             for (uint32_t point_idx = client_index; point_idx < points_to_lookup; point_idx += client_num_){
                 std::vector<int32_t> rec_vect;
-                client.primary_key_lookup(rec_vect, points_vect_[point_idx][0]);
+                client.primary_key_lookup(rec_vect, point_idx);
                 lookup_points_count ++;
             }
             diff = GetTimestamp() - start;
@@ -250,7 +256,7 @@ class TrinityBench {
             uint32_t search_points_count = 0;
             start = GetTimestamp();
 
-            for (int i = 0; i < QUERY_NUM; i += client_index) {
+            for (int i = client_index; i < QUERY_NUM; i += client_num_) {
 
                 std::vector<int32_t> found_points;
                 client.range_search_trie_send(queries_start_vect_[i], queries_end_vect_[i]);
@@ -274,6 +280,7 @@ class TrinityBench {
         int num_dimensions_;
         std::string dataset_addr_;
         std::string query_addr_;
+        std::string query_out_addr_;
         std::vector<std::vector<int32_t>> points_vect_;
         std::vector<std::vector<int32_t>> queries_start_vect_;
         std::vector<std::vector<int32_t>> queries_end_vect_;

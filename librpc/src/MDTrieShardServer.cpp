@@ -33,10 +33,14 @@ using namespace apache::thrift::server;
 level_t max_depth = 32;
 level_t trie_depth = 6;
 const preorder_t max_tree_node = 512;
-const dimension_t DIMENSION = 9;
+// const dimension_t DIMENSION = 9;
 const int shard_num = 20;
 
 #define SERVER_LATENCY
+
+#define TPCH_DIMENSION 9
+#define GITHUB_DIMENSION 10
+#define NYC_DIMENSION 15
 
 enum {
     TPCH = 1,
@@ -44,6 +48,7 @@ enum {
     NYC = 3,
 };
 
+template<dimension_t DIMENSION>
 class MDTrieHandler : public MDTrieShardIf {
 public:
 
@@ -63,13 +68,7 @@ public:
       return true;
 
     if (dataset_idx == GITHUB) // Github
-    {
-      // [events_count, authors_count, forks, stars, issues, pushes, pulls, downloads, adds, dels, add_del_ratio, start_date, end_date]
-      // MIN: [1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 20110211, 20110211]
-      // MAX: [7451541, 737170, 262926, 354850, 379379, 3097263, 703341, 8745, 3176317839, 1006504276, 117942850, 20201206, 20201206]
-      // std::vector<level_t> bit_widths = {24, 24, 24, 24, 24, 24, 24, 16, 32, 32, 32, 24, 24}; // 13 Dimensions;
-      // std::vector<level_t> start_bits = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}; // 13 Dimensions;
-      
+    { 
       std::vector<level_t> bit_widths = {24, 24, 24, 24, 24, 24, 24, 16, 24, 24}; // 10 Dimensions;
       std::vector<level_t> start_bits = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0}; // 10 Dimensions;
 
@@ -79,7 +78,7 @@ public:
       total_points_count = 828056295 / (shard_num * 5) + 1; 
 
       if (DIMENSION != 10) {
-        std::cerr << "wrong config!\n" << std::endl;
+        std::cerr << "wrong config!" << DIMENSION << ", " << dataset_idx << std::endl;
         exit(-1);
       }
       p_key_to_treeblock_compact_ = new bitmap::CompactPtrVector(total_points_count);
@@ -93,21 +92,15 @@ public:
     {
       std::vector<level_t> bit_widths = {8, 32, 16, 24, 32, 32, 32, 32, 32}; // 9 Dimensions;
       std::vector<level_t> start_bits = {0, 0, 8, 16, 0, 0, 0, 0, 0}; // 9 Dimensions;
-      // [QUANTITY, EXTENDEDPRICE, DISCOUNT, TAX, SHIPDATE, COMMITDATE, RECEIPTDATE, TOTALPRICE, ORDERDATE]
-      // {50, 10494950, 10, 8, 19981201, 19981031, 19981231, 58063825, 19980802};
       
       bit_widths = {8, 32, 16, 24, 20, 20, 20, 32, 20};
-
-      // bit_widths = {8, 24, 16, 24, 20, 20, 20, 26, 20};  // TODO! Tried actually increase storage footprint...
-      // start_bits = {0, 0, 8, 16, 0, 0, 0, 0, 0};
-
       trie_depth = 6;
       max_depth = 32;
       no_dynamic_sizing = true;
       total_points_count = 1000000000 / (shard_num * 5) + 1; 
 
       if (DIMENSION != 9) {
-        std::cerr << "wrong config!\n" << std::endl;
+        std::cerr << "wrong config!" << DIMENSION << ", " << dataset_idx << std::endl;
         exit(-1);
       }
       p_key_to_treeblock_compact_ = new bitmap::CompactPtrVector(total_points_count);
@@ -118,16 +111,8 @@ public:
 
     else if (dataset_idx == NYC) // NYC Taxi
     {
-      
-      // pickup_date, dropoff_date, pickup_longitude, pickup_latitude, dropoff_longitude, dropoff_latitude, passenger_count, trip_distance, fare_amount, extra, mta_tax, tip_amount, tolls_amount, improvement_surcharge, total_amount
-      // MIN: [20090101, 19700101, 0, 0, ... 0 ]
-      // MAX: [20160630, 20221220, 89.9, 89.8, 89.9, 89.8, 255, 198623000, 21474808, 1000, 1311.2,  3950588.8, 21474836, 137.6, 21474830]
-
-      // queried: trip_distance, fare_amount, tip_amount, pickup_date, dropoff_date, passenger_count. pickup_longitude, pickup_latitude
-
       std::vector<level_t> bit_widths = {18, 20, 10, 10, 10 + 10, 10 + 10, 8, 13, 10, 10 + 10, 11 + 9, 10, 10 + 10, 8, 10 + 10}; // 15 Dimensions;
       std::vector<level_t> start_bits = {0, 0, 0, 0, 0 + 10, 0 + 10, 0, 0, 0, 0 + 10, 0 + 9, 0, 0 + 10, 0, 0 + 10}; // 15 Dimensions; 24.54 GB, int
-
 
       bit_widths = {18, 20, 10, 10, 10 + 18, 10 + 18, 8, 28, 25, 10 + 18, 11 + 17, 22, 25, 8 + 20, 25}; // 15 Dimensions;
       start_bits = {0, 0, 0, 0, 0 + 18, 0 + 18, 0, 0, 0, 0 + 18, 0 + 17, 0, 0, 0 + 20, 0}; // 15 Dimensions; 24.54 GB, int
@@ -140,7 +125,7 @@ public:
       total_points_count = 675200000;
 
       if (DIMENSION != 15) {
-        std::cerr << "wrong config!\n" << std::endl;
+        std::cerr << "wrong config!" << DIMENSION << ", " << dataset_idx << std::endl;
         exit(-1);
       }
       p_key_to_treeblock_compact_ = new bitmap::CompactPtrVector(total_points_count);
@@ -199,10 +184,8 @@ public:
       leaf_point.set_coordinate(i, point[i]);
     }
 
-
     mdtrie_->insert_trie(&leaf_point, inserted_points_, p_key_to_treeblock_compact_);
 
-    
     inserted_points_ ++;
 
     for (const auto &coordinate : point) outfile_ << coordinate << ",";
@@ -313,24 +296,7 @@ protected:
   #endif
 };
 
-class MDTrieCloneFactory : virtual public MDTrieShardIfFactory {
- public:
-  ~MDTrieCloneFactory() override = default;
-  MDTrieShardIf* getHandler(const ::apache::thrift::TConnectionInfo& connInfo)
-  {
-    std::shared_ptr<TSocket> sock = std::dynamic_pointer_cast<TSocket>(connInfo.transport);
-    cout << "Incoming connection\n";
-    cout << "\tSocketInfo: "  << sock->getSocketInfo() << "\n";
-    cout << "\tPeerHost: "    << sock->getPeerHost() << "\n";
-    cout << "\tPeerAddress: " << sock->getPeerAddress() << "\n";
-    cout << "\tPeerPort: "    << sock->getPeerPort() << "\n";
-    return new MDTrieHandler(sock->getPeerPort());
-  }
-  void releaseHandler( MDTrieShardIf* handler) {
-    delete handler;
-  }
-};
-
+template<dimension_t DIMENSION>
 class MDTrieServerCoordinator {
 
 public:
@@ -349,7 +315,7 @@ public:
 
     static void start_server(int port_num, std::string ip_address){
 
-        auto handler = std::make_shared<MDTrieHandler>(port_num);
+        auto handler = std::make_shared<MDTrieHandler<DIMENSION>>(port_num);
         auto processor = std::make_shared<MDTrieShardProcessor>(handler);
         auto socket = std::make_shared<TNonblockingServerSocket>(ip_address, port_num);
         auto server = std::make_shared<TNonblockingServer>(processor, socket);
@@ -365,12 +331,38 @@ private:
 
 int main(int argc, char *argv[]){
 
-  if (argc == 3){
-      MDTrieServerCoordinator(argv[1], 9090, stoi(argv[2]));
+    std::string ip_addr;
+    int num_shards;
+    int dataset_idx;
+    char arg;
+
+    while ((arg = getopt (argc, argv, "i:s:d:")) != -1) {
+        switch (arg) {
+            case 'i':
+                ip_addr = std::string(optarg);
+                break;
+            case 's':
+                num_shards = stoi(optarg);
+                break;
+            case 'd':
+                dataset_idx = stoi(optarg);
+                break;
+            default:
+                abort ();
+        }
+    }
+
+  if (dataset_idx == TPCH){
+      MDTrieServerCoordinator<TPCH_DIMENSION>(ip_addr, 9090, num_shards);
   }
-  else {
-    std::cerr << "Wrong Input! ./MdTrieShardServer [IP Address] [Number of Shards]" << std::endl;
-    exit(-1);
+  
+  if (dataset_idx == GITHUB){
+      MDTrieServerCoordinator<GITHUB_DIMENSION>(ip_addr, 9090, num_shards);
   }
+
+  if (dataset_idx == NYC){
+      MDTrieServerCoordinator<NYC_DIMENSION>(ip_addr, 9090, num_shards);
+  }
+
   return 0;
 }
