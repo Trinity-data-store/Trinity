@@ -125,7 +125,7 @@ void use_github_setting(int dimensions, int _total_points_count) {
         bit_widths = {24, 24, 24, 24, 24, 24, 24, 24, 24, 24};
         start_bits = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
         identification_string = "_B";
-        total_points_count /= 5;
+        total_points_count /= 50;
         is_collapsed_node_exp = true;
     }
 
@@ -163,7 +163,7 @@ void use_tpch_setting(int dimensions, int _total_points_count) { /* An extra dim
         bit_widths = {32, 32, 32, 32, 32, 32, 32, 32, 32};
         start_bits = {0, 0, 0, 0, 0, 0, 0, 0, 0};
         identification_string = "_B";
-        total_points_count /= 5;
+        total_points_count /= 50;
         is_collapsed_node_exp = true;
     }
 

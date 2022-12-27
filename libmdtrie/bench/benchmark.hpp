@@ -138,7 +138,7 @@ public:
 
         uint64_t size = mdtrie_->size(p_key_to_treeblock_compact);
         std::cout << "mdtrie storage: " << size << std::endl;
-        flush_string_to_file(std::to_string(size), results_folder_addr + outfile_name);
+        flush_string_to_file(std::to_string(size) + "," + std::to_string(total_points_count), results_folder_addr + outfile_name);
     }
 
 protected:
