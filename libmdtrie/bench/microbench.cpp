@@ -8,91 +8,167 @@
 #include "common.hpp"
 #include "benchmark.hpp"
 
+/* Because it results in otherwise OOM for other benchmarks. */
+int micro_tpch_size = 250000000;
+int micro_github_size = 200000000;
+int micro_nyc_size = 200000000;
+
 void github_bench(void) {
     
-    optimization_code = OPTIMIZATION_SM;
-    use_github_setting(GITHUB_DIMENSION, GITHUB_SIZE);
+    use_github_setting(GITHUB_DIMENSION, micro_github_size);
     md_trie<GITHUB_DIMENSION> mdtrie(max_depth, trie_depth, max_tree_node);
     MdTrieBench<GITHUB_DIMENSION> bench(&mdtrie);
     p_key_to_treeblock_compact = new bitmap::CompactPtrVector(total_points_count);
 
     bench.insert(GITHUB_DATA_ADDR, "github_insert_micro" + identification_string, total_points_count, parse_line_github);
+    bench.get_storage("github_storage_micro" + identification_string);
     bench.lookup("github_lookup_micro" + identification_string);
     bench.range_search(GITHUB_QUERY_ADDR, "github_query_micro" + identification_string, get_query_github);
 }
 
 void nyc_bench(void) {
 
-    optimization_code = OPTIMIZATION_SM;
-    use_nyc_setting(NYC_DIMENSION, NYC_SIZE);
+    use_nyc_setting(NYC_DIMENSION, micro_nyc_size);
     md_trie<NYC_DIMENSION> mdtrie(max_depth, trie_depth, max_tree_node);
     MdTrieBench<NYC_DIMENSION> bench(&mdtrie);
     p_key_to_treeblock_compact = new bitmap::CompactPtrVector(total_points_count);
 
     bench.insert(NYC_DATA_ADDR, "nyc_insert_micro" + identification_string, total_points_count, parse_line_nyc);
+    bench.get_storage("nyc_storage_micro" + identification_string);
     bench.lookup("nyc_lookup_micro" + identification_string);
     bench.range_search(NYC_QUERY_ADDR, "nyc_query_micro" + identification_string, get_query_nyc);
 }
 
 void tpch_bench(void) {
 
-    optimization_code = OPTIMIZATION_SM;
-    use_tpch_setting(TPCH_DIMENSION, TPCH_SIZE);
+    use_tpch_setting(TPCH_DIMENSION, micro_tpch_size);
     md_trie<TPCH_DIMENSION> mdtrie(max_depth, trie_depth, max_tree_node);
     MdTrieBench<TPCH_DIMENSION> bench(&mdtrie);
     p_key_to_treeblock_compact = new bitmap::CompactPtrVector(total_points_count);
 
     bench.insert(TPCH_DATA_ADDR, "tpch_insert_micro" + identification_string, total_points_count, parse_line_tpch);
+    bench.get_storage("tpch_storage_micro" + identification_string);
     bench.lookup("tpch_lookup_micro" + identification_string);
     bench.range_search(TPCH_QUERY_ADDR, "tpch_query_micro" + identification_string, get_query_tpch);
 }
 
-const int DIMENSIONS = 9;
-void sensitivity_num_dimensions(void) {
+void sensitivity_num_dimensions_9(void) {
 
-    optimization_code = OPTIMIZATION_SM;
-    use_tpch_setting(DIMENSIONS, TPCH_SIZE);
-    md_trie<DIMENSIONS> mdtrie(max_depth, trie_depth, max_tree_node);
-    MdTrieBench<DIMENSIONS> bench(&mdtrie);
+    use_tpch_setting(9, micro_tpch_size);
+    md_trie<9> mdtrie(max_depth, trie_depth, max_tree_node);
+    MdTrieBench<9> bench(&mdtrie);
 
-    bench.insert(TPCH_DATA_ADDR, "tpch_insert_dimensions_sensitivity" + identification_string, total_points_count, parse_line_tpch);
-    bench.range_search_random("tpch_query_dimensions_sensitivity" + identification_string, get_random_query_tpch, 2000, 1000);
+    bench.insert(TPCH_DATA_ADDR, "tpch_insert_dimensions_sensitivity" + identification_string + "_" + "9", total_points_count, parse_line_tpch);
+    bench.get_storage("tpch_storage_dimensions_sensitivity" + identification_string + "_" + "9");
+    bench.range_search_random("tpch_query_dimensions_sensitivity" + identification_string + "_" + "9", get_random_query_tpch<9>, 2000, 1000);
+}
+
+void sensitivity_num_dimensions_8(void) {
+
+    use_tpch_setting(8, micro_tpch_size);
+    md_trie<8> mdtrie(max_depth, trie_depth, max_tree_node);
+    MdTrieBench<8> bench(&mdtrie);
+
+    bench.insert(TPCH_DATA_ADDR, "tpch_insert_dimensions_sensitivity" + identification_string + "_" + "8", total_points_count, parse_line_tpch);
+    bench.get_storage("tpch_storage_dimensions_sensitivity" + identification_string + "_" + "8");
+    bench.range_search_random("tpch_query_dimensions_sensitivity" + identification_string + "_" + "8", get_random_query_tpch<8>, 2000, 1000);
+}
+
+void sensitivity_num_dimensions_7(void) {
+
+    use_tpch_setting(7, micro_tpch_size);
+    md_trie<7> mdtrie(max_depth, trie_depth, max_tree_node);
+    MdTrieBench<7> bench(&mdtrie);
+
+    bench.insert(TPCH_DATA_ADDR, "tpch_insert_dimensions_sensitivity" + identification_string + "_" + "7", total_points_count, parse_line_tpch);
+    bench.get_storage("tpch_storage_dimensions_sensitivity" + identification_string + "_" + "7");
+    bench.range_search_random("tpch_query_dimensions_sensitivity" + identification_string + "_" + "7", get_random_query_tpch<7>, 2000, 1000);
+}
+
+void sensitivity_num_dimensions_6(void) {
+
+    use_tpch_setting(6, micro_tpch_size);
+    md_trie<6> mdtrie(max_depth, trie_depth, max_tree_node);
+    MdTrieBench<6> bench(&mdtrie);
+
+    bench.insert(TPCH_DATA_ADDR, "tpch_insert_dimensions_sensitivity" + identification_string + "_" + "6", total_points_count, parse_line_tpch);
+    bench.get_storage("tpch_storage_dimensions_sensitivity" + identification_string + "_" + "6");
+    bench.range_search_random("tpch_query_dimensions_sensitivity" + identification_string + "_" + "6", get_random_query_tpch<6>, 2000, 1000);
+}
+
+void sensitivity_num_dimensions_5(void) {
+
+    use_tpch_setting(5, micro_tpch_size);
+    md_trie<5> mdtrie(max_depth, trie_depth, max_tree_node);
+    MdTrieBench<5> bench(&mdtrie);
+
+    bench.insert(TPCH_DATA_ADDR, "tpch_insert_dimensions_sensitivity" + identification_string + "_" + "5", total_points_count, parse_line_tpch);
+    bench.get_storage("tpch_storage_dimensions_sensitivity" + identification_string + "_" + "5");
+    bench.range_search_random("tpch_query_dimensions_sensitivity" + identification_string + "_" + "5", get_random_query_tpch<5>, 2000, 1000);
+}
+
+void sensitivity_num_dimensions_4(void) {
+
+    use_tpch_setting(4, micro_tpch_size);
+    md_trie<4> mdtrie(max_depth, trie_depth, max_tree_node);
+    MdTrieBench<4> bench(&mdtrie);
+
+    bench.insert(TPCH_DATA_ADDR, "tpch_insert_dimensions_sensitivity" + identification_string + "_" + "4", total_points_count, parse_line_tpch);
+    bench.get_storage("tpch_storage_dimensions_sensitivity" + identification_string + "_" + "4");
+    bench.range_search_random("tpch_query_dimensions_sensitivity" + identification_string + "_" + "4", get_random_query_tpch<4>, 2000, 1000);
 }
 
 void sensitivity_selectivity(void) {
 
-    optimization_code = OPTIMIZATION_SM;
-    use_tpch_setting(TPCH_DIMENSION, TPCH_SIZE);
+    use_tpch_setting(TPCH_DIMENSION, micro_tpch_size);
     md_trie<TPCH_DIMENSION> mdtrie(max_depth, trie_depth, max_tree_node);
     MdTrieBench<TPCH_DIMENSION> bench(&mdtrie);
 
     bench.insert(TPCH_DATA_ADDR, "tpch_insert_selectivity_sensitivity" + identification_string, total_points_count, parse_line_tpch);
-    bench.range_search_random("tpch_query_selectivity_sensitivity" + identification_string, get_random_query_tpch, total_points_count, 1);
+    bench.range_search_random("tpch_query_selectivity_sensitivity" + identification_string, get_random_query_tpch<TPCH_DIMENSION>, total_points_count, 1);
 }
 
 int main(int argc, char *argv[]) {
 
     std::string argvalue;
+    optimization_code = OPTIMIZATION_SM;
     int arg;
 
-    while ((arg = getopt (argc, argv, "b:")) != -1)
+    while ((arg = getopt (argc, argv, "b:o:")) != -1)
         switch (arg) {
             case 'b':
                 argvalue = std::string(optarg);
+                break;
+            case 'o':
+                optimization = std::string(optarg);
+                if (optimization == "SM")
+                    optimization_code = OPTIMIZATION_SM;
+                if (optimization == "B")
+                    optimization_code = OPTIMIZATION_B;
+                if (optimization == "CN")
+                    optimization_code = OPTIMIZATION_CN;
+                if (optimization == "GM")
+                    optimization_code = OPTIMIZATION_GM;
                 break;
             default:
                 abort ();
         }
     
-    std::cout << "benchmark: " << argvalue << std::endl;
+    std::cout << "benchmark: " << argvalue << ", optimization: " << optimization << std::endl;
     if (argvalue == "tpch") 
         tpch_bench();
     else if (argvalue == "github")
         github_bench();
     else if (argvalue == "nyc")
         nyc_bench();
-    else if (argvalue == "sensitivity_num_dimensions")
-        sensitivity_num_dimensions();
+    else if (argvalue == "sensitivity_num_dimensions") {
+        sensitivity_num_dimensions_9();
+        sensitivity_num_dimensions_8();
+        sensitivity_num_dimensions_7();
+        sensitivity_num_dimensions_6();
+        sensitivity_num_dimensions_5();
+        sensitivity_num_dimensions_4();
+    }
     else if (argvalue == "sensitivity_selectivity") 
         sensitivity_selectivity();
     else 

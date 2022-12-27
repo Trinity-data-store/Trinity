@@ -56,9 +56,10 @@ level_t trie_depth = 6;
 preorder_t max_tree_node = 512;
 point_t points_to_insert = 30000;
 point_t points_to_lookup = 30000;
-std::string results_folder_addr = "/mntData2/results/";
+std::string results_folder_addr = "/proj/trinity-PG0/Trinity/artifact_eval/";
 std::string identification_string = "";
 int optimization_code = OPTIMIZATION_SM;
+std::string optimization = "SM";
 
 /* [QUANTITY, EXTENDEDPRICE, DISCOUNT, TAX, SHIPDATE, COMMITDATE, RECEIPTDATE, TOTALPRICE, ORDERDATE] */
 std::vector<int32_t> tpch_max_values = {50, 10494950, 10, 8, 19981201, 19981031, 19981231, 58063825, 19980802};
@@ -85,7 +86,7 @@ void use_nyc_setting(int dimensions, int _total_points_count) {
     if (optimization_code == OPTIMIZATION_B) {
         bit_widths = {28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28}; 
         start_bits = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}; 
-        identification_string = "B";
+        identification_string = "_B";
         total_points_count /= 50;
         is_collapsed_node_exp = true;
     }
@@ -93,13 +94,13 @@ void use_nyc_setting(int dimensions, int _total_points_count) {
     if (optimization_code == OPTIMIZATION_CN) {
         bit_widths = {28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28}; 
         start_bits = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}; 
-        identification_string = "+CN";
+        identification_string = "_CN";
     }
 
     if (optimization_code == OPTIMIZATION_GM) {
         bit_widths = {18, 20, 10, 10, 10, 10, 8, 28, 25, 10, 11, 22, 25, 8, 25}; // 15 Dimensions;
         start_bits = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}; // 15 Dimensions;
-        identification_string = "+GM";
+        identification_string = "_GM";
     }
 
     start_bits.resize(dimensions);
@@ -123,7 +124,7 @@ void use_github_setting(int dimensions, int _total_points_count) {
     if (optimization_code == OPTIMIZATION_B) {
         bit_widths = {24, 24, 24, 24, 24, 24, 24, 24, 24, 24};
         start_bits = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-        identification_string = "B";
+        identification_string = "_B";
         total_points_count /= 5;
         is_collapsed_node_exp = true;
     }
@@ -131,13 +132,13 @@ void use_github_setting(int dimensions, int _total_points_count) {
     if (optimization_code == OPTIMIZATION_CN) {
         bit_widths = {24, 24, 24, 24, 24, 24, 24, 24, 24, 24};
         start_bits = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-        identification_string = "+CN";
+        identification_string = "_CN";
     }
 
     if (optimization_code == OPTIMIZATION_GM) {
         bit_widths = {24, 24, 24, 24, 24, 24, 24, 16, 24, 24}; 
         start_bits = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-        identification_string = "+GM";
+        identification_string = "_GM";
     }
 
     start_bits.resize(dimensions);
@@ -161,7 +162,7 @@ void use_tpch_setting(int dimensions, int _total_points_count) { /* An extra dim
     if (optimization_code == OPTIMIZATION_B) {
         bit_widths = {32, 32, 32, 32, 32, 32, 32, 32, 32};
         start_bits = {0, 0, 0, 0, 0, 0, 0, 0, 0};
-        identification_string = "B";
+        identification_string = "_B";
         total_points_count /= 5;
         is_collapsed_node_exp = true;
     }
@@ -169,13 +170,13 @@ void use_tpch_setting(int dimensions, int _total_points_count) { /* An extra dim
     if (optimization_code == OPTIMIZATION_CN) {
         bit_widths = {32, 32, 32, 32, 32, 32, 32, 32, 32};
         start_bits = {0, 0, 0, 0, 0, 0, 0, 0, 0};
-        identification_string = "+CN";
+        identification_string = "_CN";
     }
 
     if (optimization_code == OPTIMIZATION_GM) {
         bit_widths = {8, 32, 16, 24, 20, 20, 20, 32, 20};
         start_bits = {0, 0, 0, 0, 0, 0, 0, 0, 0};
-        identification_string = "+GM";
+        identification_string = "_GM";
     }
 
     start_bits.resize(dimensions);
@@ -191,6 +192,12 @@ void flush_vector_to_file(std::vector<TimeStamp> vect, std::string filename){
 
     std::ofstream outFile(filename);
     for (const auto &e : vect) outFile << std::to_string(e) << "\n";
+}
+
+void flush_string_to_file(std::string str, std::string filename){
+
+    std::ofstream outFile(filename);
+    outFile << str << "\n";
 }
 
 void get_query_nyc(std::string line, data_point<NYC_DIMENSION> *start_range, data_point<NYC_DIMENSION> *end_range) {
@@ -309,14 +316,15 @@ void get_query_tpch(std::string line, data_point<TPCH_DIMENSION> *start_range, d
     }
 }
 
-void get_random_query_tpch(data_point<TPCH_DIMENSION> *start_range, data_point<TPCH_DIMENSION> *end_range) {
+template<dimension_t DIMENSION>
+void get_random_query_tpch(data_point<DIMENSION> *start_range, data_point<DIMENSION> *end_range) {
 
-    for (dimension_t i = 0; i < TPCH_DIMENSION; i++){
+    for (dimension_t i = 0; i < DIMENSION; i++){
         start_range->set_coordinate(i, gen_rand(tpch_min_values[i], tpch_max_values[i]));
         end_range->set_coordinate(i, gen_rand(start_range->get_coordinate(i), tpch_max_values[i]));
     }
 
-    for (dimension_t i = 0; i < TPCH_DIMENSION; i++){
+    for (dimension_t i = 0; i < DIMENSION; i++){
         if (i >= 4 && i != 7) {
             start_range->set_coordinate(i, start_range->get_coordinate(i) - 19000000);
             end_range->set_coordinate(i, end_range->get_coordinate(i) - 19000000);

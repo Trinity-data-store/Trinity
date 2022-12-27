@@ -20,7 +20,7 @@ public:
     void insert(std::string data_addr, std::string outfile_name, point_t total_points_count, std::vector<int32_t> (* parse_line)(std::string line)) {
 
         std::ifstream infile(data_addr);
-        TimeStamp start, diff = 0;
+        TimeStamp start = 0, diff = 0;
         point_t n_points = 0;
         point_t has_skipped = 0;
         data_point<DIMENSION> leaf_point;
@@ -58,14 +58,13 @@ public:
         }    
 
         std::cout << "Insertion Latency: " << (float) diff / n_points << std::endl;
-        std::cout << "mdtrie storage: " << mdtrie_->size(p_key_to_treeblock_compact) << std::endl;
         flush_vector_to_file(insertion_latency_vect_, results_folder_addr + outfile_name);
         infile.close();
     }
 
     void lookup(std::string outfile_name) {
 
-        TimeStamp cumulative, start = 0;
+        TimeStamp cumulative = 0, start = 0;
 
         for (point_t i = 0; i < points_to_lookup; i ++) {
 
@@ -88,7 +87,7 @@ public:
 
         std::ifstream file(query_addr);
         std::ofstream outfile(results_folder_addr + outfile_name);
-        TimeStamp diff, start = 0;
+        TimeStamp diff = 0, start = 0;
 
         for (int i = 0; i < QUERY_NUM; i ++) {
 
@@ -111,7 +110,7 @@ public:
     void range_search_random(std::string outfile_name, void (*get_query) (data_point<DIMENSION> *, data_point<DIMENSION> *), unsigned int upper_bound, unsigned int lower_bound) {
 
         std::ofstream outfile(results_folder_addr + outfile_name);
-        TimeStamp diff, start = 0;
+        TimeStamp diff = 0, start = 0;
         int i = 0;
 
         while (i < QUERY_NUM * 10) {
@@ -133,6 +132,13 @@ public:
             found_points.clear();
             i += 1;
         }
+    }
+
+    void get_storage(std::string outfile_name) {
+
+        uint64_t size = mdtrie_->size(p_key_to_treeblock_compact);
+        std::cout << "mdtrie storage: " << size << std::endl;
+        flush_string_to_file(std::to_string(size), results_folder_addr + outfile_name);
     }
 
 protected:

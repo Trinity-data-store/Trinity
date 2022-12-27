@@ -110,6 +110,7 @@ public:
 #endif
     inserted_points_ ++;
     for (const auto &coordinate : point) outfile_ << coordinate << ",";
+    outfile_ << primary_key << "," << inserted_points_;
     outfile_ << std::endl;
     return inserted_points_;
   }
@@ -128,6 +129,7 @@ public:
 #endif
     inserted_points_ ++;
     for (const auto &coordinate : point) outfile_ << coordinate << ",";
+    outfile_ << primary_key << "," << inserted_points_;
     outfile_ << std::endl;
     return inserted_points_;
   }
