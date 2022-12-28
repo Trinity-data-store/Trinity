@@ -30,17 +30,17 @@ enum {
     NYC = 3,
 };
 
-std::string TPCH_DATA_ADDR = "/mntData2/dataset_csv/tpch_dataset.csv";
-std::string GITHUB_DATA_ADDR =  "/mntData2/dataset_csv/github_dataset.csv";
-std::string NYC_DATA_ADDR =  "/mntData2/dataset_csv/nyc_dataset.csv";
+std::string TPCH_DATA_ADDR = "/mntData/dataset_csv/tpch_dataset.csv";
+std::string GITHUB_DATA_ADDR =  "/mntData/dataset_csv/github_dataset.csv";
+std::string NYC_DATA_ADDR =  "/mntData/dataset_csv/nyc_dataset.csv";
 
-std::string TPCH_SPLIT_ADDR = "/mntData2/dataset_csv/tpch_split/";
-std::string GITHUB_SPLIT_ADDR =  "/mntData2/dataset_csv/github_split/";
-std::string NYC_SPLIT_ADDR =  "/mntData2/dataset_csv/nyc_split/";
+std::string TPCH_SPLIT_ADDR = "/mntData/dataset_csv/tpch_split/";
+std::string GITHUB_SPLIT_ADDR =  "/mntData/dataset_csv/github_split/";
+std::string NYC_SPLIT_ADDR =  "/mntData/dataset_csv/nyc_split/";
 
-std::string TPCH_QUERY_ADDR =  "/mntData2/queries/tpch_query";
-std::string GITHUB_QUERY_ADDR =  "/mntData2/queries/github_query";
-std::string NYC_QUERY_ADDR = "/mntData2/queries/nyc_query";
+std::string TPCH_QUERY_ADDR =  "/mntData/queries/tpch_query";
+std::string GITHUB_QUERY_ADDR =  "/mntData/queries/github_query";
+std::string NYC_QUERY_ADDR = "/mntData/queries/nyc_query";
 
 unsigned int skip_size_count = 0;
 /* Because it results in otherwise OOM for other benchmarks. */

@@ -9,13 +9,9 @@ git config --global user.name "MaoZiming"
 git config --global user.email "ziming.mao@yale.edu"
 
 # Path
-trinity_path="/users/Ziming/Trinity"
 dependencies_path="/proj/trinity-PG0/dependencies"
 local_path="/mntData"
 data_dir="/mntData2"
-
-cd "$trinity_path"
-git pull origin main
 
 # Basic setup
 sudo apt update

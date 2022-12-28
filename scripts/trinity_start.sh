@@ -1,3 +1,4 @@
+#!/bin/bash
 
 cd /proj/trinity-PG0/Trinity/build/
 make

@@ -58,7 +58,7 @@ public:
         }    
 
         std::cout << "Insertion Latency: " << (float) diff / n_points << std::endl;
-        flush_vector_to_file(insertion_latency_vect_, results_folder_addr + outfile_name);
+        flush_vector_to_file(insertion_latency_vect_, results_folder_addr + "microbenchmark/" + outfile_name);
         infile.close();
     }
 
@@ -79,14 +79,14 @@ public:
 
             lookup_latency_vect_.push_back(temp_diff);
         }
-        flush_vector_to_file(lookup_latency_vect_, results_folder_addr + outfile_name);
+        flush_vector_to_file(lookup_latency_vect_, results_folder_addr + "microbenchmark/" + outfile_name);
         std::cout << "Done! " << "Lookup Latency per point: " << (float) cumulative / points_to_lookup << std::endl;
     }
 
     void range_search(std::string query_addr, std::string outfile_name, void (*get_query) (std::string, data_point<DIMENSION> *, data_point<DIMENSION> *)) {
 
         std::ifstream file(query_addr);
-        std::ofstream outfile(results_folder_addr + outfile_name);
+        std::ofstream outfile(results_folder_addr + "microbenchmark/" + outfile_name);
         TimeStamp diff = 0, start = 0;
 
         for (int i = 0; i < QUERY_NUM; i ++) {
@@ -109,7 +109,7 @@ public:
 
     void range_search_random(std::string outfile_name, void (*get_query) (data_point<DIMENSION> *, data_point<DIMENSION> *), unsigned int upper_bound, unsigned int lower_bound) {
 
-        std::ofstream outfile(results_folder_addr + outfile_name);
+        std::ofstream outfile(results_folder_addr + "microbenchmark/" + outfile_name);
         TimeStamp diff = 0, start = 0;
         int i = 0;
 
@@ -138,7 +138,7 @@ public:
 
         uint64_t size = mdtrie_->size(p_key_to_treeblock_compact);
         std::cout << "mdtrie storage: " << size << std::endl;
-        flush_string_to_file(std::to_string(size) + "," + std::to_string(total_points_count), results_folder_addr + outfile_name);
+        flush_string_to_file(std::to_string(size) + "," + std::to_string(total_points_count), results_folder_addr + "microbenchmark/" + outfile_name);
     }
 
 protected:

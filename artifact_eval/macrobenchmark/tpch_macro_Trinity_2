@@ -1,0 +1,11 @@
+2: Insert Throughput (pt / seconds): 208768
+size: 2091805821
+2: Lookup Throughput (pt / seconds): 169192
+2: 95 lookup, 5 insert Throughput (pt / seconds): 165145
+2: 95 lookup, 5 insert Throughput (pt / seconds): 171138
+2: Insert Throughput (pt / seconds): 202779
+size: 1720289997
+2: 95 lookup, 5 insert Throughput (pt / seconds): 166000
+2: Insert Throughput (pt / seconds): 202407
+size: 2231851067
+2: 95 lookup, 5 insert Throughput (pt / seconds): 168358

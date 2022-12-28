@@ -17,6 +17,10 @@
 #include "../../libmdtrie/bench/parser.hpp"
 #include <future>
 
+const int shard_num = 20;
+const int client_num = 100;
+const int client_server_number = 10;
+
 class TrinityBench {
     public:
         TrinityBench(int shard_num, int client_num, int client_server_num, std::vector<std::string> server_ips, int dataset_idx, int dataset_part) {
@@ -27,7 +31,8 @@ class TrinityBench {
             dataset_part_ = dataset_part;
             client_server_num_ = client_server_num;
             primary_key_offset_ = 0; /* This is for mixed query workload, to ensure that same insertion does not go to the same shard */
-
+            dataset_idx_ = dataset_idx;
+            
             auto client = MDTrieClient(server_ips_, shard_num_);
             if (!client.ping(dataset_idx)){
                 std::cerr << "Server setting wrong!" << std::endl;
@@ -42,7 +47,7 @@ class TrinityBench {
                     num_dimensions_ = TPCH_DIMENSION;
                     max_values_ = tpch_max_values;
                     min_values_ = tpch_min_values;
-                    query_out_addr_ = results_folder_addr + "macro_tpch_query_latency";
+                    query_out_addr_ = results_folder_addr + "macrobenchmark/tpch_macro_Trinity_query_latency";
                     load_dataset(parse_line_tpch);
                     load_queries(update_range_search_range_tpch);
                     break;
@@ -53,7 +58,7 @@ class TrinityBench {
                     num_dimensions_ = GITHUB_DIMENSION;
                     max_values_ = github_max_values;
                     min_values_ = github_min_values;
-                    query_out_addr_ = results_folder_addr + "macro_github_query_latency";
+                    query_out_addr_ = results_folder_addr + "macrobenchmark/github_macro_Trinity_query_latency";
                     load_dataset(parse_line_github);
                     load_queries(update_range_search_range_github);
                     break;
@@ -64,7 +69,7 @@ class TrinityBench {
                     num_dimensions_ = NYC_DIMENSION;
                     max_values_ = nyc_max_values;
                     min_values_ = nyc_min_values;
-                    query_out_addr_ = results_folder_addr + "macro_nyc_query_latency";
+                    query_out_addr_ = results_folder_addr + "macrobenchmark/nyc_macro_Trinity_query_latency";
                     load_dataset(parse_line_nyc);
                     load_queries(update_range_search_range_nyc);
                     break;
@@ -79,11 +84,11 @@ class TrinityBench {
             std::vector<std::future<uint32_t>> threads; 
             threads.reserve(client_num_);
 
-            std::cout << "Started warmup\n" << std::endl;
+            std::cout << "Started warmup" << std::endl;
             this->warmup();
 
             for (int i = 0; i < client_num_; i++){
-                threads.push_back(std::async(&TrinityBench::insert_each_client, this, i, (dataset_size_ / client_server_num_ - warmup_size_)));
+                threads.push_back(std::async(&TrinityBench::insert_each_client, this, i, dataset_size_));
             }
 
             uint32_t total_throughput = 0;
@@ -99,7 +104,7 @@ class TrinityBench {
             threads.reserve(client_num_);
 
             for (int i = 0; i < client_num_; i++){
-                threads.push_back(std::async(&TrinityBench::lookup_each_client, this, i, dataset_size_ / client_server_num_));
+                threads.push_back(std::async(&TrinityBench::lookup_each_client, this, i, dataset_size_));
             }
 
             uint32_t total_throughput = 0;
@@ -133,7 +138,7 @@ class TrinityBench {
             primary_key_offset_ = 1;
 
             for (int i = 0; i < num_lookup; i++){
-                threads.push_back(std::async(&TrinityBench::lookup_each_client, this, i, dataset_size_ / client_server_num_));
+                threads.push_back(std::async(&TrinityBench::lookup_each_client, this, i, dataset_size_));
             }
 
             for (int i = 0; i < num_search; i++) {
@@ -141,11 +146,11 @@ class TrinityBench {
             }
 
             for (int i = 0; i < num_insert; i++) {
-                threads.push_back(std::async(&TrinityBench::insert_each_client, this, i, dataset_size_ / client_server_num_));
+                threads.push_back(std::async(&TrinityBench::insert_each_client, this, i, dataset_size_));
             }
 
             uint32_t total_throughput = 0;
-            for (int i = 0; i < client_num_; i++){
+            for (int i = 0; i < num_lookup + num_search + num_insert; i++){
                 total_throughput += threads[i].get();
             } 
 
@@ -166,8 +171,7 @@ class TrinityBench {
 
             std::ofstream outFile(query_out_addr_);
 
-            for (int i = 0; i < QUERY_NUM; i ++) {
-
+            for (int i = 0; i < QUERY_NUM; i ++) {           
                 std::vector<int32_t> found_points;
                 start = GetTimestamp();
                 client.range_search_trie(found_points, queries_start_vect_[i], queries_end_vect_[i]);
@@ -201,6 +205,8 @@ class TrinityBench {
                 parse_query(start_range, end_range, line);
                 queries_start_vect_.push_back(start_range);
                 queries_end_vect_.push_back(end_range);
+                start_range = min_values_;
+                end_range = max_values_;
             }
         }
 
@@ -227,7 +233,7 @@ class TrinityBench {
 
             for (uint32_t point_idx = 0; point_idx < warmup_size_; point_idx ++){
                 vector <int32_t> data_point = points_vect_[point_idx];
-                client.insert(data_point, data_point[0]);
+                client.insert(data_point, point_idx);
             }
         }
 
@@ -271,6 +277,7 @@ class TrinityBench {
         int client_index_;
         int client_server_num_;
         int dataset_part_;
+        int dataset_idx_;
         int primary_key_offset_;
         std::vector<std::string> server_ips_;
         uint32_t dataset_size_;
