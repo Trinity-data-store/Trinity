@@ -125,7 +125,7 @@ public:
             mdtrie_->range_search_trie(&start_range, &end_range, mdtrie_->root(), 0, found_points);
             diff = GetTimestamp() - start;
 
-            if (found_points.size() > upper_bound || found_points.size() < lower_bound)
+            if (found_points.size() / DIMENSION > upper_bound || found_points.size() / DIMENSION < lower_bound)
                 continue;
 
             outfile << "Query " << i << " end to end latency (ms): " << diff / 1000 << ", found points count: " << found_points.size() / DIMENSION << std::endl;

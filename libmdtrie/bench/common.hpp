@@ -43,6 +43,11 @@ std::string GITHUB_QUERY_ADDR =  "/mntData2/queries/github_query";
 std::string NYC_QUERY_ADDR = "/mntData2/queries/nyc_query";
 
 unsigned int skip_size_count = 0;
+/* Because it results in otherwise OOM for other benchmarks. */
+int micro_tpch_size = 250000000;
+int micro_github_size = 200000000;
+int micro_nyc_size = 200000000;
+bool is_microbenchmark = false;
 
 enum {
     OPTIMIZATION_SM = 0, /* Default*/
@@ -60,6 +65,8 @@ std::string results_folder_addr = "/proj/trinity-PG0/Trinity/artifact_eval/";
 std::string identification_string = "";
 int optimization_code = OPTIMIZATION_SM;
 std::string optimization = "SM";
+float selectivity_upper = 0.0015;
+float selectivity_lower = 0.0005;
 
 /* [QUANTITY, EXTENDEDPRICE, DISCOUNT, TAX, SHIPDATE, COMMITDATE, RECEIPTDATE, TOTALPRICE, ORDERDATE] */
 std::vector<int32_t> tpch_max_values = {50, 10494950, 10, 8, 19981201, 19981031, 19981231, 58063825, 19980802};
@@ -87,19 +94,21 @@ void use_nyc_setting(int dimensions, int _total_points_count) {
         bit_widths = {28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28}; 
         start_bits = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}; 
         identification_string = "_B";
-        total_points_count /= 50;
+        total_points_count = micro_nyc_size / 10;
         is_collapsed_node_exp = true;
     }
 
     if (optimization_code == OPTIMIZATION_CN) {
         bit_widths = {28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28}; 
         start_bits = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}; 
+        total_points_count = micro_nyc_size;
         identification_string = "_CN";
     }
 
     if (optimization_code == OPTIMIZATION_GM) {
         bit_widths = {18, 20, 10, 10, 10, 10, 8, 28, 25, 10, 11, 22, 25, 8, 25}; // 15 Dimensions;
         start_bits = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}; // 15 Dimensions;
+        total_points_count = micro_nyc_size;
         identification_string = "_GM";
     }
 
@@ -119,13 +128,14 @@ void use_github_setting(int dimensions, int _total_points_count) {
     std::vector<level_t> start_bits = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0}; // 10 Dimensions;
     total_points_count = _total_points_count;
     is_collapsed_node_exp = false;
-    skip_size_count = 500000000;
+    if (is_microbenchmark)
+        skip_size_count = 500000000;
 
     if (optimization_code == OPTIMIZATION_B) {
         bit_widths = {24, 24, 24, 24, 24, 24, 24, 24, 24, 24};
         start_bits = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
         identification_string = "_B";
-        total_points_count /= 50;
+        total_points_count = micro_github_size / 5; /* Otherwise quiery will return too few points */
         is_collapsed_node_exp = true;
     }
 
@@ -133,12 +143,14 @@ void use_github_setting(int dimensions, int _total_points_count) {
         bit_widths = {24, 24, 24, 24, 24, 24, 24, 24, 24, 24};
         start_bits = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
         identification_string = "_CN";
+        total_points_count = micro_github_size;
     }
 
     if (optimization_code == OPTIMIZATION_GM) {
         bit_widths = {24, 24, 24, 24, 24, 24, 24, 16, 24, 24}; 
         start_bits = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
         identification_string = "_GM";
+        total_points_count = micro_github_size;
     }
 
     start_bits.resize(dimensions);
@@ -163,7 +175,7 @@ void use_tpch_setting(int dimensions, int _total_points_count) { /* An extra dim
         bit_widths = {32, 32, 32, 32, 32, 32, 32, 32, 32};
         start_bits = {0, 0, 0, 0, 0, 0, 0, 0, 0};
         identification_string = "_B";
-        total_points_count /= 50;
+        total_points_count = micro_tpch_size / 10;
         is_collapsed_node_exp = true;
     }
 
@@ -171,12 +183,14 @@ void use_tpch_setting(int dimensions, int _total_points_count) { /* An extra dim
         bit_widths = {32, 32, 32, 32, 32, 32, 32, 32, 32};
         start_bits = {0, 0, 0, 0, 0, 0, 0, 0, 0};
         identification_string = "_CN";
+        total_points_count = micro_tpch_size / 5; /* Otherwise Will be too slow */
     }
 
     if (optimization_code == OPTIMIZATION_GM) {
         bit_widths = {8, 32, 16, 24, 20, 20, 20, 32, 20};
         start_bits = {0, 0, 0, 0, 0, 0, 0, 0, 0};
         identification_string = "_GM";
+        total_points_count = micro_tpch_size;
     }
 
     start_bits.resize(dimensions);
@@ -200,9 +214,10 @@ void flush_string_to_file(std::string str, std::string filename){
     outFile << str << "\n";
 }
 
-void get_query_nyc(std::string line, data_point<NYC_DIMENSION> *start_range, data_point<NYC_DIMENSION> *end_range) {
+template<dimension_t DIMENSION>
+void get_query_nyc(std::string line, data_point<DIMENSION> *start_range, data_point<DIMENSION> *end_range) {
 
-    for (dimension_t i = 0; i < NYC_DIMENSION; i++){
+    for (dimension_t i = 0; i < DIMENSION; i++){
         start_range->set_coordinate(i, nyc_min_values[i]);
         end_range->set_coordinate(i, nyc_max_values[i]);
     }
@@ -217,8 +232,8 @@ void get_query_nyc(std::string line, data_point<NYC_DIMENSION> *start_range, dat
         std::string end_range_str;
         std::getline(ss, end_range_str, ',');
 
-        int index = std::stoul(index_str);
-        if (start_range_str != "-1") {
+        dimension_t index = std::stoul(index_str);
+        if (start_range_str != "-1" && index < DIMENSION) {
             if (index >= 2 && index <= 5) {
                 float num_float = std::stof(start_range_str);
                 start_range->set_coordinate(index, static_cast<int32_t>(num_float * 10));                    
@@ -226,7 +241,7 @@ void get_query_nyc(std::string line, data_point<NYC_DIMENSION> *start_range, dat
             else 
                 start_range->set_coordinate(index, std::stoul(start_range_str));
         }
-        if (end_range_str != "-1") {
+        if (end_range_str != "-1" && index < DIMENSION) {
             if (index >= 2 && index <= 5) {
                 float num_float = std::stof(end_range_str);
                 end_range->set_coordinate(index, static_cast<int32_t>(num_float * 10));                    
@@ -243,9 +258,10 @@ void get_query_nyc(std::string line, data_point<NYC_DIMENSION> *start_range, dat
 
 }
 
-void get_query_github(std::string line, data_point<GITHUB_DIMENSION> *start_range, data_point<GITHUB_DIMENSION> *end_range) {
+template<dimension_t DIMENSION>
+void get_query_github(std::string line, data_point<DIMENSION> *start_range, data_point<DIMENSION> *end_range) {
 
-    for (dimension_t i = 0; i < GITHUB_DIMENSION; i++){
+    for (dimension_t i = 0; i < DIMENSION; i++){
         start_range->set_coordinate(i, github_min_values[i]);
         end_range->set_coordinate(i, github_max_values[i]);
     }
@@ -260,14 +276,14 @@ void get_query_github(std::string line, data_point<GITHUB_DIMENSION> *start_rang
         std::string end_range_str;
         std::getline(ss, end_range_str, ',');
 
-        int index = std::stoul(index_str);
+        dimension_t index = std::stoul(index_str);
         if (index > 10)
             index -= 3;
 
-        if (start_range_str != "-1") {
+        if (start_range_str != "-1" && index < DIMENSION) {
             start_range->set_coordinate(index, std::stoul(start_range_str));
         }
-        if (end_range_str != "-1") {
+        if (end_range_str != "-1" && index < DIMENSION) {
             end_range->set_coordinate(index, std::stoul(end_range_str));
         }
     }
@@ -280,10 +296,11 @@ void get_query_github(std::string line, data_point<GITHUB_DIMENSION> *start_rang
     }
 }
 
-void get_query_tpch(std::string line, data_point<TPCH_DIMENSION> *start_range, data_point<TPCH_DIMENSION> *end_range) {
+template<dimension_t DIMENSION>
+void get_query_tpch(std::string line, data_point<DIMENSION> *start_range, data_point<DIMENSION> *end_range) {
 
 
-    for (dimension_t i = 0; i < TPCH_DIMENSION; i++){
+    for (dimension_t i = 0; i < DIMENSION; i++){
         start_range->set_coordinate(i, tpch_min_values[i]);
         end_range->set_coordinate(i, tpch_max_values[i]);
     }
@@ -300,15 +317,15 @@ void get_query_tpch(std::string line, data_point<TPCH_DIMENSION> *start_range, d
         std::string end_range_str;
         std::getline(ss, end_range_str, ',');
 
-        if (start_range_str != "-1") {
+        if (start_range_str != "-1" && std::stoul(index_str) < DIMENSION) {
             start_range->set_coordinate(std::stoul(index_str), std::stoul(start_range_str));
         }
-        if (end_range_str != "-1") {
+        if (end_range_str != "-1" && std::stoul(index_str) < DIMENSION) {
             end_range->set_coordinate(std::stoul(index_str), std::stoul(end_range_str));
         }
     }
     
-    for (dimension_t i = 0; i < TPCH_DIMENSION; i++){
+    for (dimension_t i = 0; i < DIMENSION; i++){
         if (i >= 4 && i != 7) {
             start_range->set_coordinate(i, start_range->get_coordinate(i) - 19000000);
             end_range->set_coordinate(i, end_range->get_coordinate(i) - 19000000);
