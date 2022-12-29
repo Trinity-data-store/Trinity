@@ -16,6 +16,7 @@
 #include "../../libmdtrie/bench/common.hpp"
 #include "../../libmdtrie/bench/parser.hpp"
 #include <future>
+#include "MDTrieShardClient.h"
 
 const int shard_num = 20;
 const int client_num = 100;
@@ -27,7 +28,6 @@ class TrinityBench {
             shard_num_ = shard_num;
             client_num_ = client_num;
             server_ips_ = server_ips;
-            warmup_size_ = 1000000;
             dataset_part_ = dataset_part;
             client_server_num_ = client_server_num;
             primary_key_offset_ = 0; /* This is for mixed query workload, to ensure that same insertion does not go to the same shard */
@@ -77,6 +77,8 @@ class TrinityBench {
                     std::cerr << "Unrecognized dataset idx: " << dataset_idx << std::endl;
                     exit(-1);
             }
+
+            warmup_size_ = dataset_size_ / 100;
         };
 
         uint32_t insert_benchmark(void) {
@@ -84,6 +86,7 @@ class TrinityBench {
             std::vector<std::future<uint32_t>> threads; 
             threads.reserve(client_num_);
 
+            std::cout << "Started warmup: " << warmup_size_ << std::endl;
             this->warmup();
             std::cout << "Finished warmup" << std::endl;
 
@@ -95,6 +98,7 @@ class TrinityBench {
             for (int i = 0; i < client_num_; i++){
                 total_throughput += threads[i].get();
             } 
+            std::cout << "Finished insert_benchmark" << std::endl;
             return total_throughput;  
         }
 
@@ -111,6 +115,7 @@ class TrinityBench {
             for (int i = 0; i < client_num_; i++){
                 total_throughput += threads[i].get();
             } 
+            std::cout << "Finished lookup_benchmark" << std::endl;
             return total_throughput;              
         }
 
@@ -128,6 +133,7 @@ class TrinityBench {
             for (int i = 0; i < search_client_num; i++){
                 total_throughput += threads[i].get();
             } 
+            std::cout << "Finished search_benchmark" << std::endl;
             return total_throughput;              
         }
 
@@ -136,7 +142,9 @@ class TrinityBench {
             std::vector<std::future<uint32_t>> threads; 
             threads.reserve(client_num_);
             primary_key_offset_ = 1;
+            uint32_t benchmark_count_stopped = dataset_size_ / client_num_; 
 
+#if 0
             for (int i = 0; i < num_lookup; i++){
                 threads.push_back(std::async(&TrinityBench::lookup_each_client, this, i, dataset_size_));
             }
@@ -148,18 +156,25 @@ class TrinityBench {
             for (int i = 0; i < num_insert; i++) {
                 threads.push_back(std::async(&TrinityBench::insert_each_client, this, i, dataset_size_));
             }
+#endif
+            for (int i = 0; i < num_insert + num_lookup + num_search; i ++) {
+                threads.push_back(std::async(&TrinityBench::mixed_query_each_client, this, i, num_insert, num_lookup, num_search, benchmark_count_stopped));
+            }
 
             uint32_t total_throughput = 0;
             for (int i = 0; i < num_lookup + num_search + num_insert; i++){
                 total_throughput += threads[i].get();
             } 
-
             primary_key_offset_ = 0;
+            std::cout << "Finished mixed_query_benchmark" << std::endl;
             return total_throughput;    
         }
 
         uint32_t get_size(void) {
             auto client = MDTrieClient(server_ips_, shard_num_);
+#ifndef TEST_STORAGE 
+            std::cout << "TEST_STORAGE not defined!" << std::endl;
+#endif
             return client.get_size();
         }
 
@@ -187,6 +202,7 @@ class TrinityBench {
     protected:
 
         void load_dataset(std::vector<int32_t> (* parse_line)(std::string)) {
+            std::cout << "Start load_dataset" << std::endl;
             std::ifstream file(dataset_addr_);
             std::string line;
             unsigned int loaded_pts = 0;
@@ -276,6 +292,44 @@ class TrinityBench {
             }
             diff = GetTimestamp() - start;
             return ((float) search_points_count / diff) * 1000000; 
+        }
+
+        uint32_t mixed_query_each_client(int client_index, int num_insert, int num_lookup, int num_search, uint32_t benchmark_count_stopped) {
+
+            auto client = MDTrieClient(server_ips_, shard_num_);
+            TimeStamp start, diff = 0; 
+            uint32_t benchmark_count = client_index; /* Each client starts from a different position */
+            int num_insert_lookup_search = num_insert + num_lookup + num_search;
+
+            std::cout << "mixed_query_each_client: " << client_index << "," << num_insert << "," << num_lookup << "," << num_search << "," << benchmark_count_stopped << std::endl;
+            start = GetTimestamp();
+
+            while (benchmark_count < benchmark_count_stopped) {
+                
+                int random_num = gen_rand(0, num_insert_lookup_search - 1);
+                if (random_num % num_insert_lookup_search < num_insert) {
+                    /* Insert */
+                    int point_idx = benchmark_count % dataset_size_;
+                    vector <int32_t> data_point = points_vect_[point_idx];
+                    client.insert(data_point, point_idx + primary_key_offset_);
+                    benchmark_count ++;
+
+                } else if (random_num % num_insert_lookup_search < num_insert + num_lookup) {
+                    /* Lookup */
+                    int point_idx = benchmark_count % dataset_size_;
+                    std::vector<int32_t> rec_vect;
+                    client.primary_key_lookup(rec_vect, point_idx);
+                    benchmark_count ++;
+                } else {
+                    /* Search*/
+                    std::vector<int32_t> found_points;
+                    client.range_search_trie_send(queries_start_vect_[benchmark_count % QUERY_NUM], queries_end_vect_[benchmark_count % QUERY_NUM]);
+                    client.range_search_trie_rec(found_points);
+                    benchmark_count += found_points.size() / num_dimensions_;
+                }
+            }
+            diff = GetTimestamp() - start;
+            return ((float) benchmark_count / diff) * 1000000; 
         }
 
         int shard_num_;

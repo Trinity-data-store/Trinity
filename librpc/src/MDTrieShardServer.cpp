@@ -32,7 +32,11 @@ using namespace apache::thrift::server;
 
 int num_shards = 20;
 const int root_port = 9090;
-
+#ifndef TEST_STORAGE
+const int compact_vector_extra = 5000000;
+#else
+const int compact_vector_extra = 1;
+#endif
 template<dimension_t DIMENSION>
 class MDTrieHandler : public MDTrieShardIf {
 public:
@@ -50,7 +54,7 @@ public:
 
     if (dataset_idx == GITHUB) // Github
     { 
-      total_points_count = GITHUB_SIZE / (num_shards * 5) + 1; 
+      total_points_count = GITHUB_SIZE / (num_shards * 5) + compact_vector_extra; 
       use_github_setting(GITHUB_DIMENSION, total_points_count);
       mdtrie_ = new md_trie<DIMENSION>(max_depth, trie_depth, max_tree_node);
       std::cout << "Github experiment started" << DIMENSION << "," << total_points_count <<  std::endl; 
@@ -58,7 +62,7 @@ public:
 
     else if (dataset_idx == TPCH) // TPC-H
     {
-      total_points_count = TPCH_SIZE / (num_shards * 5) + 1; 
+      total_points_count = TPCH_SIZE / (num_shards * 5) + compact_vector_extra; 
       use_tpch_setting(TPCH_DIMENSION, total_points_count);
       mdtrie_ = new md_trie<DIMENSION>(max_depth, trie_depth, max_tree_node);
       std::cout << "Tpch experiment started: " << DIMENSION << "," << total_points_count <<  std::endl; 
@@ -66,7 +70,7 @@ public:
 
     else if (dataset_idx == NYC) // NYC Taxi
     {
-      total_points_count = NYC_SIZE / (num_shards * 5) + 1; 
+      total_points_count = NYC_SIZE / (num_shards * 5) + compact_vector_extra; 
       use_nyc_setting(NYC_DIMENSION, total_points_count);
       mdtrie_ = new md_trie<DIMENSION>(max_depth, trie_depth, max_tree_node);
       std::cout << "NYC experiment started" << DIMENSION << "," << total_points_count <<  std::endl; 

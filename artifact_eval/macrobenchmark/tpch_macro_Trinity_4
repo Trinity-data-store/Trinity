@@ -18,3 +18,17 @@ size: 1002239909,100000000
 4: Search Throughput (pt / seconds): 247636
 4: Insert Throughput (pt / seconds): 114446
 size: 1002599141,100000000
+4: Insert Throughput (pt / seconds): 112495
+size: 995931798,100000000
+4: Insert Throughput (pt / seconds): 122426
+size: 768332702,10000001
+4: Insert Throughput (pt / seconds): 124157
+size: 1318684960,10000001
+4: 95 lookup, 5 insert Throughput (pt / seconds): 84993
+4: 10 search, 90 insert Throughput (pt / seconds): 190101
+4: Insert Throughput (pt / seconds): 116280
+size: 3485252343,50000001
+4: Insert Throughput (pt / seconds): 112214
+size: 3752635629,100000000
+4: 95 lookup, 5 insert Throughput (pt / seconds): 80566
+4: 10 search, 90 insert Throughput (pt / seconds): 300472

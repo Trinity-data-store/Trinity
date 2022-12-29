@@ -18,3 +18,19 @@ size: 333818404,100000000
 0: Search Throughput (pt / seconds): 213356
 0: Insert Throughput (pt / seconds): 113485
 size: 1002599141,100000000
+0: Insert Throughput (pt / seconds): 110863
+size: 1002638101,100000000
+0: Insert Throughput (pt / seconds): 123562
+size: 765832110,10000001
+0: Insert Throughput (pt / seconds): 125949
+size: 1318375587,10000001
+0: 95 lookup, 5 insert Throughput (pt / seconds): 85183
+0: 95 search, 5 insert Throughput (pt / seconds): 1118433
+0: 10 search, 90 insert Throughput (pt / seconds): 672344
+0: Insert Throughput (pt / seconds): 116079
+size: 3485230941,50000001
+0: Insert Throughput (pt / seconds): 111486
+size: 3752635629,100000000
+0: 95 lookup, 5 insert Throughput (pt / seconds): 80629
+0: 95 search, 5 insert Throughput (pt / seconds): 1186270
+0: 10 search, 90 insert Throughput (pt / seconds): 477366

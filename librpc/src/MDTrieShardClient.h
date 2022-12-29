@@ -1,3 +1,6 @@
+#ifndef MDTRIESHARD_CLIENT_H
+#define MDTRIESHARD_CLIENT_H
+
 #include <iostream>
 
 #include <thrift/protocol/TBinaryProtocol.h>
@@ -188,3 +191,5 @@ private:
   std::vector<MDTrieShardClient> shard_vector_; 
   std::vector<int32_t> shard_queried_cnt_;
 };
+
+#endif // MDTRIESHARD_CLIENT_H

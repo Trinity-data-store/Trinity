@@ -23,6 +23,7 @@
 #define NYC_DIMENSION 15
 
 #define QUERY_NUM 1000
+// #define TEST_STORAGE 
 
 enum {
     TPCH = 1,
