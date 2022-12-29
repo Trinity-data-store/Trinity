@@ -16,3 +16,5 @@ size: 2691089781,100000000
 size: 1002239909,100000000
 7: Lookup Throughput (pt / seconds): 100687
 7: Search Throughput (pt / seconds): 421949
+7: Insert Throughput (pt / seconds): 113828
+size: 1000903873,100000000
