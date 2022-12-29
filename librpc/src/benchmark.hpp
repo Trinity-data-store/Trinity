@@ -84,8 +84,8 @@ class TrinityBench {
             std::vector<std::future<uint32_t>> threads; 
             threads.reserve(client_num_);
 
-            std::cout << "Started warmup" << std::endl;
             this->warmup();
+            std::cout << "Finished warmup" << std::endl;
 
             for (int i = 0; i < client_num_; i++){
                 threads.push_back(std::async(&TrinityBench::insert_each_client, this, i, dataset_size_));
@@ -180,6 +180,10 @@ class TrinityBench {
             }
         }
 
+        uint32_t get_dataset_size(void) {
+            return dataset_size_;
+        }
+
     protected:
 
         void load_dataset(std::vector<int32_t> (* parse_line)(std::string)) {
@@ -192,6 +196,8 @@ class TrinityBench {
                 if (loaded_pts > dataset_size_)
                     break;
             }
+            dataset_size_ = loaded_pts;
+            std::cout << "Dataset size: " << dataset_size_ << std::endl;
         }
 
         void load_queries(void (* parse_query)(std::vector<int32_t> &, std::vector<int32_t> &, std::string)) {

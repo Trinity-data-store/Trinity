@@ -59,7 +59,7 @@ public:
     else if (dataset_idx == TPCH) // TPC-H
     {
       total_points_count = TPCH_SIZE / (num_shards * 5) + 1; 
-      use_github_setting(TPCH_DIMENSION, total_points_count);
+      use_tpch_setting(TPCH_DIMENSION, total_points_count);
       mdtrie_ = new md_trie<DIMENSION>(max_depth, trie_depth, max_tree_node);
       std::cout << "Tpch experiment started: " << DIMENSION << "," << total_points_count <<  std::endl; 
     }

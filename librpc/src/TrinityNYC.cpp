@@ -52,10 +52,10 @@ int main(int argc, char *argv[]){
     if (benchmark_str == "insert") {
         throughput = bench.insert_benchmark();
         outfile << dataset_part << ": Insert Throughput (pt / seconds): " << throughput << std::endl;    
-        outfile << dataset_part << ": size: " << bench.get_size() << std::endl; /* So that storage doesn't need to load it again */
+        outfile << "size: " << bench.get_size() << "," << bench.get_dataset_size() << std::endl; /* So that storage doesn't need to load it again */
     }
     else if (benchmark_str == "storage") {
-        outfile << "size: " << bench.get_size() << "," << NYC_SIZE << std::endl;
+        outfile << "size: " << bench.get_size() << "," << bench.get_dataset_size() << std::endl;
     }
     else if (benchmark_str == "lookup") {
         throughput = bench.lookup_benchmark();
