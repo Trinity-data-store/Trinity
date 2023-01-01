@@ -2,121 +2,24 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../libmdtrie/src)
 
-if(FALSE)
-add_executable(TrinityFS
-        src/TrinityFS.cpp
-        src/TrinityBenchShared.h
-        src/MDTrieShardClient.h
-        src/MDTrieShard.h
-        src/MDTrieShard.cpp)
-
-add_executable(TrinityOSM
-        src/TrinityOSM.cpp
-        src/MDTrieShardClient.h
-        src/MDTrieShard.h
-        src/TrinityBenchShared.h
-        src/MDTrieShard.cpp)
-
 add_executable(TrinityTPCH
         src/TrinityTPCH.cpp
         src/MDTrieShardClient.h
         src/MDTrieShard.h
-        src/TrinityBenchShared.h
         src/MDTrieShard.cpp)
 
-endif()
-
-add_executable(TrinityTPCHQuery
-        src/TrinityTPCHQuery.cpp
+add_executable(TrinityGithub
+        src/TrinityGithub.cpp
         src/MDTrieShardClient.h
         src/MDTrieShard.h
-        src/TrinityBenchShared.h
         src/MDTrieShard.cpp)
 
-add_executable(TrinityInsertionLookupLatency
-        src/TrinityInsertionLookupLatency.cpp
+add_executable(TrinityNYC
+        src/TrinityNYC.cpp
         src/MDTrieShardClient.h
         src/MDTrieShard.h
-        src/TrinityBenchShared.h
         src/MDTrieShard.cpp)
 
-add_executable(TrinityGithubQuery
-        src/TrinityGithubQuery.cpp
-        src/MDTrieShardClient.h
-        src/MDTrieShard.h
-        src/TrinityBenchShared.h
-        src/MDTrieShard.cpp)
-
-add_executable(TrinityTPCHLookup
-        src/TrinityTPCHLookup.cpp
-        src/MDTrieShardClient.h
-        src/MDTrieShard.h
-        src/TrinityBenchShared.h
-        src/MDTrieShard.cpp)
-
-add_executable(TrinityGithubLookup
-        src/TrinityGithubLookup.cpp
-        src/MDTrieShardClient.h
-        src/MDTrieShard.h
-        src/TrinityBenchShared.h
-        src/MDTrieShard.cpp)
-
-add_executable(TrinityNYCLookup
-        src/TrinityNYCLookup.cpp
-        src/MDTrieShardClient.h
-        src/MDTrieShard.h
-        src/TrinityBenchShared.h
-        src/MDTrieShard.cpp)
-
-
-add_executable(TrinityNYCQuery
-        src/TrinityNYCQuery.cpp
-        src/MDTrieShardClient.h
-        src/MDTrieShard.h
-        src/TrinityBenchShared.h
-        src/MDTrieShard.cpp)
-
-add_executable(TrinityTPCHInsert
-        src/TrinityTPCHInsert.cpp
-        src/MDTrieShardClient.h
-        src/MDTrieShard.h
-        src/TrinityBenchShared.h
-        src/MDTrieShard.cpp)
-
-add_executable(TrinityGithubInsert
-        src/TrinityGithubInsert.cpp
-        src/MDTrieShardClient.h
-        src/MDTrieShard.h
-        src/TrinityBenchShared.h
-        src/MDTrieShard.cpp)
-
-add_executable(TrinityNYCInsert
-        src/TrinityNYCInsert.cpp
-        src/MDTrieShardClient.h
-        src/MDTrieShard.h
-        src/TrinityBenchShared.h
-        src/MDTrieShard.cpp)
-
-add_executable(TrinityStorage
-        src/TrinityStorage.cpp
-        src/MDTrieShardClient.h
-        src/MDTrieShard.h
-        src/TrinityBenchShared.h
-        src/MDTrieShard.cpp)
-
-add_executable(TrinityTPCHInsertQuery
-        src/TrinityTPCHInsertQuery.cpp
-        src/MDTrieShardClient.h
-        src/MDTrieShard.h
-        src/TrinityBenchShared.h
-        src/MDTrieShard.cpp)
-
-add_executable(TrinityTPCHInsertLookup
-        src/TrinityTPCHInsertLookup.cpp
-        src/MDTrieShardClient.h
-        src/MDTrieShard.h
-        src/TrinityBenchShared.h
-        src/MDTrieShard.cpp)
 
 add_executable(MDTrieShardServer
         src/MDTrieShardServer.cpp
@@ -127,56 +30,14 @@ set(RPC_LIBS ${THRIFT_LIBRARY}
             ${THRIFTNB_LIBRARY}
             ${LIBEVENT_LIBRARY})
 
-if(FALSE)
-target_link_libraries(TrinityFS ${MDTRIE_LIBS} ${RPC_LIBS} event thrift)
-add_dependencies(TrinityFS thrift_ep)
-
-target_link_libraries(TrinityOSM ${MDTRIE_LIBS} ${RPC_LIBS} event thrift)
-add_dependencies(TrinityOSM thrift_ep)
-
 target_link_libraries(TrinityTPCH ${MDTRIE_LIBS} ${RPC_LIBS} event thrift)
 add_dependencies(TrinityTPCH thrift_ep)
 
-endif()
+target_link_libraries(TrinityGithub ${MDTRIE_LIBS} ${RPC_LIBS} event thrift)
+add_dependencies(TrinityGithub thrift_ep)
 
-target_link_libraries(TrinityTPCHQuery ${MDTRIE_LIBS} ${RPC_LIBS} event thrift)
-add_dependencies(TrinityTPCHQuery thrift_ep)
-
-target_link_libraries(TrinityInsertionLookupLatency ${MDTRIE_LIBS} ${RPC_LIBS} event thrift)
-add_dependencies(TrinityInsertionLookupLatency thrift_ep)
-
-target_link_libraries(TrinityGithubQuery ${MDTRIE_LIBS} ${RPC_LIBS} event thrift)
-add_dependencies(TrinityGithubQuery thrift_ep)
-
-target_link_libraries(TrinityStorage ${MDTRIE_LIBS} ${RPC_LIBS} event thrift)
-add_dependencies(TrinityStorage thrift_ep)
-
-target_link_libraries(TrinityTPCHLookup ${MDTRIE_LIBS} ${RPC_LIBS} event thrift)
-add_dependencies(TrinityTPCHLookup thrift_ep)
-
-target_link_libraries(TrinityNYCLookup ${MDTRIE_LIBS} ${RPC_LIBS} event thrift)
-add_dependencies(TrinityNYCLookup thrift_ep)
-
-target_link_libraries(TrinityGithubLookup ${MDTRIE_LIBS} ${RPC_LIBS} event thrift)
-add_dependencies(TrinityGithubLookup thrift_ep)
-
-target_link_libraries(TrinityTPCHInsert ${MDTRIE_LIBS} ${RPC_LIBS} event thrift)
-add_dependencies(TrinityTPCHInsert thrift_ep)
-
-target_link_libraries(TrinityNYCInsert ${MDTRIE_LIBS} ${RPC_LIBS} event thrift)
-add_dependencies(TrinityNYCInsert thrift_ep)
-
-target_link_libraries(TrinityNYCQuery ${MDTRIE_LIBS} ${RPC_LIBS} event thrift)
-add_dependencies(TrinityNYCQuery thrift_ep)
-
-target_link_libraries(TrinityTPCHInsertQuery ${MDTRIE_LIBS} ${RPC_LIBS} event thrift)
-add_dependencies(TrinityTPCHInsertQuery thrift_ep)
-
-target_link_libraries(TrinityTPCHInsertLookup ${MDTRIE_LIBS} ${RPC_LIBS} event thrift)
-add_dependencies(TrinityTPCHInsertLookup thrift_ep)
-
-target_link_libraries(TrinityGithubInsert ${MDTRIE_LIBS} ${RPC_LIBS} event thrift)
-add_dependencies(TrinityGithubInsert thrift_ep)
+target_link_libraries(TrinityNYC ${MDTRIE_LIBS} ${RPC_LIBS} event thrift)
+add_dependencies(TrinityNYC thrift_ep)
 
 target_link_libraries(MDTrieShardServer ${MDTRIE_LIBS} ${RPC_LIBS} event thrift)
 add_dependencies(MDTrieShardServer thrift_ep)

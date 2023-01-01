@@ -1,3 +1,6 @@
+#ifndef MDTRIESHARD_CLIENT_H
+#define MDTRIESHARD_CLIENT_H
+
 #include <iostream>
 
 #include <thrift/protocol/TBinaryProtocol.h>
@@ -12,32 +15,6 @@ using namespace std;
 using namespace apache::thrift;
 using namespace apache::thrift::protocol;
 using namespace apache::thrift::transport;
-
-/*
-std::vector<int32_t> *node_path_to_coordinates(std::vector<int32_t> &node_path, dimension_t dimension) const{
-    
-    // Will be free-ed in the benchmark code
-
-    for (level_t i = 0; i < max_depth_; i++){
-        morton_t current_symbol = node_path[i];
-        morton_t current_symbol_pos = level_to_num_children[i] - 1;
-
-        for (dimension_t j = 0; j < dimension; j++){
-
-            if (dimension_to_num_bits[j] <= i || i < start_dimension_bits[j])
-                continue;         
-
-            level_t current_bit = GETBIT(current_symbol, current_symbol_pos);
-            current_symbol_pos --;
-
-            point_t coordinate = coordinates->get_coordinate(j);
-            coordinate = (coordinate << 1) + current_bit;
-            coordinates->set_coordinate(j, coordinate);
-        }
-    }
-    return coordinates;
-}
-*/
 
 class MDTrieClient {
 
@@ -72,13 +49,6 @@ public:
     return connect(ip_address, port_num);
   }
 
-  void clear_trie(){
-
-    int client_count = shard_vector_.size();
-    for (uint16_t i = 0; i < client_count; i++)
-      shard_vector_[i].send_clear_trie();
-  }
-
   bool ping(int32_t dataset_idx){
 
     int client_count = shard_vector_.size();
@@ -89,7 +59,6 @@ public:
     }
     return true;
   }
-
 
   int32_t insert_for_latency(vector<int32_t> point, int32_t p_key){
 
@@ -123,25 +92,6 @@ public:
     int shard_index = p_key % shard_vector_.size();
     shard_vector_[shard_index].send_check(point);
     return shard_vector_[shard_index].recv_check();
-  }
-
-
-  void get_insert_latency(std::vector<int32_t> & return_vect){
-    int client_count = shard_vector_.size();
-    for (uint16_t i = 0; i < client_count; i++){
-      std::vector<int32_t> return_vect_tmp;
-      shard_vector_[i].get_insert_latency(return_vect_tmp);
-      return_vect.insert(return_vect.end(), return_vect_tmp.begin(), return_vect_tmp.end());
-    }  
-  }
-
-  void get_lookup_latency(std::vector<int32_t> & return_vect){
-    int client_count = shard_vector_.size();
-    for (uint16_t i = 0; i < client_count; i++){
-      std::vector<int32_t> return_vect_tmp;
-      shard_vector_[i].get_lookup_latency(return_vect_tmp);
-      return_vect.insert(return_vect.end(), return_vect_tmp.begin(), return_vect_tmp.end());
-    }  
   }
 
   void check_send(vector<int32_t> point, int32_t p_key){
@@ -241,3 +191,5 @@ private:
   std::vector<MDTrieShardClient> shard_vector_; 
   std::vector<int32_t> shard_queried_cnt_;
 };
+
+#endif // MDTRIESHARD_CLIENT_H

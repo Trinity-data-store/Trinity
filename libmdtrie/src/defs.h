@@ -111,7 +111,6 @@ n_leaves_t treeblock_ctr = 0;
 std::mutex cache_lock;
 
 std::unordered_map<int32_t, int32_t> client_to_server;
-// std::vector<int32_t> primary_key_vect_total;
 bool enable_client_cache_pkey_mapping = false;
 bool REUSE_RANGE_SEARCH_CHILD = true;
 
@@ -122,9 +121,7 @@ int lookup_scanned_nodes = 0;
 uint64_t bare_minimum_count = 0;
 uint64_t checked_points_count = 0;
 int query_optimization = 2;
-// #define COLLAPSED_NODE_EXP
-// #define COLLAPSED_NODE_EXP_REDUCED
-
+bool is_collapsed_node_exp = false;
 
 void create_level_to_num_children(std::vector<level_t> bit_widths, std::vector<level_t> start_bits, level_t max_level){
 
@@ -141,9 +138,8 @@ void create_level_to_num_children(std::vector<level_t> bit_widths, std::vector<l
                 dimension_left --;
         }
         level_to_num_children[level] = dimension_left;
-        // std::cout << "level: " << level << ", dimension: " << dimension_left << std::endl;
     }
-    // exit(0);
 }
 
+// #define USE_LINEAR_SCAN // Possibly disable at microbenchmark
 #endif //MD_TRIE_DEFS_H

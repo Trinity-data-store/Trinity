@@ -1,23 +1,67 @@
-cd /proj/trinity-PG0/Trinity/build
+#!/bin/bash
+
+cd build
 make
 
-# echo "trinity - TPCH"
-# /proj/trinity-PG0/Trinity/build/libmdtrie/tpch_bench >> tpch_bench_log
+echo "*** tpch ***"
+taskset -c 0 /proj/trinity-PG0/Trinity/build/libmdtrie/microbench -b tpch -o SM & 
+sleep 10
 
-echo "trinity - Github"
-/proj/trinity-PG0/Trinity/build/libmdtrie/github_bench >> github_bench_log
+echo "*** github ***"
+taskset -c 1 /proj/trinity-PG0/Trinity/build/libmdtrie/microbench -b github -o SM & 
+sleep 10
 
-echo "trinity - NYC"
-/proj/trinity-PG0/Trinity/build/libmdtrie/nyc_bench >> nyc_bench_log
+echo "*** nyc ***"
+taskset -c 2 /proj/trinity-PG0/Trinity/build/libmdtrie/microbench -b nyc -o SM & 
+sleep 10
 
-# cd baselines/phtree/phtree-cpp/build/
-# make
+echo "*** sensitivity_num_dimensions ***"
+taskset -c 3 /proj/trinity-PG0/Trinity/build/libmdtrie/microbench -b sensitivity_num_dimensions -o SM -d 9 & 
+sleep 10
 
-# echo "phtree - TPCH"
-# ./microbench/micro_tpch >> phtree_tpch_log
+taskset -c 14 /proj/trinity-PG0/Trinity/build/libmdtrie/microbench -b sensitivity_num_dimensions -o SM -d 8 & 
+sleep 10
 
-# echo "phtree - Github"
-# ./microbench/micro_github >> phtree_github_log
+taskset -c 15 /proj/trinity-PG0/Trinity/build/libmdtrie/microbench -b sensitivity_num_dimensions -o SM -d 7 & 
+sleep 10
 
-# echo "phtree - NYC"
-# ./microbench/micro_nyc >> phtree_nyc_log
+taskset -c 16 /proj/trinity-PG0/Trinity/build/libmdtrie/microbench -b sensitivity_num_dimensions -o SM -d 6 & 
+sleep 10
+
+taskset -c 17 /proj/trinity-PG0/Trinity/build/libmdtrie/microbench -b sensitivity_num_dimensions -o SM -d 5 & 
+sleep 10
+
+taskset -c 18 /proj/trinity-PG0/Trinity/build/libmdtrie/microbench -b sensitivity_num_dimensions -o SM -d 4 & 
+sleep 10
+
+echo "*** sensitivity_selectivity ***"
+taskset -c 4 /proj/trinity-PG0/Trinity/build/libmdtrie/microbench -b sensitivity_selectivity -o SM
+sleep 10
+
+echo "*** sensitivity_optimizations ***"
+taskset -c 5 /proj/trinity-PG0/Trinity/build/libmdtrie/microbench -b tpch -o B &
+sleep 10
+
+taskset -c 6 /proj/trinity-PG0/Trinity/build/libmdtrie/microbench -b tpch -o CN &
+sleep 10
+
+taskset -c 7 /proj/trinity-PG0/Trinity/build/libmdtrie/microbench -b tpch -o GM &
+sleep 10
+
+taskset -c 8 /proj/trinity-PG0/Trinity/build/libmdtrie/microbench -b github -o B &
+sleep 10
+
+taskset -c 9 /proj/trinity-PG0/Trinity/build/libmdtrie/microbench -b github -o CN &
+sleep 10
+
+taskset -c 10 /proj/trinity-PG0/Trinity/build/libmdtrie/microbench -b github -o GM &
+sleep 10
+
+taskset -c 11 /proj/trinity-PG0/Trinity/build/libmdtrie/microbench -b nyc -o B &
+sleep 10
+
+taskset -c 12 /proj/trinity-PG0/Trinity/build/libmdtrie/microbench -b nyc -o CN &
+sleep 10
+
+taskset -c 13 /proj/trinity-PG0/Trinity/build/libmdtrie/microbench -b nyc -o GM &
+sleep 10

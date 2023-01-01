@@ -1,0 +1,34 @@
+8: Insert Throughput (pt / seconds): 291413
+size: 637654769
+8: Lookup Throughput (pt / seconds): 169581
+8: 95 lookup, 5 insert Throughput (pt / seconds): 167117
+8: 95 lookup, 5 insert Throughput (pt / seconds): 172257
+8: Insert Throughput (pt / seconds): 291550
+size: 416039987
+8: 95 lookup, 5 insert Throughput (pt / seconds): 168585
+8: Insert Throughput (pt / seconds): 202535
+size: 2231851067
+8: 95 lookup, 5 insert Throughput (pt / seconds): 167829
+8: Insert Throughput (pt / seconds): 135997
+size: 2682895097,100000000
+8: Lookup Throughput (pt / seconds): 141907
+8: Insert Throughput (pt / seconds): 114491
+size: 1002239909,100000000
+8: Lookup Throughput (pt / seconds): 100742
+8: Search Throughput (pt / seconds): 373671
+8: Insert Throughput (pt / seconds): 112834
+size: 1002599141,100000000
+8: Insert Throughput (pt / seconds): 111407
+size: 1002638101,100000000
+8: Insert Throughput (pt / seconds): 122728
+size: 768589588,10000001
+8: Insert Throughput (pt / seconds): 124094
+size: 1318430932,10000001
+8: 95 lookup, 5 insert Throughput (pt / seconds): 84887
+8: 10 search, 90 insert Throughput (pt / seconds): 292573
+8: Insert Throughput (pt / seconds): 116532
+size: 3485252343,50000001
+8: Insert Throughput (pt / seconds): 115331
+size: 3716822957,100000000
+8: 95 lookup, 5 insert Throughput (pt / seconds): 80631
+8: 10 search, 90 insert Throughput (pt / seconds): 258411

@@ -561,11 +561,10 @@ public:
                 shifted = true;
                 morton_t total_bits_to_shift = 0;
                 for (level_t i = level + 1; i < max_depth_; i++) {
-                    #ifdef COLLAPSED_NODE_EXP
-                    total_bits_to_shift += (1 << level_to_num_children[i]); 
-                    #else
-                    total_bits_to_shift += level_to_num_children[i];    // Compressed Node Representation
-                    #endif
+                    if (is_collapsed_node_exp)
+                        total_bits_to_shift += (1 << level_to_num_children[i]); 
+                    else
+                        total_bits_to_shift += level_to_num_children[i];    // Compressed Node Representation
                 }
 
                 dfuds_->shift_backward(node, node_pos, total_bits_to_shift, max_depth_ - level - 1);
@@ -582,11 +581,10 @@ public:
 
                 if (!shifted)
                 {
-                    #ifdef COLLAPSED_NODE_EXP
-                    dfuds_->ClearWidth(from_node_pos, (1 << level_to_num_children[current_level]), true);
-                    #else
-                    dfuds_->ClearWidth(from_node_pos, level_to_num_children[current_level], true);
-                    #endif
+                    if (is_collapsed_node_exp)
+                        dfuds_->ClearWidth(from_node_pos, (1 << level_to_num_children[current_level]), true);
+                    else
+                        dfuds_->ClearWidth(from_node_pos, level_to_num_children[current_level], true);
                     dfuds_->ClearWidth(from_node, 1, false);
                 }
                 morton_t next_symbol = leaf_point->leaf_to_symbol(current_level);
@@ -613,11 +611,11 @@ public:
         {
             uint64_t total_extra_bits = 0; 
             for (unsigned int i = level; i < max_depth_; i++){
-                #ifdef COLLAPSED_NODE_EXP
-                total_extra_bits += (1 << level_to_num_children[i]);
-                #else
-                total_extra_bits += level_to_num_children[i];
-                #endif
+                if (is_collapsed_node_exp)
+                    total_extra_bits += (1 << level_to_num_children[i]);
+                else
+                    total_extra_bits += level_to_num_children[i];
+                
             }
 
             dfuds_->keep_bits(total_nodes_bits_, true);
@@ -1182,6 +1180,10 @@ public:
                 coordinate = (coordinate << 1) + current_bit;
                 coordinates->set_coordinate(j, coordinate);
             }
+        }
+        if (!coordinates) {
+            std::cerr << "TPCH: range search failed!" << std::endl;
+            exit(-1);
         }
         return coordinates;
     }
