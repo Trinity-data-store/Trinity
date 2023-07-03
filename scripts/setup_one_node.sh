@@ -15,6 +15,7 @@ data_dir="/mntData2"
 
 # Basic setup
 sudo apt update
+# sudo apt upgrade
 sudo apt install htop
 sudo apt-get install dstat
 cd $dependencies_path

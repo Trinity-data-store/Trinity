@@ -6,23 +6,28 @@
 #include <cstdlib>
 #include <cstring>
 
-template <dimension_t DIMENSION> class data_point {
+template<dimension_t DIMENSION>
+class data_point
+{
 public:
   explicit data_point() {}
 
-  inline point_t *get() { return coordinates_; }
+  inline point_t* get() { return coordinates_; }
 
-  inline void set(point_t *coordinates) {
+  inline void set(point_t* coordinates)
+  {
 
     memcpy(coordinates_, coordinates, sizeof(point_t) * DIMENSION);
   }
 
-  inline point_t get_coordinate(dimension_t index) {
+  inline point_t get_coordinate(dimension_t index)
+  {
 
     return coordinates_[index];
   }
 
-  inline void set_coordinate(dimension_t index, point_t value) {
+  inline void set_coordinate(dimension_t index, point_t value)
+  {
 
     coordinates_[index] = value;
   }
@@ -31,7 +36,8 @@ public:
 
   inline n_leaves_t read_primary() { return primary_key_; }
 
-  inline morton_t leaf_to_symbol(level_t level) {
+  inline morton_t leaf_to_symbol(level_t level)
+  {
 
     morton_t result = 0;
     dimension_t dimension = DIMENSION;
@@ -49,7 +55,8 @@ public:
     return result;
   }
 
-  inline morton_t leaf_to_full_symbol(level_t level) {
+  inline morton_t leaf_to_full_symbol(level_t level)
+  {
 
     morton_t result = 0;
     dimension_t dimension = DIMENSION;
@@ -64,7 +71,8 @@ public:
     return result;
   }
 
-  uint64_t coordinate_to_raw_morton() {
+  uint64_t coordinate_to_raw_morton()
+  {
 
     uint64_t result = 0;
 
@@ -80,8 +88,10 @@ public:
     return result;
   }
 
-  inline void update_symbol(data_point *end_range, morton_t current_symbol,
-                            level_t level) {
+  inline void update_symbol(data_point* end_range,
+                            morton_t current_symbol,
+                            level_t level)
+  {
 
     dimension_t dimension = DIMENSION;
     size_t visited_ct = 0;
@@ -105,13 +115,13 @@ public:
       // Bring the start of the search range to second half
       if (symbol_bit && !start_bit) {
         start_coordinate =
-            start_coordinate & compressed_bitmap::low_bits_unset[offset];
+          start_coordinate & compressed_bitmap::low_bits_unset[offset];
         SETBIT(start_coordinate, offset);
       }
       // Bring the end of the search range to first half
       if (!symbol_bit && end_bit) {
         end_coordinate =
-            end_coordinate | compressed_bitmap::low_bits_set[offset];
+          end_coordinate | compressed_bitmap::low_bits_set[offset];
         CLRBIT(end_coordinate, offset);
       }
       coordinates_[j] = start_coordinate;
@@ -125,7 +135,8 @@ public:
     //     end_range->coordinates_[5] = end_range->coordinates_[6];
   }
 
-  std::vector<int32_t> generate_vector() {
+  std::vector<int32_t> generate_vector()
+  {
     std::vector<int32_t> return_pt(DIMENSION);
 
     for (unsigned i = 0; i < DIMENSION; i++) {
@@ -141,7 +152,7 @@ private:
    * "struct" for range search Range search can either return a vector of
    * coordinates or a vector of primary keys
    */
-  point_t coordinates_[DIMENSION] = {0};
+  point_t coordinates_[DIMENSION] = { 0 };
   n_leaves_t primary_key_ = 0;
 };
 

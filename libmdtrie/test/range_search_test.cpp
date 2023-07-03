@@ -3,9 +3,13 @@
 
 const int DIMENSION = 10;
 
-bool test_range_search(n_leaves_t n_points, level_t max_depth,
-                       level_t trie_depth, preorder_t max_tree_nodes,
-                       uint32_t n_itr) {
+bool
+test_range_search(n_leaves_t n_points,
+                  level_t max_depth,
+                  level_t trie_depth,
+                  preorder_t max_tree_nodes,
+                  uint32_t n_itr)
+{
 
   /**
       First insert random points into the mdtrie
@@ -16,10 +20,11 @@ bool test_range_search(n_leaves_t n_points, level_t max_depth,
   bitmap::CompactPtrVector tmp_ptr_vect(n_points);
   p_key_to_treeblock_compact = &tmp_ptr_vect;
   create_level_to_num_children(std::vector<level_t>(DIMENSION, max_depth),
-                               std::vector<level_t>(DIMENSION, 0), max_depth);
+                               std::vector<level_t>(DIMENSION, 0),
+                               max_depth);
 
   auto range = (point_t)pow(2, max_depth);
-  auto *mdtrie = new md_trie<DIMENSION>(max_depth, trie_depth, max_tree_nodes);
+  auto* mdtrie = new md_trie<DIMENSION>(max_depth, trie_depth, max_tree_nodes);
   data_point<DIMENSION> leaf_point;
   std::vector<data_point<DIMENSION>> all_leaf_points;
   point_t max[DIMENSION];
@@ -54,12 +59,13 @@ bool test_range_search(n_leaves_t n_points, level_t max_depth,
     for (dimension_t i = 0; i < DIMENSION; i++) {
       start_range.set_coordinate(i, min[i] + rand() % (max[i] - min[i] + 1));
       end_range.set_coordinate(
-          i, start_range.get_coordinate(i) +
-                 rand() % (max[i] - start_range.get_coordinate(i) + 1));
+        i,
+        start_range.get_coordinate(i) +
+          rand() % (max[i] - start_range.get_coordinate(i) + 1));
     }
 
-    mdtrie->range_search_trie(&start_range, &end_range, mdtrie->root(), 0,
-                              found_points);
+    mdtrie->range_search_trie(
+      &start_range, &end_range, mdtrie->root(), 0, found_points);
 
     for (n_leaves_t i = 0; i < found_points.size() / DIMENSION; i++) {
       data_point<DIMENSION> leaf;
@@ -94,6 +100,7 @@ bool test_range_search(n_leaves_t n_points, level_t max_depth,
   return true;
 }
 
-TEST_CASE("Test Range Search", "[trie]") {
+TEST_CASE("Test Range Search", "[trie]")
+{
   REQUIRE(test_range_search(100000, 10, 3, 128, 500));
 }

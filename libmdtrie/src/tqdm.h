@@ -12,13 +12,14 @@
 #include <unistd.h>
 #include <vector>
 
-class tqdm {
+class tqdm
+{
 private:
   // time, iteration counters and deques for rate calculations
   std::chrono::time_point<std::chrono::system_clock> t_first =
-      std::chrono::system_clock::now();
+    std::chrono::system_clock::now();
   std::chrono::time_point<std::chrono::system_clock> t_old =
-      std::chrono::system_clock::now();
+    std::chrono::system_clock::now();
   int n_old = 0;
   std::vector<double> deq_t;
   std::vector<int> deq_n;
@@ -29,8 +30,9 @@ private:
   bool use_ema = true;
   float alpha_ema = 0.1;
 
-  std::vector<const char *> bars = {" ", "▏", "▎", "▍", "▌",
-                                    "▋", "▊", "▉", "█"};
+  std::vector<const char*> bars = {
+    " ", "▏", "▎", "▍", "▌", "▋", "▊", "▉", "█"
+  };
 
   bool in_screen = (system("test $STY") == 0);
   bool in_tmux = (system("test $TMUX") == 0);
@@ -42,7 +44,8 @@ private:
   std::string right_pad = "▏";
   std::string label = "";
 
-  void hsv_to_rgb(float h, float s, float v, int &r, int &g, int &b) {
+  void hsv_to_rgb(float h, float s, float v, int& r, int& g, int& b)
+  {
     if (s < 1e-6) {
       v *= 255.;
       r = v;
@@ -85,7 +88,8 @@ private:
   }
 
 public:
-  tqdm() {
+  tqdm()
+  {
     if (in_screen) {
       set_theme_basic();
       color_transition = false;
@@ -94,7 +98,8 @@ public:
     }
   }
 
-  void reset() {
+  void reset()
+  {
     t_first = std::chrono::system_clock::now();
     t_old = std::chrono::system_clock::now();
     n_old = 0;
@@ -106,37 +111,46 @@ public:
     label = "";
   }
 
-  void set_theme_line() {
-    bars = {"─", "─", "─", "╾", "╾", "╾", "╾", "━", "═"};
+  void set_theme_line()
+  {
+    bars = { "─", "─", "─", "╾", "╾", "╾", "╾", "━", "═" };
   }
-  void set_theme_circle() {
-    bars = {" ", "◓", "◑", "◒", "◐", "◓", "◑", "◒", "#"};
+  void set_theme_circle()
+  {
+    bars = { " ", "◓", "◑", "◒", "◐", "◓", "◑", "◒", "#" };
   }
-  void set_theme_braille() {
-    bars = {" ", "⡀", "⡄", "⡆", "⡇", "⡏", "⡟", "⡿", "⣿"};
+  void set_theme_braille()
+  {
+    bars = { " ", "⡀", "⡄", "⡆", "⡇", "⡏", "⡟", "⡿", "⣿" };
   }
-  void set_theme_braille_spin() {
-    bars = {" ", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠇", "⠿"};
+  void set_theme_braille_spin()
+  {
+    bars = { " ", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠇", "⠿" };
   }
-  void set_theme_vertical() {
-    bars = {"▁", "▂", "▃", "▄", "▅", "▆", "▇", "█", "█"};
+  void set_theme_vertical()
+  {
+    bars = { "▁", "▂", "▃", "▄", "▅", "▆", "▇", "█", "█" };
   }
-  void set_theme_basic() {
-    bars = {" ", " ", " ", " ", " ", " ", " ", " ", "#"};
+  void set_theme_basic()
+  {
+    bars = { " ", " ", " ", " ", " ", " ", " ", " ", "#" };
     right_pad = "|";
   }
   void set_label(std::string label_) { label = label_; }
-  void disable_colors() {
+  void disable_colors()
+  {
     color_transition = false;
     use_colors = false;
   }
 
-  void finish() {
+  void finish()
+  {
     progress(total_, total_);
     printf("\n");
     fflush(stdout);
   }
-  void progress(int curr, int tot) {
+  void progress(int curr, int tot)
+  {
     if (is_tty && (curr % period == 0)) {
       total_ = tot;
       nupdates++;
@@ -170,7 +184,7 @@ public:
       // and slowing down the loop, shoot for ~25Hz and smooth over 3 seconds
       if (nupdates > 10) {
         period =
-            (int)(std::min(std::max((1.0 / 25) * curr / dt_tot, 1.0), 5e5));
+          (int)(std::min(std::max((1.0 / 25) * curr / dt_tot, 1.0), 5e5));
         smoothing = 25 * 3;
       }
       double peta = (tot - curr) / avgrate;
@@ -218,8 +232,13 @@ public:
         unit = "kHz";
         div = 1.0e3;
       }
-      printf("[%4d/%4d | %3.1f %s | %.0fs<%.0fs] ", curr, tot, avgrate / div,
-             unit.c_str(), dt_tot, peta);
+      printf("[%4d/%4d | %3.1f %s | %.0fs<%.0fs] ",
+             curr,
+             tot,
+             avgrate / div,
+             unit.c_str(),
+             dt_tot,
+             peta);
       printf("%s ", label.c_str());
       if (use_colors)
         printf("\033[0m\033[32m\033[0m\015 ");

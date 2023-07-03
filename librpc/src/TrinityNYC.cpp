@@ -23,7 +23,9 @@ using namespace apache::thrift;
 using namespace apache::thrift::protocol;
 using namespace apache::thrift::transport;
 
-int main(int argc, char *argv[]) {
+int
+main(int argc, char* argv[])
+{
 
   int dataset_part;
   std::string benchmark_str;
@@ -33,26 +35,27 @@ int main(int argc, char *argv[]) {
   while ((arg = getopt(argc, argv, "b:d:")) != -1) {
 
     switch (arg) {
-    case 'd':
-      dataset_part = stoi(optarg);
-      break;
-    case 'b':
-      benchmark_str = std::string(optarg);
-      break;
-    default:
-      abort();
+      case 'd':
+        dataset_part = stoi(optarg);
+        break;
+      case 'b':
+        benchmark_str = std::string(optarg);
+        break;
+      default:
+        abort();
     }
   }
 
   std::ofstream outfile(results_folder_addr +
-                            "macrobenchmark/nyc_macro_Trinity_" +
-                            std::to_string(dataset_part),
+                          "macrobenchmark/nyc_macro_Trinity_" +
+                          std::to_string(dataset_part),
                         ios_base::app);
 
   std::vector<std::string> server_ips = {
-      "10.10.1.12", "10.10.1.13", "10.10.1.14", "10.10.1.15", "10.10.1.16"};
-  TrinityBench bench(shard_num, client_num, client_server_number, server_ips,
-                     NYC, dataset_part);
+    "10.10.1.12", "10.10.1.13", "10.10.1.14", "10.10.1.15", "10.10.1.16"
+  };
+  TrinityBench bench(
+    shard_num, client_num, client_server_number, server_ips, NYC, dataset_part);
 
   if (benchmark_str == "insert") {
     throughput = bench.insert_benchmark();
