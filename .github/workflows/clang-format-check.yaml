@@ -14,6 +14,6 @@ jobs:
     - name: Run clang-format style check for C/C++/Protobuf programs.
       uses: jidicula/clang-format-action@v4.11.0
       with:
-        clang-format-version: '6'
+        clang-format-version: '6.0'
         check-path: ${{ matrix.path }}
         fallback-style: 'Mozilla' # optional
