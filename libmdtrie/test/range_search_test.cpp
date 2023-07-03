@@ -47,7 +47,7 @@ bool test_range_search(n_leaves_t n_points, level_t max_depth, level_t trie_dept
 
     for (uint32_t itr = 1; itr <= n_itr; itr++) {
 
-        std::vector<data_point<DIMENSION>> found_points;
+        std::vector<int32_t> found_points;
 
         for (dimension_t i = 0; i < DIMENSION; i++) {
             start_range.set_coordinate(i, min[i] + rand() % (max[i] - min[i] + 1));
@@ -56,8 +56,11 @@ bool test_range_search(n_leaves_t n_points, level_t max_depth, level_t trie_dept
 
         mdtrie->range_search_trie(&start_range, &end_range, mdtrie->root(), 0, found_points);
 
-        for (n_leaves_t i = 0; i < found_points.size(); i++) {
-            data_point<DIMENSION> leaf = found_points[i];
+        for (n_leaves_t i = 0; i < found_points.size() / DIMENSION; i++) {
+            data_point<DIMENSION> leaf;
+            for (dimension_t j = 0; j < DIMENSION; j++)
+                leaf.set_coordinate(j, found_points[i * DIMENSION + j]);
+
             if (!mdtrie->check(&leaf)) {
                 return false;
             }
@@ -78,7 +81,7 @@ bool test_range_search(n_leaves_t n_points, level_t max_depth, level_t trie_dept
             if (in_range)
                 correct_found_size ++;
         }
-        if (correct_found_size != found_points.size())
+        if (correct_found_size != found_points.size() / DIMENSION)
             return false;
 
     }
@@ -88,5 +91,5 @@ bool test_range_search(n_leaves_t n_points, level_t max_depth, level_t trie_dept
 }
 
 TEST_CASE("Test Range Search", "[trie]") {
-    REQUIRE(test_range_search(10000, 10, 3, 128, 5));
+    REQUIRE(test_range_search(100000, 10, 3, 128, 500));
 }
