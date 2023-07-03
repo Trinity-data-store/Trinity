@@ -1,4 +1,4 @@
 #!/bin/bash
 
-find ./libmdtrie -iname *.h -o -iname *.cpp | xargs clang-format -i -style Mozilla
-find ./librpc -iname *.h -o -iname *.cpp | xargs clang-format -i -style Mozilla
+find ./libmdtrie -name *.h -o -name *.cpp -o -name *.hpp | xargs clang-format -i -style Mozilla
+find ./librpc -name *.h -o -name *.cpp -o -name *.hpp | xargs clang-format -i -style Mozilla
