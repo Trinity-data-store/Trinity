@@ -2,7 +2,7 @@
 
 # Run from Cloudlab
 # git clone https://github.com/MaoZiming/Trinity.git
-# bash /proj/Trinity/scripts/initialize_node_scratch.sh
+# bash /proj/trinity-PG0/Trinity/scripts/setup_one_node.sh
 
 # Update Github
 git config --global user.name "MaoZiming"
@@ -100,5 +100,4 @@ exit 0
 
 # FILE DESCRIPTOR!!
 # https://unix.stackexchange.com/a/691947
-# WTF!!!
 # Why is VScode terminal showing different behaviors
