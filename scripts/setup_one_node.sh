@@ -66,6 +66,7 @@ sudo apt install -y libboost-thread-dev
 sudo apt-get install -y libbz2-dev
 sudo apt-get install -y python3-dev  # for python3.x installs
 sudo apt-get install -y libevent-dev
+sudo apt-get install -y clang-format
 
 # Other Config / installation
 sudo apt install -y python3-pip
