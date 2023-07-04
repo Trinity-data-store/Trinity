@@ -80,8 +80,8 @@ for i in range(params.nNode1):
     if params.useDataset and params.ldatasetName != "None" and i == 0:
         fsnode1 = request.RemoteBlockstore("fsnode"+str(i), "/mntData2")
         fsnode1.dataset = "urn:publicid:IDN+" + params.site + ".cloudlab.us:trinity-pg0+ltdataset+"+params.ldatasetName
-        if not params.datasetWritePerm:
-            pass
+        # if not params.datasetWritePerm:
+            # fsnode1.rwclone = True
         fsnode1.readonly = True
 
         fslink1 = request.Link("fslink" + str(i))
