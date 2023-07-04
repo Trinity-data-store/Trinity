@@ -2,7 +2,7 @@
 
 # Run from Cloudlab
 # git clone https://github.com/MaoZiming/Trinity.git
-# bash /proj/Trinity/scripts/initialize_node_scratch.sh
+# bash /proj/trinity-PG0/Trinity/scripts/setup_one_node.sh
 
 # Update Github
 git config --global user.name "MaoZiming"
@@ -15,6 +15,7 @@ data_dir="/mntData2"
 
 # Basic setup
 sudo apt update
+# sudo apt upgrade
 sudo apt install htop
 sudo apt-get install dstat
 cd $dependencies_path
@@ -66,6 +67,7 @@ sudo apt install -y libboost-thread-dev
 sudo apt-get install -y libbz2-dev
 sudo apt-get install -y python3-dev  # for python3.x installs
 sudo apt-get install -y libevent-dev
+sudo apt-get install -y clang-format
 
 # Other Config / installation
 sudo apt install -y python3-pip
@@ -100,5 +102,4 @@ exit 0
 
 # FILE DESCRIPTOR!!
 # https://unix.stackexchange.com/a/691947
-# WTF!!!
 # Why is VScode terminal showing different behaviors
