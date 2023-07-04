@@ -28,9 +28,6 @@ pc.defineParameter("site", "Select site",
 pc.defineParameter("nodeType1", "The type of node 1",
                    portal.ParameterType.NODETYPE, "xl170")
 
-pc.defineParameter("useDataset", "Use Dataset)",
-                   portal.ParameterType.BOOLEAN, True)
-                   
 pc.defineParameter("ldatasetName", "The name of long-term dataset",
                    portal.ParameterType.STRING, "workload-dataset")
 
@@ -77,12 +74,12 @@ for i in range(params.nNode1):
         if params.nodeType2 != "None":
             node.hardware_type = params.nodeType2
 
-    if params.useDataset and params.ldatasetName != "None" and i == 0:
+    if params.ldatasetName != "None" and i == 0:
         fsnode1 = request.RemoteBlockstore("fsnode"+str(i), "/mntData2")
-        fsnode1.dataset = "urn:publicid:IDN+" + params.site + ".cloudlab.us:trinity-pg0+ltdataset+"+params.ldatasetName
-        # if not params.datasetWritePerm:
+        fsnode1.dataset = "urn:publicid:IDN+" + params.site + ".cloudlab.us:trinity-PG0+ltdataset+"+params.ldatasetName
+        if not params.datasetWritePerm:
             # fsnode1.rwclone = True
-        fsnode1.readonly = True
+            fsnode1.readonly = True
 
         fslink1 = request.Link("fslink" + str(i))
         fslink1.addInterface(intf)
