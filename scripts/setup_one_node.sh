@@ -10,8 +10,6 @@ git config --global user.email "ziming.mao@yale.edu"
 
 # Path
 dependencies_path="/proj/trinity-PG0/dependencies"
-local_path="/mntData"
-data_dir="/mntData2"
 
 # Basic setup
 sudo apt update
