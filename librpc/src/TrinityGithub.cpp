@@ -46,9 +46,8 @@ main(int argc, char* argv[])
     }
   }
 
-  std::ofstream outfile(results_folder_addr +
-                          "macrobenchmark/github_macro_Trinity_" +
-                          std::to_string(dataset_part),
+  std::ofstream outfile(results_folder_addr + "macrobenchmark/github_" +
+                          benchmark_str,
                         ios_base::app);
 
   std::vector<std::string> server_ips = {
@@ -66,12 +65,16 @@ main(int argc, char* argv[])
     outfile << dataset_part
             << ": Insert Throughput (pt / seconds): " << throughput
             << std::endl;
-    // outfile << "size: " << bench.get_size() << "," <<
-    // bench.get_dataset_size() << std::endl; /* So that storage doesn't need to
-    // load it again */
+    benchmark_str = "storage";
+    std::ofstream outfile_storage(results_folder_addr +
+                                    "macrobenchmark/github_" + benchmark_str,
+                                  ios_base::app);
+    outfile_storage << dataset_part << ": size: " << bench.get_size() << ","
+                    << bench.get_dataset_size() << std::endl; /* So that storage
+                       doesn't need to load it again */
   } else if (benchmark_str == "storage") {
-    outfile << "size: " << bench.get_size() << "," << bench.get_dataset_size()
-            << std::endl;
+    outfile << dataset_part << ": size: " << bench.get_size() << ","
+            << bench.get_dataset_size() << std::endl;
   } else if (benchmark_str == "lookup") {
     throughput = bench.lookup_benchmark();
     outfile << dataset_part

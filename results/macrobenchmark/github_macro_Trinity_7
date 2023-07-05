@@ -1,9 +1,0 @@
-7: Insert Throughput (pt / seconds): 113683
-size: 1407916398
-7: Lookup Throughput (pt / seconds): 86572
-7: Insert Throughput (pt / seconds): 111957
-size: 4255665502,82805630
-7: Lookup Throughput (pt / seconds): 87640
-7: Search Throughput (pt / seconds): 301409
-7: 95 lookup, 5 insert Throughput (pt / seconds): 74332
-7: 10 search, 90 insert Throughput (pt / seconds): 573578

@@ -55,8 +55,8 @@ public:
         num_dimensions_ = TPCH_DIMENSION;
         max_values_ = tpch_max_values;
         min_values_ = tpch_min_values;
-        query_out_addr_ = results_folder_addr +
-                          "macrobenchmark/tpch_macro_Trinity_query_latency";
+        query_out_addr_ =
+          results_folder_addr + "macrobenchmark/tpch_query_latency";
         load_dataset(parse_line_tpch);
         load_queries(update_range_search_range_tpch);
         break;
@@ -67,8 +67,8 @@ public:
         num_dimensions_ = GITHUB_DIMENSION;
         max_values_ = github_max_values;
         min_values_ = github_min_values;
-        query_out_addr_ = results_folder_addr +
-                          "macrobenchmark/github_macro_Trinity_query_latency";
+        query_out_addr_ =
+          results_folder_addr + "macrobenchmark/github_query_latency";
         load_dataset(parse_line_github);
         load_queries(update_range_search_range_github);
         break;
@@ -79,8 +79,8 @@ public:
         num_dimensions_ = NYC_DIMENSION;
         max_values_ = nyc_max_values;
         min_values_ = nyc_min_values;
-        query_out_addr_ = results_folder_addr +
-                          "macrobenchmark/nyc_macro_Trinity_query_latency";
+        query_out_addr_ =
+          results_folder_addr + "macrobenchmark/nyc_query_latency";
         load_dataset(parse_line_nyc);
         load_queries(update_range_search_range_nyc);
         break;
