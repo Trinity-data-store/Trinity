@@ -53,9 +53,6 @@ cd thrift
 sudo make install
 cd $dependencies_path
 
-cd /proj/trinity-PG0/dependencies/thrift
-sudo make install
-
 # Install Other Packages for Trinity
 sudo apt-get install -y libboost-test-dev  
 sudo apt-get install -y  libboost-all-dev
