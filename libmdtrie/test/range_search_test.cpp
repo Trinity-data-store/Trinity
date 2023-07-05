@@ -102,5 +102,5 @@ test_range_search(n_leaves_t n_points,
 
 TEST_CASE("Test Range Search", "[trie]")
 {
-  REQUIRE(test_range_search(100000, 10, 3, 128, 500));
+  REQUIRE(test_range_search(100000, 6, 3, 128, 50000));
 }

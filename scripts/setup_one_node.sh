@@ -10,8 +10,6 @@ git config --global user.email "ziming.mao@yale.edu"
 
 # Path
 dependencies_path="/proj/trinity-PG0/dependencies"
-local_path="/mntData"
-data_dir="/mntData2"
 
 # Basic setup
 sudo apt update
@@ -54,9 +52,6 @@ fi
 cd thrift
 sudo make install
 cd $dependencies_path
-
-cd /proj/trinity-PG0/dependencies/thrift
-sudo make install
 
 # Install Other Packages for Trinity
 sudo apt-get install -y libboost-test-dev  
