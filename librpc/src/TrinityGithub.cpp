@@ -46,8 +46,8 @@ main(int argc, char* argv[])
     }
   }
 
-  std::ofstream outfile(results_folder_addr + "macrobenchmark/github_" +
-                          benchmark_str,
+  std::ofstream outfile(results_folder_addr + "macrobenchmark/github/github_" +
+                          std::to_string(dataset_part),
                         ios_base::app);
 
   std::vector<std::string> server_ips = {
@@ -67,7 +67,7 @@ main(int argc, char* argv[])
             << std::endl;
     benchmark_str = "storage";
     std::ofstream outfile_storage(results_folder_addr +
-                                    "macrobenchmark/github_" + benchmark_str,
+                                    "macrobenchmark/github/github_" + benchmark_str,
                                   ios_base::app);
     outfile_storage << dataset_part << ": size: " << bench.get_size() << ","
                     << bench.get_dataset_size() << std::endl; /* So that storage

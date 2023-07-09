@@ -31,17 +31,18 @@ enum
   NYC = 3,
 };
 
-std::string TPCH_DATA_ADDR = "/mntData/tpch_dataset.csv";
-std::string GITHUB_DATA_ADDR = "/mntData/github_dataset.csv";
-std::string NYC_DATA_ADDR = "/mntData/nyc_dataset.csv";
+std::string ROOT_DIR = "/proj/trinity-PG0/Trinity/";
+std::string TPCH_DATA_ADDR = ROOT_DIR + "datasets/tpch_dataset.csv";
+std::string GITHUB_DATA_ADDR = ROOT_DIR + "datasets/github_dataset.csv";
+std::string NYC_DATA_ADDR = ROOT_DIR + "datasets/nyc_dataset.csv";
 
-std::string TPCH_SPLIT_ADDR = "/mntData/tpch_split/";
-std::string GITHUB_SPLIT_ADDR = "/mntData/github_split/";
-std::string NYC_SPLIT_ADDR = "/mntData/nyc_split/";
+std::string TPCH_SPLIT_ADDR = ROOT_DIR + "datasets/tpch_split/";
+std::string GITHUB_SPLIT_ADDR = ROOT_DIR + "datasets/github_split/";
+std::string NYC_SPLIT_ADDR = ROOT_DIR + "datasets/nyc_split/";
 
-std::string TPCH_QUERY_ADDR = "/proj/trinity-PG0/Trinity/queries/tpch_query";
-std::string GITHUB_QUERY_ADDR = "/proj/trinity-PG0/Trinity/queries/github_query";
-std::string NYC_QUERY_ADDR = "/proj/trinity-PG0/Trinity/queries/nyc_query";
+std::string TPCH_QUERY_ADDR = ROOT_DIR + "queries/tpch_query";
+std::string GITHUB_QUERY_ADDR = ROOT_DIR + "queries/github_query";
+std::string NYC_QUERY_ADDR = ROOT_DIR + "queries/nyc_query";
 
 unsigned int skip_size_count = 0;
 /* Because it results in otherwise OOM for other benchmarks. */
@@ -124,7 +125,7 @@ use_nyc_setting(int dimensions, int _total_points_count)
   if (optimization_code == OPTIMIZATION_CN) {
     bit_widths = { 28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28 };
     start_bits = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-    total_points_count = micro_nyc_size;
+    total_points_count = micro_nyc_size / 10;
     identification_string = "_CN";
   }
 

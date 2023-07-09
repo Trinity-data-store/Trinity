@@ -16,18 +16,18 @@ github_bench(void)
   md_trie<GITHUB_DIMENSION> mdtrie(max_depth, trie_depth, max_tree_node);
   MdTrieBench<GITHUB_DIMENSION> bench(&mdtrie);
   p_key_to_treeblock_compact = new bitmap::CompactPtrVector(total_points_count);
-  std::string folder_name = "";
+  std::string folder_name = "microbenchmark/";
   if (identification_string != "SM") {
     folder_name = "optimization/";
   }
   bench.insert(GITHUB_DATA_ADDR,
-               folder_name + "github_insert_micro" + identification_string,
+               folder_name + "github_insert" + identification_string,
                total_points_count,
                parse_line_github);
-  bench.get_storage(folder_name + "github_storage_micro" + identification_string);
-  bench.lookup(folder_name + "github_lookup_micro" + identification_string);
+  bench.get_storage(folder_name + "github_storage" + identification_string);
+  bench.lookup(folder_name + "github_lookup" + identification_string);
   bench.range_search(GITHUB_QUERY_ADDR,
-                     folder_name + "github_query_micro" + identification_string,
+                     folder_name + "github_query" + identification_string,
                      get_query_github<GITHUB_DIMENSION>);
 }
 
@@ -39,18 +39,18 @@ nyc_bench(void)
   md_trie<NYC_DIMENSION> mdtrie(max_depth, trie_depth, max_tree_node);
   MdTrieBench<NYC_DIMENSION> bench(&mdtrie);
   p_key_to_treeblock_compact = new bitmap::CompactPtrVector(total_points_count);
-  std::string folder_name = "";
+  std::string folder_name = "microbenchmark/";
   if (identification_string != "SM") {
     folder_name = "optimization/";
   }
   bench.insert(NYC_DATA_ADDR,
-               folder_name + "nyc_insert_micro" + identification_string,
+               folder_name + "nyc_insert" + identification_string,
                total_points_count,
                parse_line_nyc);
-  bench.get_storage(folder_name + "nyc_storage_micro" + identification_string);
-  bench.lookup(folder_name + "nyc_lookup_micro" + identification_string);
+  bench.get_storage(folder_name + "nyc_storage" + identification_string);
+  bench.lookup(folder_name + "nyc_lookup" + identification_string);
   bench.range_search(NYC_QUERY_ADDR,
-                     folder_name + "nyc_query_micro" + identification_string,
+                     folder_name + "nyc_query" + identification_string,
                      get_query_nyc<NYC_DIMENSION>);
 }
 
@@ -62,18 +62,18 @@ tpch_bench(void)
   md_trie<TPCH_DIMENSION> mdtrie(max_depth, trie_depth, max_tree_node);
   MdTrieBench<TPCH_DIMENSION> bench(&mdtrie);
   p_key_to_treeblock_compact = new bitmap::CompactPtrVector(total_points_count);
-  std::string folder_name = "";
+  std::string folder_name = "microbenchmark/";
   if (identification_string != "SM") {
     folder_name = "optimization/";
   }
   bench.insert(TPCH_DATA_ADDR,
-               folder_name + "tpch_insert_micro" + identification_string,
+               folder_name + "tpch_insert" + identification_string,
                total_points_count,
                parse_line_tpch);
-  bench.get_storage(folder_name + "tpch_storage_micro" + identification_string);
-  bench.lookup(folder_name + "tpch_lookup_micro" + identification_string);
+  bench.get_storage(folder_name + "tpch_storage" + identification_string);
+  bench.lookup(folder_name + "tpch_lookup" + identification_string);
   bench.range_search(TPCH_QUERY_ADDR,
-                     folder_name + "tpch_query_micro" + identification_string,
+                     folder_name + "tpch_query" + identification_string,
                      get_query_tpch<TPCH_DIMENSION>);
 }
 
@@ -154,7 +154,6 @@ sensitivity_num_dimensions_6(void)
   md_trie<6> mdtrie(max_depth, trie_depth, max_tree_node);
   MdTrieBench<6> bench(&mdtrie);
   p_key_to_treeblock_compact = new bitmap::CompactPtrVector(total_points_count);
-
   bench.insert(TPCH_DATA_ADDR,
                "sensitivity/tpch_insert_dimensions" + identification_string +
                  "_" + "6",

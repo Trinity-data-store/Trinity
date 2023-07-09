@@ -47,7 +47,7 @@ main(int argc, char* argv[])
   }
 
   std::ofstream outfile(
-    results_folder_addr + "macrobenchmark/nyc_" + benchmark_str, ios_base::app);
+    results_folder_addr + "macrobenchmark/nyc/nyc_" + std::to_string(dataset_part), ios_base::app);
 
   std::vector<std::string> server_ips = {
     "10.10.1.12", "10.10.1.13", "10.10.1.14", "10.10.1.15", "10.10.1.16"
@@ -61,7 +61,7 @@ main(int argc, char* argv[])
             << ": Insert Throughput (pt / seconds): " << throughput
             << std::endl;
     benchmark_str = "storage";
-    std::ofstream outfile_storage(results_folder_addr + "macrobenchmark/nyc_" +
+    std::ofstream outfile_storage(results_folder_addr + "macrobenchmark/nyc/nyc_" +
                                     benchmark_str,
                                   ios_base::app);
     outfile_storage << dataset_part << ": size: " << bench.get_size() << ","

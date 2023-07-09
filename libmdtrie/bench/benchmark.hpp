@@ -61,7 +61,7 @@ public:
 
     std::cout << "Insertion Latency: " << (float)diff / n_points << std::endl;
     flush_vector_to_file(insertion_latency_vect_,
-                         results_folder_addr + "microbenchmark/" +
+                         results_folder_addr + 
                            outfile_name);
     infile.close();
   }
@@ -87,7 +87,7 @@ public:
       lookup_latency_vect_.push_back(temp_diff);
     }
     flush_vector_to_file(lookup_latency_vect_,
-                         results_folder_addr + "microbenchmark/" +
+                         results_folder_addr + 
                            outfile_name);
     std::cout << "Done! "
               << "Lookup Latency per point: "
@@ -102,7 +102,7 @@ public:
   {
 
     std::ifstream file(query_addr);
-    std::ofstream outfile(results_folder_addr + "microbenchmark/" +
+    std::ofstream outfile(results_folder_addr + 
                           outfile_name);
     TimeStamp diff = 0, start = 0;
 
@@ -134,7 +134,7 @@ public:
                            unsigned int lower_bound)
   {
 
-    std::ofstream outfile(results_folder_addr + "microbenchmark/" +
+    std::ofstream outfile(results_folder_addr + 
                           outfile_name);
     TimeStamp diff = 0, start = 0;
     int i = 0;
@@ -171,7 +171,7 @@ public:
     std::cout << "mdtrie storage: " << size << std::endl;
     flush_string_to_file(
       std::to_string(size) + "," + std::to_string(total_points_count),
-      results_folder_addr + "microbenchmark/" + outfile_name);
+      results_folder_addr + outfile_name);
   }
 
 protected:

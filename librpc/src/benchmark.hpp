@@ -56,7 +56,7 @@ public:
         max_values_ = tpch_max_values;
         min_values_ = tpch_min_values;
         query_out_addr_ =
-          results_folder_addr + "macrobenchmark/tpch_query_latency";
+          results_folder_addr + "macrobenchmark/tpch/tpch_query_latency";
         load_dataset(parse_line_tpch);
         load_queries(update_range_search_range_tpch);
         break;
@@ -68,7 +68,7 @@ public:
         max_values_ = github_max_values;
         min_values_ = github_min_values;
         query_out_addr_ =
-          results_folder_addr + "macrobenchmark/github_query_latency";
+          results_folder_addr + "macrobenchmark/github/github_query_latency";
         load_dataset(parse_line_github);
         load_queries(update_range_search_range_github);
         break;
@@ -80,7 +80,7 @@ public:
         max_values_ = nyc_max_values;
         min_values_ = nyc_min_values;
         query_out_addr_ =
-          results_folder_addr + "macrobenchmark/nyc_query_latency";
+          results_folder_addr + "macrobenchmark/nyc/nyc_query_latency";
         load_dataset(parse_line_nyc);
         load_queries(update_range_search_range_nyc);
         break;
@@ -196,9 +196,6 @@ public:
   uint32_t get_size(void)
   {
     auto client = MDTrieClient(server_ips_, shard_num_);
-#ifndef TEST_STORAGE
-    std::cout << "TEST_STORAGE not defined!" << std::endl;
-#endif
     return client.get_size();
   }
 
@@ -239,7 +236,7 @@ protected:
         break;
     }
     dataset_size_ = loaded_pts;
-    std::cout << "Dataset size: " << dataset_size_ << std::endl;
+    std::cout << "dataset_addr:" << dataset_addr_ << ", Dataset size: " << dataset_size_ << std::endl;
   }
 
   void load_queries(void (*parse_query)(std::vector<int32_t>&,

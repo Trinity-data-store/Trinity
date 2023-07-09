@@ -79,10 +79,10 @@ sudo cp /proj/trinity-PG0/Trinity/scripts/system.conf  /etc/security/system.conf
 # Golang
 cd $dependencies_path
 cd go
-if [ ! -d "go1.18.3.linux-amd64.tar.gz" ]; then
-    wget https://go.dev/dl/go1.18.3.linux-amd64.tar.gz
+if [ ! -d "go1.18.3.linux-amd64.tar.gz.132" ]; then
+    wget https://go.dev/dl/go1.18.3.linux-amd64.tar.gz.132
 fi
-sudo tar -C /usr/bin -xzf go1.18.3.linux-amd64.tar.gz
+sudo tar -C /usr/bin -xzf go1.18.3.linux-amd64.tar.gz.132
 export PATH=$PATH:/usr/bin/go/bin
 cd $dependencies_path
 
