@@ -9,7 +9,7 @@
 #include <stdio.h>
 #include "RStarTree.h"
 #include <vector>
-#include "../../libmdtrie/bench/parser.hpp"
+#include "./micro_common.hpp"
 
 #include <sys/mman.h>
 #include <stdlib.h>
@@ -19,9 +19,11 @@
 #include <cmath>
 
 #define TPCH_SIZE 250000000 // 250M
+#define SERVER_TO_SERVER_IN_NS 92
 #define DIMENSION 9 + 1
-#define LATENCY_BENCH
+
 int points_to_insert = 30000;
+int points_to_lookup = 30000;
 int points_for_warmup = points_to_insert / 5;
 bool dummy = true;
 typedef RStarTree<bool, DIMENSION, 32, 64> RTree;
@@ -37,6 +39,44 @@ TimeStamp GetTimestamp() {
   gettimeofday(&now, nullptr);
 
   return now.tv_usec + (TimeStamp) now.tv_sec * 1000000;
+}
+
+std::vector<int32_t>
+parse_line_tpch(std::string line)
+{
+
+  std::vector<int32_t> point(DIMENSION - 1, 0);
+  int index = -1;
+  bool primary_key = true;
+  std::string delim = ",";
+  auto start = 0U;
+  auto end = line.find(delim);
+
+  // [id, QUANTITY, EXTENDEDPRICE, DISCOUNT, TAX, SHIPDATE, COMMITDATE,
+  // RECEIPTDATE, TOTALPRICE, ORDERDATE]
+  while (end != std::string::npos) {
+    std::string substr = line.substr(start, end - start);
+    start = end + 1;
+    end = line.find(delim, start);
+
+    if (primary_key) {
+      primary_key = false;
+      continue;
+    }
+    index++;
+    point[index] = static_cast<int32_t>(std::stoul(substr));
+  }
+  index++;
+  std::string substr = line.substr(start, end - start);
+  point[index] = static_cast<int32_t>(std::stoul(substr));
+
+  for (int i = 0; i < DIMENSION - 1; i++) {
+    if (i >= 4 && i != 7) {
+      point[i] -= 19000000;
+    }
+  }
+
+  return point;
 }
 
 void flush_vector_to_file(std::vector<TimeStamp> vect, std::string filename){
@@ -85,7 +125,7 @@ void tpch()
 	RTree tree;
 	Visitor x;
 
-    std::ifstream infile("/mntData2/tpch/data_300/tpch_processed_1B.csv");
+    std::ifstream infile(TPCH_DATA_ADDR);
 
     TimeStamp start, diff;
 
@@ -111,16 +151,11 @@ void tpch()
 		if (n_points % (TPCH_SIZE / 50) == 0)
 			std::cout << "finished: " << n_points << std::endl;
 
-        #ifdef LATENCY_BENCH
-        if (n_points == points_to_insert)
-            break;    
-        #else
+        if (n_points > TPCH_SIZE - points_to_insert)
+            insertion_latency_vect.push_back(latency + SERVER_TO_SERVER_IN_NS);
+
         if (n_points == TPCH_SIZE)
             break;
-        #endif
-
-        if (n_points > points_for_warmup && n_points <= points_to_insert)
-            insertion_latency_vect.push_back(latency);
 
         if (n_points == 0 || n_points == points_to_insert / 2) {
             for (int j = 0; j < DIMENSION; j++) {
@@ -133,25 +168,73 @@ void tpch()
 
     }
     std::cout << "Done! " << "Insertion Latency per point: " << (float) diff / n_points << std::endl;
-    exit(0);
-    flush_vector_to_file(insertion_latency_vect, "/proj/trinity-PG0/Trinity/results/latency_cdf/rstar_tpch_insert");
+    flush_vector_to_file(insertion_latency_vect, results_folder_addr + "/rstar-tree/tpch_insert");
+
+    /**
+     * Point Lookup
+     */
+
+    std::vector<int> max_values = {50, 10494950, 10, 8, 19981201, 19981031, 19981231, 58063825, 19980802};
+    std::vector<int> min_values = {1, 90000, 0, 0, 19920102, 19920131, 19920103, 81300, 19920101};
+ 
+    std::vector<TimeStamp> lookup_latency_vect;
+    diff = 0; 
+    for (int i = 0; i < points_to_lookup; i ++) 
+    {
+        std::vector<int> start_range(DIMENSION, 0);
+        std::vector<int> end_range(DIMENSION, 0);
+
+        start_range[0] = i;
+        end_range[0] = i;
+
+        for (int j = 0; j < DIMENSION - 1; j++) {
+            start_range[j + 1] = (uint32_t) min_values[j];
+            end_range[j + 1] = (uint32_t) max_values[j];
+        }
+
+        for (dimension_t j = 0; j < DIMENSION - 1; j++){
+            if (j >= 4 && j != 7) {
+                start_range[j + 1] -= 19000000;
+                end_range[j + 1] -= 19000000;
+            }
+        }
+
+        if (i == 0) {
+            for (int j = 0; j < DIMENSION; j++) {
+                std::cout << start_range[j] << " ";
+            }
+            std::cout << std::endl;
+            for (int j = 0; j < DIMENSION; j++) {
+                std::cout << end_range[j] << " ";
+            }
+            std::cout << std::endl;
+        }
+
+
+        BoundingBox bound = bounds_range(start_range, end_range);
+        start = GetTimestamp();
+        x = tree.Query(RTree::AcceptEnclosing(bound), Visitor());
+        TimeStamp temp_diff =  GetTimestamp() - start; 
+        diff += temp_diff;
+        
+        if (leaf_list.size() > 1) {
+            std::cerr << i << "wrong points!" << leaf_list.size() << std::endl;
+            exit(-1);
+        }
+        leaf_list.clear();
+        
+        if (i > points_for_warmup && i <= points_to_lookup)
+            lookup_latency_vect.push_back(temp_diff + SERVER_TO_SERVER_IN_NS);
+    }
+    std::cout << "Done! " << "Lookup Latency per point: " << (float) diff / points_to_lookup << std::endl;
+    flush_vector_to_file(lookup_latency_vect, results_folder_addr + "/rstar-tree/tpch_lookup");
 
     /**
      * Range Search
      */
 
-    std::vector<int> max_values = {50, 10494950, 10, 8, 19981201, 19981031, 19981231, 58063825, 19980802};
-    std::vector<int> min_values = {1, 90000, 0, 0, 19920102, 19920131, 19920103, 81300, 19920101};
-
-    #ifndef LATENCY_BENCH
- 
-    char *infile_address = (char *)"/proj/trinity-PG0/Trinity/queries/tpch/tpch_query_converted";
-    char *outfile_address = (char *)"/proj/trinity-PG0/Trinity/results/tpch_rstar_tree";
-
-
-    std::ifstream file(infile_address);
-    std::ofstream outfile(outfile_address);
-
+    std::ifstream file(TPCH_QUERY_ADDR);
+    std::ofstream outfile(results_folder_addr + "/rstar-tree/tpch_query");
 
     for (int i = 0; i < 1000; i ++) 
     {
@@ -218,62 +301,7 @@ void tpch()
         outfile << "Query " << i << " end to end latency (ms): " << temp_diff / 1000 << ", found points count: " << leaf_list.size() << std::endl;
         leaf_list.clear();
     }
-    #endif
-    /**
-     * Point Lookup
-     */
 
-    std::vector<TimeStamp> lookup_latency_vect;
-    diff = 0; 
-    for (int i = 0; i < points_to_insert; i ++) 
-    {
-        std::vector<int> start_range(DIMENSION, 0);
-        std::vector<int> end_range(DIMENSION, 0);
-
-        start_range[0] = i;
-        end_range[0] = i;
-
-        for (int j = 0; j < DIMENSION - 1; j++) {
-            start_range[j + 1] = (uint32_t) min_values[j];
-            end_range[j + 1] = (uint32_t) max_values[j];
-        }
-
-        for (dimension_t j = 0; j < DIMENSION - 1; j++){
-            if (j >= 4 && j != 7) {
-                start_range[j + 1] -= 19000000;
-                end_range[j + 1] -= 19000000;
-            }
-        }
-
-        if (i == 0) {
-            for (int j = 0; j < DIMENSION; j++) {
-                std::cout << start_range[j] << " ";
-            }
-            std::cout << std::endl;
-            for (int j = 0; j < DIMENSION; j++) {
-                std::cout << end_range[j] << " ";
-            }
-            std::cout << std::endl;
-        }
-
-
-        BoundingBox bound = bounds_range(start_range, end_range);
-        start = GetTimestamp();
-        x = tree.Query(RTree::AcceptEnclosing(bound), Visitor());
-        TimeStamp temp_diff =  GetTimestamp() - start; 
-        diff += temp_diff;
-        
-        if (leaf_list.size() > 1) {
-            std::cerr << i << "wrong points!" << leaf_list.size() << std::endl;
-            exit(-1);
-        }
-        leaf_list.clear();
-        
-        if (i > points_for_warmup && i <= points_to_insert)
-            lookup_latency_vect.push_back(temp_diff);
-    }
-    std::cout << "Done! " << "Lookup Latency per point: " << (float) diff / points_to_insert << std::endl;
-    flush_vector_to_file(lookup_latency_vect, "/proj/trinity-PG0/Trinity/results/latency_cdf/rstar_tpch_lookup");
     return;
 }
 

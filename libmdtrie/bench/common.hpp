@@ -1,3 +1,4 @@
+
 #ifndef TrinityCommon_H
 #define TrinityCommon_H
 

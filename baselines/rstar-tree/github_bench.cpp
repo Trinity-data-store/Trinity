@@ -9,7 +9,7 @@
 #include <stdio.h>
 #include "RStarTree.h"
 #include <vector>
-#include "../../libmdtrie/bench/parser.hpp"
+#include "./micro_common.hpp"
 
 #include <sys/mman.h>
 #include <stdlib.h>
@@ -20,14 +20,13 @@
 
 #define GITHUB_SIZE 200000000 // 200M
 #define SKIP_SIZE 700000000 - GITHUB_SIZE
+#define SERVER_TO_SERVER_IN_NS 92
 #define DIMENSION 10 + 1
-#define LATENCY_BENCH
 
 int points_to_insert = 30000;
-int points_for_warmup = points_to_insert / 5;
 int points_to_lookup = 30000;
+int points_for_warmup = points_to_insert / 5;
 bool dummy = true;
-
 typedef RStarTree<bool, DIMENSION, 32, 64> RTree;
 
 typedef RTree::BoundingBox BoundingBox;
@@ -41,6 +40,45 @@ TimeStamp GetTimestamp() {
   gettimeofday(&now, nullptr);
 
   return now.tv_usec + (TimeStamp) now.tv_sec * 1000000;
+}
+
+// Parse one line from TPC-H file.
+std::vector<int32_t>
+parse_line_github(std::string line)
+{
+
+  std::vector<int32_t> point(DIMENSION - 1, 0);
+  int index = -1;
+  bool primary_key = true;
+  std::string delim = ",";
+  auto start = 0U;
+  auto end = line.find(delim);
+  // int real_index = -1;
+  // [id, events_count, authors_count, forks, stars, issues, pushes, pulls,
+  // downloads, adds, dels, add_del_ratio, start_date, end_date]
+  while (end != std::string::npos) {
+    std::string substr = line.substr(start, end - start);
+    start = end + 1;
+    end = line.find(delim, start);
+
+    if (primary_key) {
+      primary_key = false;
+      continue;
+    }
+    index++;
+    point[index] = static_cast<int32_t>(std::stoul(substr));
+  }
+  index++;
+  std::string substr = line.substr(start, end - start);
+  point[index] = static_cast<int32_t>(std::stoul(substr));
+
+  for (int i = 0; i < DIMENSION - 1; i++) {
+    if (i == 8 || i == 9) {
+      point[i] -= 20110000;
+    }
+  }
+
+  return point;
 }
 
 void flush_vector_to_file(std::vector<TimeStamp> vect, std::string filename){
@@ -89,7 +127,7 @@ void github()
 	RTree tree;
 	Visitor x;
 
-    std::ifstream infile("/mntData2/github/github_events_processed_9.csv");
+    std::ifstream infile(GITHUB_DATA_ADDR);
 
     TimeStamp start, diff;
 
@@ -121,16 +159,11 @@ void github()
 		if (n_points % (GITHUB_SIZE / 50) == 0)
 			std::cout << "finished: " << n_points << std::endl;
 
-        #ifdef LATENCY_BENCH
-        if (n_points == points_to_insert)
-            break;    
-        #else
+        if (n_points > GITHUB_SIZE - points_to_insert)
+            insertion_latency_vect.push_back(latency + SERVER_TO_SERVER_IN_NS);
+
         if (n_points == GITHUB_SIZE)
             break;
-        #endif
-
-        if (n_points > points_for_warmup && n_points <= points_to_insert)
-            insertion_latency_vect.push_back(latency);
 
         if (n_points == 0 || n_points == points_to_insert / 2) {
             for (int j = 0; j < DIMENSION; j++) {
@@ -143,21 +176,72 @@ void github()
 
     }
     std::cout << "Done! " << "Insertion Latency per point: " << (float) diff / n_points << std::endl;
-    flush_vector_to_file(insertion_latency_vect, "/proj/trinity-PG0/Trinity/results/latency_cdf/rstar_github_insert");
+    flush_vector_to_file(insertion_latency_vect, results_folder_addr + "/rstar-tree/github_insert");
+
+    /**
+     * Point Lookup
+     */
+
+    std::vector<int> max_values = {7451541, 737170, 262926, 354850, 379379, 3097263, 703341, 8745, 20201206, 20201206};
+    std::vector<int> min_values = {1, 1, 0, 0, 0, 0, 0, 0, 20110211, 20110211};
+    std::vector<TimeStamp> lookup_latency_vect;
+    diff = 0; 
+    for (int i = 0; i < points_to_lookup; i ++) 
+    {
+        std::vector<int> start_range(DIMENSION, 0);
+        std::vector<int> end_range(DIMENSION, 0);
+
+        start_range[0] = i;
+        end_range[0] = i;
+
+
+        for (int j = 0; j < DIMENSION - 1; j++) {
+            start_range[j + 1] = (uint32_t) min_values[j];
+            end_range[j + 1] = (uint32_t) max_values[j];
+        }
+
+        for (dimension_t j = 1; j < DIMENSION; j++){
+            if (j >= 9) {
+                start_range[j] -= 20110000;
+                end_range[j] -= 20110000;
+            }
+        }
+
+        if (i == 0) {
+            for (int j = 0; j < DIMENSION; j++) {
+                std::cout << start_range[j] << " ";
+            }
+            std::cout << std::endl;
+            for (int j = 0; j < DIMENSION; j++) {
+                std::cout << end_range[j] << " ";
+            }
+            std::cout << std::endl;
+        }
+
+        BoundingBox bound = bounds_range(start_range, end_range);
+        start = GetTimestamp();
+        x = tree.Query(RTree::AcceptEnclosing(bound), Visitor());
+        TimeStamp temp_diff =  GetTimestamp() - start; 
+        diff += temp_diff;
+
+        if (leaf_list.size() > 1) {
+            std::cerr << i << "wrong points!" << leaf_list.size() << std::endl;
+            exit(-1);
+        }
+        leaf_list.clear();
+
+        if (i > points_for_warmup && i <= points_to_lookup)
+            lookup_latency_vect.push_back(temp_diff + SERVER_TO_SERVER_IN_NS);
+    }
+    std::cout << "Done! " << "Lookup Latency per point: " << (float) diff / points_to_lookup << std::endl;
+    flush_vector_to_file(lookup_latency_vect, results_folder_addr + "/rstar-tree/github_lookup");
 
     /**
      * Range Search
      */
 
-
-    std::vector<int> max_values = {7451541, 737170, 262926, 354850, 379379, 3097263, 703341, 8745, 20201206, 20201206};
-    std::vector<int> min_values = {1, 1, 0, 0, 0, 0, 0, 0, 20110211, 20110211};
-    #ifndef LATENCY_BENCH
-    char *infile_address = (char *)"/proj/trinity-PG0/Trinity/queries/github/github_query_new_converted";
-    char *outfile_address = (char *)"/proj/trinity-PG0/Trinity/results/github_rstar";
-    std::ifstream file(infile_address);
-    std::ofstream outfile(outfile_address);
-
+    std::ifstream file(GITHUB_QUERY_ADDR);
+    std::ofstream outfile(results_folder_addr + "/rstar-tree/github_query");
 
     for (int i = 0; i < 1000; i ++) 
     {
@@ -224,63 +308,7 @@ void github()
         outfile << "Query " << i << " end to end latency (ms): " << temp_diff / 1000 << ", found points count: " << leaf_list.size() << std::endl;
         leaf_list.clear();
     }
-    #endif
 
-    /**
-     * Point Lookup
-     */
-
-    std::vector<TimeStamp> lookup_latency_vect;
-    diff = 0; 
-    for (int i = 0; i < points_to_lookup; i ++) 
-    {
-        std::vector<int> start_range(DIMENSION, 0);
-        std::vector<int> end_range(DIMENSION, 0);
-
-        start_range[0] = i;
-        end_range[0] = i;
-
-
-        for (int j = 0; j < DIMENSION - 1; j++) {
-            start_range[j + 1] = (uint32_t) min_values[j];
-            end_range[j + 1] = (uint32_t) max_values[j];
-        }
-
-        for (dimension_t j = 1; j < DIMENSION; j++){
-            if (j >= 9) {
-                start_range[j] -= 20110000;
-                end_range[j] -= 20110000;
-            }
-        }
-
-        if (i == 0) {
-            for (int j = 0; j < DIMENSION; j++) {
-                std::cout << start_range[j] << " ";
-            }
-            std::cout << std::endl;
-            for (int j = 0; j < DIMENSION; j++) {
-                std::cout << end_range[j] << " ";
-            }
-            std::cout << std::endl;
-        }
-
-        BoundingBox bound = bounds_range(start_range, end_range);
-        start = GetTimestamp();
-        x = tree.Query(RTree::AcceptEnclosing(bound), Visitor());
-        TimeStamp temp_diff =  GetTimestamp() - start; 
-        diff += temp_diff;
-
-        if (leaf_list.size() > 1) {
-            std::cerr << i << "wrong points!" << leaf_list.size() << std::endl;
-            exit(-1);
-        }
-        leaf_list.clear();
-
-        if (i > points_for_warmup && i <= points_to_lookup)
-            lookup_latency_vect.push_back(temp_diff);
-    }
-    std::cout << "Done! " << "Lookup Latency per point: " << (float) diff / points_to_lookup << std::endl;
-    flush_vector_to_file(lookup_latency_vect, "/proj/trinity-PG0/Trinity/results/latency_cdf/rstar_github_lookup");
     return;
 }
 
