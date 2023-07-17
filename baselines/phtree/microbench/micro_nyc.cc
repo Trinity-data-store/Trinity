@@ -31,7 +31,6 @@
 
 int points_to_insert = 30000;
 int points_to_lookup = 30000;
-int points_for_warmup = points_to_insert / 5;
 
 using namespace improbable::phtree;
 typedef unsigned long long int TimeStamp;
@@ -226,7 +225,7 @@ void nyc() {
         }
         
         found_cnt = 0;
-        if (i > points_for_warmup && i <= points_to_lookup)
+        if (i <= points_to_lookup)
             lookup_latency_vect.push_back(temp_diff + SERVER_TO_SERVER_IN_NS);
 
     }
