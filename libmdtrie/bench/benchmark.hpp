@@ -50,7 +50,7 @@ public:
       n_points++;
 
       if (n_points > total_points_count - points_to_insert)
-        insertion_latency_vect_.push_back(latency);
+        insertion_latency_vect_.push_back(latency + SERVER_TO_SERVER_IN_NS);
 
       if (n_points == total_points_count)
         break;
@@ -84,7 +84,7 @@ public:
       TimeStamp temp_diff = GetTimestamp() - start;
       cumulative += temp_diff;
 
-      lookup_latency_vect_.push_back(temp_diff);
+      lookup_latency_vect_.push_back(temp_diff + SERVER_TO_SERVER_IN_NS);
     }
     flush_vector_to_file(lookup_latency_vect_,
                          results_folder_addr + 

@@ -23,6 +23,8 @@
 #define NYC_DIMENSION 15
 
 #define QUERY_NUM 1000
+#define SERVER_TO_SERVER_IN_NS 92
+
 // #define TEST_STORAGE
 
 enum

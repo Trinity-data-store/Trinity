@@ -17,7 +17,7 @@ github_bench(void)
   MdTrieBench<GITHUB_DIMENSION> bench(&mdtrie);
   p_key_to_treeblock_compact = new bitmap::CompactPtrVector(total_points_count);
   std::string folder_name = "microbenchmark/";
-  if (identification_string != "SM") {
+  if (identification_string != "") {
     folder_name = "optimization/";
   }
   bench.insert(GITHUB_DATA_ADDR,
@@ -40,7 +40,7 @@ nyc_bench(void)
   MdTrieBench<NYC_DIMENSION> bench(&mdtrie);
   p_key_to_treeblock_compact = new bitmap::CompactPtrVector(total_points_count);
   std::string folder_name = "microbenchmark/";
-  if (identification_string != "SM") {
+  if (identification_string != "") {
     folder_name = "optimization/";
   }
   bench.insert(NYC_DATA_ADDR,
@@ -63,7 +63,7 @@ tpch_bench(void)
   MdTrieBench<TPCH_DIMENSION> bench(&mdtrie);
   p_key_to_treeblock_compact = new bitmap::CompactPtrVector(total_points_count);
   std::string folder_name = "microbenchmark/";
-  if (identification_string != "SM") {
+  if (identification_string != "") {
     folder_name = "optimization/";
   }
   bench.insert(TPCH_DATA_ADDR,
