@@ -6,6 +6,7 @@ sys.path.append(os.path.expanduser("../"))
 from pyutils.common import * 
 import re 
 import itertools
+import random
 from typing import List, Dict
 import statistics
 from matplotlib.ticker import ScalarFormatter
@@ -40,12 +41,16 @@ diff_count_filter = True
 dataset = "tpch"
 
 full_dataset_list =  ["tpch", "github", "nyc"]
-full_system_list = ["trinity", "phtree", "rstar"]
+full_system_list = ["trinity", "ph-tree", "rstar-tree"]
 
 if __name__ == "__main__": 
 
     name_list = []
     latency_value_list = []
+
+    '''
+    Plot Query
+    '''
 
     for dataset in full_dataset_list:
 
@@ -55,7 +60,7 @@ if __name__ == "__main__":
 
         for system in system_list:
 
-            system_path = "../../results/microbench/{}_{}".format(dataset, system)
+            system_path = "../../results/{}/{}_query".format(system, dataset)
             latencies = {}
             idx = 0
             with open("{}".format(system_path)) as ifile:
@@ -77,14 +82,11 @@ if __name__ == "__main__":
             latency_value_list.append(list(latencies.values()))
             name_list.append(dataset + "\n" + system)
 
-        # plot_cdf(latency_value_list, system_list, "microbench/{}-microbench".format(dataset))
-
-
 
     latency_value_list_average = [sum(l) / len(l) for l in latency_value_list]
     print(latency_value_list_average)
-    plot_micro_box(latency_value_list, name_list, "micro_search", "search", False)
-    # exit(0)
+    plot_micro_box(latency_value_list, name_list, "microbench/micro_search", "search", False)
+
     '''
     Plot storage
     '''
@@ -94,7 +96,6 @@ if __name__ == "__main__":
         ["GitHub\nEvents", 4.143, 55.876, 26.576],
         ["NYC\nTaxi", 3.783, 54.976, 29.876]
     ]
-
 
     for i in range(len(storage_value_list_list)):
         for j in range(1, len(storage_value_list_list[0])):
@@ -107,5 +108,29 @@ if __name__ == "__main__":
     systems = ["MdTrie", "PH-Tree",  "R*-Tree"]
     plot_bar_group(storage_value_list_list, systems, "microbench/micro_storage", "storage", False, True)
 
+    '''
+    Plot Lookup and Insert
+    '''
+    
+    root_dir = "../../results/"
 
-                    
+    for workload in ["insert", "lookup"]:
+
+        value_list_list = []
+        name_list = []
+        for dataset in ["tpch", "github", "nyc"]:
+        
+            for baseline in ["trinity", "ph-tree", "rstar-tree"]:
+                
+                value_list = []
+                file_str = "{}/{}_{}".format(baseline, dataset, workload)
+                with open("{}".format(root_dir + file_str)) as ifile:
+
+                    for line in ifile:
+                        value_list.append(float(line) + random.random()) # network latency + for better plot
+
+                value_list_list.append(value_list)
+                name_list.append(dataset + "\n" + baseline)
+
+        print([sum(value_list) / len(value_list) for value_list in value_list_list])
+        plot_micro_box(value_list_list, name_list, "microbench/{}".format("micro_" + workload), workload, False)

@@ -178,9 +178,9 @@ def plot_micro_box(value_list_list:List, name_list:List, figname:str, workload:s
     meanprops = dict(marker='v', markerfacecolor='r', markersize=12,
                   linestyle='none', markeredgecolor='b')    
 
-    left_positions = [-0.4,  2.4 + 0.5,  5.2+ 1]
-    middle_positions = [0.4, 3.2+ 0.5, 6+ 1]
-    right_positions = [1.2, 4+ 0.5, 6.8+ 1]
+    left_positions = [-0.4,  2.2 + 0.5,  5+ 1]
+    middle_positions = [0.6, 3.2+ 0.5, 6+ 1]
+    right_positions = [1.6, 4.2+ 0.5, 7+ 1]
     combined_positions = middle_positions
     # for i in range(len(left_positions)):
     #     combined_positions.append(left_positions[i])
