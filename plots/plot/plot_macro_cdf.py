@@ -4,11 +4,8 @@ import sys
 sys.path.append(os.path.expanduser("~/workspace/"))
 sys.path.append(os.path.expanduser("../"))
 from pyutils.common import * 
-import re 
 import itertools
-from typing import List, Dict
-import statistics
-from matplotlib.ticker import ScalarFormatter
+from typing import List
 
 def plot_cdf(miss_ratio_list_list:List[List], name_list:List, figname:str):
     """

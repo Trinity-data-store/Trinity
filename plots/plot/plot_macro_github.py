@@ -7,8 +7,6 @@ from pyutils.common import *
 import re 
 import itertools
 from typing import List, Dict
-import statistics
-from matplotlib.ticker import ScalarFormatter
 
 def plot_miss_ratio_diff(miss_ratio_list_list:List[List], name_list:List, figname:str):
     """
