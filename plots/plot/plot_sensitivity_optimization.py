@@ -24,8 +24,7 @@ if __name__ == "__main__":
         "+SM": "SM"
     }
 
-    # for workload in ["query", "storage", "insert", "lookup"]:
-    for workload in ["storage"]:
+    for workload in ["query", "storage", "insert", "lookup"]:
         name_list = []
         value_list_list = []
 

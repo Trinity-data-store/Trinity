@@ -179,8 +179,8 @@ def plot_micro_box(value_list_list:List, name_list:List, figname:str, workload:s
                   linestyle='none', markeredgecolor='b')    
 
     left_positions = [-0.4,  2.2 + 0.5,  5+ 1]
-    middle_positions = [0.6, 3.2+ 0.5, 6+ 1]
-    right_positions = [1.6, 4.2+ 0.5, 7+ 1]
+    middle_positions = [0.4, 3+ 0.5, 5.8+ 1]
+    right_positions = [1.2, 3.8+ 0.5, 6.6+ 1]
     combined_positions = middle_positions
     # for i in range(len(left_positions)):
     #     combined_positions.append(left_positions[i])
@@ -190,9 +190,9 @@ def plot_micro_box(value_list_list:List, name_list:List, figname:str, workload:s
     medianprops = {"linewidth": 2, "solid_capstyle": "butt", "color": "red"}
 
     fig, ax = plt.subplots()
-    bp1 = ax.boxplot(value_list_list[1:10:3], whis=(5, 95), showfliers=False, showmeans=True, meanprops=meanprops, patch_artist=True,positions=left_positions, boxprops=dict(facecolor="white"), medianprops=medianprops, widths=1)
-    bp2 = ax.boxplot(value_list_list[2:10:3], whis=(5, 95), showfliers=False, showmeans=True, meanprops=meanprops, patch_artist=True,positions=middle_positions, boxprops=dict(facecolor="white"), medianprops=medianprops, widths=1)
-    bp3 = ax.boxplot(value_list_list[3:10:3], whis=(5, 95), showfliers=False, showmeans=True, meanprops=meanprops, patch_artist=True,positions=right_positions, boxprops=dict(facecolor="white"), medianprops=medianprops, widths=1)
+    bp1 = ax.boxplot(value_list_list[1:10:3], whis=(5, 95), showfliers=False, showmeans=True, meanprops=meanprops, patch_artist=True,positions=left_positions, boxprops=dict(facecolor="white"), medianprops=medianprops, widths=0.8)
+    bp2 = ax.boxplot(value_list_list[2:10:3], whis=(5, 95), showfliers=False, showmeans=True, meanprops=meanprops, patch_artist=True,positions=middle_positions, boxprops=dict(facecolor="white"), medianprops=medianprops, widths=0.8)
+    bp3 = ax.boxplot(value_list_list[3:10:3], whis=(5, 95), showfliers=False, showmeans=True, meanprops=meanprops, patch_artist=True,positions=right_positions, boxprops=dict(facecolor="white"), medianprops=medianprops, widths=0.8)
     
     plt.xticks(combined_positions, ["TPC-H", "GitHub\nEvents", "NYC\nTaxi"])
 
@@ -258,13 +258,13 @@ def plot_optimization_box(value_list_list:List, name_list:List, figname:str, wor
     meanprops = dict(marker='v', markerfacecolor='r', markersize=12,
                   linestyle='none', markeredgecolor='b')    
 
-    left_positions = [-0.4,  2.4,  5.2]
-    middle_positions = [0.2, 3.0, 5.8]
-    right_positions = [0.8, 3.6, 6.4]
+    left_positions = [-0.4,  2 + 0.2,  4.5]
+    middle_positions = [0.1, 2.5 + 0.2, 5]
+    right_positions = [0.6, 3 + 0.2, 5.5]
     # second_right_positions = [1.4, 4.2, 7.0]
-    second_right_positions = [1.4, 7.0]
+    second_right_positions = [1.1, 3.5 + 0.2, 6]
 
-    combined_positions = [0.5, 3.3, 6.1]
+    combined_positions = [0.6 - 0.25, 3.2 - 0.25, 5.5 - 0.25]
     # for i in range(len(left_positions)):
     #     combined_positions.append(left_positions[i])
     #     combined_positions.append(middle_positions[i])
@@ -273,10 +273,10 @@ def plot_optimization_box(value_list_list:List, name_list:List, figname:str, wor
     medianprops = {"linewidth": 2, "solid_capstyle": "butt", "color": "red"}
 
     fig, ax = plt.subplots()
-    bp1 = ax.boxplot(value_list_list[1:13:4], whis=(5, 95), showfliers=False, showmeans=True, meanprops=meanprops, patch_artist=True,positions=left_positions, boxprops=dict(facecolor="white"), medianprops=medianprops, widths=0.7)
-    bp2 = ax.boxplot(value_list_list[2:13:4], whis=(5, 95), showfliers=False, showmeans=True, meanprops=meanprops, patch_artist=True,positions=middle_positions, boxprops=dict(facecolor="white"), medianprops=medianprops, widths=0.7)
-    bp3 = ax.boxplot(value_list_list[3:13:4], whis=(5, 95), showfliers=False, showmeans=True, meanprops=meanprops, patch_artist=True,positions=right_positions, boxprops=dict(facecolor="white"), medianprops=medianprops, widths=0.7)
-    bp4 = ax.boxplot(value_list_list[4:13:8], whis=(5, 95), showfliers=False, showmeans=True, meanprops=meanprops, patch_artist=True,positions=second_right_positions, boxprops=dict(facecolor="white"), medianprops=medianprops, widths=0.7)
+    bp1 = ax.boxplot(value_list_list[1:13:4], whis=(5, 95), showfliers=False, showmeans=True, meanprops=meanprops, patch_artist=True,positions=left_positions, boxprops=dict(facecolor="white"), medianprops=medianprops, widths=0.5)
+    bp2 = ax.boxplot(value_list_list[2:13:4], whis=(5, 95), showfliers=False, showmeans=True, meanprops=meanprops, patch_artist=True,positions=middle_positions, boxprops=dict(facecolor="white"), medianprops=medianprops, widths=0.5)
+    bp3 = ax.boxplot(value_list_list[3:13:4], whis=(5, 95), showfliers=False, showmeans=True, meanprops=meanprops, patch_artist=True,positions=right_positions, boxprops=dict(facecolor="white"), medianprops=medianprops, widths=0.5)
+    bp4 = ax.boxplot(value_list_list[4:13:4], whis=(5, 95), showfliers=False, showmeans=True, meanprops=meanprops, patch_artist=True,positions=second_right_positions, boxprops=dict(facecolor="white"), medianprops=medianprops, widths=0.5)
 
     plt.xticks(combined_positions, ["TPC-H", "GitHub\nEvents", "NYC\nTaxi"])
 
