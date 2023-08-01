@@ -49,7 +49,10 @@ if __name__ == "__main__":
                             if float(m.group("points")) > 10 and float(m.group("elaspsed")) > 5:
                                 value_map[idx] = float(m.group("elaspsed")) * 1000 / int(m.group("points"))
                         elif workload == "insert" or workload == "lookup":
-                            value_map[idx] = int(line) + 95 # network
+                            if optimization != "+SM": # with "SM" it is already added
+                                value_map[idx] = int(line) + 95 # network
+                            else:
+                                value_map[idx] = int(line)
                             
                         elif workload == "storage":
                             m = regex_storage.search(line)
