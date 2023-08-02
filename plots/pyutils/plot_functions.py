@@ -220,7 +220,8 @@ def plot_micro_box(value_list_list:List, name_list:List, figname:str, workload:s
     elif workload == "insert" or workload == "lookup":
         plt.ylabel('{} Latency (us/pt)'.format(workload.capitalize()))
         if workload == "insert":
-            plt.ylim(90, 225)
+            plt.ylim(90, 1200)
+            plt.yscale("log")
         else:
             plt.ylim(90)
             plt.yscale("log")

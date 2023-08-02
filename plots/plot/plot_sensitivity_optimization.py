@@ -82,6 +82,9 @@ if __name__ == "__main__":
 
         else:
             value_list_list[7] = value_list_list[6]
+            if workload == "query":
+                print([sum(value_list) / len(value_list) for value_list in value_list_list])
+                exit(0)
             plot_optimization_box(value_list_list, name_list, "sensitivity_optimization/{}_optimization_sensitivity".format(workload), workload, workload=="insert" or workload=="lookup" or workload=="storage" or workload == "query")
 
 
