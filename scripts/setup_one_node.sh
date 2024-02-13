@@ -42,7 +42,7 @@ cd $dependencies_path
 
 # Install thrift
 if [ ! -d "thrift"]; then
-    git clone -b 0.15.0 https://github.com/apache/thrift.git
+    git clone https://github.com/apache/thrift.git
     cd thrift
     ./bootstrap.sh
     sudo ./configure --without-erlang
