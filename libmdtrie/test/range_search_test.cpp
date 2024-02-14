@@ -3,12 +3,11 @@
 
 const int DIMENSION = 10;
 
-bool
-test_range_search(n_leaves_t n_points,
-                  level_t max_depth,
-                  level_t trie_depth,
-                  preorder_t max_tree_nodes,
-                  uint32_t n_itr)
+bool test_range_search(n_leaves_t n_points,
+                       level_t max_depth,
+                       level_t trie_depth,
+                       preorder_t max_tree_nodes,
+                       uint32_t n_itr)
 {
 
   /**
@@ -24,24 +23,31 @@ test_range_search(n_leaves_t n_points,
                                max_depth);
 
   auto range = (point_t)pow(2, max_depth);
-  auto* mdtrie = new md_trie<DIMENSION>(max_depth, trie_depth, max_tree_nodes);
+  auto *mdtrie = new md_trie<DIMENSION>(max_depth, trie_depth, max_tree_nodes);
   data_point<DIMENSION> leaf_point;
   std::vector<data_point<DIMENSION>> all_leaf_points;
   point_t max[DIMENSION];
   point_t min[DIMENSION];
 
-  for (n_leaves_t itr = 1; itr <= n_points; itr++) {
+  for (n_leaves_t itr = 1; itr <= n_points; itr++)
+  {
 
-    for (dimension_t i = 0; i < DIMENSION; i++) {
+    for (dimension_t i = 0; i < DIMENSION; i++)
+    {
       leaf_point.set_coordinate(i, rand() % range);
-      if (itr == 1) {
+      if (itr == 1)
+      {
         max[i] = leaf_point.get_coordinate(i);
         min[i] = leaf_point.get_coordinate(i);
-      } else {
-        if (leaf_point.get_coordinate(i) > max[i]) {
+      }
+      else
+      {
+        if (leaf_point.get_coordinate(i) > max[i])
+        {
           max[i] = leaf_point.get_coordinate(i);
         }
-        if (leaf_point.get_coordinate(i) < min[i]) {
+        if (leaf_point.get_coordinate(i) < min[i])
+        {
           min[i] = leaf_point.get_coordinate(i);
         }
       }
@@ -52,39 +58,46 @@ test_range_search(n_leaves_t n_points,
   data_point<DIMENSION> start_range;
   data_point<DIMENSION> end_range;
 
-  for (uint32_t itr = 1; itr <= n_itr; itr++) {
+  for (uint32_t itr = 1; itr <= n_itr; itr++)
+  {
 
     std::vector<int32_t> found_points;
 
-    for (dimension_t i = 0; i < DIMENSION; i++) {
+    for (dimension_t i = 0; i < DIMENSION; i++)
+    {
       start_range.set_coordinate(i, min[i] + rand() % (max[i] - min[i] + 1));
       end_range.set_coordinate(
-        i,
-        start_range.get_coordinate(i) +
-          rand() % (max[i] - start_range.get_coordinate(i) + 1));
+          i,
+          start_range.get_coordinate(i) +
+              rand() % (max[i] - start_range.get_coordinate(i) + 1));
     }
 
     mdtrie->range_search_trie(
-      &start_range, &end_range, mdtrie->root(), 0, found_points);
+        &start_range, &end_range, mdtrie->root(), 0, found_points);
 
-    for (n_leaves_t i = 0; i < found_points.size() / DIMENSION; i++) {
+    for (n_leaves_t i = 0; i < found_points.size() / DIMENSION; i++)
+    {
       data_point<DIMENSION> leaf;
       for (dimension_t j = 0; j < DIMENSION; j++)
         leaf.set_coordinate(j, found_points[i * DIMENSION + j]);
 
-      if (!mdtrie->check(&leaf)) {
+      if (!mdtrie->check(&leaf))
+      {
         return false;
       }
     }
 
     n_leaves_t correct_found_size = 0;
-    for (n_leaves_t i = 0; i < all_leaf_points.size(); i++) {
+    for (n_leaves_t i = 0; i < all_leaf_points.size(); i++)
+    {
 
       bool in_range = true;
       data_point<DIMENSION> current_point = all_leaf_points[i];
-      for (dimension_t j = 0; j < DIMENSION; j++) {
+      for (dimension_t j = 0; j < DIMENSION; j++)
+      {
         if (current_point.get_coordinate(j) < start_range.get_coordinate(j) ||
-            current_point.get_coordinate(j) > end_range.get_coordinate(j)) {
+            current_point.get_coordinate(j) > end_range.get_coordinate(j))
+        {
           in_range = false;
           break;
         }

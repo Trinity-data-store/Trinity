@@ -4,11 +4,10 @@
 const int DIMENSION = 6;
 const int DIMENSION_SMALL = 4;
 
-bool
-test_lookup(n_leaves_t n_points,
-            level_t max_depth,
-            level_t trie_depth,
-            preorder_t max_tree_node)
+bool test_lookup(n_leaves_t n_points,
+                 level_t max_depth,
+                 level_t trie_depth,
+                 preorder_t max_tree_node)
 {
 
   /**
@@ -23,24 +22,31 @@ test_lookup(n_leaves_t n_points,
                                max_depth);
 
   auto range = (point_t)pow(2, max_depth);
-  auto* mdtrie = new md_trie<DIMENSION>(max_depth, trie_depth, max_tree_node);
+  auto *mdtrie = new md_trie<DIMENSION>(max_depth, trie_depth, max_tree_node);
   data_point<DIMENSION> leaf_point;
   std::vector<data_point<DIMENSION>> all_leaf_points;
   point_t max[DIMENSION];
   point_t min[DIMENSION];
 
-  for (n_leaves_t itr = 1; itr <= n_points; itr++) {
+  for (n_leaves_t itr = 1; itr <= n_points; itr++)
+  {
 
-    for (dimension_t i = 0; i < DIMENSION; i++) {
+    for (dimension_t i = 0; i < DIMENSION; i++)
+    {
       leaf_point.set_coordinate(i, rand() % range);
-      if (itr == 1) {
+      if (itr == 1)
+      {
         max[i] = leaf_point.get_coordinate(i);
         min[i] = leaf_point.get_coordinate(i);
-      } else {
-        if (leaf_point.get_coordinate(i) > max[i]) {
+      }
+      else
+      {
+        if (leaf_point.get_coordinate(i) > max[i])
+        {
           max[i] = leaf_point.get_coordinate(i);
         }
-        if (leaf_point.get_coordinate(i) < min[i]) {
+        if (leaf_point.get_coordinate(i) < min[i])
+        {
           min[i] = leaf_point.get_coordinate(i);
         }
       }
@@ -49,22 +55,25 @@ test_lookup(n_leaves_t n_points,
     all_leaf_points.push_back(leaf_point);
   }
 
-  for (n_leaves_t i = 0; i < n_points; i++) {
+  for (n_leaves_t i = 0; i < n_points; i++)
+  {
 
     std::vector<morton_t> node_path_from_primary(max_depth + 1);
-    tree_block<DIMENSION>* t_ptr =
-      (tree_block<DIMENSION>*)(p_key_to_treeblock_compact->At(i));
+    tree_block<DIMENSION> *t_ptr =
+        (tree_block<DIMENSION> *)(p_key_to_treeblock_compact->At(i));
 
     point_t parent_symbol_from_primary =
-      t_ptr->get_node_path_primary_key(i, node_path_from_primary);
+        t_ptr->get_node_path_primary_key(i, node_path_from_primary);
     node_path_from_primary[max_depth - 1] = parent_symbol_from_primary;
 
     auto returned_coordinates =
-      t_ptr->node_path_to_coordinates(node_path_from_primary, DIMENSION);
+        t_ptr->node_path_to_coordinates(node_path_from_primary, DIMENSION);
 
-    for (dimension_t j = 0; j < DIMENSION; j++) {
+    for (dimension_t j = 0; j < DIMENSION; j++)
+    {
       if (returned_coordinates->get_coordinate(j) !=
-          all_leaf_points[i].get_coordinate(j)) {
+          all_leaf_points[i].get_coordinate(j))
+      {
         return false;
       }
     }
@@ -73,11 +82,10 @@ test_lookup(n_leaves_t n_points,
   return true;
 }
 
-bool
-test_lookup_close(n_leaves_t n_points,
-                  level_t max_depth,
-                  level_t trie_depth,
-                  preorder_t max_tree_node)
+bool test_lookup_close(n_leaves_t n_points,
+                       level_t max_depth,
+                       level_t trie_depth,
+                       preorder_t max_tree_node)
 {
 
   /**
@@ -93,24 +101,31 @@ test_lookup_close(n_leaves_t n_points,
                                max_depth);
 
   auto range = (point_t)1024; // A close range
-  auto* mdtrie = new md_trie<DIMENSION>(max_depth, trie_depth, max_tree_node);
+  auto *mdtrie = new md_trie<DIMENSION>(max_depth, trie_depth, max_tree_node);
   data_point<DIMENSION> leaf_point;
   std::vector<data_point<DIMENSION>> all_leaf_points;
   point_t max[DIMENSION];
   point_t min[DIMENSION];
 
-  for (n_leaves_t itr = 1; itr <= n_points; itr++) {
+  for (n_leaves_t itr = 1; itr <= n_points; itr++)
+  {
 
-    for (dimension_t i = 0; i < DIMENSION; i++) {
+    for (dimension_t i = 0; i < DIMENSION; i++)
+    {
       leaf_point.set_coordinate(i, rand() % range);
-      if (itr == 1) {
+      if (itr == 1)
+      {
         max[i] = leaf_point.get_coordinate(i);
         min[i] = leaf_point.get_coordinate(i);
-      } else {
-        if (leaf_point.get_coordinate(i) > max[i]) {
+      }
+      else
+      {
+        if (leaf_point.get_coordinate(i) > max[i])
+        {
           max[i] = leaf_point.get_coordinate(i);
         }
-        if (leaf_point.get_coordinate(i) < min[i]) {
+        if (leaf_point.get_coordinate(i) < min[i])
+        {
           min[i] = leaf_point.get_coordinate(i);
         }
       }
@@ -119,22 +134,25 @@ test_lookup_close(n_leaves_t n_points,
     all_leaf_points.push_back(leaf_point);
   }
 
-  for (n_leaves_t i = 0; i < n_points; i++) {
+  for (n_leaves_t i = 0; i < n_points; i++)
+  {
 
     std::vector<morton_t> node_path_from_primary(max_depth + 1);
-    tree_block<DIMENSION>* t_ptr =
-      (tree_block<DIMENSION>*)(p_key_to_treeblock_compact->At(i));
+    tree_block<DIMENSION> *t_ptr =
+        (tree_block<DIMENSION> *)(p_key_to_treeblock_compact->At(i));
 
     point_t parent_symbol_from_primary =
-      t_ptr->get_node_path_primary_key(i, node_path_from_primary);
+        t_ptr->get_node_path_primary_key(i, node_path_from_primary);
     node_path_from_primary[max_depth - 1] = parent_symbol_from_primary;
 
     auto returned_coordinates =
-      t_ptr->node_path_to_coordinates(node_path_from_primary, DIMENSION);
+        t_ptr->node_path_to_coordinates(node_path_from_primary, DIMENSION);
 
-    for (dimension_t j = 0; j < DIMENSION; j++) {
+    for (dimension_t j = 0; j < DIMENSION; j++)
+    {
       if (returned_coordinates->get_coordinate(j) !=
-          all_leaf_points[i].get_coordinate(j)) {
+          all_leaf_points[i].get_coordinate(j))
+      {
         return false;
       }
     }
@@ -143,11 +161,10 @@ test_lookup_close(n_leaves_t n_points,
   return true;
 }
 
-bool
-test_lookup_small_dimension(n_leaves_t n_points,
-                            level_t max_depth,
-                            level_t trie_depth,
-                            preorder_t max_tree_node)
+bool test_lookup_small_dimension(n_leaves_t n_points,
+                                 level_t max_depth,
+                                 level_t trie_depth,
+                                 preorder_t max_tree_node)
 {
 
   /**
@@ -164,25 +181,32 @@ test_lookup_small_dimension(n_leaves_t n_points,
                                max_depth);
 
   auto range = (point_t)1024; // A close range
-  auto* mdtrie =
-    new md_trie<DIMENSION_SMALL>(max_depth, trie_depth, max_tree_node);
+  auto *mdtrie =
+      new md_trie<DIMENSION_SMALL>(max_depth, trie_depth, max_tree_node);
   data_point<DIMENSION_SMALL> leaf_point;
   std::vector<data_point<DIMENSION_SMALL>> all_leaf_points;
   point_t max[DIMENSION_SMALL];
   point_t min[DIMENSION_SMALL];
 
-  for (n_leaves_t itr = 1; itr <= n_points; itr++) {
+  for (n_leaves_t itr = 1; itr <= n_points; itr++)
+  {
 
-    for (dimension_t i = 0; i < DIMENSION_SMALL; i++) {
+    for (dimension_t i = 0; i < DIMENSION_SMALL; i++)
+    {
       leaf_point.set_coordinate(i, rand() % range);
-      if (itr == 1) {
+      if (itr == 1)
+      {
         max[i] = leaf_point.get_coordinate(i);
         min[i] = leaf_point.get_coordinate(i);
-      } else {
-        if (leaf_point.get_coordinate(i) > max[i]) {
+      }
+      else
+      {
+        if (leaf_point.get_coordinate(i) > max[i])
+        {
           max[i] = leaf_point.get_coordinate(i);
         }
-        if (leaf_point.get_coordinate(i) < min[i]) {
+        if (leaf_point.get_coordinate(i) < min[i])
+        {
           min[i] = leaf_point.get_coordinate(i);
         }
       }
@@ -191,22 +215,25 @@ test_lookup_small_dimension(n_leaves_t n_points,
     all_leaf_points.push_back(leaf_point);
   }
 
-  for (n_leaves_t i = 0; i < n_points; i++) {
+  for (n_leaves_t i = 0; i < n_points; i++)
+  {
 
     std::vector<morton_t> node_path_from_primary(max_depth + 1);
-    tree_block<DIMENSION_SMALL>* t_ptr =
-      (tree_block<DIMENSION_SMALL>*)(p_key_to_treeblock_compact->At(i));
+    tree_block<DIMENSION_SMALL> *t_ptr =
+        (tree_block<DIMENSION_SMALL> *)(p_key_to_treeblock_compact->At(i));
 
     point_t parent_symbol_from_primary =
-      t_ptr->get_node_path_primary_key(i, node_path_from_primary);
+        t_ptr->get_node_path_primary_key(i, node_path_from_primary);
     node_path_from_primary[max_depth - 1] = parent_symbol_from_primary;
 
     auto returned_coordinates =
-      t_ptr->node_path_to_coordinates(node_path_from_primary, DIMENSION_SMALL);
+        t_ptr->node_path_to_coordinates(node_path_from_primary, DIMENSION_SMALL);
 
-    for (dimension_t j = 0; j < DIMENSION_SMALL; j++) {
+    for (dimension_t j = 0; j < DIMENSION_SMALL; j++)
+    {
       if (returned_coordinates->get_coordinate(j) !=
-          all_leaf_points[i].get_coordinate(j)) {
+          all_leaf_points[i].get_coordinate(j))
+      {
         return false;
       }
     }

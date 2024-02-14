@@ -35,4 +35,8 @@ endif ()
 add_executable(microbench
         bench/microbench.cpp)
 
+add_executable(dimension
+        bench/dimension.cpp)
+
 target_link_libraries(microbench ${MDTRIE_LIBS})
+target_link_libraries(dimension ${MDTRIE_LIBS})

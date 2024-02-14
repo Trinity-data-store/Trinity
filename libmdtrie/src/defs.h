@@ -39,10 +39,10 @@ uint64_t not_going_down_count = 0;
 uint64_t branching_count[33];
 */
 
-template<dimension_t DIMENSION>
+template <dimension_t DIMENSION>
 class tree_block;
 
-template<dimension_t DIMENSION>
+template <dimension_t DIMENSION>
 class data_point;
 
 /**
@@ -64,11 +64,11 @@ struct subtree_info
   preorder_t subtree_size_ = 0;
 };
 
-template<dimension_t DIMENSION>
+template <dimension_t DIMENSION>
 struct frontier_node
 {
   preorder_t preorder_;
-  tree_block<DIMENSION>* pointer_;
+  tree_block<DIMENSION> *pointer_;
 };
 
 typedef unsigned long long int TimeStamp;
@@ -94,7 +94,7 @@ n_leaves_t total_points_count = 0;
 int discount_factor = 1;
 // n_leaves_t total_treeblock_num = 0;
 level_t trie_depth_;
-morton_t level_to_num_children[32] = { 0 };
+morton_t level_to_num_children[32] = {0};
 preorder_t max_tree_nodes_ = 512;
 level_t max_depth_;
 
@@ -106,12 +106,12 @@ level_t max_depth_;
  * whether we set the treeblock size to the same value.
  */
 
-bitmap::CompactPtrVector* p_key_to_treeblock_compact;
+bitmap::CompactPtrVector *p_key_to_treeblock_compact;
 std::vector<level_t> dimension_to_num_bits;
 std::vector<level_t> start_dimension_bits;
 bool no_dynamic_sizing = false;
-std::map<void*, void*> old_ptr_to_new_ptr;
-std::map<void*, size_t> ptr_to_file_offset;
+std::map<void *, void *> old_ptr_to_new_ptr;
+std::map<void *, size_t> ptr_to_file_offset;
 size_t current_file_offset = 0;
 n_leaves_t treeblock_ctr = 0;
 
@@ -130,20 +130,21 @@ uint64_t checked_points_count = 0;
 int query_optimization = 2;
 bool is_collapsed_node_exp = false;
 
-void
-create_level_to_num_children(std::vector<level_t> bit_widths,
-                             std::vector<level_t> start_bits,
-                             level_t max_level)
+void create_level_to_num_children(std::vector<level_t> bit_widths,
+                                  std::vector<level_t> start_bits,
+                                  level_t max_level)
 {
 
   dimension_to_num_bits = bit_widths;
   start_dimension_bits = start_bits;
   dimension_t num_dimensions = bit_widths.size();
 
-  for (level_t level = 0; level < max_level; level++) {
+  for (level_t level = 0; level < max_level; level++)
+  {
 
     dimension_t dimension_left = num_dimensions;
-    for (dimension_t j = 0; j < num_dimensions; j++) {
+    for (dimension_t j = 0; j < num_dimensions; j++)
+    {
 
       if (level + 1 > bit_widths[j] || level < start_dimension_bits[j])
         dimension_left--;

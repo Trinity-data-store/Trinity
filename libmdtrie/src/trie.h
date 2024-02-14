@@ -20,7 +20,7 @@
 #include "tree_block.h"
 #include "trie_node.h"
 
-template<dimension_t DIMENSION>
+template <dimension_t DIMENSION>
 class md_trie
 {
 public:
@@ -35,115 +35,130 @@ public:
     root_ = new trie_node<DIMENSION>(false, level_to_num_children[0]);
   }
 
-  inline trie_node<DIMENSION>* root() { return root_; }
+  inline trie_node<DIMENSION> *root() { return root_; }
 
-  tree_block<DIMENSION>* walk_trie(trie_node<DIMENSION>* current_trie_node,
-                                   data_point<DIMENSION>* leaf_point,
-                                   level_t& level) const
+  tree_block<DIMENSION> *walk_trie(trie_node<DIMENSION> *current_trie_node,
+                                   data_point<DIMENSION> *leaf_point,
+                                   level_t &level) const
   {
 
     morton_t current_symbol;
 
     while (level < trie_depth_ &&
-           current_trie_node->get_child(leaf_point->leaf_to_symbol(level))) {
+           current_trie_node->get_child(leaf_point->leaf_to_symbol(level)))
+    {
 
       current_trie_node =
-        current_trie_node->get_child(leaf_point->leaf_to_symbol(level));
+          current_trie_node->get_child(leaf_point->leaf_to_symbol(level));
       level++;
     }
-    while (level < trie_depth_) {
+    while (level < trie_depth_)
+    {
 
       current_symbol = leaf_point->leaf_to_symbol(level);
-      if (level == trie_depth_ - 1) {
+      if (level == trie_depth_ - 1)
+      {
         current_trie_node->set_child(
-          current_symbol,
-          new trie_node<DIMENSION>(true, level_to_num_children[level + 1]));
-      } else {
+            current_symbol,
+            new trie_node<DIMENSION>(true, level_to_num_children[level + 1]));
+      }
+      else
+      {
         current_trie_node->set_child(
-          current_symbol,
-          new trie_node<DIMENSION>(false, level_to_num_children[level + 1]));
+            current_symbol,
+            new trie_node<DIMENSION>(false, level_to_num_children[level + 1]));
       }
       current_trie_node->get_child(current_symbol)
-        ->set_parent_trie_node(current_trie_node);
+          ->set_parent_trie_node(current_trie_node);
       current_trie_node->get_child(current_symbol)
-        ->set_parent_symbol(current_symbol);
+          ->set_parent_symbol(current_symbol);
       current_trie_node = current_trie_node->get_child(current_symbol);
       level++;
     }
 
-    tree_block<DIMENSION>* current_treeblock = nullptr;
-    if (current_trie_node->get_block() == nullptr) {
+    tree_block<DIMENSION> *current_treeblock = nullptr;
+    if (current_trie_node->get_block() == nullptr)
+    {
       current_treeblock =
-        new tree_block<DIMENSION>(trie_depth_,
-                                  1 /* initial_tree_capacity_ */,
-                                  1 << level_to_num_children[trie_depth_],
-                                  1,
-                                  max_depth_,
-                                  max_tree_nodes_,
-                                  current_trie_node);
+          new tree_block<DIMENSION>(trie_depth_,
+                                    1 /* initial_tree_capacity_ */,
+                                    1 << level_to_num_children[trie_depth_],
+                                    1,
+                                    max_depth_,
+                                    max_tree_nodes_,
+                                    current_trie_node);
       current_trie_node->set_block(current_treeblock);
-    } else {
+    }
+    else
+    {
       current_treeblock =
-        (tree_block<DIMENSION>*)current_trie_node->get_block();
+          (tree_block<DIMENSION> *)current_trie_node->get_block();
     }
     return current_treeblock;
   }
 
-  void insert_trie(data_point<DIMENSION>* leaf_point,
+  void insert_trie(data_point<DIMENSION> *leaf_point,
                    n_leaves_t primary_key,
-                   bitmap::CompactPtrVector* p_key_to_treeblock_compact)
+                   bitmap::CompactPtrVector *p_key_to_treeblock_compact)
   {
 
     level_t level = 0;
-    trie_node<DIMENSION>* current_trie_node = root_;
-    tree_block<DIMENSION>* current_treeblock =
-      walk_trie(current_trie_node, leaf_point, level);
+    trie_node<DIMENSION> *current_trie_node = root_;
+    tree_block<DIMENSION> *current_treeblock =
+        walk_trie(current_trie_node, leaf_point, level);
     current_treeblock->insert_remaining(
-      leaf_point, level, primary_key, p_key_to_treeblock_compact);
+        leaf_point, level, primary_key, p_key_to_treeblock_compact);
   }
 
-  bool check(data_point<DIMENSION>* leaf_point) const
+  bool check(data_point<DIMENSION> *leaf_point) const
   {
 
     level_t level = 0;
-    trie_node<DIMENSION>* current_trie_node = root_;
-    tree_block<DIMENSION>* current_treeblock =
-      walk_trie(current_trie_node, leaf_point, level);
+    trie_node<DIMENSION> *current_trie_node = root_;
+    tree_block<DIMENSION> *current_treeblock =
+        walk_trie(current_trie_node, leaf_point, level);
     bool result = current_treeblock->walk_tree_block(leaf_point, level);
     return result;
   }
 
-  uint64_t size(bitmap::CompactPtrVector* p_key_to_treeblock_compact)
+  uint64_t size(bitmap::CompactPtrVector *p_key_to_treeblock_compact)
   {
 
     uint64_t total_size = sizeof(root_) + sizeof(max_depth_);
     total_size += sizeof(max_tree_nodes_);
 
-    std::queue<trie_node<DIMENSION>*> trie_node_queue;
+    std::queue<trie_node<DIMENSION> *> trie_node_queue;
     trie_node_queue.push(root_);
     level_t current_level = 0;
 
-    while (!trie_node_queue.empty()) {
+    while (!trie_node_queue.empty())
+    {
 
       unsigned int queue_size = trie_node_queue.size();
 
-      for (unsigned int s = 0; s < queue_size; s++) {
+      for (unsigned int s = 0; s < queue_size; s++)
+      {
 
-        trie_node<DIMENSION>* current_node = trie_node_queue.front();
+        trie_node<DIMENSION> *current_node = trie_node_queue.front();
         trie_node_queue.pop();
 
         total_size +=
-          current_node->size(1 << level_to_num_children[current_level],
-                             current_level == trie_depth_);
+            current_node->size(1 << level_to_num_children[current_level],
+                               current_level == trie_depth_);
 
-        if (current_level != trie_depth_) {
+        if (current_level != trie_depth_)
+        {
           for (int i = 0; i < (1 << level_to_num_children[current_level]);
-               i++) {
-            if (current_node->get_child(i)) {
+               i++)
+          {
+            if (current_node->get_child(i))
+            {
               trie_node_queue.push(current_node->get_child(i));
             }
           }
-        } else {
+        }
+        else
+        {
           total_size += current_node->get_block()->size();
         }
       }
@@ -169,11 +184,11 @@ public:
     return total_size;
   }
 
-  void range_search_trie(data_point<DIMENSION>* start_range,
-                         data_point<DIMENSION>* end_range,
-                         trie_node<DIMENSION>* current_trie_node,
+  void range_search_trie(data_point<DIMENSION> *start_range,
+                         data_point<DIMENSION> *end_range,
+                         trie_node<DIMENSION> *current_trie_node,
                          level_t level,
-                         std::vector<int32_t>& found_points)
+                         std::vector<int32_t> &found_points)
   {
 
     // if (start_range->get_coordinate(5) > end_range->get_coordinate(6) ||
@@ -182,10 +197,11 @@ public:
     // raise(SIGINT);
     // branching_count[level] ++;
     // function_call_count ++;
-    if (level == trie_depth_) {
+    if (level == trie_depth_)
+    {
 
-      auto* current_treeblock =
-        (tree_block<DIMENSION>*)current_trie_node->get_block();
+      auto *current_treeblock =
+          (tree_block<DIMENSION> *)current_trie_node->get_block();
       // TimeStamp start = GetTimestamp();
       current_treeblock->range_search_treeblock(start_range,
                                                 end_range,
@@ -211,14 +227,17 @@ public:
     struct data_point<DIMENSION> original_start_range = (*start_range);
     struct data_point<DIMENSION> original_end_range = (*end_range);
     for (morton_t current_symbol = start_symbol; current_symbol <= end_symbol;
-         current_symbol++) {
+         current_symbol++)
+    {
 
       if ((start_symbol & neg_representation) !=
-          (current_symbol & neg_representation)) {
+          (current_symbol & neg_representation))
+      {
         continue;
       }
 
-      if (!current_trie_node->get_child(current_symbol)) {
+      if (!current_trie_node->get_child(current_symbol))
+      {
         continue;
       }
 
@@ -234,67 +253,78 @@ public:
     }
   }
 
-  size_t Serialize(std::ostream& out, bool use_file_offset = false)
+  size_t Serialize(std::ostream &out, bool use_file_offset = false)
   {
 
     size_t out_size = 0;
 
-    if (!use_file_offset) {
+    if (!use_file_offset)
+    {
       out_size += p_key_to_treeblock_compact->Serialize(out);
-    } else {
-      for (n_leaves_t i = 0; i < total_points_count; i++) {
+    }
+    else
+    {
+      for (n_leaves_t i = 0; i < total_points_count; i++)
+      {
         p_key_to_treeblock_compact->Set(
-          i, (void*)ptr_to_file_offset[p_key_to_treeblock_compact->At(i)]);
+            i, (void *)ptr_to_file_offset[p_key_to_treeblock_compact->At(i)]);
       }
       out_size += p_key_to_treeblock_compact->Serialize(out);
     }
 
-    out.write(reinterpret_cast<const char*>(&root_), sizeof(root_));
+    out.write(reinterpret_cast<const char *>(&root_), sizeof(root_));
     out_size += sizeof(root_);
 
     // level_t max_depth_;
-    out.write(reinterpret_cast<const char*>(&max_depth_), sizeof(max_depth_));
+    out.write(reinterpret_cast<const char *>(&max_depth_), sizeof(max_depth_));
     out_size += sizeof(max_depth_);
 
     // preorder_t max_tree_nodes_;
-    out.write(reinterpret_cast<const char*>(&max_tree_nodes_),
+    out.write(reinterpret_cast<const char *>(&max_tree_nodes_),
               sizeof(max_tree_nodes_));
     out_size += sizeof(max_tree_nodes_);
 
-    out.write(reinterpret_cast<char const*>(&total_points_count),
+    out.write(reinterpret_cast<char const *>(&total_points_count),
               sizeof(total_points_count));
     out_size += sizeof(total_points_count);
 
     current_file_offset = out_size;
 
-    std::queue<trie_node<DIMENSION>*> trie_node_queue;
+    std::queue<trie_node<DIMENSION> *> trie_node_queue;
     trie_node_queue.push(root_);
     level_t current_level = 0;
 
-    while (!trie_node_queue.empty()) {
+    while (!trie_node_queue.empty())
+    {
 
       unsigned int queue_size = trie_node_queue.size();
 
-      for (unsigned int s = 0; s < queue_size; s++) {
+      for (unsigned int s = 0; s < queue_size; s++)
+      {
 
-        trie_node<DIMENSION>* current_node = trie_node_queue.front();
+        trie_node<DIMENSION> *current_node = trie_node_queue.front();
         trie_node_queue.pop();
         out_size +=
-          current_node->Serialize(out,
-                                  1 << level_to_num_children[current_level],
-                                  current_level == trie_depth_,
-                                  use_file_offset);
+            current_node->Serialize(out,
+                                    1 << level_to_num_children[current_level],
+                                    current_level == trie_depth_,
+                                    use_file_offset);
 
-        if (current_level != trie_depth_) {
+        if (current_level != trie_depth_)
+        {
           for (int i = 0; i < (1 << level_to_num_children[current_level]);
-               i++) {
-            if (current_node->get_child(i)) {
+               i++)
+          {
+            if (current_node->get_child(i))
+            {
               trie_node_queue.push(current_node->get_child(i));
             }
           }
-        } else {
+        }
+        else
+        {
           out_size +=
-            current_node->get_block()->Serialize(out, use_file_offset);
+              current_node->get_block()->Serialize(out, use_file_offset);
         }
       }
       current_level++;
@@ -302,93 +332,101 @@ public:
     return out_size;
   }
 
-  size_t Deserialize(std::istream& in, bool use_file_offset = false)
+  size_t Deserialize(std::istream &in, bool use_file_offset = false)
   {
 
     size_t in_size = 0;
 
     p_key_to_treeblock_compact =
-      new bitmap::CompactPtrVector(total_points_count);
+        new bitmap::CompactPtrVector(total_points_count);
     in_size += p_key_to_treeblock_compact->Deserialize(in);
 
-    in.read(reinterpret_cast<char*>(&root_), sizeof(root_));
+    in.read(reinterpret_cast<char *>(&root_), sizeof(root_));
     in_size += sizeof(root_);
     old_ptr_to_new_ptr[root_] =
-      (void*)new trie_node<DIMENSION>(false, level_to_num_children[0]);
-    root_ = (trie_node<DIMENSION>*)old_ptr_to_new_ptr[root_];
+        (void *)new trie_node<DIMENSION>(false, level_to_num_children[0]);
+    root_ = (trie_node<DIMENSION> *)old_ptr_to_new_ptr[root_];
 
-    in.read(reinterpret_cast<char*>(&max_depth_), sizeof(max_depth_));
+    in.read(reinterpret_cast<char *>(&max_depth_), sizeof(max_depth_));
     in_size += sizeof(max_depth_);
 
-    in.read(reinterpret_cast<char*>(&max_tree_nodes_), sizeof(max_tree_nodes_));
+    in.read(reinterpret_cast<char *>(&max_tree_nodes_), sizeof(max_tree_nodes_));
     in_size += sizeof(max_tree_nodes_);
 
     n_leaves_t tmp = 0;
-    in.read(reinterpret_cast<char*>(&tmp), sizeof(total_points_count));
+    in.read(reinterpret_cast<char *>(&tmp), sizeof(total_points_count));
     in_size += sizeof(total_points_count);
     total_points_count = tmp;
 
-    std::queue<trie_node<DIMENSION>*> trie_node_queue;
+    std::queue<trie_node<DIMENSION> *> trie_node_queue;
     trie_node_queue.push(root_);
     level_t current_level = 0;
 
-    while (!trie_node_queue.empty()) {
+    while (!trie_node_queue.empty())
+    {
 
       unsigned int queue_size = trie_node_queue.size();
 
-      for (unsigned int s = 0; s < queue_size; s++) {
+      for (unsigned int s = 0; s < queue_size; s++)
+      {
 
-        trie_node<DIMENSION>* current_node = trie_node_queue.front();
+        trie_node<DIMENSION> *current_node = trie_node_queue.front();
 
         trie_node_queue.pop();
         in_size +=
-          current_node->Deserialize(in,
-                                    1 << level_to_num_children[current_level],
-                                    current_level == trie_depth_,
-                                    use_file_offset);
+            current_node->Deserialize(in,
+                                      1 << level_to_num_children[current_level],
+                                      current_level == trie_depth_,
+                                      use_file_offset);
 
-        if (current_level != trie_depth_) {
+        if (current_level != trie_depth_)
+        {
           for (int i = 0; i < (1 << level_to_num_children[current_level]);
-               i++) {
-            if (current_node->get_child(i)) {
+               i++)
+          {
+            if (current_node->get_child(i))
+            {
               old_ptr_to_new_ptr[current_node->get_child(i)] =
-                (void*)new trie_node<DIMENSION>(
-                  false, level_to_num_children[current_level]);
+                  (void *)new trie_node<DIMENSION>(
+                      false, level_to_num_children[current_level]);
               current_node->set_child(
-                i,
-                (trie_node<DIMENSION>*)
-                  old_ptr_to_new_ptr[current_node->get_child(i)]);
+                  i,
+                  (trie_node<DIMENSION> *)
+                      old_ptr_to_new_ptr[current_node->get_child(i)]);
               trie_node_queue.push(current_node->get_child(i));
             }
           }
-        } else {
+        }
+        else
+        {
           old_ptr_to_new_ptr[current_node->get_block()] =
-            new tree_block<DIMENSION>(trie_depth_,
-                                      1 /* initial_tree_capacity_ */,
-                                      1 << level_to_num_children[trie_depth_],
-                                      1,
-                                      max_depth_,
-                                      max_tree_nodes_,
-                                      current_node);
+              new tree_block<DIMENSION>(trie_depth_,
+                                        1 /* initial_tree_capacity_ */,
+                                        1 << level_to_num_children[trie_depth_],
+                                        1,
+                                        max_depth_,
+                                        max_tree_nodes_,
+                                        current_node);
           current_node->set_block(
-            (tree_block<DIMENSION>*)
-              old_ptr_to_new_ptr[current_node->get_block()]);
+              (tree_block<DIMENSION> *)
+                  old_ptr_to_new_ptr[current_node->get_block()]);
           in_size +=
-            current_node->get_block()->Deserialize(in, use_file_offset);
+              current_node->get_block()->Deserialize(in, use_file_offset);
         }
       }
       current_level++;
     }
 
-    for (unsigned int i = 0; i < total_points_count; i++) {
+    for (unsigned int i = 0; i < total_points_count; i++)
+    {
       p_key_to_treeblock_compact->Set(
-        i, old_ptr_to_new_ptr[p_key_to_treeblock_compact->At(i)]);
+          i, old_ptr_to_new_ptr[p_key_to_treeblock_compact->At(i)]);
     }
     return in_size;
   }
 
 private:
-  trie_node<DIMENSION>* root_ = nullptr;
+  trie_node<DIMENSION> *root_ = nullptr;
   level_t max_depth_;
   preorder_t max_tree_nodes_;
 };
