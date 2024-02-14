@@ -1,0 +1,5 @@
+make clean && make
+./bin/benchmark 10000 5 2
+./bin/benchmark 100000 5 2
+./bin/benchmark 1000000 5 2
+./bin/benchmark 10000000 5 2
