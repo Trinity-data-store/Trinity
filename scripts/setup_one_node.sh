@@ -59,34 +59,3 @@ sudo apt-get install -y libbz2-dev
 sudo apt-get install -y python3-dev  # for python3.x installs
 sudo apt-get install -y libevent-dev
 sudo apt-get install -y clang-format
-
-# Other Config / installation
-sudo apt install -y python3-pip
-pip3 install pandas
-echo 'include /etc/ld.so.conf.d/*.conf /usr/local/lib' | sudo tee /etc/ld.so.conf
-sudo /sbin/ldconfig
-# ulimit -n 163840
-ulimit -n 100000
-sudo rm -r /etc/security/limits.d/
-sudo cp /proj/trinity-PG0/Trinity/scripts/limits.conf  /etc/security/limits.conf
-sudo cp /proj/trinity-PG0/Trinity/scripts/user.conf  /etc/systemd/user.conf
-sudo cp /proj/trinity-PG0/Trinity/scripts/system.conf  /etc/security/system.conf
-
-# Golang
-cd $dependencies_path
-cd go
-if [ ! -d "go1.18.3.linux-amd64.tar.gz.132" ]; then
-    wget https://go.dev/dl/go1.18.3.linux-amd64.tar.gz.132
-fi
-sudo tar -C /usr/bin -xzf go1.18.3.linux-amd64.tar.gz.132
-export PATH=$PATH:/usr/bin/go/bin
-cd $dependencies_path
-
-sudo apt-get install -y maven
-sudo apt-get install -y python3-pip
-
-sudo mkdir -p /mntData/tpch
-sudo chmod 775 /mntData/tpch
-sudo apt -y install pixz
-
-exit 0

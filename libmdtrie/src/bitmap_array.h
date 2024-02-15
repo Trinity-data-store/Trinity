@@ -406,39 +406,6 @@ namespace bitmap
 
     bool empty() const { return num_elements_ == 0; }
 
-    // Serialization and De-serialization
-    virtual size_type Serialize(std::ostream &out) override
-    {
-      size_t out_size = 0;
-
-      out.write(reinterpret_cast<const char *>(&this->num_elements_),
-                sizeof(size_type));
-      out_size += sizeof(size_type);
-
-      out.write(reinterpret_cast<const char *>(&this->bit_width_),
-                sizeof(width_type));
-      out_size += sizeof(width_type);
-
-      out_size += Bitmap::Serialize(out);
-
-      return out_size;
-    }
-
-    virtual size_type Deserialize(std::istream &in) override
-    {
-      size_t in_size = 0;
-
-      in.read(reinterpret_cast<char *>(&this->num_elements_), sizeof(size_type));
-      in_size += sizeof(size_type);
-
-      in.read(reinterpret_cast<char *>(&this->bit_width_), sizeof(width_type));
-      in_size += sizeof(width_type);
-
-      in_size += Bitmap::Deserialize(in);
-
-      return in_size;
-    }
-
   protected:
     // Data members
     size_type num_elements_;
