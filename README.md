@@ -4,7 +4,7 @@
 
 No special hardware requirement. We used node `xl170` on Ubuntu 20.04. 
 
-Cloudlab Profile is attached in `scripts/cloudlab_profile.py`. Modify accordingly. 
+An example Cloudlab Profile is attached in `scripts/cloudlab_profile.py`. 
 
 ## Build
 
