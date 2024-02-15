@@ -273,27 +273,22 @@ void sensitivity_selectivity(void)
                             1);
 }
 
-void sensitivity_treeblock_sizes(void)
+void sensitivity_treeblock_sizes(int treeblock_size)
 {
   use_tpch_setting(TPCH_DIMENSION, micro_tpch_size);
+  md_trie<TPCH_DIMENSION> mdtrie(max_depth, trie_depth, treeblock_size);
+  MdTrieBench<TPCH_DIMENSION> bench(&mdtrie);
+  p_key_to_treeblock_compact = new bitmap::CompactPtrVector(total_points_count);
+  bench.insert(TPCH_DATA_ADDR,
+               "sensitivity/tpch_insert_treeblock_sizes_" + std::to_string(treeblock_size),
+               total_points_count,
+               parse_line_tpch);
 
-  for (int treeblock_size = 128; treeblock_size <= 1024; treeblock_size += 128)
-  {
-    max_tree_nodes_ = treeblock_size;
-    md_trie<TPCH_DIMENSION> mdtrie(max_depth, trie_depth, max_tree_node);
-    MdTrieBench<TPCH_DIMENSION> bench(&mdtrie);
-    p_key_to_treeblock_compact = new bitmap::CompactPtrVector(total_points_count);
-    bench.insert(TPCH_DATA_ADDR,
-                 "sensitivity/tpch_query_selectivity/tpch_query_treeblock_sizes_" + std::to_string(treeblock_size),
-                 total_points_count,
-                 parse_line_tpch);
-
-    bench.get_storage("sensitivity/tpch_query_selectivity/tpch_query_treeblock_sizes_" + std::to_string(treeblock_size));
-    bench.lookup("sensitivity/tpch_query_selectivity/tpch_query_treeblock_sizes_" + std::to_string(treeblock_size));
-    bench.range_search(TPCH_QUERY_ADDR,
-                       "sensitivity/tpch_query_selectivity/tpch_query_treeblock_sizes_" + std::to_string(treeblock_size),
-                       get_query_tpch<TPCH_DIMENSION>);
-  }
+  bench.get_storage("sensitivity/tpch_storage_treeblock_sizes_" + std::to_string(treeblock_size));
+  bench.lookup("sensitivity/tpch_lookup_treeblock_sizes_" + std::to_string(treeblock_size));
+  bench.range_search(TPCH_QUERY_ADDR,
+                     "sensitivity/tpch_query_treeblock_sizes_" + std::to_string(treeblock_size),
+                     get_query_tpch<TPCH_DIMENSION>);
 }
 
 int main(int argc, char *argv[])
@@ -303,13 +298,17 @@ int main(int argc, char *argv[])
   optimization_code = OPTIMIZATION_SM;
   int arg;
   int sensitivity_dimensions = -1;
+  int treeblock_size = -1;
   is_microbenchmark = true;
 
-  while ((arg = getopt(argc, argv, "b:o:d:")) != -1)
+  while ((arg = getopt(argc, argv, "b:o:d:t:")) != -1)
     switch (arg)
     {
     case 'b':
       argvalue = std::string(optarg);
+      break;
+    case 't':
+      treeblock_size = atoi(optarg);
       break;
     case 'o':
       optimization = std::string(optarg);
@@ -359,7 +358,8 @@ int main(int argc, char *argv[])
     }
 
   std::cout << "benchmark: " << argvalue << ", optimization: " << optimization
-            << ", dimensions: " << sensitivity_dimensions << std::endl;
+            << ", dimensions: " << sensitivity_dimensions
+            << ", treeblock_size: " << treeblock_size << std::endl;
   if (argvalue == "tpch")
     tpch_bench();
   else if (argvalue == "github")
@@ -403,7 +403,7 @@ int main(int argc, char *argv[])
   else if (argvalue == "sensitivity_selectivity")
     sensitivity_selectivity();
   else if (argvalue == "sensitivity_treeblock_size")
-    sensitivity_treeblock_sizes();
+    sensitivity_treeblock_sizes(treeblock_size);
   else
     std::cout << "Unrecognized benchmark: " << argvalue << std::endl;
 }
