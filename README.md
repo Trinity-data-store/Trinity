@@ -6,6 +6,14 @@ No special hardware requirement. We used node `xl170` on Ubuntu 20.04.
 
 An example Cloudlab Profile is attached in `scripts/cloudlab_profile.py`. 
 
+## Setup
+
+```bash
+bash scripts/setup_one_node.sh
+```
+
+To run a distributed setup, execute the setup scripts on all client and storage nodes. 
+
 ## Build
 
 ```bash

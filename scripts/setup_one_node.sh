@@ -4,10 +4,6 @@
 # git clone https://github.com/MaoZiming/Trinity.git
 # bash /proj/trinity-PG0/Trinity/scripts/setup_one_node.sh
 
-# Update Github
-git config --global user.name "MaoZiming"
-git config --global user.email "ziming.mao@yale.edu"
-
 # Path
 dependencies_path="/proj/trinity-PG0/dependencies"
 
@@ -94,7 +90,3 @@ sudo chmod 775 /mntData/tpch
 sudo apt -y install pixz
 
 exit 0
-
-# FILE DESCRIPTOR!!
-# https://unix.stackexchange.com/a/691947
-# Why is VScode terminal showing different behaviors
