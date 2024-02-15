@@ -1,4 +1,4 @@
-# EuroSys '24 Artifact Evaluation for "Trinity: A Fast Compressed Multi-attribute Data Store"
+# EuroSys '24: "Trinity: A Fast Compressed Multi-attribute Data Store"
 
 ## Folder Structure
 

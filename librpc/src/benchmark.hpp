@@ -42,51 +42,53 @@ public:
     dataset_idx_ = dataset_idx;
 
     auto client = MDTrieClient(server_ips_, shard_num_);
-    if (!client.ping(dataset_idx)) {
+    if (!client.ping(dataset_idx))
+    {
       std::cerr << "Server setting wrong!" << std::endl;
       exit(-1);
     }
 
-    switch (dataset_idx) {
-      case (TPCH):
-        dataset_size_ = TPCH_SIZE / client_server_num_;
-        dataset_addr_ = TPCH_SPLIT_ADDR + "x0" + std::to_string(dataset_part);
-        query_addr_ = TPCH_QUERY_ADDR;
-        num_dimensions_ = TPCH_DIMENSION;
-        max_values_ = tpch_max_values;
-        min_values_ = tpch_min_values;
-        query_out_addr_ =
+    switch (dataset_idx)
+    {
+    case (TPCH):
+      dataset_size_ = TPCH_SIZE / client_server_num_;
+      dataset_addr_ = TPCH_SPLIT_ADDR + "x0" + std::to_string(dataset_part);
+      query_addr_ = TPCH_QUERY_ADDR;
+      num_dimensions_ = TPCH_DIMENSION;
+      max_values_ = tpch_max_values;
+      min_values_ = tpch_min_values;
+      query_out_addr_ =
           results_folder_addr + "macrobenchmark/tpch/tpch_query_latency";
-        load_dataset(parse_line_tpch);
-        load_queries(update_range_search_range_tpch);
-        break;
-      case (GITHUB):
-        dataset_size_ = GITHUB_SIZE / client_server_num_;
-        dataset_addr_ = GITHUB_SPLIT_ADDR + "x0" + std::to_string(dataset_part);
-        query_addr_ = GITHUB_QUERY_ADDR;
-        num_dimensions_ = GITHUB_DIMENSION;
-        max_values_ = github_max_values;
-        min_values_ = github_min_values;
-        query_out_addr_ =
+      load_dataset(parse_line_tpch);
+      load_queries(update_range_search_range_tpch);
+      break;
+    case (GITHUB):
+      dataset_size_ = GITHUB_SIZE / client_server_num_;
+      dataset_addr_ = GITHUB_SPLIT_ADDR + "x0" + std::to_string(dataset_part);
+      query_addr_ = GITHUB_QUERY_ADDR;
+      num_dimensions_ = GITHUB_DIMENSION;
+      max_values_ = github_max_values;
+      min_values_ = github_min_values;
+      query_out_addr_ =
           results_folder_addr + "macrobenchmark/github/github_query_latency";
-        load_dataset(parse_line_github);
-        load_queries(update_range_search_range_github);
-        break;
-      case (NYC):
-        dataset_size_ = NYC_SIZE / client_server_num_;
-        dataset_addr_ = NYC_SPLIT_ADDR + "x0" + std::to_string(dataset_part);
-        query_addr_ = NYC_QUERY_ADDR;
-        num_dimensions_ = NYC_DIMENSION;
-        max_values_ = nyc_max_values;
-        min_values_ = nyc_min_values;
-        query_out_addr_ =
+      load_dataset(parse_line_github);
+      load_queries(update_range_search_range_github);
+      break;
+    case (NYC):
+      dataset_size_ = NYC_SIZE / client_server_num_;
+      dataset_addr_ = NYC_SPLIT_ADDR + "x0" + std::to_string(dataset_part);
+      query_addr_ = NYC_QUERY_ADDR;
+      num_dimensions_ = NYC_DIMENSION;
+      max_values_ = nyc_max_values;
+      min_values_ = nyc_min_values;
+      query_out_addr_ =
           results_folder_addr + "macrobenchmark/nyc/nyc_query_latency";
-        load_dataset(parse_line_nyc);
-        load_queries(update_range_search_range_nyc);
-        break;
-      default:
-        std::cerr << "Unrecognized dataset idx: " << dataset_idx << std::endl;
-        exit(-1);
+      load_dataset(parse_line_nyc);
+      load_queries(update_range_search_range_nyc);
+      break;
+    default:
+      std::cerr << "Unrecognized dataset idx: " << dataset_idx << std::endl;
+      exit(-1);
     }
 
     warmup_size_ = dataset_size_ / 100;
@@ -102,13 +104,15 @@ public:
     this->warmup();
     std::cout << "Finished warmup" << std::endl;
 
-    for (int i = 0; i < client_num_; i++) {
+    for (int i = 0; i < client_num_; i++)
+    {
       threads.push_back(
-        std::async(&TrinityBench::insert_each_client, this, i, dataset_size_));
+          std::async(&TrinityBench::insert_each_client, this, i, dataset_size_));
     }
 
     uint32_t total_throughput = 0;
-    for (int i = 0; i < client_num_; i++) {
+    for (int i = 0; i < client_num_; i++)
+    {
       total_throughput += threads[i].get();
     }
     std::cout << "Finished insert_benchmark" << std::endl;
@@ -121,13 +125,15 @@ public:
     std::vector<std::future<uint32_t>> threads;
     threads.reserve(client_num_);
 
-    for (int i = 0; i < client_num_; i++) {
+    for (int i = 0; i < client_num_; i++)
+    {
       threads.push_back(
-        std::async(&TrinityBench::lookup_each_client, this, i, dataset_size_));
+          std::async(&TrinityBench::lookup_each_client, this, i, dataset_size_));
     }
 
     uint32_t total_throughput = 0;
-    for (int i = 0; i < client_num_; i++) {
+    for (int i = 0; i < client_num_; i++)
+    {
       total_throughput += threads[i].get();
     }
     std::cout << "Finished lookup_benchmark" << std::endl;
@@ -141,12 +147,14 @@ public:
     std::vector<std::future<uint32_t>> threads;
     threads.reserve(search_client_num);
 
-    for (int i = 0; i < search_client_num; i++) {
+    for (int i = 0; i < search_client_num; i++)
+    {
       threads.push_back(std::async(&TrinityBench::search_each_client, this, i));
     }
 
     uint32_t total_throughput = 0;
-    for (int i = 0; i < search_client_num; i++) {
+    for (int i = 0; i < search_client_num; i++)
+    {
       total_throughput += threads[i].get();
     }
     std::cout << "Finished search_benchmark" << std::endl;
@@ -160,21 +168,8 @@ public:
     threads.reserve(client_num_);
     primary_key_offset_ = 1;
     uint32_t benchmark_count_stopped = dataset_size_ / client_num_;
-
-#if 0
-            for (int i = 0; i < num_lookup; i++){
-                threads.push_back(std::async(&TrinityBench::lookup_each_client, this, i, dataset_size_));
-            }
-
-            for (int i = 0; i < num_search; i++) {
-                threads.push_back(std::async(&TrinityBench::search_each_client, this, i));
-            }
-
-            for (int i = 0; i < num_insert; i++) {
-                threads.push_back(std::async(&TrinityBench::insert_each_client, this, i, dataset_size_));
-            }
-#endif
-    for (int i = 0; i < num_insert + num_lookup + num_search; i++) {
+    for (int i = 0; i < num_insert + num_lookup + num_search; i++)
+    {
       threads.push_back(std::async(&TrinityBench::mixed_query_each_client,
                                    this,
                                    i,
@@ -185,7 +180,8 @@ public:
     }
 
     uint32_t total_throughput = 0;
-    for (int i = 0; i < num_lookup + num_search + num_insert; i++) {
+    for (int i = 0; i < num_lookup + num_search + num_insert; i++)
+    {
       total_throughput += threads[i].get();
     }
     primary_key_offset_ = 0;
@@ -208,11 +204,12 @@ public:
 
     std::ofstream outFile(query_out_addr_);
 
-    for (int i = 0; i < QUERY_NUM; i++) {
+    for (int i = 0; i < QUERY_NUM; i++)
+    {
       std::vector<int32_t> found_points;
       start = GetTimestamp();
       client.range_search_trie(
-        found_points, queries_start_vect_[i], queries_end_vect_[i]);
+          found_points, queries_start_vect_[i], queries_end_vect_[i]);
       diff = GetTimestamp() - start;
       outFile << "Query " << i << " end to end latency (ms): " << diff / 1000
               << ", found points count: "
@@ -229,7 +226,8 @@ protected:
     std::ifstream file(dataset_addr_);
     std::string line;
     unsigned int loaded_pts = 0;
-    while (std::getline(file, line)) {
+    while (std::getline(file, line))
+    {
       points_vect_.push_back(parse_line(line));
       loaded_pts++;
       if (loaded_pts > dataset_size_)
@@ -239,8 +237,8 @@ protected:
     std::cout << "dataset_addr:" << dataset_addr_ << ", Dataset size: " << dataset_size_ << std::endl;
   }
 
-  void load_queries(void (*parse_query)(std::vector<int32_t>&,
-                                        std::vector<int32_t>&,
+  void load_queries(void (*parse_query)(std::vector<int32_t> &,
+                                        std::vector<int32_t> &,
                                         std::string))
   {
 
@@ -249,7 +247,8 @@ protected:
     std::vector<int32_t> start_range = min_values_;
     std::vector<int32_t> end_range = max_values_;
 
-    while (std::getline(file, line)) {
+    while (std::getline(file, line))
+    {
       parse_query(start_range, end_range, line);
       queries_start_vect_.push_back(start_range);
       queries_end_vect_.push_back(end_range);
@@ -268,7 +267,8 @@ protected:
     start = GetTimestamp();
     for (uint32_t point_idx = warmup_size_ + client_index;
          point_idx < points_to_insert;
-         point_idx += client_num_) {
+         point_idx += client_num_)
+    {
 
       vector<int32_t> data_point = points_vect_[point_idx];
       client.insert(data_point, point_idx + primary_key_offset_);
@@ -283,7 +283,8 @@ protected:
 
     auto client = MDTrieClient(server_ips_, shard_num_);
 
-    for (uint32_t point_idx = 0; point_idx < warmup_size_; point_idx++) {
+    for (uint32_t point_idx = 0; point_idx < warmup_size_; point_idx++)
+    {
       vector<int32_t> data_point = points_vect_[point_idx];
       client.insert(data_point, point_idx);
     }
@@ -298,7 +299,8 @@ protected:
 
     start = GetTimestamp();
     for (uint32_t point_idx = client_index; point_idx < points_to_lookup;
-         point_idx += client_num_) {
+         point_idx += client_num_)
+    {
       std::vector<int32_t> rec_vect;
       client.primary_key_lookup(rec_vect, point_idx);
       lookup_points_count++;
@@ -315,7 +317,8 @@ protected:
     uint32_t search_points_count = 0;
     start = GetTimestamp();
 
-    for (int i = client_index; i < QUERY_NUM; i += client_num_) {
+    for (int i = client_index; i < QUERY_NUM; i += client_num_)
+    {
 
       std::vector<int32_t> found_points;
       client.range_search_trie_send(queries_start_vect_[i],
@@ -338,7 +341,7 @@ protected:
     auto client = MDTrieClient(server_ips_, shard_num_);
     TimeStamp start, diff = 0;
     uint32_t benchmark_count =
-      client_index; /* Each client starts from a different position */
+        client_index; /* Each client starts from a different position */
     int num_insert_lookup_search = num_insert + num_lookup + num_search;
 
     std::cout << "mixed_query_each_client: " << client_index << ","
@@ -346,29 +349,34 @@ protected:
               << benchmark_count_stopped << std::endl;
     start = GetTimestamp();
 
-    while (benchmark_count < benchmark_count_stopped) {
+    while (benchmark_count < benchmark_count_stopped)
+    {
 
       int random_num = gen_rand(0, num_insert_lookup_search - 1);
-      if (random_num % num_insert_lookup_search < num_insert) {
+      if (random_num % num_insert_lookup_search < num_insert)
+      {
         /* Insert */
         int point_idx = benchmark_count % dataset_size_;
         vector<int32_t> data_point = points_vect_[point_idx];
         client.insert(data_point, point_idx + primary_key_offset_);
         benchmark_count++;
-
-      } else if (random_num % num_insert_lookup_search <
-                 num_insert + num_lookup) {
+      }
+      else if (random_num % num_insert_lookup_search <
+               num_insert + num_lookup)
+      {
         /* Lookup */
         int point_idx = benchmark_count % dataset_size_;
         std::vector<int32_t> rec_vect;
         client.primary_key_lookup(rec_vect, point_idx);
         benchmark_count++;
-      } else {
+      }
+      else
+      {
         /* Search*/
         std::vector<int32_t> found_points;
         client.range_search_trie_send(
-          queries_start_vect_[benchmark_count % QUERY_NUM],
-          queries_end_vect_[benchmark_count % QUERY_NUM]);
+            queries_start_vect_[benchmark_count % QUERY_NUM],
+            queries_end_vect_[benchmark_count % QUERY_NUM]);
         client.range_search_trie_rec(found_points);
         benchmark_count += found_points.size() / num_dimensions_;
       }
