@@ -1,5 +1,13 @@
 # EuroSys '24 Artifact Evaluation for "Trinity: A Fast Compressed Multi-attribute Data Store"
 
+## Folder Structure
+
+- libmdtrie: The main code for MdTrie data structure.
+- librpc: Trinity implementation based on Thrift
+- modules: Cmake dependencies for the code
+- scripts: Scripts used to run the evaluations. 
+- thrift: Thrift source files. 
+
 ## Hardware and OS
 
 No special hardware requirement. We used node `xl170` on Ubuntu 20.04. 
