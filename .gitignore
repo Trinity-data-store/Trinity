@@ -93,3 +93,6 @@ build_*
 *.pdf
 queries/zipf_keys_30m
 scripts/timescale_progress
+
+results/*
+plots/*

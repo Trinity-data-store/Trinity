@@ -1,5 +1,0 @@
-5: Insert Throughput (pt / seconds): 112486
-5: Lookup Throughput (pt / seconds): 101201
-5: Search Throughput (pt / seconds): 249025
-5: 95 lookup, 5 insert Throughput (pt / seconds): 80604
-5: 10 search, 90 insert Throughput (pt / seconds): 371884
