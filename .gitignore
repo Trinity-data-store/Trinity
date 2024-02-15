@@ -96,3 +96,4 @@ scripts/timescale_progress
 
 results/*
 plots/*
+datasets/*
