@@ -1,5 +1,11 @@
 # EuroSys '24 Artifact Evaluation for "Trinity: A Fast Compressed Multi-attribute Data Store"
 
+## Hardware and OS
+
+No special hardware requirement. We used node `xl170` on Ubuntu 20.04. 
+
+Cloudlab Profile is attached in `scripts/cloudlab_profile.py`. Modify accordingly. 
+
 ## Build
 
 ```bash
