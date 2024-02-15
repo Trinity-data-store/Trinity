@@ -1,8 +1,15 @@
 # EuroSys '24 Artifact Evaluation for "Trinity: A Fast Compressed Multi-attribute Data Store"
 
+## Build
+
+```bash
+mkdir -p build
+cd build
+cmake -DGENERATE_THRIFT=on -Dbuild_rpc=on ..
+make
+```
+
 ## Datasets
-
-
 
 
 ## Citation
