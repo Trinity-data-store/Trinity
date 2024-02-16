@@ -27,18 +27,15 @@ public:
     max_depth_ = max_depth;
     max_tree_nodes_ = max_tree_nodes;
     num_nodes_ = num_nodes;
-    // bit_capacity_ = bit_capacity;
     total_nodes_bits_ = bit_capacity;
     if (!dfuds)
       dfuds_ =
           new compressed_bitmap::compressed_bitmap(node_capacity, bit_capacity);
-    // compressed_bitmap::compressed_bitmap dfuds_(node_capacity, bit_capacity);
     else
       dfuds_ = dfuds;
     if (parent_trie_node)
     {
       parent_combined_ptr_ = parent_trie_node;
-      // parent_is_trie_ = true;
     }
   }
 
@@ -396,14 +393,8 @@ public:
       else
         next_frontier_preorder = get_preorder(current_frontier);
     }
-    /*
-    level_t level_original = current_level;
-    */
-    current_level++;
 
-    // Did not go to while loop, go to first left child
-    // if (diff == stack[0] && first_time)
-    //     stack[sTop]--;
+    current_level++;
 
     while ((current_node < num_nodes_ && sTop >= 0 && diff < stack[0]) ||
            !first_time)
@@ -434,7 +425,6 @@ public:
       }
       else
       {
-        // std::cout << "exceeded" << current_level << std::endl;
         stack[sTop]--;
 
         if (current_level == max_depth_ - 1)
@@ -457,26 +447,9 @@ public:
           stack[sTop]--;
       }
     }
-    // raise(SIGINT);
     node_pos = current_node_pos;
     current_frontier_cont = current_frontier;
     current_primary_cont = current_primary;
-    /* No print out
-    if (current_level != level_original + 1) {
-        std::cout << current_level << " " << level_original << std::endl;
-        raise(SIGINT);
-    }
-
-    if (current_node == num_nodes_) {
-        std::cout << current_node << " " << num_nodes_ << std::endl;
-        raise(SIGINT);
-    }
-
-    if (sTop < 0) {
-        std::cout << sTop << std::endl;
-        raise(SIGINT);
-    }
-    */
     return current_node;
   }
 
@@ -515,11 +488,6 @@ public:
       current_primary = 0;
       preorder_t temp_node = 0;
       preorder_t temp_node_pos = 0;
-
-      /* No print out
-      std::cout << "frontier node! child" << std::endl;
-      */
-
       current_node = p->skip_children_subtree(temp_node,
                                               temp_node_pos,
                                               symbol,
@@ -567,39 +535,11 @@ public:
     if (!has_child)
       return null_node;
 
-    /* No print out.
-    if (current_level > max_depth_ - 1) {
-        std::cout << current_level << std::endl;
-        return node;
-    }
-    */
-
     if (current_level == max_depth_ - 1)
       return node;
 
     preorder_t current_node_ret;
 
-    /*
-    if (frontiers_ != nullptr && current_frontier < num_frontiers_ && node ==
-    get_preorder(current_frontier)) {
-
-        p = get_pointer(current_frontier);
-        current_frontier = 0;
-        current_primary = 0;
-        preorder_t temp_node = 0;
-        preorder_t temp_node_pos = 0;
-
-        No print out.
-        std::cout << "frontier node! child_range_search" << std::endl;
-
-
-        current_node_ret = p->skip_children_subtree_range_search(temp_node,
-    temp_node_pos, symbol, current_level, current_frontier, current_primary,
-    stack, sTop, current_node_pos, current_node, next_frontier_preorder,
-    current_frontier_cont, current_primary_cont); node_pos = temp_node_pos;
-
-    } else {
-    */
     current_node_ret =
         skip_children_subtree_range_search(node,
                                            node_pos,
@@ -614,7 +554,6 @@ public:
                                            next_frontier_preorder,
                                            current_frontier_cont,
                                            current_primary_cont);
-    // }
     return current_node_ret;
   }
 
@@ -750,9 +689,6 @@ public:
 
     else if (num_nodes_ + (max_depth_ - level) - 1 <= node_capacity_)
     {
-
-      // std::cout << "total_nodes_bits_ before: " << total_nodes_bits_ <<
-      // std::endl;
       morton_t current_symbol = leaf_point->leaf_to_symbol(level);
       node = skip_children_subtree(node,
                                    node_pos,
@@ -830,7 +766,6 @@ public:
         total_nodes_bits_ += dfuds_->get_num_bits(from_node, current_level);
         from_node++;
       }
-
       // shift the flags by length since all nodes have been shifted by that
       // amount
       if (frontiers_ != nullptr)
@@ -842,8 +777,6 @@ public:
 
       insert_primary_key_at_index(
           current_primary, primary_key, p_key_to_treeblock_compact);
-      // std::cout << "total_nodes_bits_ after: " << total_nodes_bits_ <<
-      // std::endl;
       return;
     }
     else if (num_nodes_ + (max_depth_ - level) - 1 <= max_tree_nodes)
@@ -864,7 +797,6 @@ public:
       dfuds_->increase_bits(max_depth_ - level, false);
 
       node_capacity_ = num_nodes_ + (max_depth_ - level);
-      // bit_capacity_ = total_nodes_bits_ + total_extra_bits;
 
       insert(node,
              node_pos,
@@ -993,8 +925,6 @@ public:
                                                  max_tree_nodes_,
                                                  NULL,
                                                  new_dfuds);
-      // new_block->dfuds_ = new_dfuds;
-
       //  If no pointer is copied to the new block
       if (new_pointer_index == 0)
       {
@@ -1099,12 +1029,6 @@ public:
                                 selected_node_pos);
         total_nodes_bits_ -= selected_node_pos - orig_selected_node_pos;
       }
-      // if (node_capacity_ * level_to_num_children[root_depth_] <
-      // bit_capacity_){
-
-      //     bit_capacity_ = node_capacity_ *
-      //     level_to_num_children[root_depth_];
-      // }
 
       if (subtree_size > max_depth_)
       {
@@ -1301,7 +1225,6 @@ public:
                               0,
                               (1 << level_to_num_children[root_depth_]) - 1,
                               level_to_num_children[root_depth_]);
-      // if (!parent_is_trie_){
       if (root_depth_ != trie_depth_)
       {
         ((tree_block<DIMENSION> *)parent_combined_ptr_)
@@ -1456,7 +1379,6 @@ public:
     {
       node_path[root_depth_ + i] = symbol[i];
     }
-    // if (!parent_is_trie_){
     if (root_depth_ != trie_depth_)
     {
 
@@ -1632,7 +1554,6 @@ public:
     {
       node_path[root_depth_ + i] = symbol[i];
     }
-    // if (!parent_is_trie_){
     if (root_depth_ != trie_depth_)
     {
       ((tree_block<DIMENSION> *)parent_combined_ptr_)
@@ -1707,7 +1628,6 @@ public:
 
         point_t coordinate = ret_vect[j];
         coordinate = (coordinate << 1) + current_bit;
-        // coordinates->set_coordinate(j, coordinate);
         ret_vect[j] = coordinate;
       }
     }
@@ -1726,13 +1646,6 @@ public:
                               preorder_t current_primary,
                               std::vector<int32_t> &found_points)
   {
-
-    // if (start_range->get_coordinate(5) > end_range->get_coordinate(6) ||
-    // start_range->get_coordinate(5) > end_range->get_coordinate(5))
-    //     return;
-
-    // function_call_count ++;
-    // branching_count[level] ++;
 
     if (level == max_depth_)
     {
@@ -1759,18 +1672,10 @@ public:
       n_leaves_t list_size = primary_key_list[current_primary].size();
       for (n_leaves_t i = 0; i < list_size; i++)
       {
-        // auto primary_key = primary_key_list[current_primary].get(i);
-        // found_points.push_back(primary_key);
-        // }
-        // start_range->set_primary(primary_key);
-        // found_points.push_back(*start_range);
-        // if (start_range->get_coordinate(5) < start_range->get_coordinate(6))
         for (dimension_t j = 0; j < DIMENSION; j++)
         {
           found_points.push_back(start_range->get_coordinate(j));
         }
-        // primary_key_vect_total.push_back(primary_key);
-        // found_points.push_back(start_range->generate_vector());
       }
       return;
     }
@@ -1828,31 +1733,17 @@ public:
     preorder_t next_frontier_preorder_range_search = 0;
     preorder_t current_frontier_cont = 0;
     preorder_t current_primary_cont = 0;
-    // preorder_t range_search_count = 0;
 
-    // if (high_num_children > symbol_diff_count) {
-    //     raise(SIGINT);
-    //     std::cout << range_search_count << std::endl;
-    // }
-
-    // symbol_diff_count += end_range_symbol - current_symbol;
-
-    // bool going_down = false;
     bare_minimum_count += end_range_symbol - current_symbol + 1;
     checked_points_count += 1;
 
     if (!query_optimization)
-    { // BUG
+    {
       current_symbol = 0;
       end_range_symbol = end_range->leaf_to_full_symbol(level);
     }
     while (current_symbol <= end_range_symbol)
     {
-
-      // while (current_symbol <= end_range_symbol){
-
-      // range_search_count ++;
-
       if (!dfuds_->has_symbol(current_node,
                               current_node_pos,
                               current_symbol,
@@ -1865,25 +1756,6 @@ public:
           (start_range_symbol & neg_representation) ==
               (current_symbol & neg_representation))
       {
-
-        // going_down = true;
-        /*
-        new_current_block = current_block;
-        new_current_frontier = current_frontier;
-        new_current_primary = current_primary;
-        new_current_node_pos = current_node_pos;
-
-
-        preorder_t new_current_node_range_search =
-        current_block->child(new_current_block, current_node,
-        new_current_node_pos, current_symbol, level, new_current_frontier,
-        new_current_primary);
-
-        preorder_t node_pos_range_search = new_current_node_pos;
-        preorder_t new_current_frontier_range_search = new_current_frontier;
-        preorder_t new_current_primary_range_search = new_current_primary;
-        */
-
         new_current_block = current_block;
         new_current_frontier = current_frontier;
         new_current_primary = current_primary;
@@ -1892,12 +1764,6 @@ public:
         if (REUSE_RANGE_SEARCH_CHILD &&
             level < max_depth_ - 1 /*At least 1 levels to the bottom*/)
         {
-
-          /*
-          level_t level_before = level;
-          */
-
-          // TimeStamp s = GetTimestamp();
           new_current_node = current_block->child_range_search(
               current_node,
               new_current_node_pos,
@@ -1912,41 +1778,6 @@ public:
               next_frontier_preorder_range_search,
               current_frontier_cont,
               current_primary_cont);
-          // range_search_child_time += GetTimestamp() - s;
-          /*
-          if (new_current_node != new_current_node_range_search) {
-              std::cout << "new_current_node: level: " << level <<
-          "n_children_skip: " << dfuds_->get_child_skip(current_node,
-          current_node_pos, current_symbol, level_to_num_children[level]) <<
-          "n_children: " << dfuds_->get_num_children(current_node,
-          current_node_pos, level_to_num_children[level]) << std::endl; exit(0);
-          }
-
-          if (new_current_node_pos != node_pos_range_search) {
-              std::cout << "new_current_node_pos: level: " << level <<
-          "n_children_skip: " << dfuds_->get_child_skip(current_node,
-          current_node_pos, current_symbol, level_to_num_children[level]) <<
-          "n_children: " << dfuds_->get_num_children(current_node,
-          current_node_pos, level_to_num_children[level]) << std::endl; exit(0);
-          }
-
-          if (new_current_frontier != new_current_frontier_range_search) {
-              std::cout << "new_current_frontier: level: " << level <<
-          "n_children_skip: " << dfuds_->get_child_skip(current_node,
-          current_node_pos, current_symbol, level_to_num_children[level]) <<
-          "n_children: " << dfuds_->get_num_children(current_node,
-          current_node_pos, level_to_num_children[level]) << std::endl; exit(0);
-          }
-
-          if (new_current_primary != new_current_primary_range_search) {
-              raise(SIGINT);
-              std::cout << "new_current_primary: level: " << level <<
-          "n_children_skip: " << dfuds_->get_child_skip(current_node,
-          current_node_pos, current_symbol, level_to_num_children[level]) <<
-          "n_children: " << dfuds_->get_num_children(current_node,
-          current_node_pos, level_to_num_children[level]) << std::endl; exit(0);
-          }
-          */
         }
         else
           new_current_node = current_block->child(new_current_block,
@@ -1957,18 +1788,7 @@ public:
                                                   new_current_frontier,
                                                   new_current_primary);
 
-        // TimeStamp ss = GetTimestamp();
         start_range->update_symbol(end_range, current_symbol, level);
-        // update_symbol_time += GetTimestamp() - ss;
-        // preorder_t original_vect_size = found_points.size();
-        /*
-        if (new_current_block != current_block){
-            std::cout << "new block!" << std::endl;
-            new_current_block->range_search_treeblock(start_range, end_range,
-        new_current_block, level + 1, new_current_node, new_current_node_pos, 0,
-        0, new_current_frontier, new_current_primary, found_points);
-        }
-        else {*/
         current_block->range_search_treeblock(start_range,
                                               end_range,
                                               current_block,
@@ -1980,34 +1800,16 @@ public:
                                               new_current_frontier,
                                               new_current_primary,
                                               found_points);
-        // }
-        // if (original_vect_size == found_points.size())
-        //     raise(SIGINT);
 
-        // TimeStamp start = GetTimestamp();
         (*start_range) = original_start_range;
         (*end_range) = original_end_range;
-        // update_start_end_range_time += GetTimestamp() - start;
       }
-      // TimeStamp sss = GetTimestamp();
       current_symbol = dfuds_->next_symbol(current_symbol + 1,
                                            current_node,
                                            current_node_pos,
                                            end_range_symbol,
                                            level_to_num_children[level]);
-      // next_child_time += GetTimestamp() - sss;
     }
-    // if (!going_down)
-    // not_going_down_count += level;
-
-    // if (range_search_count >= 7)
-    //     high_num_children ++;
-
-    // if (high_num_children > symbol_diff_count) {
-    //     raise(SIGINT);
-    //     std::cout << range_search_count << std::endl;
-    // }
-    // std::cout << high_num_children << " " << symbol_diff_count << std::endl;
   }
 
   void insert_primary_key_at_present_index(
@@ -2053,7 +1855,6 @@ public:
     total_size += sizeof(num_frontiers_);
 
     total_size += sizeof(parent_combined_ptr_);
-    // total_size += sizeof(parent_is_trie_);
     total_size += sizeof(treeblock_frontier_num_);
     total_size += sizeof(primary_key_list) +
                   primary_key_list.size() * sizeof(bits::compact_ptr);
@@ -2065,19 +1866,15 @@ public:
   }
 
 private:
-  // preorder_t max_tree_nodes_;
   level_t root_depth_;
   preorder_t num_nodes_;
   preorder_t total_nodes_bits_;
   preorder_t node_capacity_;
-  // node_pos_t bit_capacity_;
-  // level_t max_depth_;
   compressed_bitmap::compressed_bitmap *dfuds_{};
   frontier_node<DIMENSION> *frontiers_ = nullptr;
   preorder_t num_frontiers_ = 0;
 
   void *parent_combined_ptr_ = NULL;
-  // bool parent_is_trie_ = false;
   preorder_t treeblock_frontier_num_ = 0;
   std::vector<bits::compact_ptr> primary_key_list;
 };
