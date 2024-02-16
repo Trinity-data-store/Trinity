@@ -10,5 +10,9 @@ add_executable(microbench
 add_executable(dimension
         bench/dimension.cpp)
 
+add_executable(example
+        bench/example.cpp)
+
 target_link_libraries(microbench ${MDTRIE_LIBS})
 target_link_libraries(dimension ${MDTRIE_LIBS})
+target_link_libraries(example ${MDTRIE_LIBS})

@@ -110,6 +110,16 @@ public:
         leaf_point, level, primary_key, p_key_to_treeblock_compact);
   }
 
+  data_point<DIMENSION> *lookup_trie(n_leaves_t primary_key, bitmap::CompactPtrVector *p_key_to_treeblock_compact)
+  {
+    std::vector<morton_t> node_path_from_primary(max_depth_ + 1);
+    tree_block<9> *t_ptr = (tree_block<9> *)p_key_to_treeblock_compact->At(primary_key);
+    morton_t parent_symbol_from_primary =
+        t_ptr->get_node_path_primary_key(primary_key, node_path_from_primary);
+    node_path_from_primary[max_depth_ - 1] = parent_symbol_from_primary;
+    return t_ptr->node_path_to_coordinates(node_path_from_primary, 9);
+  }
+
   bool check(data_point<DIMENSION> *leaf_point) const
   {
 
