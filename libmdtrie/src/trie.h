@@ -205,7 +205,6 @@ public:
 
       auto *current_treeblock =
           (tree_block<DIMENSION> *)current_trie_node->get_block();
-      // TimeStamp start = GetTimestamp();
       current_treeblock->range_search_treeblock(start_range,
                                                 end_range,
                                                 current_treeblock,

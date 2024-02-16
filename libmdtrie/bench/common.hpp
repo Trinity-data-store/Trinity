@@ -106,6 +106,7 @@ int gen_rand(int start, int end)
 void use_nyc_setting(int dimensions, int _total_points_count)
 {
 
+  /* Currently bit_widths and start_bits are hard coded. */
   std::vector<level_t> bit_widths = {18, 20, 10, 10, 10 + 18,
                                      10 + 18, 8, 28, 25, 10 + 18,
                                      11 + 17, 22, 25, 8 + 20, 25};

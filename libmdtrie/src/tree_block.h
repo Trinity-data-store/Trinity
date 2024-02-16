@@ -1607,9 +1607,7 @@ public:
       std::vector<morton_t> &node_path,
       dimension_t dimension) const
   {
-
     // Will be free-ed in the benchmark code
-    // auto coordinates = new data_point<DIMENSION>();
     std::vector<int32_t> ret_vect(dimension, 0);
 
     for (level_t i = 0; i < max_depth_; i++)

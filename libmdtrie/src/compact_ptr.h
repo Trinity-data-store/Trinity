@@ -6,7 +6,8 @@
 #include <cstdint>
 #include <vector>
 
-const uint64_t compact_pointer_vector_size_limit = 14252681;
+// Disable in most cases.
+const uint64_t compact_pointer_vector_size_limit = 1000000;
 
 namespace bits
 {
@@ -75,18 +76,18 @@ namespace bits
 
       if (flag_ == 0)
       {
-        return 0 /*sizeof(compact_ptr)*/;
+        return sizeof(compact_ptr);
       }
       if (flag_ == 1)
       {
         std::vector<n_leaves_t> *vect_ptr = get_vector_pointer();
-        return /*sizeof(*vect_ptr) + */ sizeof(n_leaves_t) /*primary key size*/ *
-               vect_ptr->size() /*+ sizeof(compact_ptr)*/;
+        return sizeof(*vect_ptr) + sizeof(n_leaves_t) /*primary key size*/ * vect_ptr->size() + sizeof(compact_ptr);
       }
       else
       {
         return get_delta_encoded_array_pointer()
-            ->size_overhead() /*+ sizeof(compact_ptr)*/;
+                   ->size_overhead() +
+               sizeof(compact_ptr);
       }
     }
 
@@ -151,12 +152,7 @@ namespace bits
       }
       else if (flag_ == 1)
       {
-        // return binary_if_present(get_vector_pointer(), primary_key);
-#ifdef USE_LINEAR_SCAN
-        return scan_if_present(get_vector_pointer(), primary_key);
-#else
         return binary_if_present(get_vector_pointer(), primary_key);
-#endif
       }
       else
       {
