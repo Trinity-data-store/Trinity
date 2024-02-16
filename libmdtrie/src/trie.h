@@ -113,7 +113,7 @@ public:
   data_point<DIMENSION> *lookup_trie(n_leaves_t primary_key, bitmap::CompactPtrVector *p_key_to_treeblock_compact)
   {
     std::vector<morton_t> node_path_from_primary(max_depth_ + 1);
-    tree_block<9> *t_ptr = (tree_block<9> *)p_key_to_treeblock_compact->At(primary_key);
+    tree_block<DIMENSION> *t_ptr = (tree_block<DIMENSION> *)p_key_to_treeblock_compact->At(primary_key);
     morton_t parent_symbol_from_primary =
         t_ptr->get_node_path_primary_key(primary_key, node_path_from_primary);
     node_path_from_primary[max_depth_ - 1] = parent_symbol_from_primary;

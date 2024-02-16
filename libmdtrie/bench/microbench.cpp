@@ -208,29 +208,6 @@ void sensitivity_num_dimensions_4(void)
                             micro_tpch_size * selectivity_lower);
 }
 
-void sensitivity_num_dimensions_10(void)
-{
-  use_tpch_setting(10, micro_tpch_size);
-  md_trie<10> mdtrie(max_depth, trie_depth, max_tree_node);
-  MdTrieBench<10> bench(&mdtrie);
-  p_key_to_treeblock_compact = new bitmap::CompactPtrVector(total_points_count);
-  // Use fewer points.
-  total_points_count /= 100;
-
-  bench.insert(TPCH_DATA_ADDR,
-               "sensitivity/tpch_insert_dimensions" + identification_string +
-                   "_" + "10",
-               total_points_count,
-               parse_line_tpch);
-  bench.get_storage("sensitivity/tpch_storage_dimensions" +
-                    identification_string + "_" + "10");
-  bench.range_search_random("sensitivity/tpch_query_dimensions" +
-                                identification_string + "_" + "10",
-                            get_random_query_tpch<10>,
-                            micro_tpch_size * selectivity_upper,
-                            micro_tpch_size * selectivity_lower);
-}
-
 void sensitivity_num_dimensions_20(void)
 {
   use_tpch_setting(20, micro_tpch_size);
@@ -322,36 +299,7 @@ int main(int argc, char *argv[])
         optimization_code = OPTIMIZATION_GM;
       break;
     case 'd':
-      switch (atoi(optarg))
-      {
-      case 9:
-        sensitivity_dimensions = 9;
-        break;
-      case 8:
-        sensitivity_dimensions = 8;
-        break;
-      case 7:
-        sensitivity_dimensions = 7;
-        break;
-      case 6:
-        sensitivity_dimensions = 6;
-        break;
-      case 5:
-        sensitivity_dimensions = 5;
-        break;
-      case 4:
-        sensitivity_dimensions = 4;
-        break;
-      case 10:
-        sensitivity_dimensions = 10;
-        break;
-      case 20:
-        sensitivity_dimensions = 20;
-        break;
-      default:
-        std::cout << "wrong dimensions: " << atoi(optarg) << std::endl;
-        abort();
-      }
+      sensitivity_dimensions = atoi(optarg);
       break;
     default:
       abort();
@@ -387,12 +335,6 @@ int main(int argc, char *argv[])
       break;
     case 4:
       sensitivity_num_dimensions_4();
-      break;
-    case 10:
-      sensitivity_num_dimensions_10();
-      break;
-    case 20:
-      sensitivity_num_dimensions_20();
       break;
     default:
       std::cout << "wrong dimensions: " << sensitivity_dimensions

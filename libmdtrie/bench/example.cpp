@@ -41,7 +41,7 @@ int main()
     for (int primary_key = 0; primary_key < total_count; primary_key++)
     {
         data_point<9> point;
-        // Check for lookup.
+        // For lookup correctness checking.
         point.set_coordinate(0, primary_key);
         for (dimension_t i = 1; i < num_dimensions; ++i)
         {

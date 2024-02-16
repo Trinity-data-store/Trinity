@@ -44,6 +44,13 @@ Check out the file `libmdtrie/bench/example.cpp` for example.
   mdtrie.lookup_trie(primary_key, &primary_key_to_treeblock_mapping);
   mdtrie.range_search_trie(&start_range, &end_range, mdtrie.root(), 0, found_points);
 ```
+To start a local Trinity storage server
+
+```bash
+  librpc/MDTrieShardServer -i [IP] -s [NUM_SHARD] -d [DATASET]
+```
+
+An example Trinity client interface is provided `MDTrieShardClient.h`.
 
 ## Contact
 
