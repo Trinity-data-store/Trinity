@@ -1,5 +1,9 @@
 # EuroSys '24: "Trinity: A Fast Compressed Multi-attribute Data Store"
 
+**Abstract**: With the proliferation of attribute-rich machine-generated data, emerging real-time monitoring, diagnosis, and visualization tools ingest and analyze such data across multiple attributes simultaneously. Due to the sheer volume of the data, applications need storage-efficient and performant data representations to analyze them efficiently.
+  
+We present Trinity, a system that simultaneously facilitates query and storage efficiency across large volumes of multi-attribute records. Trinity accomplishes this through a new dynamic, succinct, multi-dimensional data structure, MdTrie. MdTrie employs a combination of novel Morton code generalization, a multi-attribute query algorithm, and a self-indexed trie structure to achieve the above goals. 
+
 ## Folder Structure
 
 - libmdtrie: The main code for MdTrie data structure.
@@ -25,7 +29,11 @@ An example Cloudlab Profile is attached in `scripts/cloudlab_profile.py`.
 bash scripts/setup_one_node.sh
 ```
 
-To run a distributed setup, execute the setup scripts on all client and storage nodes. 
+To run a distributed setup, execute the setup scripts on all client and storage nodes, or: 
+
+```bash
+bash scripts/setup_all_nodes.sh
+```
 
 ## Build
 
