@@ -63,8 +63,8 @@ An example Trinity client interface is provided `MDTrieShardClient.h`.
 ## Datasets and Queries
 
 Datasets can be downloaded from GCS buckets. Since MdTrie and Trinity mainly index integer / floating point fields, we clean datasets to be integer fields. The raw dataset can be found online. 
-- TPC-H 
-- Github Events [Link](https://storage.googleapis.com/trinity_datsets/github_dataset.csv)
+- TPC-H [[Link](https://storage.cloud.google.com/trinity_datsets/tpch_dataset.csv)]
+- Github Events [[Link](https://storage.googleapis.com/trinity_datsets/github_dataset.csv)]
 - NYC
 
 Due to the lack of open-source multi-attribute range search queries, we generate queries from query templates. You can find the queries in `queries` folder. 
