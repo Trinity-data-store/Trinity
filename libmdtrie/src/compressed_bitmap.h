@@ -351,16 +351,16 @@ namespace compressed_bitmap
       SetValPos(s_idx * 64, 0, width, is_on_data);
     }
 
-    width_type get_num_bits(pos_type node, level_t level)
+    width_type get_num_bits(pos_type node, morton_t num_children)
     {
 
       if (is_collapse(node))
       {
-        return level_to_num_children[level];
+        return num_children;
       }
       else
       {
-        return 1 << level_to_num_children[level];
+        return 1 << num_children;
       }
     }
 
@@ -398,7 +398,7 @@ namespace compressed_bitmap
                 is_on_data);
     }
 
-    inline void shift_backward(preorder_t node,
+    inline void shift_backward(n_leaves_t node,
                                pos_type node_pos,
                                width_type data_bits,
                                width_type flag_bits)
@@ -418,7 +418,7 @@ namespace compressed_bitmap
       ClearWidth(node, flag_bits, false);
     }
 
-    inline void shift_backward_to_uncollapse(preorder_t from_node,
+    inline void shift_backward_to_uncollapse(n_leaves_t from_node,
                                              pos_type from_node_pos,
                                              width_type num_children)
     {
@@ -445,9 +445,9 @@ namespace compressed_bitmap
       SETBITVAL(flag_, from_node);
     }
 
-    inline void shift_forward(preorder_t from_node,
+    inline void shift_forward(n_leaves_t from_node,
                               pos_type from_node_pos,
-                              preorder_t to_node,
+                              n_leaves_t to_node,
                               pos_type to_node_pos)
 
     {
@@ -460,7 +460,7 @@ namespace compressed_bitmap
           flag_size_ - (from_node - to_node), (from_node - to_node), false);
     }
 
-    inline bool is_collapse(preorder_t node)
+    inline bool is_collapse(n_leaves_t node)
     {
       if (is_collapsed_node_exp)
         return false;
@@ -468,7 +468,7 @@ namespace compressed_bitmap
       return !GETBITVAL(flag_, node);
     }
 
-    inline bool has_symbol(preorder_t node,
+    inline bool has_symbol(n_leaves_t node,
                            pos_type node_pos,
                            morton_t symbol,
                            width_type num_children)
@@ -489,7 +489,7 @@ namespace compressed_bitmap
       }
     }
 
-    inline preorder_t get_num_children(preorder_t node,
+    inline n_leaves_t get_num_children(n_leaves_t node,
                                        pos_type node_pos,
                                        width_type num_children)
     {
@@ -503,7 +503,7 @@ namespace compressed_bitmap
       }
     }
 
-    inline preorder_t get_child_skip(preorder_t node,
+    inline n_leaves_t get_child_skip(n_leaves_t node,
                                      pos_type node_pos,
                                      morton_t symbol,
                                      width_type num_children)
@@ -526,7 +526,7 @@ namespace compressed_bitmap
       return __builtin_ctzll(_pdep_u64(1ULL << n, x));
     }
 
-    morton_t get_k_th_set_bit(preorder_t node,
+    morton_t get_k_th_set_bit(n_leaves_t node,
                               unsigned k /* 0-indexed */,
                               pos_type node_pos,
                               width_type num_children)
@@ -563,7 +563,7 @@ namespace compressed_bitmap
     }
 
     inline morton_t next_symbol(morton_t symbol,
-                                preorder_t node,
+                                n_leaves_t node,
                                 pos_type node_pos,
                                 morton_t end_symbol_range,
                                 width_type num_children)
@@ -601,7 +601,7 @@ namespace compressed_bitmap
       }
     }
 
-    inline void shift_forward_to_collapse(preorder_t from_node,
+    inline void shift_forward_to_collapse(n_leaves_t from_node,
                                           pos_type from_node_pos,
                                           width_type num_children)
     {
@@ -622,7 +622,7 @@ namespace compressed_bitmap
       CLRBITVAL(flag_, from_node);
     }
 
-    inline void set_symbol(preorder_t node,
+    inline void set_symbol(n_leaves_t node,
                            pos_type node_pos,
                            morton_t symbol,
                            bool was_empty,
@@ -665,9 +665,9 @@ namespace compressed_bitmap
     }
 
     inline void copy_node_cod(compressed_bitmap *to_dfuds,
-                              preorder_t from_node,
+                              n_leaves_t from_node,
                               pos_type from_node_pos,
-                              preorder_t to_node,
+                              n_leaves_t to_node,
                               pos_type to_node_pos,
                               width_type num_children)
     {
@@ -713,10 +713,10 @@ namespace compressed_bitmap
       }
     }
 
-    inline void bulk_clear_node(preorder_t start_node,
+    inline void bulk_clear_node(n_leaves_t start_node,
                                 pos_type start_node_pos,
-                                preorder_t end_node,
-                                preorder_t end_node_pos)
+                                n_leaves_t end_node,
+                                n_leaves_t end_node_pos)
     {
       ClearWidth(start_node_pos, end_node_pos - start_node_pos, true);
       ClearWidth(start_node, end_node + 1 - start_node, false);

@@ -43,22 +43,24 @@ public:
   MDTrieHandler(int ip_address)
   {
     mdtrie_ = nullptr;
-    p_key_to_treeblock_compact_ = nullptr;
     outfile_.open(std::to_string(ip_address) + ".log", ios::out);
   };
 
   bool ping(const int32_t dataset_idx)
   {
 
-    if (mdtrie_ != nullptr && p_key_to_treeblock_compact_ != nullptr)
+    if (mdtrie_ != nullptr)
       return true;
 
+    std::vector<level_t> start_bits;
+    std::vector<level_t> bit_widths;
     if (dataset_idx == GITHUB) // Github
     {
       total_points_count =
           GITHUB_SIZE / (num_shards * 5) + compact_vector_extra;
-      use_github_setting(GITHUB_DIMENSION, total_points_count);
-      mdtrie_ = new md_trie<DIMENSION>(max_depth, trie_depth, max_tree_node);
+
+      use_github_setting(GITHUB_DIMENSION, total_points_count, start_bits, bit_widths);
+      mdtrie_ = new md_trie<DIMENSION>(max_depth, trie_depth, max_tree_node, start_bits, bit_widths);
       std::cout << "Github experiment started" << DIMENSION << ","
                 << total_points_count << std::endl;
     }
@@ -66,8 +68,8 @@ public:
     else if (dataset_idx == TPCH) // TPC-H
     {
       total_points_count = TPCH_SIZE / (num_shards * 5) + compact_vector_extra;
-      use_tpch_setting(TPCH_DIMENSION, total_points_count);
-      mdtrie_ = new md_trie<DIMENSION>(max_depth, trie_depth, max_tree_node);
+      use_tpch_setting(TPCH_DIMENSION, total_points_count, start_bits, bit_widths);
+      mdtrie_ = new md_trie<DIMENSION>(max_depth, trie_depth, max_tree_node, start_bits, bit_widths);
       std::cout << "Tpch experiment started: " << DIMENSION << ","
                 << total_points_count << std::endl;
     }
@@ -75,8 +77,8 @@ public:
     else if (dataset_idx == NYC) // NYC Taxi
     {
       total_points_count = NYC_SIZE / (num_shards * 5) + compact_vector_extra;
-      use_nyc_setting(NYC_DIMENSION, total_points_count);
-      mdtrie_ = new md_trie<DIMENSION>(max_depth, trie_depth, max_tree_node);
+      use_nyc_setting(NYC_DIMENSION, total_points_count, start_bits, bit_widths);
+      mdtrie_ = new md_trie<DIMENSION>(max_depth, trie_depth, max_tree_node, start_bits, bit_widths);
       std::cout << "NYC experiment started" << DIMENSION << ","
                 << total_points_count << std::endl;
     }
@@ -85,8 +87,6 @@ public:
       std::cerr << "not implemented" << std::endl;
       return false;
     }
-    p_key_to_treeblock_compact_ =
-        new bitmap::CompactPtrVector(total_points_count);
     return true;
   }
 
@@ -112,7 +112,7 @@ public:
       leaf_point.set_coordinate(i, point[i]);
     }
     mdtrie_->insert_trie(
-        &leaf_point, inserted_points_, p_key_to_treeblock_compact_);
+        &leaf_point, inserted_points_);
     inserted_points_++;
     for (const auto &coordinate : point)
       outfile_ << coordinate << ",";
@@ -131,7 +131,7 @@ public:
       leaf_point.set_coordinate(i, point[i]);
     }
     mdtrie_->insert_trie(
-        &leaf_point, inserted_points_, p_key_to_treeblock_compact_);
+        &leaf_point, inserted_points_);
     inserted_points_++;
     for (const auto &coordinate : point)
       outfile_ << coordinate << ",";
@@ -155,30 +155,21 @@ public:
       end_range_point.set_coordinate(i, end_range[i]);
     }
     mdtrie_->range_search_trie(
-        &start_range_point, &end_range_point, mdtrie_->root(), 0, _return);
+        &start_range_point, &end_range_point, _return);
     return;
   }
 
   void primary_key_lookup(std::vector<int32_t> &_return,
                           const int32_t primary_key)
   {
-
-    std::vector<morton_t> node_path_from_primary(max_depth + 1);
-    tree_block<DIMENSION> *t_ptr =
-        (tree_block<DIMENSION> *)(p_key_to_treeblock_compact_->At(
-            primary_key % inserted_points_));
-    morton_t parent_symbol_from_primary = t_ptr->get_node_path_primary_key(
-        primary_key % inserted_points_, node_path_from_primary);
-    node_path_from_primary[max_depth - 1] = parent_symbol_from_primary;
     _return =
-        t_ptr->node_path_to_coordinates_vect(node_path_from_primary, DIMENSION);
+        mdtrie_->lookup_trie_vect(primary_key);
   }
 
-  int32_t get_size() { return mdtrie_->size(p_key_to_treeblock_compact_); }
+  int32_t get_size() { return mdtrie_->size(); }
 
 protected:
   md_trie<DIMENSION> *mdtrie_;
-  bitmap::CompactPtrVector *p_key_to_treeblock_compact_;
   uint64_t inserted_points_ = 0;
   ofstream outfile_;
 };

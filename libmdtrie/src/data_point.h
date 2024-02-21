@@ -12,21 +12,21 @@ class data_point
 public:
   explicit data_point() {}
 
-  inline point_t *get() { return coordinates_; }
+  inline n_leaves_t *get() { return coordinates_; }
 
-  inline void set(point_t *coordinates)
+  inline void set(n_leaves_t *coordinates)
   {
 
-    memcpy(coordinates_, coordinates, sizeof(point_t) * DIMENSION);
+    memcpy(coordinates_, coordinates, sizeof(n_leaves_t) * DIMENSION);
   }
 
-  inline point_t get_coordinate(dimension_t index)
+  inline n_leaves_t get_coordinate(dimension_t index)
   {
 
     return coordinates_[index];
   }
 
-  inline void set_coordinate(dimension_t index, point_t value)
+  inline void set_coordinate(dimension_t index, n_leaves_t value)
   {
 
     coordinates_[index] = value;
@@ -36,7 +36,7 @@ public:
 
   inline n_leaves_t read_primary() { return primary_key_; }
 
-  inline morton_t leaf_to_symbol(level_t level)
+  inline morton_t leaf_to_symbol(level_t level, std::vector<level_t> dimension_to_num_bits, std::vector<level_t> start_dimension_bits)
   {
 
     morton_t result = 0;
@@ -48,7 +48,7 @@ public:
         continue;
 
       level_t offset = dimension_to_num_bits[i] - level - 1;
-      point_t coordinate = coordinates_[i];
+      n_leaves_t coordinate = coordinates_[i];
 
       bool bit = GETBIT(coordinate, offset);
       result = (result << 1U) + bit;
@@ -56,7 +56,7 @@ public:
     return result;
   }
 
-  inline morton_t leaf_to_full_symbol(level_t level)
+  inline morton_t leaf_to_full_symbol(level_t level, std::vector<level_t> dimension_to_num_bits, std::vector<level_t> start_dimension_bits)
   {
 
     morton_t result = 0;
@@ -83,7 +83,7 @@ public:
       for (size_t i = 0; i < DIMENSION; i++)
       {
         level_t offset = DIMENSION - level - 1;
-        point_t coordinate = coordinates_[i];
+        n_leaves_t coordinate = coordinates_[i];
 
         bool bit = GETBIT(coordinate, offset);
         result = (result << 1U) + bit;
@@ -94,7 +94,9 @@ public:
 
   inline void update_symbol(data_point *end_range,
                             morton_t current_symbol,
-                            level_t level)
+                            level_t level,
+                            morton_t num_children,
+                            std::vector<level_t> dimension_to_num_bits, std::vector<level_t> start_dimension_bits)
   {
 
     dimension_t dimension = DIMENSION;
@@ -109,9 +111,9 @@ public:
 
       level_t offset = dimension_to_num_bits[j] - level - 1U;
 
-      point_t start_coordinate = coordinates_[j];
-      point_t end_coordinate = end_range->coordinates_[j];
-      dimension_t symbol_offset = level_to_num_children[level] - visited_ct;
+      n_leaves_t start_coordinate = coordinates_[j];
+      n_leaves_t end_coordinate = end_range->coordinates_[j];
+      dimension_t symbol_offset = num_children - visited_ct;
 
       bool start_bit = GETBIT(start_coordinate, offset);
       bool end_bit = GETBIT(end_coordinate, offset);
@@ -154,7 +156,7 @@ private:
    * "struct" for range search Range search can either return a vector of
    * coordinates or a vector of primary keys
    */
-  point_t coordinates_[DIMENSION] = {0};
+  n_leaves_t coordinates_[DIMENSION] = {0};
   n_leaves_t primary_key_ = 0;
 };
 

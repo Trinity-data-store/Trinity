@@ -7,8 +7,7 @@
 #include <vector>
 
 // Disable in most cases.
-const uint64_t compact_pointer_vector_size_limit = 1000000;
-
+const uint64_t compact_pointer_vector_size_limit = 14252681;
 namespace bits
 {
 

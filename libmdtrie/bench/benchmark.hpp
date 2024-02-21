@@ -15,17 +15,17 @@ class MdTrieBench
 {
 public:
   MdTrieBench(md_trie<DIMENSION> *mdtrie) { mdtrie_ = mdtrie; };
-
+  MdTrieBench(MdTries<DIMENSION> *mdtries) { mdtries_ = mdtries; }
   void insert(std::string data_addr,
               std::string outfile_name,
-              point_t total_points_count,
+              n_leaves_t total_points_count,
               std::vector<int32_t> (*parse_line)(std::string line))
   {
 
     std::ifstream infile(data_addr);
     TimeStamp start = 0, diff = 0;
-    point_t n_points = 0;
-    point_t has_skipped = 0;
+    n_leaves_t n_points = 0;
+    n_leaves_t has_skipped = 0;
     data_point<DIMENSION> leaf_point;
 
     /**
@@ -44,10 +44,13 @@ public:
       std::vector<int32_t> vect = parse_line(line);
       for (dimension_t i = 0; i < DIMENSION; i++)
       {
-        leaf_point.set_coordinate(i, vect[i]);
+        leaf_point.set_coordinate(i, vect[i % vect.size()]);
       }
       start = GetTimestamp();
-      mdtrie_->insert_trie(&leaf_point, n_points, p_key_to_treeblock_compact);
+      if (mdtrie_)
+        mdtrie_->insert_trie(&leaf_point, n_points);
+      else
+        mdtries_->insert_trie(&leaf_point, n_points);
       TimeStamp latency = GetTimestamp() - start;
       diff += latency;
       n_points++;
@@ -74,10 +77,13 @@ public:
 
     TimeStamp cumulative = 0, start = 0;
 
-    for (point_t i = 0; i < points_to_lookup; i++)
+    for (n_leaves_t i = 0; i < points_to_lookup; i++)
     {
       start = GetTimestamp();
-      mdtrie_->lookup_trie(i, p_key_to_treeblock_compact);
+      if (mdtrie_)
+        mdtrie_->lookup_trie(i);
+      else
+        mdtries_->lookup_trie(i);
       TimeStamp temp_diff = GetTimestamp() - start;
       cumulative += temp_diff;
       lookup_latency_vect_.push_back(temp_diff + SERVER_TO_SERVER_IN_NS);
@@ -114,11 +120,15 @@ public:
       get_query(line, &start_range, &end_range);
 
       start = GetTimestamp();
-      mdtrie_->range_search_trie(
-          &start_range, &end_range, mdtrie_->root(), 0, found_points);
+      if (mdtrie_)
+        mdtrie_->range_search_trie(
+            &start_range, &end_range, found_points);
+      else
+        mdtries_->range_search_trie(
+            &start_range, &end_range, found_points);
       diff = GetTimestamp() - start;
       outfile << "Query " << i << " end to end latency (ms): " << diff / 1000
-              << ", found points count: " << found_points.size() / DIMENSION
+              << ", found points count: " << found_points.size()
               << std::endl;
       found_points.clear();
     }
@@ -136,7 +146,7 @@ public:
     TimeStamp diff = 0, start = 0;
     int i = 0;
 
-    while (i < QUERY_NUM * 10)
+    while (i < QUERY_NUM)
     {
 
       std::vector<int32_t> found_points;
@@ -146,16 +156,20 @@ public:
       get_query(&start_range, &end_range);
 
       start = GetTimestamp();
-      mdtrie_->range_search_trie(
-          &start_range, &end_range, mdtrie_->root(), 0, found_points);
+      if (mdtrie_)
+        mdtrie_->range_search_trie(
+            &start_range, &end_range, found_points);
+      else
+        mdtries_->range_search_trie(
+            &start_range, &end_range, found_points);
       diff = GetTimestamp() - start;
 
-      if (found_points.size() / DIMENSION > upper_bound ||
-          found_points.size() / DIMENSION < lower_bound)
+      if (found_points.size() > upper_bound ||
+          found_points.size() < lower_bound)
         continue;
 
       outfile << "Query " << i << " end to end latency (ms): " << diff / 1000
-              << ", found points count: " << found_points.size() / DIMENSION
+              << ", found points count: " << found_points.size()
               << std::endl;
       found_points.clear();
       i += 1;
@@ -165,7 +179,11 @@ public:
   void get_storage(std::string outfile_name)
   {
 
-    uint64_t size = mdtrie_->size(p_key_to_treeblock_compact);
+    uint64_t size;
+    if (mdtrie_)
+      size = mdtrie_->size();
+    else
+      size = mdtries_->size();
     std::cout << "mdtrie storage: " << size << std::endl;
     flush_string_to_file(
         std::to_string(size) + "," + std::to_string(total_points_count),
@@ -175,7 +193,8 @@ public:
 protected:
   std::vector<TimeStamp> insertion_latency_vect_;
   std::vector<TimeStamp> lookup_latency_vect_;
-  md_trie<DIMENSION> *mdtrie_;
+  md_trie<DIMENSION> *mdtrie_ = NULL;
+  MdTries<DIMENSION> *mdtries_ = NULL;
 };
 
 #endif // MdTrieBench_H

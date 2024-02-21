@@ -34,18 +34,18 @@ enum
   NYC = 3,
 };
 
-std::string ROOT_DIR = "/proj/trinity-PG0/Trinity/";
-std::string TPCH_DATA_ADDR = ROOT_DIR + "datasets/tpch_dataset.csv";
-std::string GITHUB_DATA_ADDR = ROOT_DIR + "datasets/github_dataset.csv";
-std::string NYC_DATA_ADDR = ROOT_DIR + "datasets/nyc_dataset.csv";
+std::string ROOT_DIR = "/mntData";
+std::string TPCH_DATA_ADDR = ROOT_DIR + "/tpch_dataset.csv";
+std::string GITHUB_DATA_ADDR = ROOT_DIR + "/github_dataset.csv";
+std::string NYC_DATA_ADDR = ROOT_DIR + "/nyc_dataset.csv";
 
-std::string TPCH_SPLIT_ADDR = ROOT_DIR + "datasets/tpch_split/";
-std::string GITHUB_SPLIT_ADDR = ROOT_DIR + "datasets/github_split/";
-std::string NYC_SPLIT_ADDR = ROOT_DIR + "datasets/nyc_split/";
+std::string TPCH_SPLIT_ADDR = ROOT_DIR + "/tpch_split/";
+std::string GITHUB_SPLIT_ADDR = ROOT_DIR + "/github_split/";
+std::string NYC_SPLIT_ADDR = ROOT_DIR + "/nyc_split/";
 
-std::string TPCH_QUERY_ADDR = ROOT_DIR + "queries/tpch_query";
-std::string GITHUB_QUERY_ADDR = ROOT_DIR + "queries/github_query";
-std::string NYC_QUERY_ADDR = ROOT_DIR + "queries/nyc_query";
+std::string TPCH_QUERY_ADDR = ROOT_DIR + "/tpch_query";
+std::string GITHUB_QUERY_ADDR = ROOT_DIR + "/github_query";
+std::string NYC_QUERY_ADDR = ROOT_DIR + "/nyc_query";
 
 unsigned int skip_size_count = 0;
 /* Because it results in otherwise OOM for other benchmarks. */
@@ -64,9 +64,9 @@ enum
 
 level_t max_depth = 32;
 level_t trie_depth = 6;
-preorder_t max_tree_node = 512;
-point_t points_to_insert = 1000;
-point_t points_to_lookup = 1000;
+n_leaves_t max_tree_node = 512;
+n_leaves_t points_to_insert = 1000;
+n_leaves_t points_to_lookup = 1000;
 std::string results_folder_addr = "/proj/trinity-PG0/Trinity/results/";
 std::string identification_string = "";
 int optimization_code = OPTIMIZATION_SM;
@@ -103,16 +103,16 @@ int gen_rand(int start, int end)
   return start + (std::rand() % (end - start + 1));
 }
 
-void use_nyc_setting(int dimensions, int _total_points_count)
+void use_nyc_setting(int dimensions, int _total_points_count, std::vector<level_t> &bit_widths, std::vector<level_t> &start_bits)
 {
 
   /* Currently bit_widths and start_bits are hard coded. */
-  std::vector<level_t> bit_widths = {18, 20, 10, 10, 10 + 18,
-                                     10 + 18, 8, 28, 25, 10 + 18,
-                                     11 + 17, 22, 25, 8 + 20, 25};
-  std::vector<level_t> start_bits = {0, 0, 0, 0, 0 + 18,
-                                     0 + 18, 0, 0, 0, 0 + 18,
-                                     0 + 17, 0, 0, 0 + 20, 0};
+  bit_widths = {18, 20, 10, 10, 10 + 18,
+                10 + 18, 8, 28, 25, 10 + 18,
+                11 + 17, 22, 25, 8 + 20, 25};
+  start_bits = {0, 0, 0, 0, 0 + 18,
+                0 + 18, 0, 0, 0, 0 + 18,
+                0 + 17, 0, 0, 0 + 20, 0};
   total_points_count = _total_points_count;
   is_collapsed_node_exp = false;
 
@@ -148,17 +148,14 @@ void use_nyc_setting(int dimensions, int _total_points_count)
 
   trie_depth = 6;
   max_depth = 28;
-  no_dynamic_sizing = true;
-
-  create_level_to_num_children(bit_widths, start_bits, max_depth);
 }
 
-void use_github_setting(int dimensions, int _total_points_count)
+void use_github_setting(int dimensions, int _total_points_count, std::vector<level_t> &bit_widths, std::vector<level_t> &start_bits)
 {
 
-  std::vector<level_t> bit_widths = {
+  bit_widths = {
       24, 24, 24, 24, 24, 24, 24, 16, 24, 24}; // 10 Dimensions;
-  std::vector<level_t> start_bits = {
+  start_bits = {
       0, 0, 0, 0, 0, 0, 0, 0, 0, 0}; // 10 Dimensions;
   total_points_count = _total_points_count;
   is_collapsed_node_exp = false;
@@ -196,18 +193,15 @@ void use_github_setting(int dimensions, int _total_points_count)
 
   trie_depth = 6;
   max_depth = 24;
-  no_dynamic_sizing = true;
   max_tree_node = 512;
-
-  create_level_to_num_children(bit_widths, start_bits, max_depth);
 }
 
-void use_tpch_setting(int dimensions, int _total_points_count)
+void use_tpch_setting(int dimensions, int _total_points_count, std::vector<level_t> &bit_widths, std::vector<level_t> &start_bits)
 { /* An extra dimensions input for sensitivity experiment. */
 
-  std::vector<level_t> bit_widths = {
+  bit_widths = {
       8, 32, 16, 24, 20, 20, 20, 32, 20}; // 9 Dimensions;
-  std::vector<level_t> start_bits = {
+  start_bits = {
       0, 0, 8, 16, 0, 0, 0, 0, 0}; // 9 Dimensions;
   total_points_count = _total_points_count;
   is_collapsed_node_exp = false;
@@ -244,21 +238,16 @@ void use_tpch_setting(int dimensions, int _total_points_count)
   }
   else
   {
-    std::vector<level_t> new_start_bits = start_bits;
-    std::vector<level_t> new_bit_widths = bit_widths;
-    for (int d = start_bits.size(); d < dimensions; d++)
+    int start_bits_size = start_bits.size();
+    for (int d = start_bits_size; d < dimensions; d++)
     {
-      new_start_bits.push_back(start_bits[d % start_bits.size()]);
-      new_bit_widths.push_back(bit_widths[d] % start_bits.size());
+      start_bits.push_back(start_bits[d % start_bits_size]);
+      bit_widths.push_back(bit_widths[d % start_bits_size]);
     }
-    start_bits = new_start_bits;
-    bit_widths = new_bit_widths;
   }
 
   trie_depth = 6;
   max_depth = 32;
-  no_dynamic_sizing = true;
-  create_level_to_num_children(bit_widths, start_bits, max_depth);
 }
 
 void flush_vector_to_file(std::vector<TimeStamp> vect, std::string filename)
@@ -431,14 +420,14 @@ void get_random_query_tpch(data_point<DIMENSION> *start_range,
   for (dimension_t i = 0; i < DIMENSION; i++)
   {
     start_range->set_coordinate(
-        i, gen_rand(tpch_min_values[i], tpch_max_values[i]));
+        i, gen_rand(tpch_min_values[i % tpch_min_values.size()], tpch_max_values[i % tpch_max_values.size()]));
     end_range->set_coordinate(
-        i, gen_rand(start_range->get_coordinate(i), tpch_max_values[i]));
+        i, gen_rand(start_range->get_coordinate(i), tpch_max_values[i % tpch_max_values.size()]));
   }
 
   for (dimension_t i = 0; i < DIMENSION; i++)
   {
-    if (i >= 4 && i != 7)
+    if (i % tpch_min_values.size() >= 4 && i % tpch_min_values.size() != 7)
     {
       start_range->set_coordinate(i, start_range->get_coordinate(i) - 19000000);
       end_range->set_coordinate(i, end_range->get_coordinate(i) - 19000000);

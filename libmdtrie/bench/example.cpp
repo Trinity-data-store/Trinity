@@ -24,16 +24,13 @@ int main()
     int total_count = 1000;
     trie_depth = 6;
     max_depth = 32;
-    no_dynamic_sizing = true;
-    md_trie<9> mdtrie(max_depth, trie_depth, max_tree_node);
-    bitmap::CompactPtrVector primary_key_to_treeblock_mapping(total_count);
 
     /* ---------- Initialization ------------ */
     std::vector<level_t> bit_widths = {
         32, 32, 32, 32, 32, 32, 32, 32, 32};
     std::vector<level_t> start_bits = {
         0, 0, 0, 0, 0, 0, 0, 0, 0};
-    create_level_to_num_children(bit_widths, start_bits, max_depth);
+    md_trie<9> mdtrie(max_depth, trie_depth, max_tree_node, bit_widths, start_bits);
 
     /* ----------- INSERT ----------- */
     TimeStamp start = 0, cumulative = 0;
@@ -48,7 +45,7 @@ int main()
             point.set_coordinate(i, random_int(1, (int)1 << 16));
         }
         start = GetTimestamp();
-        mdtrie.insert_trie(&point, primary_key, &primary_key_to_treeblock_mapping);
+        mdtrie.insert_trie(&point, primary_key);
         cumulative += GetTimestamp() - start;
     }
     std::cout << "Insertion Latency: " << (float)cumulative / total_count << " us" << std::endl;
@@ -58,7 +55,7 @@ int main()
     for (int primary_key = 0; primary_key < total_count; primary_key++)
     {
         start = GetTimestamp();
-        data_point<9> *pt = mdtrie.lookup_trie(primary_key, &primary_key_to_treeblock_mapping);
+        data_point<9> *pt = mdtrie.lookup_trie(primary_key);
         if ((int)pt->get_coordinate(0) != primary_key)
         {
             std::cerr << "Wrong point retrieved!" << std::endl;
@@ -82,7 +79,7 @@ int main()
         }
 
         start = GetTimestamp();
-        mdtrie.range_search_trie(&start_range, &end_range, mdtrie.root(), 0, found_points);
+        mdtrie.range_search_trie(&start_range, &end_range, found_points);
         // Coordinates are flattened into one vector.
         if ((int)(found_points.size() / num_dimensions) != total_count)
         {

@@ -213,7 +213,7 @@ public:
       diff = GetTimestamp() - start;
       outFile << "Query " << i << " end to end latency (ms): " << diff / 1000
               << ", found points count: "
-              << found_points.size() / num_dimensions_ << std::endl;
+              << found_points.size() << std::endl;
     }
   }
 
@@ -325,7 +325,7 @@ protected:
                                     queries_end_vect_[i]);
       client.range_search_trie_rec(found_points);
 
-      search_points_count += found_points.size() / num_dimensions_;
+      search_points_count += found_points.size();
     }
     diff = GetTimestamp() - start;
     return ((float)search_points_count / diff) * 1000000;
@@ -378,7 +378,7 @@ protected:
             queries_start_vect_[benchmark_count % QUERY_NUM],
             queries_end_vect_[benchmark_count % QUERY_NUM]);
         client.range_search_trie_rec(found_points);
-        benchmark_count += found_points.size() / num_dimensions_;
+        benchmark_count += found_points.size();
       }
     }
     diff = GetTimestamp() - start;
