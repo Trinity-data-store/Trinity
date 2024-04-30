@@ -1,4 +1,5 @@
 #!/bin/bash
+set -Eeuo pipefail
 
 # Run from Cloudlab
 # git clone https://github.com/MaoZiming/Trinity.git
@@ -10,8 +11,9 @@ dependencies_path="/proj/trinity-PG0/dependencies"
 # Basic setup
 sudo apt update
 # sudo apt upgrade
-sudo apt install htop
-sudo apt-get install dstat
+sudo apt install -y htop
+sudo apt install -y dstat
+sudo apt install -y pkgconf  # making thrift requires this
 cd $dependencies_path
 
 # Install Cmake
@@ -37,8 +39,10 @@ sudo make install
 cd $dependencies_path
 
 # Install thrift
-if [ ! -d "thrift"]; then
-    git clone https://github.com/apache/thrift.git
+if [ ! -d "thrift" ]; then
+    wget -nc https://dlcdn.apache.org/thrift/0.20.0/thrift-0.20.0.tar.gz
+    tar -xvf thrift-0.20.0.tar.gz
+    mv thrift-0.20.0 thrift
     cd thrift
     ./bootstrap.sh
     sudo ./configure --without-erlang
@@ -59,3 +63,4 @@ sudo apt-get install -y libbz2-dev
 sudo apt-get install -y python3-dev  # for python3.x installs
 sudo apt-get install -y libevent-dev
 sudo apt-get install -y clang-format
+sudo apt-get install -y flex bison
