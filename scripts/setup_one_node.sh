@@ -11,8 +11,9 @@ dependencies_path="/proj/trinity-PG0/dependencies"
 # Basic setup
 sudo apt update
 # sudo apt upgrade
-sudo apt install htop
-sudo apt-get install dstat
+sudo apt install -y htop
+sudo apt install -y dstat
+sudo apt install -y pkgconf  # making thrift requires this
 cd $dependencies_path
 
 # Install Cmake
