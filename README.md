@@ -17,6 +17,8 @@ We present Trinity, a system that simultaneously facilitates query and storage e
 - scripts: Scripts used to run the evaluations. 
 - thrift: Thrift source files. 
 
+Note: the folder is under cleaning. I haven't had time to fully clean the code yet. 
+
 ## Hardware and OS
 
 No special hardware requirement. We used node `xl170` on Ubuntu 20.04. 
@@ -65,7 +67,7 @@ An example Trinity client interface is provided `MDTrieShardClient.h`.
 Datasets can be downloaded from GCS buckets. Since MdTrie and Trinity mainly index integer / floating point fields, we clean datasets to be integer fields. The raw dataset can be found online. 
 - TPC-H [[Link](https://storage.cloud.google.com/trinity_datsets/tpch_dataset.csv)]
 - Github Events [[Link](https://storage.googleapis.com/trinity_datsets/github_dataset.csv)]
-- NYC
+- NYC [[Link](https://storage.googleapis.com/trinity_datsets/nyc_dataset.csv)]
 
 Due to the lack of open-source multi-attribute range search queries, we generate queries from query templates. You can find the queries in `queries` folder. 
 
