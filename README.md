@@ -48,9 +48,9 @@ make
 
 Check out the file `libmdtrie/bench/example.cpp` for example.
 ```c
-  mdtrie.insert_trie(&point, primary_key);
-  mdtrie.lookup_trie(primary_key);
-  mdtrie.range_search_trie(&start_range, &end_range, found_points);
+  mdtrie.insert_trie(&point, primary_key, &primary_key_to_treeblock_mapping);
+  mdtrie.lookup_trie(primary_key, &primary_key_to_treeblock_mapping);
+  mdtrie.range_search_trie(&start_range, &end_range, mdtrie.root(), 0, found_points);
 ```
 To start a local Trinity storage server
 

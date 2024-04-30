@@ -10,11 +10,11 @@
 
 void github_bench(void)
 {
-  std::vector<level_t> start_bits;
-  std::vector<level_t> bit_widths;
-  use_github_setting(GITHUB_DIMENSION, micro_github_size, bit_widths, start_bits);
-  md_trie<GITHUB_DIMENSION> mdtrie(max_depth, trie_depth, max_tree_node, bit_widths, start_bits);
+
+  use_github_setting(GITHUB_DIMENSION, micro_github_size);
+  md_trie<GITHUB_DIMENSION> mdtrie(max_depth, trie_depth, max_tree_node);
   MdTrieBench<GITHUB_DIMENSION> bench(&mdtrie);
+  p_key_to_treeblock_compact = new bitmap::CompactPtrVector(total_points_count);
   std::string folder_name = "microbenchmark/";
   if (identification_string != "")
   {
@@ -33,11 +33,11 @@ void github_bench(void)
 
 void nyc_bench(void)
 {
-  std::vector<level_t> start_bits;
-  std::vector<level_t> bit_widths;
-  use_nyc_setting(NYC_DIMENSION, micro_nyc_size, bit_widths, start_bits);
-  md_trie<NYC_DIMENSION> mdtrie(max_depth, trie_depth, max_tree_node, bit_widths, start_bits);
+
+  use_nyc_setting(NYC_DIMENSION, micro_nyc_size);
+  md_trie<NYC_DIMENSION> mdtrie(max_depth, trie_depth, max_tree_node);
   MdTrieBench<NYC_DIMENSION> bench(&mdtrie);
+  p_key_to_treeblock_compact = new bitmap::CompactPtrVector(total_points_count);
   std::string folder_name = "microbenchmark/";
   if (identification_string != "")
   {
@@ -56,11 +56,11 @@ void nyc_bench(void)
 
 void tpch_bench(void)
 {
-  std::vector<level_t> start_bits;
-  std::vector<level_t> bit_widths;
-  use_tpch_setting(TPCH_DIMENSION, micro_tpch_size, bit_widths, start_bits);
-  md_trie<TPCH_DIMENSION> mdtrie(max_depth, trie_depth, max_tree_node, bit_widths, start_bits);
+
+  use_tpch_setting(TPCH_DIMENSION, micro_tpch_size);
+  md_trie<TPCH_DIMENSION> mdtrie(max_depth, trie_depth, max_tree_node);
   MdTrieBench<TPCH_DIMENSION> bench(&mdtrie);
+  p_key_to_treeblock_compact = new bitmap::CompactPtrVector(total_points_count);
   std::string folder_name = "microbenchmark/";
   if (identification_string != "")
   {
@@ -77,163 +77,167 @@ void tpch_bench(void)
                      get_query_tpch<TPCH_DIMENSION>);
 }
 
-void sensitivity_num_dimensions_4(void)
+void sensitivity_num_dimensions_9(void)
 {
-  std::vector<level_t> start_bits;
-  std::vector<level_t> bit_widths;
-  use_tpch_setting(4, micro_tpch_size, bit_widths, start_bits);
-  total_points_count /= 50;
-  md_trie<4> mdtrie(max_depth, trie_depth, max_tree_node, bit_widths, start_bits);
-  MdTrieBench<4> bench(&mdtrie);
+
+  use_tpch_setting(9, micro_tpch_size);
+  md_trie<9> mdtrie(max_depth, trie_depth, max_tree_node);
+  MdTrieBench<9> bench(&mdtrie);
+  p_key_to_treeblock_compact = new bitmap::CompactPtrVector(total_points_count);
 
   bench.insert(TPCH_DATA_ADDR,
                "sensitivity/tpch_insert_dimensions" + identification_string +
-                   "_" + "4",
+                   "_" + "9",
                total_points_count,
                parse_line_tpch);
-  bench.lookup("sensitivity/tpch_lookup_dimensions" + identification_string +
-               "_" + "4");
   bench.get_storage("sensitivity/tpch_storage_dimensions" +
-                    identification_string + "_" + "4");
+                    identification_string + "_" + "9");
   bench.range_search_random("sensitivity/tpch_query_dimensions" +
-                                identification_string + "_" + "4",
-                            get_random_query_tpch<4>,
-                            total_points_count,
-                            1);
+                                identification_string + "_" + "9",
+                            get_random_query_tpch<9>,
+                            micro_tpch_size * selectivity_upper,
+                            micro_tpch_size * selectivity_lower);
 }
 
 void sensitivity_num_dimensions_8(void)
 {
-  std::vector<level_t> start_bits;
-  std::vector<level_t> bit_widths;
-  use_tpch_setting(8, micro_tpch_size, bit_widths, start_bits);
-  total_points_count /= 50;
-  md_trie<8> mdtrie(max_depth, trie_depth, max_tree_node, bit_widths, start_bits);
+
+  use_tpch_setting(8, micro_tpch_size);
+  md_trie<8> mdtrie(max_depth, trie_depth, max_tree_node);
   MdTrieBench<8> bench(&mdtrie);
+  p_key_to_treeblock_compact = new bitmap::CompactPtrVector(total_points_count);
 
   bench.insert(TPCH_DATA_ADDR,
                "sensitivity/tpch_insert_dimensions" + identification_string +
                    "_" + "8",
                total_points_count,
                parse_line_tpch);
-  bench.lookup("sensitivity/tpch_lookup_dimensions" + identification_string +
-               "_" + "8");
   bench.get_storage("sensitivity/tpch_storage_dimensions" +
                     identification_string + "_" + "8");
   bench.range_search_random("sensitivity/tpch_query_dimensions" +
                                 identification_string + "_" + "8",
                             get_random_query_tpch<8>,
-                            total_points_count,
-                            1);
+                            micro_tpch_size * selectivity_upper,
+                            micro_tpch_size * selectivity_lower);
 }
 
-void sensitivity_num_dimensions_16_mdtries(void)
+void sensitivity_num_dimensions_7(void)
 {
-  std::vector<level_t> start_bits;
-  std::vector<level_t> bit_widths;
-  use_tpch_setting(16, micro_tpch_size, bit_widths, start_bits);
-  total_points_count /= 50;
-  MdTries<16> mdtries(max_depth, trie_depth, max_tree_node, bit_widths, start_bits);
-  MdTrieBench<16> bench(&mdtries);
+
+  use_tpch_setting(7, micro_tpch_size);
+  md_trie<7> mdtrie(max_depth, trie_depth, max_tree_node);
+  MdTrieBench<7> bench(&mdtrie);
+  p_key_to_treeblock_compact = new bitmap::CompactPtrVector(total_points_count);
 
   bench.insert(TPCH_DATA_ADDR,
                "sensitivity/tpch_insert_dimensions" + identification_string +
-                   "_" + "16",
+                   "_" + "7",
                total_points_count,
                parse_line_tpch);
-  bench.lookup("sensitivity/tpch_lookup_dimensions" + identification_string +
-               "_" + "16");
   bench.get_storage("sensitivity/tpch_storage_dimensions" +
-                    identification_string + "_" + "16");
+                    identification_string + "_" + "7");
   bench.range_search_random("sensitivity/tpch_query_dimensions" +
-                                identification_string + "_" + "16",
-                            get_random_query_tpch<16>,
-                            total_points_count,
-                            1);
+                                identification_string + "_" + "7",
+                            get_random_query_tpch<7>,
+                            micro_tpch_size * selectivity_upper,
+                            micro_tpch_size * selectivity_lower);
 }
 
-void sensitivity_num_dimensions_32_mdtries(void)
+void sensitivity_num_dimensions_6(void)
 {
-  std::vector<level_t> start_bits;
-  std::vector<level_t> bit_widths;
-  use_tpch_setting(32, micro_tpch_size, bit_widths, start_bits);
-  total_points_count /= 50;
-  MdTries<32> mdtries(max_depth, trie_depth, max_tree_node, bit_widths, start_bits);
-  MdTrieBench<32> bench(&mdtries);
+
+  use_tpch_setting(6, micro_tpch_size);
+  md_trie<6> mdtrie(max_depth, trie_depth, max_tree_node);
+  MdTrieBench<6> bench(&mdtrie);
+  p_key_to_treeblock_compact = new bitmap::CompactPtrVector(total_points_count);
+  bench.insert(TPCH_DATA_ADDR,
+               "sensitivity/tpch_insert_dimensions" + identification_string +
+                   "_" + "6",
+               total_points_count,
+               parse_line_tpch);
+  bench.get_storage("sensitivity/tpch_storage_dimensions" +
+                    identification_string + "_" + "6");
+  bench.range_search_random("sensitivity/tpch_query_dimensions" +
+                                identification_string + "_" + "6",
+                            get_random_query_tpch<6>,
+                            micro_tpch_size * selectivity_upper,
+                            micro_tpch_size * selectivity_lower);
+}
+
+void sensitivity_num_dimensions_5(void)
+{
+
+  use_tpch_setting(5, micro_tpch_size);
+  md_trie<5> mdtrie(max_depth, trie_depth, max_tree_node);
+  MdTrieBench<5> bench(&mdtrie);
+  p_key_to_treeblock_compact = new bitmap::CompactPtrVector(total_points_count);
 
   bench.insert(TPCH_DATA_ADDR,
                "sensitivity/tpch_insert_dimensions" + identification_string +
-                   "_" + "32",
+                   "_" + "5",
                total_points_count,
                parse_line_tpch);
-  bench.lookup("sensitivity/tpch_lookup_dimensions" + identification_string +
-               "_" + "32");
   bench.get_storage("sensitivity/tpch_storage_dimensions" +
-                    identification_string + "_" + "32");
+                    identification_string + "_" + "5");
   bench.range_search_random("sensitivity/tpch_query_dimensions" +
-                                identification_string + "_" + "32",
-                            get_random_query_tpch<32>,
-                            total_points_count,
-                            1);
+                                identification_string + "_" + "5",
+                            get_random_query_tpch<5>,
+                            micro_tpch_size * selectivity_upper,
+                            micro_tpch_size * selectivity_lower);
 }
 
-void sensitivity_num_dimensions_64_mdtries(void)
+void sensitivity_num_dimensions_4(void)
 {
-  std::vector<level_t> start_bits;
-  std::vector<level_t> bit_widths;
-  use_tpch_setting(64, micro_tpch_size, bit_widths, start_bits);
-  total_points_count /= 50;
-  MdTries<64> mdtries(max_depth, trie_depth, max_tree_node, bit_widths, start_bits);
-  MdTrieBench<64> bench(&mdtries);
+
+  use_tpch_setting(4, micro_tpch_size);
+  md_trie<4> mdtrie(max_depth, trie_depth, max_tree_node);
+  MdTrieBench<4> bench(&mdtrie);
+  p_key_to_treeblock_compact = new bitmap::CompactPtrVector(total_points_count);
 
   bench.insert(TPCH_DATA_ADDR,
                "sensitivity/tpch_insert_dimensions" + identification_string +
-                   "_" + "64",
+                   "_" + "4",
                total_points_count,
                parse_line_tpch);
-  bench.lookup("sensitivity/tpch_lookup_dimensions" + identification_string +
-               "_" + "64");
   bench.get_storage("sensitivity/tpch_storage_dimensions" +
-                    identification_string + "_" + "64");
+                    identification_string + "_" + "4");
   bench.range_search_random("sensitivity/tpch_query_dimensions" +
-                                identification_string + "_" + "64",
-                            get_random_query_tpch<64>,
-                            total_points_count,
-                            1);
+                                identification_string + "_" + "4",
+                            get_random_query_tpch<4>,
+                            micro_tpch_size * selectivity_upper,
+                            micro_tpch_size * selectivity_lower);
 }
 
-void sensitivity_num_dimensions_128_mdtries(void)
+void sensitivity_num_dimensions_20(void)
 {
-  std::vector<level_t> start_bits;
-  std::vector<level_t> bit_widths;
-  use_tpch_setting(128, micro_tpch_size, bit_widths, start_bits);
-  total_points_count /= 50;
-  MdTries<128> mdtries(max_depth, trie_depth, max_tree_node, bit_widths, start_bits);
-  MdTrieBench<128> bench(&mdtries);
+  use_tpch_setting(20, micro_tpch_size);
+  md_trie<20> mdtrie(max_depth, trie_depth, max_tree_node);
+  MdTrieBench<20> bench(&mdtrie);
+  p_key_to_treeblock_compact = new bitmap::CompactPtrVector(total_points_count);
+  // Use fewer points.
+  total_points_count /= 100;
 
   bench.insert(TPCH_DATA_ADDR,
                "sensitivity/tpch_insert_dimensions" + identification_string +
-                   "_" + "128",
+                   "_" + "20",
                total_points_count,
                parse_line_tpch);
-  bench.lookup("sensitivity/tpch_lookup_dimensions" + identification_string +
-               "_" + "128");
   bench.get_storage("sensitivity/tpch_storage_dimensions" +
-                    identification_string + "_" + "128");
+                    identification_string + "_" + "20");
   bench.range_search_random("sensitivity/tpch_query_dimensions" +
-                                identification_string + "_" + "128",
-                            get_random_query_tpch<128>,
-                            total_points_count,
-                            1);
+                                identification_string + "_" + "20",
+                            get_random_query_tpch<20>,
+                            micro_tpch_size * selectivity_upper,
+                            micro_tpch_size * selectivity_lower);
 }
 
 void sensitivity_selectivity(void)
 {
-  std::vector<level_t> start_bits;
-  std::vector<level_t> bit_widths;
-  use_tpch_setting(TPCH_DIMENSION, micro_tpch_size, bit_widths, start_bits);
-  md_trie<TPCH_DIMENSION> mdtrie(max_depth, trie_depth, max_tree_node, bit_widths, start_bits);
+
+  use_tpch_setting(TPCH_DIMENSION, micro_tpch_size);
+  md_trie<TPCH_DIMENSION> mdtrie(max_depth, trie_depth, max_tree_node);
   MdTrieBench<TPCH_DIMENSION> bench(&mdtrie);
+  p_key_to_treeblock_compact = new bitmap::CompactPtrVector(total_points_count);
 
   bench.insert(TPCH_DATA_ADDR,
                "sensitivity/tpch_insert_selectivity" + identification_string,
@@ -248,11 +252,10 @@ void sensitivity_selectivity(void)
 
 void sensitivity_treeblock_sizes(int treeblock_size)
 {
-  std::vector<level_t> start_bits;
-  std::vector<level_t> bit_widths;
-  use_tpch_setting(TPCH_DIMENSION, micro_tpch_size, bit_widths, start_bits);
-  md_trie<TPCH_DIMENSION> mdtrie(max_depth, trie_depth, treeblock_size, bit_widths, start_bits);
+  use_tpch_setting(TPCH_DIMENSION, micro_tpch_size);
+  md_trie<TPCH_DIMENSION> mdtrie(max_depth, trie_depth, treeblock_size);
   MdTrieBench<TPCH_DIMENSION> bench(&mdtrie);
+  p_key_to_treeblock_compact = new bitmap::CompactPtrVector(total_points_count);
   bench.insert(TPCH_DATA_ADDR,
                "sensitivity/tpch_insert_treeblock_sizes_" + std::to_string(treeblock_size),
                total_points_count,
@@ -315,20 +318,20 @@ int main(int argc, char *argv[])
   {
     switch (sensitivity_dimensions)
     {
-    case 128:
-      sensitivity_num_dimensions_128_mdtries();
-      break;
-    case 64:
-      sensitivity_num_dimensions_64_mdtries();
-      break;
-    case 32:
-      sensitivity_num_dimensions_32_mdtries();
-      break;
-    case 16:
-      sensitivity_num_dimensions_16_mdtries();
+    case 9:
+      sensitivity_num_dimensions_9();
       break;
     case 8:
       sensitivity_num_dimensions_8();
+      break;
+    case 7:
+      sensitivity_num_dimensions_7();
+      break;
+    case 6:
+      sensitivity_num_dimensions_6();
+      break;
+    case 5:
+      sensitivity_num_dimensions_5();
       break;
     case 4:
       sensitivity_num_dimensions_4();
