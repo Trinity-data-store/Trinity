@@ -17,7 +17,7 @@ We present Trinity, a system that simultaneously facilitates query and storage e
 - scripts: Scripts used to run the evaluations. 
 - thrift: Thrift source files. 
 
-Note: the folder is under cleaning. I haven't had time to fully clean the code yet. 
+Note: the folder is under cleaning. 
 
 ## Hardware and OS
 
