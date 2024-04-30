@@ -1,4 +1,5 @@
 #!/bin/bash
+set -Eeuo pipefail
 
 # Run from Cloudlab
 # git clone https://github.com/MaoZiming/Trinity.git
@@ -37,7 +38,7 @@ sudo make install
 cd $dependencies_path
 
 # Install thrift
-if [ ! -d "thrift"]; then
+if [ ! -d "thrift" ]; then
     git clone https://github.com/apache/thrift.git
     cd thrift
     ./bootstrap.sh
