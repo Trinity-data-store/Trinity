@@ -48,6 +48,7 @@ make
 
 Check out the file `libmdtrie/bench/example.cpp` for example.
 ```c
+  bitmap::CompactPtrVector primary_key_to_treeblock_mapping(total_count);
   mdtrie.insert_trie(&point, primary_key, &primary_key_to_treeblock_mapping);
   mdtrie.lookup_trie(primary_key, &primary_key_to_treeblock_mapping);
   mdtrie.range_search_trie(&start_range, &end_range, mdtrie.root(), 0, found_points);
