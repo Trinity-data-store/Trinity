@@ -31,6 +31,8 @@ An example Cloudlab Profile is attached in `scripts/cloudlab_profile.py`.
 bash scripts/setup_one_node.sh
 ```
 
+The script has been recently tested on Ubuntu 20.04. 
+
 To run a distributed setup, execute the setup scripts on all client and storage nodes, or: 
 
 ```bash
