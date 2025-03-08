@@ -106,10 +106,10 @@ int main()
             std::cerr << "found: " << (int)(found_points.size() / num_dimensions) << std::endl;
             std::cerr << "total count: " << total_count << std::endl;
         } else {
-            std::cout << "Query - " << c << ", found: " << (int)(found_points.size() / num_dimensions) << "total count: " << total_count << std::endl;
+            std::cout << "Query - " << c << ", found: " << (int)(found_points.size() / num_dimensions) << ", expected: " << total_count << std::endl;
         }
         cumulative += GetTimestamp() - start;
     }
-    std::cout << "Query Latency: " << (float)cumulative / num_queries << std::endl;
+    std::cout << "Per-query Latency: " << (cumulative / 1000.0) / num_queries << " ms" << std::endl;
     return 0;
 }
