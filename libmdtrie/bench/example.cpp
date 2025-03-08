@@ -21,7 +21,8 @@ int random_int(int min, int max)
 int main()
 {
     dimension_t num_dimensions = 9;
-    int total_count = 1000;
+    max_tree_node = 1024;
+    int total_count = 10000000;
     trie_depth = 6;
     max_depth = 32;
     no_dynamic_sizing = true;
@@ -37,9 +38,14 @@ int main()
 
     /* ----------- INSERT ----------- */
     TimeStamp start = 0, cumulative = 0;
+    int num_inserted = 0;
 
     for (int primary_key = 0; primary_key < total_count; primary_key++)
     {
+        num_inserted ++;
+        if (num_inserted % (total_count / 10) == 0) {
+            std::cout << "Inserting: " << num_inserted << " out of " << total_count << std::endl;
+        }
         data_point<9> point;
         // For lookup correctness checking.
         point.set_coordinate(0, primary_key);
@@ -51,12 +57,18 @@ int main()
         mdtrie.insert_trie(&point, primary_key, &primary_key_to_treeblock_mapping);
         cumulative += GetTimestamp() - start;
     }
-    std::cout << "Insertion Latency: " << (float)cumulative / total_count << " us" << std::endl;
+    std::cout << "Insertion Latency per point: " << (float)cumulative / total_count << " us" << std::endl;
 
     /* ---------- LOOKUP ------------ */
     cumulative = 0;
+    int num_lookup = 0;
     for (int primary_key = 0; primary_key < total_count; primary_key++)
     {
+        num_lookup ++;
+        if (num_lookup % (total_count / 10) == 0) {
+            std::cout << "Looking up: " << num_lookup << " out of " << total_count << std::endl;
+        }
+
         start = GetTimestamp();
         data_point<9> *pt = mdtrie.lookup_trie(primary_key, &primary_key_to_treeblock_mapping);
         if ((int)pt->get_coordinate(0) != primary_key)
@@ -65,20 +77,24 @@ int main()
         }
         cumulative += GetTimestamp() - start;
     }
-    std::cout << "Lookup Latency: " << (float)cumulative / total_count << std::endl;
+    std::cout << "Lookup Latency per point: " << (float)cumulative / total_count << " us" << std::endl;
 
     /* ---------- RANGE QUERY ------------ */
     cumulative = 0;
-    int num_queries = 10;
+    int num_queries = 3;
+    std::cout << "Creating range queries that return every point. " << std::endl;
     for (int c = 0; c < num_queries; c++)
     {
         data_point<9> start_range;
         data_point<9> end_range;
         std::vector<int> found_points;
-        for (dimension_t i = 0; i < 9; i++)
+        /* We used the first coordinate to be the primary key. */
+        start_range.set_coordinate(0, 0);
+        end_range.set_coordinate(0, total_count);
+        for (dimension_t i = 1; i < num_dimensions; i++)
         {
             start_range.set_coordinate(i, 0);
-            end_range.set_coordinate(i, (int)1 << 16);
+            end_range.set_coordinate(i, (int)(1 << 16));
         }
 
         start = GetTimestamp();
@@ -87,9 +103,13 @@ int main()
         if ((int)(found_points.size() / num_dimensions) != total_count)
         {
             std::cerr << "Wrong number of points found!" << std::endl;
+            std::cerr << "found: " << (int)(found_points.size() / num_dimensions) << std::endl;
+            std::cerr << "total count: " << total_count << std::endl;
+        } else {
+            std::cout << "Query - " << c << ", found: " << (int)(found_points.size() / num_dimensions) << ", expected: " << total_count << std::endl;
         }
         cumulative += GetTimestamp() - start;
     }
-    std::cout << "Query Latency: " << (float)cumulative / num_queries << std::endl;
+    std::cout << "Per-query Latency: " << (cumulative / 1000.0) / num_queries << " ms" << std::endl;
     return 0;
 }
