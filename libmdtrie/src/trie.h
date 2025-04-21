@@ -24,16 +24,20 @@ template <dimension_t DIMENSION>
 class md_trie
 {
 public:
-  explicit md_trie(level_t max_depth,
+  explicit md_trie(dimension_t width,
+                   level_t max_depth,
                    level_t trie_depth,
                    preorder_t max_tree_nodes)
   {
 
     max_depth_ = max_depth;
     trie_depth_ = trie_depth;
+    trie_width_ = width;
     max_tree_nodes_ = max_tree_nodes;
     root_ = new trie_node<DIMENSION>(false, level_to_num_children[0]);
   }
+
+  // inline dimension_t get_width() { return width_; }
 
   inline trie_node<DIMENSION> *root() { return root_; }
 
@@ -80,7 +84,8 @@ public:
     if (current_trie_node->get_block() == nullptr)
     {
       current_treeblock =
-          new tree_block<DIMENSION>(trie_depth_,
+          new tree_block<DIMENSION>(/* width_, */
+                                    trie_depth_,
                                     1 /* initial_tree_capacity_ */,
                                     1 << level_to_num_children[trie_depth_],
                                     1,
@@ -117,7 +122,9 @@ public:
     morton_t parent_symbol_from_primary =
         t_ptr->get_node_path_primary_key(primary_key, node_path_from_primary);
     node_path_from_primary[max_depth_ - 1] = parent_symbol_from_primary;
-    return t_ptr->node_path_to_coordinates(node_path_from_primary, 9);
+    // return t_ptr->node_path_to_coordinates(node_path_from_primary, 9);
+    dimension_t dimension = DIMENSION;
+    return t_ptr->node_path_to_coordinates(node_path_from_primary, dimension);
   }
 
   bool check(data_point<DIMENSION> *leaf_point) const
@@ -136,6 +143,7 @@ public:
 
     uint64_t total_size = sizeof(root_) + sizeof(max_depth_);
     total_size += sizeof(max_tree_nodes_);
+    // total_size += sizeof(width_);
 
     std::queue<trie_node<DIMENSION> *> trie_node_queue;
     trie_node_queue.push(root_);
@@ -161,13 +169,15 @@ public:
           for (int i = 0; i < (1 << level_to_num_children[current_level]);
                i++)
           {
-            if (current_node->get_child(i))
+            // quick fix, not sure why some data is corrupted
+            // ex. current_node->get_child(i) might return 0x21 or 0x1818181818181818
+            if (current_node->get_child(i) /* && is_valid((void *) current_node->get_child(i)) */) 
             {
               trie_node_queue.push(current_node->get_child(i));
             }
           }
         }
-        else
+        else /* if (is_valid((void *) current_node->get_block())) */
         {
           total_size += current_node->get_block()->size();
         }
@@ -181,6 +191,7 @@ public:
     total_size += sizeof(max_tree_nodes_);
     total_size += sizeof(max_depth_);
     total_size += sizeof(trie_depth_);
+    total_size += sizeof(trie_width_);
 
     total_size += sizeof(p_key_to_treeblock_compact);
     total_size += p_key_to_treeblock_compact->size_overhead();
@@ -257,6 +268,7 @@ private:
   trie_node<DIMENSION> *root_ = nullptr;
   level_t max_depth_;
   preorder_t max_tree_nodes_;
+  // dimension_t width_;
 };
 
 #endif // MD_TRIE_MD_TRIE_H

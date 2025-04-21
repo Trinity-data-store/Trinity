@@ -12,7 +12,15 @@ void github_bench(void)
 {
 
   use_github_setting(GITHUB_DIMENSION, micro_github_size);
-  md_trie<GITHUB_DIMENSION> mdtrie(max_depth, trie_depth, max_tree_node);
+
+  if (trie_width == (dimension_t) -1) {
+    trie_width = (dimension_t) GITHUB_DIMENSION;
+  }
+  else {
+    identification_string += "_FLEX_" + std::to_string(trie_width) + "_" + std::to_string(max_tree_node);
+  }
+
+  md_trie<GITHUB_DIMENSION> mdtrie(trie_width, max_depth, trie_depth, max_tree_node);
   MdTrieBench<GITHUB_DIMENSION> bench(&mdtrie);
   p_key_to_treeblock_compact = new bitmap::CompactPtrVector(total_points_count);
   std::string folder_name = "microbenchmark/";
@@ -35,7 +43,15 @@ void nyc_bench(void)
 {
 
   use_nyc_setting(NYC_DIMENSION, micro_nyc_size);
-  md_trie<NYC_DIMENSION> mdtrie(max_depth, trie_depth, max_tree_node);
+
+  if (trie_width == (dimension_t) -1) {
+    trie_width = NYC_DIMENSION;
+  }
+  else {
+    identification_string += "_FLEX_" + std::to_string(trie_width) + "_" + std::to_string(max_tree_node);
+  }
+
+  md_trie<NYC_DIMENSION> mdtrie(trie_width, max_depth, trie_depth, max_tree_node);
   MdTrieBench<NYC_DIMENSION> bench(&mdtrie);
   p_key_to_treeblock_compact = new bitmap::CompactPtrVector(total_points_count);
   std::string folder_name = "microbenchmark/";
@@ -58,7 +74,15 @@ void tpch_bench(void)
 {
 
   use_tpch_setting(TPCH_DIMENSION, micro_tpch_size);
-  md_trie<TPCH_DIMENSION> mdtrie(max_depth, trie_depth, max_tree_node);
+
+  if (trie_width == (dimension_t) -1) {
+    trie_width = TPCH_DIMENSION;
+  }
+  else {
+    identification_string += "_FLEX_" + std::to_string(trie_width) + "_" + std::to_string(max_tree_node);
+  }
+
+  md_trie<TPCH_DIMENSION> mdtrie(trie_width, max_depth, trie_depth, max_tree_node);
   MdTrieBench<TPCH_DIMENSION> bench(&mdtrie);
   p_key_to_treeblock_compact = new bitmap::CompactPtrVector(total_points_count);
   std::string folder_name = "microbenchmark/";
@@ -81,7 +105,7 @@ void sensitivity_num_dimensions_9(void)
 {
 
   use_tpch_setting(9, micro_tpch_size);
-  md_trie<9> mdtrie(max_depth, trie_depth, max_tree_node);
+  md_trie<9> mdtrie(9, max_depth, trie_depth, max_tree_node);
   MdTrieBench<9> bench(&mdtrie);
   p_key_to_treeblock_compact = new bitmap::CompactPtrVector(total_points_count);
 
@@ -103,7 +127,7 @@ void sensitivity_num_dimensions_8(void)
 {
 
   use_tpch_setting(8, micro_tpch_size);
-  md_trie<8> mdtrie(max_depth, trie_depth, max_tree_node);
+  md_trie<8> mdtrie(8, max_depth, trie_depth, max_tree_node);
   MdTrieBench<8> bench(&mdtrie);
   p_key_to_treeblock_compact = new bitmap::CompactPtrVector(total_points_count);
 
@@ -125,7 +149,7 @@ void sensitivity_num_dimensions_7(void)
 {
 
   use_tpch_setting(7, micro_tpch_size);
-  md_trie<7> mdtrie(max_depth, trie_depth, max_tree_node);
+  md_trie<7> mdtrie(7, max_depth, trie_depth, max_tree_node);
   MdTrieBench<7> bench(&mdtrie);
   p_key_to_treeblock_compact = new bitmap::CompactPtrVector(total_points_count);
 
@@ -147,7 +171,7 @@ void sensitivity_num_dimensions_6(void)
 {
 
   use_tpch_setting(6, micro_tpch_size);
-  md_trie<6> mdtrie(max_depth, trie_depth, max_tree_node);
+  md_trie<6> mdtrie(6, max_depth, trie_depth, max_tree_node);
   MdTrieBench<6> bench(&mdtrie);
   p_key_to_treeblock_compact = new bitmap::CompactPtrVector(total_points_count);
   bench.insert(TPCH_DATA_ADDR,
@@ -168,7 +192,7 @@ void sensitivity_num_dimensions_5(void)
 {
 
   use_tpch_setting(5, micro_tpch_size);
-  md_trie<5> mdtrie(max_depth, trie_depth, max_tree_node);
+  md_trie<5> mdtrie(5, max_depth, trie_depth, max_tree_node);
   MdTrieBench<5> bench(&mdtrie);
   p_key_to_treeblock_compact = new bitmap::CompactPtrVector(total_points_count);
 
@@ -190,7 +214,7 @@ void sensitivity_num_dimensions_4(void)
 {
 
   use_tpch_setting(4, micro_tpch_size);
-  md_trie<4> mdtrie(max_depth, trie_depth, max_tree_node);
+  md_trie<4> mdtrie(4, max_depth, trie_depth, max_tree_node);
   MdTrieBench<4> bench(&mdtrie);
   p_key_to_treeblock_compact = new bitmap::CompactPtrVector(total_points_count);
 
@@ -211,7 +235,7 @@ void sensitivity_num_dimensions_4(void)
 void sensitivity_num_dimensions_20(void)
 {
   use_tpch_setting(20, micro_tpch_size);
-  md_trie<20> mdtrie(max_depth, trie_depth, max_tree_node);
+  md_trie<20> mdtrie(20, max_depth, trie_depth, max_tree_node);
   MdTrieBench<20> bench(&mdtrie);
   p_key_to_treeblock_compact = new bitmap::CompactPtrVector(total_points_count);
   // Use fewer points.
@@ -235,7 +259,7 @@ void sensitivity_selectivity(void)
 {
 
   use_tpch_setting(TPCH_DIMENSION, micro_tpch_size);
-  md_trie<TPCH_DIMENSION> mdtrie(max_depth, trie_depth, max_tree_node);
+  md_trie<TPCH_DIMENSION> mdtrie((dimension_t) TPCH_DIMENSION, max_depth, trie_depth, max_tree_node);
   MdTrieBench<TPCH_DIMENSION> bench(&mdtrie);
   p_key_to_treeblock_compact = new bitmap::CompactPtrVector(total_points_count);
 
@@ -253,7 +277,7 @@ void sensitivity_selectivity(void)
 void sensitivity_treeblock_sizes(int treeblock_size)
 {
   use_tpch_setting(TPCH_DIMENSION, micro_tpch_size);
-  md_trie<TPCH_DIMENSION> mdtrie(max_depth, trie_depth, treeblock_size);
+  md_trie<TPCH_DIMENSION> mdtrie((dimension_t) TPCH_DIMENSION, max_depth, trie_depth, treeblock_size);
   MdTrieBench<TPCH_DIMENSION> bench(&mdtrie);
   p_key_to_treeblock_compact = new bitmap::CompactPtrVector(total_points_count);
   bench.insert(TPCH_DATA_ADDR,
@@ -278,7 +302,7 @@ int main(int argc, char *argv[])
   int treeblock_size = -1;
   is_microbenchmark = true;
 
-  while ((arg = getopt(argc, argv, "b:o:d:t:")) != -1)
+  while ((arg = getopt(argc, argv, "b:o:d:t:w:m:")) != -1)
     switch (arg)
     {
     case 'b':
@@ -301,13 +325,21 @@ int main(int argc, char *argv[])
     case 'd':
       sensitivity_dimensions = atoi(optarg);
       break;
+    case 'w':
+      trie_width = (dimension_t) atoi(optarg);
+      break;
+    case 'm':
+      max_tree_node = (preorder_t) atoi(optarg);
+      break;
     default:
       abort();
     }
 
   std::cout << "benchmark: " << argvalue << ", optimization: " << optimization
             << ", dimensions: " << sensitivity_dimensions
-            << ", treeblock_size: " << treeblock_size << std::endl;
+            << ", treeblock_size: " << treeblock_size 
+            << ", trie_width: " << (int) trie_width
+            << ", max_tree_node: " << (int) max_tree_node << std::endl;
   if (argvalue == "tpch")
     tpch_bench();
   else if (argvalue == "github")

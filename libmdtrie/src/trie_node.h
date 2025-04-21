@@ -66,6 +66,8 @@ public:
 
   uint64_t size(level_t num_children, bool is_leaf)
   {
+    // if (is_valid((void *) this))
+    //     return 0;
 
     uint64_t total_size = sizeof(trie_or_treeblock_ptr_);
     total_size += sizeof(parent_trie_node_); // parent_trie_node_

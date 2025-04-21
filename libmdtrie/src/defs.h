@@ -82,7 +82,10 @@ GetTimestamp()
 n_leaves_t total_points_count = 0;
 int discount_factor = 1;
 level_t trie_depth_;
-morton_t level_to_num_children[32] = {0};
+dimension_t trie_width_;
+morton_t level_to_num_children[80] = {0};
+// for faster indexing with flexible widths
+std::vector<std::vector<std::pair<dimension_t, level_t>>> _dim_off_table;
 preorder_t max_tree_nodes_ = 512;
 level_t max_depth_;
 
@@ -118,27 +121,92 @@ uint64_t checked_points_count = 0;
 int query_optimization = 2;
 bool is_collapsed_node_exp = false;
 
+// build a ragged 2D “dim_off” table: _dim_off_table[level][i] = {dim,offset}
+void create_dim_off_table(const std::vector<level_t>& bit_widths,
+                          const std::vector<level_t>& start_bits,
+                          dimension_t W) {
+
+  _dim_off_table.clear();
+
+  dimension_t D = (dimension_t) bit_widths.size();
+  assert(D == dimension_t(start_bits.size()));
+  assert(W > 0);
+
+  // compute how many bits each dim really contributes, and total
+  std::vector<level_t> rem(D);
+  level_t total = 0, max_rem = 0;
+  for (uint16_t d = 0; d < D; ++d) {
+    assert(bit_widths[d] >= start_bits[d]);
+    rem[d] = bit_widths[d] - start_bits[d];
+    total += rem[d];
+    max_rem = std::max(max_rem, rem[d]);
+  }
+
+  // prepare the ragged 2D result
+  _dim_off_table.emplace_back();
+  uint16_t in_this_level = 0;
+
+  // emit in “global bit‐rounds” order, grouping every W bits into one level
+  for (level_t g = 0; g < max_rem; ++g) {
+    for (dimension_t d = 0; d < D; ++d) {
+      if (g >= start_bits[d] && g < start_bits[d] + rem[d]) {
+        // compute offset of bit g in dimension d
+        level_t offset = bit_widths[d] - 1 - g;
+
+        // if current level is full, start a new one
+        if (in_this_level == W) {
+          _dim_off_table.emplace_back();
+          in_this_level = 0;
+        }
+
+        _dim_off_table.back().emplace_back(d, offset);
+        ++in_this_level;
+      }
+    }
+  }
+
+  // sanity check: we should have emitted exactly 'total' bits
+  int check = 0;
+  for (auto &lvl : _dim_off_table) check += int(lvl.size());
+  assert(check == total);
+}
+
 void create_level_to_num_children(std::vector<level_t> bit_widths,
                                   std::vector<level_t> start_bits,
-                                  level_t max_level)
+                                  level_t max_level,
+                                  dimension_t width)
 {
+  for (int i = 0; i < 80; i++) {
+    level_to_num_children[i] = 0;
+  }
 
   dimension_to_num_bits = bit_widths;
   start_dimension_bits = start_bits;
+
+  create_dim_off_table(dimension_to_num_bits, start_dimension_bits, width);
+
+  max_depth_ = (level_t) _dim_off_table.size();
+
+  assert(max_depth_ == max_level);
+
+  for (level_t lvl = 0; lvl < max_depth_; lvl++) {
+    level_to_num_children[lvl] = _dim_off_table[lvl].size();
+  }
+
+  // sanity check
   dimension_t num_dimensions = bit_widths.size();
 
-  for (level_t level = 0; level < max_level; level++)
-  {
+  uint16_t total_bits = 0;
 
-    dimension_t dimension_left = num_dimensions;
-    for (dimension_t j = 0; j < num_dimensions; j++)
-    {
-
-      if (level + 1 > bit_widths[j] || level < start_dimension_bits[j])
-        dimension_left--;
-    }
-    level_to_num_children[level] = dimension_left;
+  for (dimension_t i = 0; i < num_dimensions; i++) {
+    total_bits += (dimension_to_num_bits[i] - start_dimension_bits[i]);
   }
+
+  for (level_t lvl = 0; lvl < max_depth_; lvl++) {
+    total_bits -= level_to_num_children[lvl];
+  }
+
+  assert(total_bits == 0);
 }
 
 // #define USE_LINEAR_SCAN // Possibly disable at microbenchmark

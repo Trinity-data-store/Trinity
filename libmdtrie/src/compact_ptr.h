@@ -73,6 +73,8 @@ namespace bits
 
     uint64_t size_overhead()
     {
+      // if (!is_valid((void *) this))
+      //   return 0;
 
       if (flag_ == 0)
       {

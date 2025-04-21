@@ -34,7 +34,7 @@ enum
   NYC = 3,
 };
 
-std::string ROOT_DIR = "/proj/trinity-PG0/Trinity/";
+std::string ROOT_DIR = "/proj/trinitys25-PG0/Trinity/";
 std::string TPCH_DATA_ADDR = ROOT_DIR + "datasets/tpch_dataset.csv";
 std::string GITHUB_DATA_ADDR = ROOT_DIR + "datasets/github_dataset.csv";
 std::string NYC_DATA_ADDR = ROOT_DIR + "datasets/nyc_dataset.csv";
@@ -64,10 +64,11 @@ enum
 
 level_t max_depth = 32;
 level_t trie_depth = 6;
+dimension_t trie_width = -1;
 preorder_t max_tree_node = 512;
 point_t points_to_insert = 1000;
 point_t points_to_lookup = 1000;
-std::string results_folder_addr = "/proj/trinity-PG0/Trinity/results/";
+std::string results_folder_addr = "/proj/trinitys25-PG0/Trinity/results/";
 std::string identification_string = "";
 int optimization_code = OPTIMIZATION_SM;
 std::string optimization = "SM";
@@ -147,10 +148,22 @@ void use_nyc_setting(int dimensions, int _total_points_count)
   bit_widths.resize(dimensions);
 
   trie_depth = 6;
-  max_depth = 28;
   no_dynamic_sizing = true;
 
-  create_level_to_num_children(bit_widths, start_bits, max_depth);
+  // calculate max_depth
+  uint16_t total_bits = 0;
+  int bit_widths_size = sizeof(bit_widths) / sizeof(bit_widths[0]);
+  for (int i = 0; i < bit_widths_size; i++) {
+    total_bits += bit_widths[i] - start_bits[i];
+  }
+  max_depth = total_bits / trie_width;
+  if (total_bits % trie_width != 0) {
+    max_depth++;
+  }
+
+  // add one to depth if there's a remainder
+
+  create_level_to_num_children(bit_widths, start_bits, max_depth, trie_width);
 }
 
 void use_github_setting(int dimensions, int _total_points_count)
@@ -195,11 +208,20 @@ void use_github_setting(int dimensions, int _total_points_count)
   bit_widths.resize(dimensions);
 
   trie_depth = 6;
-  max_depth = 24;
   no_dynamic_sizing = true;
-  max_tree_node = 512;
 
-  create_level_to_num_children(bit_widths, start_bits, max_depth);
+  // calculate max_depth
+  uint16_t total_bits = 0;
+  int bit_widths_size = sizeof(bit_widths) / sizeof(bit_widths[0]);
+  for (int i = 0; i < bit_widths_size; i++) {
+    total_bits += bit_widths[i] - start_bits[i];
+  }
+  max_depth = total_bits / trie_width;
+  if (total_bits % trie_width != 0) {
+    max_depth++;
+  }
+
+  create_level_to_num_children(bit_widths, start_bits, max_depth, trie_width);
 }
 
 void use_tpch_setting(int dimensions, int _total_points_count)
@@ -256,9 +278,20 @@ void use_tpch_setting(int dimensions, int _total_points_count)
   }
 
   trie_depth = 6;
-  max_depth = 32;
   no_dynamic_sizing = true;
-  create_level_to_num_children(bit_widths, start_bits, max_depth);
+
+  // calculate max_depth
+  uint16_t total_bits = 0;
+  int bit_widths_size = sizeof(bit_widths) / sizeof(bit_widths[0]);
+  for (int i = 0; i < bit_widths_size; i++) {
+    total_bits += bit_widths[i] - start_bits[i];
+  }
+  max_depth = total_bits / trie_width;
+  if (total_bits % trie_width != 0) {
+    max_depth++;
+  }
+
+  create_level_to_num_children(bit_widths, start_bits, max_depth, trie_width);
 }
 
 void flush_vector_to_file(std::vector<TimeStamp> vect, std::string filename)

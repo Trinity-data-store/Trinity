@@ -20,7 +20,7 @@ namespace compressed_bitmap
 #define CLRBIT(n, i) n = (n & ~(1UL << i))
 
 #define BITS2BLOCKS(bits) \
-  (((bits) % 64 == 0) ? ((bits) / 64) : (((bits) / 64) + 1))
+    (((bits) % 64 == 0) ? ((bits) / 64) : (((bits) / 64) + 1))
 
 #define GETBITVAL(data, i) GETBIT((data)[(i) / 64], (i) % 64)
 #define SETBITVAL(data, i) SETBIT((data)[(i) / 64], (i) % 64)
@@ -144,6 +144,8 @@ namespace compressed_bitmap
 
     inline uint64_t size() const
     {
+      // if (!is_valid((void *) this))
+      //   return 0;
 
       uint64_t total_size = 0;
       total_size += sizeof(data_size_) + sizeof(flag_size_);

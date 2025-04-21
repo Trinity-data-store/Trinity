@@ -12,7 +12,8 @@ template <dimension_t DIMENSION>
 class tree_block
 {
 public:
-  explicit tree_block(level_t root_depth,
+  explicit tree_block(/* dimension_t width, */
+                      level_t root_depth,
                       preorder_t node_capacity,
                       node_pos_t bit_capacity,
                       preorder_t num_nodes,
@@ -21,7 +22,7 @@ public:
                       trie_node<DIMENSION> *parent_trie_node,
                       compressed_bitmap::compressed_bitmap *dfuds = NULL)
   {
-
+    // width_ = width;
     root_depth_ = root_depth;
     node_capacity_ = node_capacity;
     max_depth_ = max_depth;
@@ -917,7 +918,8 @@ public:
         n_nodes_copied += 1;
       }
       new_dfuds->keep_bits(dest_node_pos, true);
-      auto new_block = new tree_block<DIMENSION>(selected_node_depth,
+      auto new_block = new tree_block<DIMENSION>(/* width_ ,*/
+                                                 selected_node_depth,  
                                                  subtree_size,
                                                  dest_node_pos,
                                                  subtree_size,
@@ -1574,30 +1576,33 @@ public:
   {
 
     // Will be free-ed in the benchmark code
+    // auto coordinates = new data_point<DIMENSION>(width_);
     auto coordinates = new data_point<DIMENSION>();
 
-    for (level_t i = 0; i < max_depth_; i++)
-    {
-      morton_t current_symbol = node_path[i];
-      morton_t current_symbol_pos = level_to_num_children[i] - 1;
+    for (level_t lvl = 0; lvl < max_depth_; lvl++) {
 
-      for (dimension_t j = 0; j < dimension; j++)
-      {
+      auto &tbl = _dim_off_table[lvl];
+      morton_t current_symbol = node_path[lvl];
 
-        if (dimension_to_num_bits[j] <= i || i < start_dimension_bits[j])
-          continue;
+      int tbl_size = tbl.size();
+      morton_t current_symbol_pos = (morton_t) tbl_size - 1;
+
+      for (uint16_t i = 0; i < tbl_size; i++) {
+
+        auto dim = tbl[i].first;
 
         level_t current_bit = GETBIT(current_symbol, current_symbol_pos);
         current_symbol_pos--;
 
-        point_t coordinate = coordinates->get_coordinate(j);
+        point_t coordinate = coordinates->get_coordinate(dim);
         coordinate = (coordinate << 1) + current_bit;
-        coordinates->set_coordinate(j, coordinate);
+        coordinates->set_coordinate(dim, coordinate);
       }
     }
+
     if (!coordinates)
     {
-      std::cerr << "TPCH: range search failed!" << std::endl;
+      std::cerr << "Range search failed!" << std::endl;
       exit(-1);
     }
     return coordinates;
@@ -1610,25 +1615,27 @@ public:
     // Will be free-ed in the benchmark code
     std::vector<int32_t> ret_vect(dimension, 0);
 
-    for (level_t i = 0; i < max_depth_; i++)
-    {
-      morton_t current_symbol = node_path[i];
-      morton_t current_symbol_pos = level_to_num_children[i] - 1;
+    for (level_t lvl = 0; lvl < max_depth_; lvl++) {
 
-      for (dimension_t j = 0; j < dimension; j++)
-      {
+      auto &tbl = _dim_off_table[lvl];
+      morton_t current_symbol = node_path[lvl];
 
-        if (dimension_to_num_bits[j] <= i || i < start_dimension_bits[j])
-          continue;
+      int tbl_size = tbl.size();
+      morton_t current_symbol_pos = (morton_t) tbl_size - 1;
+
+      for (uint16_t i = 0; i < tbl_size; i++) {
+
+        auto dim = tbl[i].first;
 
         level_t current_bit = GETBIT(current_symbol, current_symbol_pos);
         current_symbol_pos--;
 
-        point_t coordinate = ret_vect[j];
+        point_t coordinate = ret_vect[dim];
         coordinate = (coordinate << 1) + current_bit;
-        ret_vect[j] = coordinate;
+        ret_vect[dim] = coordinate;
       }
     }
+
     return ret_vect;
   }
 
@@ -1834,8 +1841,11 @@ public:
 
   uint64_t size()
   {
+    // if (!is_valid((void *) this))
+    //   return 0;
 
     uint64_t total_size = 0;
+    // total_size += sizeof(width_);
     total_size += sizeof(root_depth_);
     total_size += sizeof(num_nodes_);
     total_size += sizeof(total_nodes_bits_);
@@ -1844,12 +1854,18 @@ public:
     total_size += sizeof(dfuds_);
     total_size += dfuds_->size();
 
+    // uint16_t num_frontiers = std::min(num_frontiers_, sizeof(frontiers_) / sizeof(frontier_node<DIMENSION> *));
+
     total_size +=
         num_frontiers_ * sizeof(frontier_node<DIMENSION>) + sizeof(frontiers_);
-    for (uint16_t i = 0; i < num_frontiers_; i++)
-    {
-      total_size += ((frontier_node<DIMENSION> *)frontiers_)[i].pointer_->size();
-    }
+
+    // if (is_valid((void *) frontiers_)) {
+      for (uint16_t i = 0; i < num_frontiers_; i++)
+      {
+        // if (is_valid((void *) frontiers_[i].pointer_))
+          total_size += ((frontier_node<DIMENSION> *)frontiers_)[i].pointer_->size();
+      }
+    // }
     total_size += sizeof(num_frontiers_);
 
     total_size += sizeof(parent_combined_ptr_);
@@ -1858,12 +1874,14 @@ public:
                   primary_key_list.size() * sizeof(bits::compact_ptr);
     for (preorder_t i = 0; i < primary_key_list.size(); i++)
     {
-      total_size += primary_key_list[i].size_overhead();
+      // if (is_valid((void *) &primary_key_list[i]))
+        total_size += primary_key_list[i].size_overhead();
     }
     return total_size;
   }
 
 private:
+  // dimension_t width_;
   level_t root_depth_;
   preorder_t num_nodes_;
   preorder_t total_nodes_bits_;

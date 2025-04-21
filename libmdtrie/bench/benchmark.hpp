@@ -26,6 +26,7 @@ public:
     TimeStamp start = 0, diff = 0;
     point_t n_points = 0;
     point_t has_skipped = 0;
+    // data_point<DIMENSION> leaf_point(mdtrie_->get_width());
     data_point<DIMENSION> leaf_point;
 
     /**
@@ -106,6 +107,8 @@ public:
     {
 
       std::vector<int32_t> found_points;
+      // data_point<DIMENSION> start_range(mdtrie_->get_width());
+      // data_point<DIMENSION> end_range(mdtrie_->get_width());
       data_point<DIMENSION> start_range;
       data_point<DIMENSION> end_range;
 
@@ -140,6 +143,8 @@ public:
     {
 
       std::vector<int32_t> found_points;
+      // data_point<DIMENSION> start_range(mdtrie_->get_width());
+      // data_point<DIMENSION> end_range(mdtrie_->get_width());
       data_point<DIMENSION> start_range;
       data_point<DIMENSION> end_range;
 
